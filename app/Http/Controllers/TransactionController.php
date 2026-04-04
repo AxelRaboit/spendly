@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Filters\TransactionFilter;
 use App\Http\Requests\DestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
@@ -16,12 +17,22 @@ use Inertia\Response;
 
 class TransactionController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, TransactionFilter $filter): Response
     {
-        $transactions = $request->user()->transactions()->with('category')->latest('date')->paginate(15);
+        $transactions = Transaction::query()
+            ->where('user_id', $request->user()->id)
+            ->with('category')
+            ->filter($filter)
+            ->latest('date')
+            ->paginate(15)
+            ->withQueryString();
+
+        $categories = $request->user()->categories()->orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
+            'categories' => $categories,
+            'filters' => $request->only('search', 'category_id'),
         ]);
     }
 

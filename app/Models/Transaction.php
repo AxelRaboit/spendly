@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Override;
 #[Fillable(['user_id', 'category_id', 'amount', 'description', 'date'])]
 class Transaction extends Model
 {
+    use Filterable;
     use HasFactory;
 
     #[Override]

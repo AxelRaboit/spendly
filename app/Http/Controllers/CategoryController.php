@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Filters\CategoryFilter;
 use App\Http\Requests\DestroyCategoryRequest;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
@@ -16,12 +17,17 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, CategoryFilter $filter): Response
     {
-        $categories = $request->user()->categories()->paginate(10);
+        $categories = Category::query()
+            ->where('user_id', $request->user()->id)
+            ->filter($filter)
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Categories/Index', [
             'categories' => $categories,
+            'filters' => $request->only('search'),
         ]);
     }
 

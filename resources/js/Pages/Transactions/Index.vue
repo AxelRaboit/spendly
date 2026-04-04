@@ -5,6 +5,8 @@ import { useConfirmDelete } from '@/composables/useConfirmDelete';
 
 defineProps({
     transactions: Object,
+    categories: Array,
+    filters: Object,
 });
 
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette dépense ?');
@@ -22,8 +24,14 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-100">
-                        <div class="mb-6">
-                            <Link href="/transactions/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                        <div class="mb-6 flex flex-wrap items-center gap-3">
+                            <SearchInput :model-value="filters.search" placeholder="Rechercher une dépense…" class="max-w-xs" />
+                            <FilterSelect param="category_id" :model-value="filters.category_id" placeholder="Toutes les catégories">
+                                <option v-for="category in categories" :key="category.id" :value="category.id">
+                                    {{ category.name }}
+                                </option>
+                            </FilterSelect>
+                            <Link href="/transactions/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 ms-auto">
                                 Ajouter une dépense
                             </Link>
                         </div>

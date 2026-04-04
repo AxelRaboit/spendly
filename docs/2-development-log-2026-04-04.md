@@ -622,6 +622,60 @@ Plusieurs textes et liens des pages Breeze (Login, Register, ForgotPassword, Ver
 
 Corrigé en vérifiant `document.activeElement === document.body` avant d'appeler `.focus()`.
 
+### Logo et favicon Spendly
+
+Création d'un logo SVG custom pour remplacer le logo Laravel par défaut.
+
+- `public/favicon.svg` — favicon SVG (carré arrondi indigo + "S")
+- `resources/js/components/AppLogo.vue` — composant Vue réutilisable, prop `size`
+- Intégré dans `AuthenticatedLayout` (navbar, avec le nom "Spendly" à côté) et `GuestLayout` (centré au-dessus du formulaire)
+- `app.blade.php` — `<link rel="icon" type="image/svg+xml" href="/favicon.svg">`
+
+### Recherche et filtres sur les listes
+
+Ajout de filtres de recherche sur les listes Catégories et Dépenses.
+
+**Pattern QueryFilter :**
+
+Plutôt que de mettre la logique de filtre dans le controller (comme un Repository en Symfony), Laravel utilise les **Query Filters** — des classes dédiées par modèle.
+
+```
+app/Filters/
+├── QueryFilter.php      ← classe abstraite de base
+├── Filterable.php       ← trait à ajouter sur les modèles (scope filter())
+├── CategoryFilter.php   ← filtre par nom
+└── TransactionFilter.php ← filtre par description + category_id
+```
+
+Le controller devient minimal :
+
+```php
+$categories = Category::query()
+    ->where('user_id', $request->user()->id)
+    ->filter($filter)  // scope issu du trait Filterable
+    ->paginate(10)
+    ->withQueryString();
+```
+
+**Note PHPStan :** `->filter()` n'est pas reconnu sur `HasMany`. Solution : utiliser `Model::query()->where('user_id', ...)` au lieu de `$user->categories()` — retourne un `Builder<Category>` correctement typé.
+
+**Recherche accent-insensitive (PostgreSQL) :**
+
+Extension `unaccent` activée via migration. "sante" trouve "Santé" :
+
+```php
+$query->whereRaw('unaccent(name) ILIKE unaccent(?)', [sprintf('%%%s%%', $value)]);
+```
+
+**Composants frontend :**
+
+| Composant | Rôle |
+|---|---|
+| `SearchInput.vue` | Input texte avec debounce 300ms, appelle `router.get()` automatiquement |
+| `FilterSelect.vue` | Select de filtre, gère la navigation router sur `change`, conserve les autres params via `URLSearchParams` |
+
+`FilterSelect` prend un prop `param` (nom du query param) pour être réutilisable sur n'importe quel filtre.
+
 ### Format de la date des transactions
 
 Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :

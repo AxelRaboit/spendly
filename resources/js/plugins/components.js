@@ -10,6 +10,8 @@ import DeleteButton from '@/components/DeleteButton.vue';
 import EditButton from '@/components/EditButton.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import EmptyState from '@/components/EmptyState.vue';
+import FilterSelect from '@/components/FilterSelect.vue';
+import SearchInput from '@/components/SearchInput.vue';
 import SubmitButton from '@/components/SubmitButton.vue';
 import SelectInput from '@/components/SelectInput.vue';
 
@@ -28,6 +30,8 @@ export default {
         app.component('EditButton', EditButton);
         app.component('AppPagination', AppPagination);
         app.component('EmptyState', EmptyState);
+        app.component('FilterSelect', FilterSelect);
+        app.component('SearchInput', SearchInput);
         app.component('SubmitButton', SubmitButton);
     },
 };
