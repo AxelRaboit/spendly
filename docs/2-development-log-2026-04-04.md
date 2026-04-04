@@ -274,3 +274,26 @@ Route::get('/', function () {
   - Bouton "Log in" en pleine largeur
   - Séparateur **— or —**
   - Lien Register centré en dessous
+
+### Dark mode complet
+
+Forcé le dark mode sur l'ensemble de l'application.
+
+**Configuration :**
+- `tailwind.config.js` : `darkMode: 'class'`
+- `resources/views/app.blade.php` : `<html class="dark">`
+
+**Layouts :**
+- `AuthenticatedLayout.vue` : fond `bg-gray-950`, navbar `bg-gray-900`, header `bg-gray-900`
+- `GuestLayout.vue` : fond `bg-gray-950`, carte `bg-gray-900`
+
+**Composants Breeze corrigés (avaient des couleurs light-mode hardcodées) :**
+- `Dropdown.vue` : fond `bg-white` → `bg-gray-800`
+- `DropdownLink.vue` : `text-gray-700 hover:bg-gray-100` → `text-gray-300 hover:bg-gray-700`
+- `NavLink.vue` : `text-gray-900` / `text-gray-500` → `text-white` / `text-gray-400`
+- `ResponsiveNavLink.vue` : `bg-indigo-50` / `bg-gray-50` → `bg-gray-800`
+
+**Pages :**
+- Tous les titres `text-gray-800 dark:text-gray-200` → `text-gray-100`
+- Tous les contenus `text-gray-900 dark:text-gray-100` → `text-gray-100`
+- Tous les inputs/selects `border-gray-300 dark:bg-gray-700` → `border-gray-700 bg-gray-700 text-gray-100`
