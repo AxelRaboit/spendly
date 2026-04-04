@@ -170,362 +170,360 @@ function onKeydown(e, submitFn, cancelFn) {
             </div>
         </template>
 
-        <div class="py-8">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-                <!-- ── Month navigation ── -->
-                <div class="flex items-center justify-between">
-                    <Link
-                        :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
-                        class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                        {{ prevMonth }}
-                    </Link>
-                    <h2 class="text-xl font-bold text-gray-100 capitalize">{{ budget.month_label }}</h2>
-                    <Link
-                        :href="`/wallets/${wallet.id}/budget?month=${nextMonth}`"
-                        class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm"
-                    >
-                        {{ nextMonth }}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    </Link>
-                </div>
+        <!-- ── Month navigation ── -->
+        <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <Link
+                    :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
+                    class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    {{ prevMonth }}
+                </Link>
+                <h2 class="text-xl font-bold text-gray-100 capitalize">{{ budget.month_label }}</h2>
+                <Link
+                    :href="`/wallets/${wallet.id}/budget?month=${nextMonth}`"
+                    class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm"
+                >
+                    {{ nextMonth }}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </Link>
+            </div>
 
-                <!-- ── KPI cards ── -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Solde départ</p>
-                        <p class="text-lg font-bold text-gray-100 font-mono">{{ fmt(startBalance) }}</p>
-                    </div>
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Revenus</p>
-                        <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome.actual) }}</p>
-                        <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(totalIncome.planned) }} prévu</p>
-                    </div>
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Cash flow</p>
-                        <p class="text-lg font-bold font-mono" :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-                            {{ fmt(cashFlow.actual, true) }}
-                        </p>
-                        <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(cashFlow.planned, true) }} prévu</p>
-                    </div>
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Reste à dépenser</p>
-                        <p class="text-lg font-bold font-mono" :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-                            {{ fmt(leftToSpend.actual) }}
-                        </p>
-                        <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(leftToSpend.planned) }} prévu</p>
-                    </div>
+            <!-- ── KPI cards ── -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Solde départ</p>
+                    <p class="text-lg font-bold text-gray-100 font-mono">{{ fmt(startBalance) }}</p>
                 </div>
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Revenus</p>
+                    <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome.actual) }}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(totalIncome.planned) }} prévu</p>
+                </div>
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Cash flow</p>
+                    <p class="text-lg font-bold font-mono" :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                        {{ fmt(cashFlow.actual, true) }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(cashFlow.planned, true) }} prévu</p>
+                </div>
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Reste à dépenser</p>
+                    <p class="text-lg font-bold font-mono" :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                        {{ fmt(leftToSpend.actual) }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(leftToSpend.planned) }} prévu</p>
+                </div>
+            </div>
 
-                <!-- ── Donut + projection ── -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-3">Répartition réelle</p>
-                        <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                        <p v-else class="text-sm text-gray-600">Aucune dépense ce mois</p>
-                    </div>
-                    <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4 flex flex-col justify-between">
-                        <div>
-                            <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                                Projection fin de mois
-                                <span v-if="!isCurrentMonth" class="normal-case text-gray-600 ml-1">(mois passé)</span>
-                            </p>
-                            <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
-                                {{ fmt(projectedExpenses) }}
-                            </p>
-                            <p v-else class="text-lg font-bold text-gray-500 font-mono">—</p>
-                            <p v-if="projectedExpenses !== null" class="text-xs text-gray-500 mt-0.5">
-                                vs {{ fmt(totalExpenses.planned) }} prévu
-                            </p>
-                        </div>
-                        <p v-if="projectedExpenses !== null" class="text-xs text-gray-600 mt-2">
-                            Basé sur {{ new Date().getDate() }} jours écoulés
+            <!-- ── Donut + projection ── -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-3">Répartition réelle</p>
+                    <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
+                    <p v-else class="text-sm text-gray-600">Aucune dépense ce mois</p>
+                </div>
+                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4 flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                            Projection fin de mois
+                            <span v-if="!isCurrentMonth" class="normal-case text-gray-600 ml-1">(mois passé)</span>
+                        </p>
+                        <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
+                            {{ fmt(projectedExpenses) }}
+                        </p>
+                        <p v-else class="text-lg font-bold text-gray-500 font-mono">—</p>
+                        <p v-if="projectedExpenses !== null" class="text-xs text-gray-500 mt-0.5">
+                            vs {{ fmt(totalExpenses.planned) }} prévu
                         </p>
                     </div>
+                    <p v-if="projectedExpenses !== null" class="text-xs text-gray-600 mt-2">
+                        Basé sur {{ new Date().getDate() }} jours écoulés
+                    </p>
                 </div>
+            </div>
 
-                <!-- ── Copy from previous / empty state ── -->
-                <div v-if="isBudgetEmpty" class="bg-gray-900 border border-dashed border-gray-700 rounded-lg p-8 text-center">
-                    <p class="text-gray-400 mb-4">Ce budget est vide. Copier les lignes du mois précédent ?</p>
-                    <button
-                        class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium px-4 py-2 rounded-lg border border-gray-700 transition-colors"
-                        v-on:click="copyFromPrevious"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                        Copier depuis {{ prevMonth }}
-                    </button>
-                </div>
+            <!-- ── Copy from previous / empty state ── -->
+            <div v-if="isBudgetEmpty" class="bg-gray-900 border border-dashed border-gray-700 rounded-lg p-8 text-center">
+                <p class="text-gray-400 mb-4">Ce budget est vide. Copier les lignes du mois précédent ?</p>
+                <button
+                    class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium px-4 py-2 rounded-lg border border-gray-700 transition-colors"
+                    v-on:click="copyFromPrevious"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    Copier depuis {{ prevMonth }}
+                </button>
+            </div>
 
-                <!-- ── Budget table ── -->
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg overflow-hidden">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-700/60 text-xs text-gray-500 uppercase tracking-wider">
-                                <th class="text-left px-4 py-3 font-medium w-[34%]">Libellé</th>
-                                <th class="text-left px-4 py-3 font-medium w-[20%]">Catégorie</th>
-                                <th class="text-right px-4 py-3 font-medium w-[13%]">Prévu</th>
-                                <th class="text-right px-4 py-3 font-medium w-[13%]">Réel</th>
-                                <th class="text-right px-4 py-3 font-medium w-[10%]">Écart</th>
-                                <th class="w-[10%]" />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template v-for="(items, type) in sections" :key="type">
-                                <!-- ── Section header ── -->
-                                <tr :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-y']">
-                                    <td class="px-4 py-2" colspan="2">
-                                        <div class="flex items-center gap-3">
-                                            <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
-                                                {{ SECTION_META[type].label }}
-                                            </span>
-                                            <div class="flex-1 max-w-[120px] h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                                                <div
-                                                    class="h-full rounded-full transition-all duration-300"
-                                                    :class="SECTION_META[type].color.replace('text-', 'bg-')"
-                                                    :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%' }"
-                                                />
-                                            </div>
-                                            <span class="text-xs text-gray-500">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
+            <!-- ── Budget table ── -->
+            <div class="bg-gray-900 border border-gray-700/60 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-700/60 text-xs text-gray-500 uppercase tracking-wider">
+                            <th class="text-left px-4 py-3 font-medium w-[34%]">Libellé</th>
+                            <th class="text-left px-4 py-3 font-medium w-[20%]">Catégorie</th>
+                            <th class="text-right px-4 py-3 font-medium w-[13%]">Prévu</th>
+                            <th class="text-right px-4 py-3 font-medium w-[13%]">Réel</th>
+                            <th class="text-right px-4 py-3 font-medium w-[10%]">Écart</th>
+                            <th class="w-[10%]" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="(items, type) in sections" :key="type">
+                            <!-- ── Section header ── -->
+                            <tr :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-y']">
+                                <td class="px-4 py-2" colspan="2">
+                                    <div class="flex items-center gap-3">
+                                        <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
+                                            {{ SECTION_META[type].label }}
+                                        </span>
+                                        <div class="flex-1 max-w-[120px] h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                                            <div
+                                                class="h-full rounded-full transition-all duration-300"
+                                                :class="SECTION_META[type].color.replace('text-', 'bg-')"
+                                                :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%' }"
+                                            />
                                         </div>
-                                    </td>
-                                    <td class="px-4 py-2 text-right font-mono text-gray-300 text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
-                                    <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
-                                    <td
-                                        class="px-4 py-2 text-right font-mono text-xs"
-                                        :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood)"
-                                    >
-                                        {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
-                                    </td>
-                                    <td />
-                                </tr>
-
-                                <!-- ── Rows ── -->
-                                <template v-for="item in items" :key="item.id">
-                                    <!-- Inline edit -->
-                                    <template v-if="editingId === item.id">
-                                        <tr class="bg-gray-800 border-b border-gray-700/40">
-                                            <td class="pl-8 pr-2 py-1.5">
-                                                <input
-                                                    :id="`edit-label-${item.id}`"
-                                                    v-model="editForm.label"
-                                                    type="text"
-                                                    placeholder="Libellé"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                >
-                                            </td>
-                                            <td class="px-2 py-1.5">
-                                                <select
-                                                    v-model="editForm.category_id"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                >
-                                                    <option :value="null">—</option>
-                                                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                                </select>
-                                            </td>
-                                            <td class="px-2 py-1.5">
-                                                <input
-                                                    v-model="editForm.planned_amount"
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    placeholder="0,00"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                >
-                                            </td>
-                                            <td class="px-2 py-1.5 text-right text-gray-500 font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
-                                            <td />
-                                            <td class="px-3 py-1.5">
-                                                <div class="flex items-center gap-2 justify-end">
-                                                    <button class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Valider (Entrée)" v-on:click="submitEdit(item)">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                                    </button>
-                                                    <button class="text-gray-500 hover:text-gray-300 transition-colors" title="Annuler (Échap)" v-on:click="cancelEditing">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr class="bg-gray-800 border-b border-gray-700/40">
-                                            <td colspan="6" class="pl-8 pr-3 pb-2">
-                                                <textarea
-                                                    v-model="editForm.notes"
-                                                    placeholder="Note (optionnelle)…"
-                                                    rows="2"
-                                                    class="w-full bg-gray-700 text-gray-300 rounded px-2 py-1 text-xs border border-gray-600 focus:border-indigo-500 focus:outline-none resize-none"
-                                                />
-                                            </td>
-                                        </tr>
-                                    </template>
-
-                                    <!-- Read + actions -->
-                                    <tr
-                                        v-else
-                                        class="border-b border-gray-800/60 group hover:bg-gray-800/40"
-                                        :data-row-id="item.id"
-                                        v-on:dblclick="startEditingItem(item)"
-                                    >
-                                        <td class="pl-8 pr-4 py-2.5 text-gray-200 cursor-pointer">
-                                            <span>{{ item.label }}</span>
-                                            <span
-                                                v-if="item.notes"
-                                                class="ml-1.5 text-gray-600 hover:text-gray-400 transition-colors cursor-default"
-                                                :title="item.notes"
-                                            >
-                                                <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-2.5">
-                                            <span v-if="item.category" class="inline-flex items-center text-xs bg-gray-800 text-gray-300 rounded px-2 py-0.5 border border-gray-700">
-                                                {{ item.category.name }}
-                                            </span>
-                                            <span v-else class="text-gray-600">—</span>
-                                        </td>
-                                        <td class="px-4 py-2.5 text-right text-gray-400 font-mono">{{ fmt(item.planned_amount) }}</td>
-                                        <td
-                                            class="px-4 py-2.5 text-right font-mono"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
-                                        >
-                                            <button
-                                                v-if="item.category_id && item.actual_amount > 0"
-                                                class="hover:underline decoration-dotted"
-                                                :title="`Voir les transactions`"
-                                                v-on:click.stop="openTxDetail(item)"
-                                            >
-                                                {{ fmt(item.actual_amount) }}
-                                            </button>
-                                            <span v-else>{{ fmt(item.actual_amount) }}</span>
-                                        </td>
-                                        <td
-                                            class="px-4 py-2.5 text-right font-mono text-xs"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
-                                        >
-                                            {{ fmt(item.actual_amount - item.planned_amount, true) }}
-                                        </td>
-                                        <td class="px-3 py-2.5">
-                                            <div class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <!-- Add a transaction for this row -->
-                                                <button
-                                                    class="text-gray-500 hover:text-indigo-400 transition-colors"
-                                                    title="Ajouter une transaction"
-                                                    v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense')"
-                                                >
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                                </button>
-                                                <button class="text-gray-500 hover:text-sky-400 transition-colors" title="Modifier la ligne budget" v-on:click.stop="startEditingItem(item)">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                                </button>
-                                                <button class="text-gray-500 hover:text-rose-400 transition-colors" title="Supprimer la ligne" v-on:click.stop="deleteBudgetItem(item)">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-
-                                <!-- ── Add budget row ── -->
-                                <tr v-if="addingType === type" class="bg-gray-800/60 border-b border-gray-700/40">
-                                    <td class="pl-8 pr-2 py-1.5">
-                                        <input
-                                            :id="`add-label-${type}`"
-                                            v-model="addForm.label"
-                                            type="text"
-                                            placeholder="Nouveau libellé…"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                        >
-                                    </td>
-                                    <td class="px-2 py-1.5">
-                                        <select
-                                            v-model="addForm.category_id"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                        >
-                                            <option :value="null">—</option>
-                                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                        </select>
-                                    </td>
-                                    <td class="px-2 py-1.5">
-                                        <input
-                                            v-model="addForm.planned_amount"
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            placeholder="0,00"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                        >
-                                    </td>
-                                    <td colspan="2" />
-                                    <td class="px-3 py-1.5">
-                                        <div class="flex items-center gap-2 justify-end">
-                                            <button class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Ajouter (Entrée)" v-on:click="submitAdd">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                            </button>
-                                            <button class="text-gray-500 hover:text-gray-300 transition-colors" title="Annuler (Échap)" v-on:click="cancelAdding">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- ── Add row button ── -->
-                                <tr v-if="addingType !== type" class="border-b border-gray-800/60">
-                                    <td colspan="6" class="pl-8 py-1.5">
-                                        <AppButton
-                                            size="sm"
-                                            class="flex items-center gap-1.5"
-                                            v-on:click="startAddingItem(type)"
-                                        >
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                            Ajouter une ligne
-                                        </AppButton>
-                                    </td>
-                                </tr>
-                            </template>
-
-                            <!-- ── Cash flow summary ── -->
-                            <tr class="border-t-2 border-gray-600 bg-gray-800/30">
-                                <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">Cash Flow</td>
-                                <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(cashFlow.planned, true) }}</td>
-                                <td
-                                    class="px-4 py-3 text-right font-mono text-sm font-semibold"
-                                    :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
-                                >
-                                    {{ fmt(cashFlow.actual, true) }}
+                                        <span class="text-xs text-gray-500">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
+                                    </div>
                                 </td>
+                                <td class="px-4 py-2 text-right font-mono text-gray-300 text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
+                                <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
                                 <td
-                                    class="px-4 py-3 text-right font-mono text-xs"
-                                    :class="diffClass(cashFlow.actual - cashFlow.planned, true)"
+                                    class="px-4 py-2 text-right font-mono text-xs"
+                                    :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood)"
                                 >
-                                    {{ fmt(cashFlow.actual - cashFlow.planned, true) }}
+                                    {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
                                 </td>
                                 <td />
                             </tr>
 
-                            <!-- ── Left to spend ── -->
-                            <tr class="bg-gray-800/30">
-                                <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">Reste à dépenser</td>
-                                <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(leftToSpend.planned) }}</td>
-                                <td
-                                    class="px-4 py-3 text-right font-mono text-sm font-bold"
-                                    :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
+                            <!-- ── Rows ── -->
+                            <template v-for="item in items" :key="item.id">
+                                <!-- Inline edit -->
+                                <template v-if="editingId === item.id">
+                                    <tr class="bg-gray-800 border-b border-gray-700/40">
+                                        <td class="pl-8 pr-2 py-1.5">
+                                            <input
+                                                :id="`edit-label-${item.id}`"
+                                                v-model="editForm.label"
+                                                type="text"
+                                                placeholder="Libellé"
+                                                class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                            >
+                                        </td>
+                                        <td class="px-2 py-1.5">
+                                            <select
+                                                v-model="editForm.category_id"
+                                                class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                            >
+                                                <option :value="null">—</option>
+                                                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                            </select>
+                                        </td>
+                                        <td class="px-2 py-1.5">
+                                            <input
+                                                v-model="editForm.planned_amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                placeholder="0,00"
+                                                class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                            >
+                                        </td>
+                                        <td class="px-2 py-1.5 text-right text-gray-500 font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
+                                        <td />
+                                        <td class="px-3 py-1.5">
+                                            <div class="flex items-center gap-2 justify-end">
+                                                <button class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Valider (Entrée)" v-on:click="submitEdit(item)">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                </button>
+                                                <button class="text-gray-500 hover:text-gray-300 transition-colors" title="Annuler (Échap)" v-on:click="cancelEditing">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-gray-800 border-b border-gray-700/40">
+                                        <td colspan="6" class="pl-8 pr-3 pb-2">
+                                            <textarea
+                                                v-model="editForm.notes"
+                                                placeholder="Note (optionnelle)…"
+                                                rows="2"
+                                                class="w-full bg-gray-700 text-gray-300 rounded px-2 py-1 text-xs border border-gray-600 focus:border-indigo-500 focus:outline-none resize-none"
+                                            />
+                                        </td>
+                                    </tr>
+                                </template>
+
+                                <!-- Read + actions -->
+                                <tr
+                                    v-else
+                                    class="border-b border-gray-800/60 group hover:bg-gray-800/40"
+                                    :data-row-id="item.id"
+                                    v-on:dblclick="startEditingItem(item)"
                                 >
-                                    {{ fmt(leftToSpend.actual) }}
+                                    <td class="pl-8 pr-4 py-2.5 text-gray-200 cursor-pointer">
+                                        <span>{{ item.label }}</span>
+                                        <span
+                                            v-if="item.notes"
+                                            class="ml-1.5 text-gray-600 hover:text-gray-400 transition-colors cursor-default"
+                                            :title="item.notes"
+                                        >
+                                            <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-2.5">
+                                        <span v-if="item.category" class="inline-flex items-center text-xs bg-gray-800 text-gray-300 rounded px-2 py-0.5 border border-gray-700">
+                                            {{ item.category.name }}
+                                        </span>
+                                        <span v-else class="text-gray-600">—</span>
+                                    </td>
+                                    <td class="px-4 py-2.5 text-right text-gray-400 font-mono">{{ fmt(item.planned_amount) }}</td>
+                                    <td
+                                        class="px-4 py-2.5 text-right font-mono"
+                                        :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                    >
+                                        <button
+                                            v-if="item.category_id && item.actual_amount > 0"
+                                            class="hover:underline decoration-dotted"
+                                            :title="`Voir les transactions`"
+                                            v-on:click.stop="openTxDetail(item)"
+                                        >
+                                            {{ fmt(item.actual_amount) }}
+                                        </button>
+                                        <span v-else>{{ fmt(item.actual_amount) }}</span>
+                                    </td>
+                                    <td
+                                        class="px-4 py-2.5 text-right font-mono text-xs"
+                                        :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                    >
+                                        {{ fmt(item.actual_amount - item.planned_amount, true) }}
+                                    </td>
+                                    <td class="px-3 py-2.5">
+                                        <div class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <!-- Add a transaction for this row -->
+                                            <button
+                                                class="text-gray-500 hover:text-indigo-400 transition-colors"
+                                                title="Ajouter une transaction"
+                                                v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense')"
+                                            >
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-sky-400 transition-colors" title="Modifier la ligne budget" v-on:click.stop="startEditingItem(item)">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                            <button class="text-gray-500 hover:text-rose-400 transition-colors" title="Supprimer la ligne" v-on:click.stop="deleteBudgetItem(item)">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            <!-- ── Add budget row ── -->
+                            <tr v-if="addingType === type" class="bg-gray-800/60 border-b border-gray-700/40">
+                                <td class="pl-8 pr-2 py-1.5">
+                                    <input
+                                        :id="`add-label-${type}`"
+                                        v-model="addForm.label"
+                                        type="text"
+                                        placeholder="Nouveau libellé…"
+                                        class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    >
+                                </td>
+                                <td class="px-2 py-1.5">
+                                    <select
+                                        v-model="addForm.category_id"
+                                        class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    >
+                                        <option :value="null">—</option>
+                                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                    </select>
+                                </td>
+                                <td class="px-2 py-1.5">
+                                    <input
+                                        v-model="addForm.planned_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="0,00"
+                                        class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    >
                                 </td>
                                 <td colspan="2" />
+                                <td class="px-3 py-1.5">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <button class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Ajouter (Entrée)" v-on:click="submitAdd">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-300 transition-colors" title="Annuler (Échap)" v-on:click="cancelAdding">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
 
-                <p class="text-center text-xs text-gray-600">
-                    Double-clic pour modifier une ligne · Entrée pour valider · Échap pour annuler
-                </p>
+                            <!-- ── Add row button ── -->
+                            <tr v-if="addingType !== type" class="border-b border-gray-800/60">
+                                <td colspan="6" class="pl-8 py-1.5">
+                                    <AppButton
+                                        size="sm"
+                                        class="flex items-center gap-1.5"
+                                        v-on:click="startAddingItem(type)"
+                                    >
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                        Ajouter une ligne
+                                    </AppButton>
+                                </td>
+                            </tr>
+                        </template>
+
+                        <!-- ── Cash flow summary ── -->
+                        <tr class="border-t-2 border-gray-600 bg-gray-800/30">
+                            <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">Cash Flow</td>
+                            <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(cashFlow.planned, true) }}</td>
+                            <td
+                                class="px-4 py-3 text-right font-mono text-sm font-semibold"
+                                :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
+                            >
+                                {{ fmt(cashFlow.actual, true) }}
+                            </td>
+                            <td
+                                class="px-4 py-3 text-right font-mono text-xs"
+                                :class="diffClass(cashFlow.actual - cashFlow.planned, true)"
+                            >
+                                {{ fmt(cashFlow.actual - cashFlow.planned, true) }}
+                            </td>
+                            <td />
+                        </tr>
+
+                        <!-- ── Left to spend ── -->
+                        <tr class="bg-gray-800/30">
+                            <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">Reste à dépenser</td>
+                            <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(leftToSpend.planned) }}</td>
+                            <td
+                                class="px-4 py-3 text-right font-mono text-sm font-bold"
+                                :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
+                            >
+                                {{ fmt(leftToSpend.actual) }}
+                            </td>
+                            <td colspan="2" />
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
+            <p class="text-center text-xs text-gray-600">
+                Double-clic pour modifier une ligne · Entrée pour valider · Échap pour annuler
+            </p>
         </div>
 
         <!-- ── Transaction slide-over ── -->
