@@ -1,8 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { useConfirmDelete } from '@/composables/useConfirmDelete';
-import { useCurrency } from '@/composables/useCurrency';
+import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
+import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();

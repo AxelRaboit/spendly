@@ -1,8 +1,8 @@
 <script setup>
-import { CURRENCIES } from '@/composables/useCurrency';
+import { CURRENCIES } from '@/composables/core/useCurrency';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { useLocale, SUPPORTED_LOCALES } from '@/composables/useLocale.js';
+import { useLocale, SUPPORTED_LOCALES } from '@/composables/core/useLocale.js';
 
 defineProps({
     mustVerifyEmail: { type: Boolean },

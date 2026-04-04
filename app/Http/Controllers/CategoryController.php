@@ -33,7 +33,7 @@ class CategoryController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Categories/Create');
+        return Inertia::render('Categories/Form');
     }
 
     public function store(StoreCategoryRequest $request, CategoryService $categoryService): RedirectResponse
@@ -56,7 +56,7 @@ class CategoryController extends Controller
     {
         $this->authorize('update', $category);
 
-        return Inertia::render('Categories/Edit', [
+        return Inertia::render('Categories/Form', [
             'category' => $category,
         ]);
     }

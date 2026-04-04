@@ -1,15 +1,18 @@
 <script setup>
 import { ref } from 'vue';
 import AppLogo from '@/components/ui/AppLogo.vue';
+import AppToast from '@/components/ui/AppToast.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { useFlash } from '@/composables/ui/useFlash';
 import { Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const showingNavigationDropdown = ref(false);
+const { message: flashMessage, type: flashType, dismiss: dismissFlash } = useFlash();
 </script>
 
 <template>
@@ -110,5 +113,23 @@ const showingNavigationDropdown = ref(false);
                 <slot />
             </div>
         </main>
+
+        <!-- ── Global flash toast ── -->
+        <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0 translate-y-2"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 translate-y-2"
+        >
+            <AppToast
+                v-if="flashMessage"
+                :message="flashMessage"
+                :type="flashType"
+                :duration="4000"
+                v-on:dismiss="dismissFlash"
+            />
+        </Transition>
     </div>
 </template>

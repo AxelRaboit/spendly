@@ -1,13 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
+import '@/plugins/chartjs';
 import { computed } from 'vue';
 import { Bar, Doughnut } from 'vue-chartjs';
-import { useCurrency } from '@/composables/useCurrency';
+import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
 
 const { t } = useI18n();
 

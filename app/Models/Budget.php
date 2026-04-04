@@ -15,7 +15,7 @@ use Override;
 /**
  * @property Carbon $month
  */
-#[Fillable(['user_id', 'wallet_id', 'month'])]
+#[Fillable(['user_id', 'wallet_id', 'month', 'notes'])]
 class Budget extends Model
 {
     use HasFactory;

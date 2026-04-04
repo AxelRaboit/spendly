@@ -1,4 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 defineProps({
     show: {
         type: Boolean,
@@ -6,7 +10,7 @@ defineProps({
     },
     message: {
         type: String,
-        default: 'Êtes-vous sûr de vouloir supprimer cet élément ?',
+        default: '',
     },
 });
 
@@ -40,17 +44,17 @@ defineEmits(['confirm', 'cancel']);
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-100">Confirmation</h3>
+                        <h3 class="text-base font-semibold text-gray-100">{{ t('common.confirm') }}</h3>
                         <p class="text-sm text-gray-400 mt-1">{{ message }}</p>
                     </div>
                 </div>
 
                 <div class="flex justify-end gap-3 mt-6">
                     <AppButton variant="secondary" v-on:click="$emit('cancel')">
-                        Annuler
+                        {{ t('common.cancel') }}
                     </AppButton>
                     <AppButton variant="danger" v-on:click="$emit('confirm')">
-                        Supprimer
+                        {{ t('common.delete') }}
                     </AppButton>
                 </div>
             </div>

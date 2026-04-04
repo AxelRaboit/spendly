@@ -1,19 +1,27 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useCategoryForm } from '@/composables/forms/useCategoryForm';
 import { Head, Link } from '@inertiajs/vue3';
-import { useCategoryForm } from '@/composables/useCategoryForm';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const { form, submit } = useCategoryForm();
+
+const props = defineProps({
+    category: { type: Object, default: null },
+});
+
+const isEdit           = !!props.category;
+const { form, submit } = useCategoryForm(props.category ?? undefined);
 </script>
 
 <template>
-    <Head :title="t('categories.createTitle')" />
+    <Head :title="isEdit ? t('categories.editTitle') : t('categories.createTitle')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('categories.createTitle') }}</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+                {{ isEdit ? t('categories.editTitle') : t('categories.createTitle') }}
+            </h2>
         </template>
 
         <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
@@ -26,7 +34,7 @@ const { form, submit } = useCategoryForm();
                     </div>
 
                     <div class="flex gap-2">
-                        <AppButton type="submit">{{ t('common.create') }}</AppButton>
+                        <AppButton type="submit">{{ isEdit ? t('common.update') : t('common.create') }}</AppButton>
                         <Link href="/categories">
                             <AppButton variant="secondary">{{ t('common.cancel') }}</AppButton>
                         </Link>

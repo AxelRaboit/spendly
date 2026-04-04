@@ -40,7 +40,7 @@ class TransactionController extends Controller
     {
         $categories = $request->user()->categories()->get();
 
-        return Inertia::render('Transactions/Create', [
+        return Inertia::render('Transactions/Form', [
             'categories' => $categories,
         ]);
     }
@@ -67,7 +67,7 @@ class TransactionController extends Controller
 
         $categories = $request->user()->categories()->get();
 
-        return Inertia::render('Transactions/Edit', [
+        return Inertia::render('Transactions/Form', [
             'transaction' => $transaction,
             'categories' => $categories,
         ]);

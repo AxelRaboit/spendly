@@ -1,13 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { CategoryScale, Chart as ChartJS, Filler, LinearScale, LineElement, PointElement, Tooltip } from 'chart.js';
+import '@/plugins/chartjs';
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
-import { useCurrency } from '@/composables/useCurrency';
+import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
 const { t } = useI18n();
 

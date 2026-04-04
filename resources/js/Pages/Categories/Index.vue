@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { useConfirmDelete } from '@/composables/useConfirmDelete';
+import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
 
 defineProps({

@@ -39,6 +39,12 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
             ],
             'locale' => $user !== null ? $user->locale : config('app.fallback_locale', 'fr'),
+            'flash'  => [
+                'success' => $request->session()->get('success'),
+                'error'   => $request->session()->get('error'),
+                'warning' => $request->session()->get('warning'),
+                'info'    => $request->session()->get('info'),
+            ],
         ];
     }
 }

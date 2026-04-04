@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-export function useBudgetTotals(sections, startBalance) {
+export function useBudgetTotals(sections, startBalance, budget = null) {
     const totals = computed(() => {
         const result = {};
         for (const [key, items] of Object.entries(sections.value)) {
@@ -32,5 +32,33 @@ export function useBudgetTotals(sections, startBalance) {
         actual: startBalance.value + cashFlow.value.actual,
     }));
 
-    return { totals, totalIncome, totalExpenses, cashFlow, leftToSpend };
+    const savingsRate = computed(() => {
+        const income = totalIncome.value.actual;
+        const savings = totals.value.savings?.actual ?? 0;
+        if (!income) return null;
+        return Math.round((savings / income) * 100);
+    });
+
+    const isCurrentMonth = computed(() =>
+        budget ? budget.value.month === new Date().toISOString().slice(0, 7) : false
+    );
+
+    const projectedExpenses = computed(() => {
+        if (!isCurrentMonth.value) return null;
+        const today = new Date();
+        const daysElapsed = today.getDate();
+        const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+        return (totalExpenses.value.actual / daysElapsed) * daysInMonth;
+    });
+
+    return {
+        totals,
+        totalIncome,
+        totalExpenses,
+        cashFlow,
+        leftToSpend,
+        savingsRate,
+        isCurrentMonth,
+        projectedExpenses,
+    };
 }

@@ -46,6 +46,7 @@ class BudgetService
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'position' => $position + 1,
+            'is_recurring' => (bool) ($data['is_recurring'] ?? false),
         ]);
     }
 
@@ -59,6 +60,8 @@ class BudgetService
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'notes' => $data['notes'] ?? null,
+            'is_recurring' => isset($data['is_recurring']) ? (bool) $data['is_recurring'] : $item->is_recurring,
+            'type' => $data['type'] ?? $item->type,
         ]);
 
         return $item;
@@ -95,6 +98,7 @@ class BudgetService
             'category_id' => $item->category_id,
             'position' => $item->position,
             'notes' => $item->notes,
+            'is_recurring' => $item->is_recurring,
             'created_at' => $now,
             'updated_at' => $now,
         ])->all();
@@ -102,6 +106,70 @@ class BudgetService
         BudgetItem::insert($rows);
 
         return count($rows);
+    }
+
+    /**
+     * Copy only recurring items from the previous month's budget into the current one.
+     * Returns the number of items copied, or 0 if no previous budget exists.
+     */
+    public function copyRecurringFromPreviousMonth(Budget $current, Carbon $currentMonth): int
+    {
+        $previousMonth = $currentMonth->copy()->subMonth();
+
+        $previous = Budget::where('wallet_id', $current->wallet_id)
+            ->where('month', $previousMonth->startOfMonth()->toDateString())
+            ->first();
+
+        if (! $previous) {
+            return 0;
+        }
+
+        $items = BudgetItem::where('budget_id', $previous->id)
+            ->where('is_recurring', true)
+            ->get();
+
+        if ($items->isEmpty()) {
+            return 0;
+        }
+
+        $now = now();
+        $rows = $items->map(fn (BudgetItem $item) => [
+            'budget_id' => $current->id,
+            'type' => $item->type,
+            'label' => $item->label,
+            'planned_amount' => $item->planned_amount,
+            'category_id' => $item->category_id,
+            'position' => $item->position,
+            'notes' => $item->notes,
+            'is_recurring' => $item->is_recurring,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->all();
+
+        BudgetItem::insert($rows);
+
+        return count($rows);
+    }
+
+    /**
+     * Duplicate a budget item within the same budget and type section.
+     */
+    public function duplicateItem(BudgetItem $item): BudgetItem
+    {
+        $maxPosition = BudgetItem::where('budget_id', $item->budget_id)
+            ->where('type', $item->type)
+            ->max('position') ?? -1;
+
+        return BudgetItem::create([
+            'budget_id' => $item->budget_id,
+            'type' => $item->type,
+            'label' => $item->label,
+            'planned_amount' => $item->planned_amount,
+            'category_id' => $item->category_id,
+            'notes' => $item->notes,
+            'is_recurring' => $item->is_recurring,
+            'position' => $maxPosition + 1,
+        ]);
     }
 
     /**
@@ -159,6 +227,7 @@ class BudgetService
                     'actual_amount' => $item->category_id ? (float) ($actuals->get($item->category_id) ?? 0) : 0.0,
                     'category_id' => $item->category_id,
                     'notes' => $item->notes,
+                    'is_recurring' => (bool) $item->is_recurring,
                     'category' => $item->category instanceof Category
                         ? ['id' => $item->category->id, 'name' => $item->category->name]
                         : null,

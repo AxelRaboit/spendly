@@ -21,6 +21,8 @@ class UpdateBudgetItemRequest extends FormRequest
             'planned_amount' => ['required', 'numeric', 'min:0'],
             'category_id'    => ['nullable', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'notes'          => ['nullable', 'string', 'max:2000'],
+            'type'           => ['sometimes', Rule::in(['income', 'savings', 'bills', 'expenses', 'debt'])],
+            'is_recurring'   => ['sometimes', 'boolean'],
         ];
     }
 }

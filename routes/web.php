@@ -40,7 +40,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/wallets/{wallet}/budget/items', [BudgetController::class, 'storeItem'])->name('wallets.budget.items.store');
     Route::put('/wallets/{wallet}/budget/items/{item}', [BudgetController::class, 'updateItem'])->name('wallets.budget.items.update');
     Route::delete('/wallets/{wallet}/budget/items/{item}', [BudgetController::class, 'destroyItem'])->name('wallets.budget.items.destroy');
+    Route::patch('/wallets/{wallet}/budget/items/reorder', [BudgetController::class, 'reorderItems'])->name('wallets.budget.items.reorder');
     Route::get('/wallets/{wallet}/budget/items/{item}/transactions', [BudgetController::class, 'itemTransactions'])->name('wallets.budget.items.transactions');
+    Route::post('/wallets/{wallet}/budget/items/{item}/duplicate', [BudgetController::class, 'duplicateItem'])->name('wallets.budget.items.duplicate');
+    Route::post('/wallets/{wallet}/budget/copy-recurring', [BudgetController::class, 'copyRecurring'])->name('wallets.budget.copy-recurring');
+    Route::patch('/wallets/{wallet}/budget/notes', [BudgetController::class, 'updateNotes'])->name('wallets.budget.notes.update');
+    Route::get('/wallets/{wallet}/budget/year', [BudgetController::class, 'yearView'])->name('wallets.budget.year');
 });
 
 require __DIR__.'/auth.php';

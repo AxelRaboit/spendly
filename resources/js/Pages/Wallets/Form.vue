@@ -1,26 +1,29 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useWalletForm } from '@/composables/forms/useWalletForm';
+import { useCurrency } from '@/composables/core/useCurrency';
 import { Head, Link } from '@inertiajs/vue3';
-import { useWalletForm } from '@/composables/useWalletForm';
-import { useCurrency } from '@/composables/useCurrency';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t }      = useI18n();
+const { symbol } = useCurrency();
 
 const props = defineProps({
-    wallet: Object,
+    wallet: { type: Object, default: null },
 });
 
-const { form, submit } = useWalletForm(props.wallet);
-const { symbol } = useCurrency();
+const isEdit           = !!props.wallet;
+const { form, submit } = useWalletForm(props.wallet ?? undefined);
 </script>
 
 <template>
-    <Head :title="t('wallets.editTitle')" />
+    <Head :title="isEdit ? t('wallets.editTitle') : t('wallets.createTitle')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('wallets.editTitle') }}</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+                {{ isEdit ? t('wallets.editTitle') : t('wallets.createTitle') }}
+            </h2>
         </template>
 
         <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
@@ -45,7 +48,7 @@ const { symbol } = useCurrency();
                     </div>
 
                     <div class="flex gap-2">
-                        <AppButton type="submit">{{ t('common.update') }}</AppButton>
+                        <AppButton type="submit">{{ isEdit ? t('common.update') : t('common.create') }}</AppButton>
                         <Link href="/wallets">
                             <AppButton variant="secondary">{{ t('common.cancel') }}</AppButton>
                         </Link>

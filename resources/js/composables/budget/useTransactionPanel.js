@@ -1,9 +1,10 @@
-import { ref, nextTick } from 'vue';
+import { computed, ref, nextTick } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
-export function useTransactionPanel(walletId, budget, sections, flash) {
+export function useTransactionPanel(walletId, budget, sections, flash, categories) {
     const txPanel = ref(false);
     const txPrefillLabel = ref('');
+    const txSection = ref(null);
     const txForm = useForm({
         wallet_id: walletId.value,
         type: 'expense',
@@ -13,7 +14,21 @@ export function useTransactionPanel(walletId, budget, sections, flash) {
         date: new Date().toISOString().slice(0, 10),
     });
 
-    function openTxPanel(categoryId = null, label = '', type = 'expense', { cancelEditing, cancelAdding } = {}) {
+    // Categories filtered by selected budget section
+    const txFilteredCategories = computed(() => {
+        if (!txSection.value || !categories) return categories?.value ?? [];
+        const sectionItems = sections.value[txSection.value] ?? [];
+        const validIds = new Set(sectionItems.map((i) => i.category_id).filter(Boolean));
+        return (categories.value ?? []).filter((c) => validIds.has(c.id));
+    });
+
+    function openTxPanel(
+        categoryId = null,
+        label = '',
+        type = 'expense',
+        { cancelEditing, cancelAdding } = {},
+        section = null
+    ) {
         cancelEditing?.();
         cancelAdding?.();
         txForm.wallet_id = walletId.value;
@@ -24,14 +39,30 @@ export function useTransactionPanel(walletId, budget, sections, flash) {
         const today = new Date().toISOString().slice(0, 10);
         txForm.date = budget.value.month === today.slice(0, 7) ? today : budget.value.month + '-01';
         txPrefillLabel.value = label;
+        txSection.value = section;
         txPanel.value = true;
         nextTick(() => document.getElementById('tx-amount')?.focus());
     }
 
+    function onTxSectionChange(newSection) {
+        txSection.value = newSection;
+        if (newSection === 'income') {
+            txForm.type = 'income';
+        } else if (newSection !== null) {
+            txForm.type = 'expense';
+        }
+        if (newSection && txForm.category_id) {
+            const sectionItems = sections.value[newSection] ?? [];
+            const validIds = new Set(sectionItems.map((i) => i.category_id).filter(Boolean));
+            if (!validIds.has(txForm.category_id)) txForm.category_id = null;
+        }
+    }
+
     function closeTxPanel() {
         txPanel.value = false;
-        txForm.reset();
         txPrefillLabel.value = '';
+        txSection.value = null;
+        txForm.reset();
     }
 
     function submitTx() {
@@ -53,5 +84,15 @@ export function useTransactionPanel(walletId, budget, sections, flash) {
         });
     }
 
-    return { txPanel, txPrefillLabel, txForm, openTxPanel, closeTxPanel, submitTx };
+    return {
+        txPanel,
+        txPrefillLabel,
+        txForm,
+        txSection,
+        txFilteredCategories,
+        openTxPanel,
+        closeTxPanel,
+        submitTx,
+        onTxSectionChange,
+    };
 }

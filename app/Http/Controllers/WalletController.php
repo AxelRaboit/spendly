@@ -29,7 +29,7 @@ class WalletController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Wallets/Create');
+        return Inertia::render('Wallets/Form');
     }
 
     public function store(StoreWalletRequest $request, WalletService $walletService): RedirectResponse
@@ -50,7 +50,7 @@ class WalletController extends Controller
     {
         $this->authorize('update', $wallet);
 
-        return Inertia::render('Wallets/Edit', [
+        return Inertia::render('Wallets/Form', [
             'wallet' => $wallet,
         ]);
     }

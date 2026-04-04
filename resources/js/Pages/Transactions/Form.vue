@@ -1,27 +1,31 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { useTransactionForm } from '@/composables/useTransactionForm';
 import TypeToggle from '@/components/form/TypeToggle.vue';
-import { useCurrency } from '@/composables/useCurrency';
+import { useTransactionForm } from '@/composables/forms/useTransactionForm';
+import { useCurrency } from '@/composables/core/useCurrency';
+import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t }      = useI18n();
+const { symbol } = useCurrency();
 
-defineProps({
-    categories: Array,
+const props = defineProps({
+    transaction: { type: Object, default: null },
+    categories:  { type: Array,  default: () => [] },
 });
 
-const { form, submit } = useTransactionForm();
-const { symbol } = useCurrency();
+const isEdit        = !!props.transaction;
+const { form, submit } = useTransactionForm(props.transaction ?? undefined);
 </script>
 
 <template>
-    <Head :title="t('transactions.addTitle')" />
+    <Head :title="isEdit ? t('transactions.editTitle') : t('transactions.addTitle')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('transactions.addTitle') }}</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+                {{ isEdit ? t('transactions.editTitle') : t('transactions.addTitle') }}
+            </h2>
         </template>
 
         <div class="bg-gray-900 shadow-sm sm:rounded-lg">
@@ -63,7 +67,7 @@ const { symbol } = useCurrency();
                     </div>
 
                     <div class="flex gap-2">
-                        <AppButton type="submit">{{ t('common.add') }}</AppButton>
+                        <AppButton type="submit">{{ isEdit ? t('common.update') : t('common.add') }}</AppButton>
                         <Link href="/transactions">
                             <AppButton variant="secondary">{{ t('common.cancel') }}</AppButton>
                         </Link>
