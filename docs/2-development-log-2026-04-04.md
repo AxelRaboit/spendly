@@ -367,3 +367,17 @@ Les pages ne contiennent plus que le template + les imports nécessaires.
 - `v-on:click` / `v-on:submit` à la place des raccourcis `@click` / `@submit`
 - Pas de commentaires dans les templates
 - Composants UI enregistrés globalement, composables importés localement
+
+### Modal de confirmation de suppression
+
+Remplacement du `confirm()` natif du navigateur par une modal custom.
+
+**`ConfirmModal.vue`** — composant global avec :
+- Backdrop semi-transparent avec fermeture au clic
+- Icône d'avertissement rouge
+- Boutons Annuler / Supprimer
+- Transition d'apparition/disparition
+
+**`useConfirmDelete.js`** mis à jour — expose `isOpen`, `message`, `confirmDelete`, `onConfirm`, `onCancel` via des `ref` réactifs au lieu d'un `confirm()` natif.
+
+Utilisé dans `Categories/Index.vue` et `Transactions/Index.vue`.

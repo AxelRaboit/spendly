@@ -1,11 +1,25 @@
+import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 export function useConfirmDelete(message = 'Êtes-vous sûr de vouloir supprimer cet élément ?') {
+    const isOpen = ref(false);
+    const pendingUrl = ref(null);
+
     const confirmDelete = (url) => {
-        if (confirm(message)) {
-            router.delete(url);
-        }
+        pendingUrl.value = url;
+        isOpen.value = true;
     };
 
-    return { confirmDelete };
+    const onConfirm = () => {
+        router.delete(pendingUrl.value);
+        isOpen.value = false;
+        pendingUrl.value = null;
+    };
+
+    const onCancel = () => {
+        isOpen.value = false;
+        pendingUrl.value = null;
+    };
+
+    return { isOpen, message, confirmDelete, onConfirm, onCancel };
 }

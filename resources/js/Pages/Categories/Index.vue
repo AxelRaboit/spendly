@@ -7,7 +7,7 @@ defineProps({
     categories: Array,
 });
 
-const { confirmDelete } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette catégorie ?');
+const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette catégorie ?');
 </script>
 
 <template>
@@ -55,5 +55,12 @@ const { confirmDelete } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer
                 </div>
             </div>
         </div>
+
+        <ConfirmModal
+            :show="isOpen"
+            :message="message"
+            v-on:confirm="onConfirm"
+            v-on:cancel="onCancel"
+        />
     </AuthenticatedLayout>
 </template>

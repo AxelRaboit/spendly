@@ -6,6 +6,7 @@ import SelectInput from '@/Components/SelectInput.vue';
 import DateInput from '@/Components/DateInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 export default {
     install(app) {
@@ -17,5 +18,6 @@ export default {
         app.component('DateInput', DateInput);
         app.component('InputLabel', InputLabel);
         app.component('InputError', InputError);
+        app.component('ConfirmModal', ConfirmModal);
     },
 };
