@@ -53,7 +53,7 @@ const { form, submit } = useTransactionForm();
                             </div>
 
                             <div class="flex gap-2">
-                                <PrimaryButton type="submit">Ajouter</PrimaryButton>
+                                <SubmitButton>Ajouter</SubmitButton>
                                 <Link href="/transactions">
                                     <SecondaryButton type="button">Annuler</SecondaryButton>
                                 </Link>

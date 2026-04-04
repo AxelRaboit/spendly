@@ -3,7 +3,7 @@ import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
@@ -84,13 +84,13 @@ const submit = () => {
                 </Link>
             </div>
 
-            <PrimaryButton
+            <SubmitButton
                 class="mt-6 w-full justify-center"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
             >
                 Se connecter
-            </PrimaryButton>
+            </SubmitButton>
 
             <div class="mt-6 flex items-center gap-4">
                 <div class="flex-1 border-t border-gray-300" />

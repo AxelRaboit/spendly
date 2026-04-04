@@ -10,6 +10,7 @@ import DeleteButton from '@/components/DeleteButton.vue';
 import EditButton from '@/components/EditButton.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import EmptyState from '@/components/EmptyState.vue';
+import SubmitButton from '@/components/SubmitButton.vue';
 import SelectInput from '@/components/SelectInput.vue';
 
 export default {
@@ -27,5 +28,6 @@ export default {
         app.component('EditButton', EditButton);
         app.component('AppPagination', AppPagination);
         app.component('EmptyState', EmptyState);
+        app.component('SubmitButton', SubmitButton);
     },
 };

@@ -6,7 +6,7 @@ const model = defineModel({ type: String });
 const input = ref(null);
 
 onMounted(() => {
-    if (input.value.hasAttribute('autofocus')) {
+    if (input.value.hasAttribute('autofocus') && document.activeElement === document.body) {
         input.value.focus();
     }
 });

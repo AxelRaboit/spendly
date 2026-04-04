@@ -54,7 +54,7 @@ const { form, submit } = useTransactionForm(props.transaction);
                             </div>
 
                             <div class="flex gap-2">
-                                <PrimaryButton type="submit">Mettre à jour</PrimaryButton>
+                                <SubmitButton>Mettre à jour</SubmitButton>
                                 <Link href="/transactions">
                                     <SecondaryButton type="button">Annuler</SecondaryButton>
                                 </Link>

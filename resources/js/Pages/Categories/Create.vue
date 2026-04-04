@@ -26,7 +26,7 @@ const { form, submit } = useCategoryForm();
                             </div>
 
                             <div class="flex gap-2">
-                                <PrimaryButton type="submit">Créer</PrimaryButton>
+                                <SubmitButton>Créer</SubmitButton>
                                 <Link href="/categories">
                                     <SecondaryButton type="button">Annuler</SecondaryButton>
                                 </Link>
