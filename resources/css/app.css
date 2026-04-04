@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* vue3-datepicker */
+.v3dp__datepicker {
+    --vdp-bg-color: #1f2937;
+    --vdp-text-color: #f3f4f6;
+    --vdp-border-radius: 0.5rem;
+    --vdp-heading-hover-color: #374151;
+    --vdp-arrow-color: #f3f4f6;
+    --vdp-elem-color: #f3f4f6;
+    --vdp-disabled-color: #4b5563;
+    --vdp-hover-color: #ffffff;
+    --vdp-hover-bg-color: #4f46e5;
+    --vdp-selected-color: #ffffff;
+    --vdp-selected-bg-color: #4f46e5;
+    --vdp-current-date-outline-color: #818cf8;
+    --vdp-divider-color: #374151;
+}
+
+.v3dp__input_wrapper input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #374151;
+    border-radius: 0.375rem;
+    background-color: #374151;
+    color: #f3f4f6;
+}
+
+.v3dp__input_wrapper input::placeholder {
+    color: #9ca3af;
+}

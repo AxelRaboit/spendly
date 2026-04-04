@@ -6,7 +6,7 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-gray-900 shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-100">
                         <form @submit.prevent="submit">
                             <div class="mb-4">
@@ -37,8 +37,12 @@
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium mb-1">Date</label>
-                                <input v-model="form.date" type="date"
-                                    class="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-gray-100" />
+                                <Datepicker
+                                    v-model="selectedDate"
+                                    :locale="fr"
+                                    input-format="dd/MM/yyyy"
+                                    placeholder="Sélectionner une date"
+                                />
                                 <span v-if="form.errors.date" class="text-red-600 text-sm">{{ form.errors.date }}</span>
                             </div>
 
@@ -61,6 +65,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import Datepicker from 'vue3-datepicker';
+import { fr } from 'date-fns/locale';
 
 defineProps({
     categories: Array,
@@ -71,6 +78,14 @@ const form = useForm({
     amount: '',
     description: '',
     date: '',
+});
+
+const selectedDate = ref(null);
+
+watch(selectedDate, (date) => {
+    if (!date) { form.date = ''; return; }
+    const d = new Date(date);
+    form.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 });
 
 const submit = () => {
