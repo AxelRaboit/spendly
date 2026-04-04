@@ -21,9 +21,7 @@ defineProps({
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
-                <!-- Cartes statistiques -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Dépenses -->
                     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
                         <div class="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
                         <div class="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
@@ -39,7 +37,6 @@ defineProps({
                         </div>
                     </div>
 
-                    <!-- Catégories -->
                     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg">
                         <div class="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
                         <div class="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
@@ -56,7 +53,6 @@ defineProps({
                     </div>
                 </div>
 
-                <!-- Dernières dépenses -->
                 <div class="overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg">
                     <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 px-6 py-4">
                         <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Dernières dépenses</h3>
