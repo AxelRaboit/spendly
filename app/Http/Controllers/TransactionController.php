@@ -18,7 +18,7 @@ class TransactionController extends Controller
 {
     public function index(Request $request): Response
     {
-        $transactions = $request->user()->transactions()->with('category')->get();
+        $transactions = $request->user()->transactions()->with('category')->latest('date')->paginate(15);
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,

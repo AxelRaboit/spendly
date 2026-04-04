@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
 
 defineProps({
-    categories: Array,
+    categories: Object,
 });
 
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette catégorie ?');
@@ -36,7 +36,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="category in categories" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
+                                <tr v-for="category in categories.data" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
                                     <td class="py-2">{{ category.name }}</td>
                                     <td class="py-2 space-x-2">
                                         <EditButton :href="`/categories/${category.id}/edit`" />
@@ -46,9 +46,11 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                             </tbody>
                         </table>
 
-                        <div v-if="categories.length === 0" class="text-center py-8 text-gray-500">
+                        <div v-if="categories.data.length === 0" class="text-center py-8 text-gray-500">
                             Aucune catégorie pour l'instant.
                         </div>
+
+                        <AppPagination :meta="categories.meta" />
                     </div>
                 </div>
             </div>

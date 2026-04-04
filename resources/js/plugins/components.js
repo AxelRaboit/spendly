@@ -8,6 +8,7 @@ import ConfirmModal from '@/components/ConfirmModal.vue';
 import DateInput from '@/components/DateInput.vue';
 import DeleteButton from '@/components/DeleteButton.vue';
 import EditButton from '@/components/EditButton.vue';
+import AppPagination from '@/components/AppPagination.vue';
 import SelectInput from '@/components/SelectInput.vue';
 
 export default {
@@ -23,5 +24,6 @@ export default {
         app.component('ConfirmModal', ConfirmModal);
         app.component('DeleteButton', DeleteButton);
         app.component('EditButton', EditButton);
+        app.component('AppPagination', AppPagination);
     },
 };

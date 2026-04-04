@@ -18,7 +18,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request): Response
     {
-        $categories = $request->user()->categories()->get();
+        $categories = $request->user()->categories()->paginate(10);
 
         return Inertia::render('Categories/Index', [
             'categories' => $categories,
