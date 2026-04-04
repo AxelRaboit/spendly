@@ -7,9 +7,11 @@ namespace App\Services;
 use App\Models\Budget;
 use App\Models\BudgetItem;
 use App\Models\Category;
+use App\Models\Transaction;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 class BudgetService
@@ -189,6 +191,98 @@ class BudgetService
         ", [$wallet->id, $startOfMonth]);
 
         return (float) $wallet->start_balance + (float) ($netFlow->net ?? 0);
+    }
+
+    /**
+     * Reorder budget items by updating their position.
+     *
+     * @param  array<int, int>  $ids
+     */
+    public function reorderItems(Wallet $wallet, array $ids): void
+    {
+        foreach ($ids as $position => $id) {
+            BudgetItem::where('id', (int) $id)
+                ->whereHas('budget', fn ($q) => $q->where('wallet_id', $wallet->id))
+                ->update(['position' => $position]);
+        }
+    }
+
+    /**
+     * Get transactions for a budget item in its budget month.
+     *
+     * @return array<int, array{id: int, date: mixed, description: string|null, amount: float, type: string}>
+     */
+    public function itemTransactions(Wallet $wallet, BudgetItem $item): array
+    {
+        if (! $item->category_id) {
+            return [];
+        }
+
+        $month = Carbon::createFromFormat('Y-m-d', $item->budget()->value('month'));
+
+        return Transaction::where('wallet_id', $wallet->id)
+            ->where('category_id', $item->category_id)
+            ->whereYear('date', $month->year)
+            ->whereMonth('date', $month->month)
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->get(['id', 'date', 'description', 'amount', 'type'])
+            ->map(fn (Transaction $tx) => [
+                'id' => $tx->id,
+                'date' => $tx->date,
+                'description' => $tx->description,
+                'amount' => (float) $tx->amount,
+                'type' => $tx->type,
+            ])
+            ->all();
+    }
+
+    /**
+     * Build the year view data for a wallet and year.
+     *
+     * @return array<string, array{has_budget: bool, label: string, income_planned?: float, income_actual?: float, expenses_planned?: float, expenses_actual?: float, cash_flow_actual?: float}>
+     */
+    public function yearView(Wallet $wallet, int $year): array
+    {
+        $months = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $month = Carbon::create($year, $m, 1);
+            $key = $month->format('Y-m');
+            $budget = Budget::where('wallet_id', $wallet->id)
+                ->where('month', $month->startOfMonth()->toDateString())
+                ->first();
+
+            if ($budget) {
+                $sections = $this->loadWithActuals($budget);
+                $incomePlanned = array_sum(array_column($sections['income'], 'planned_amount'));
+                $incomeActual = array_sum(array_column($sections['income'], 'actual_amount'));
+                $expPlanned = 0;
+                $expActual = 0;
+
+                foreach (['savings', 'bills', 'expenses', 'debt'] as $type) {
+                    $expPlanned += array_sum(array_column($sections[$type], 'planned_amount'));
+                    $expActual += array_sum(array_column($sections[$type], 'actual_amount'));
+                }
+
+                $months[$key] = [
+                    'has_budget' => true,
+                    'label' => $month->locale(App::getLocale())->translatedFormat('F'),
+                    'income_planned' => $incomePlanned,
+                    'income_actual' => $incomeActual,
+                    'expenses_planned' => $expPlanned,
+                    'expenses_actual' => $expActual,
+                    'cash_flow_actual' => $incomeActual - $expActual,
+                ];
+            } else {
+                $months[$key] = [
+                    'has_budget' => false,
+                    'label' => $month->locale(App::getLocale())->translatedFormat('F'),
+                ];
+            }
+        }
+
+        return $months;
     }
 
     /**
