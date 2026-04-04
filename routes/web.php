@@ -14,7 +14,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = auth()->user();
+
+    return Inertia::render('Dashboard', [
+        'totalTransactions' => $user->transactions()->count(),
+        'totalCategories'   => $user->categories()->count(),
+        'recentTransactions' => $user->transactions()->with('category')->latest('date')->limit(5)->get(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
