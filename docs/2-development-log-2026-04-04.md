@@ -381,3 +381,155 @@ Remplacement du `confirm()` natif du navigateur par une modal custom.
 **`useConfirmDelete.js`** mis à jour — expose `isOpen`, `message`, `confirmDelete`, `onConfirm`, `onCancel` via des `ref` réactifs au lieu d'un `confirm()` natif.
 
 Utilisé dans `Categories/Index.vue` et `Transactions/Index.vue`.
+
+### Audit complet du projet — corrections
+
+#### Sécurité — Form Requests
+
+- `StoreCategoryRequest` / `StoreTransactionRequest` : `authorize()` retournait `true` sans vérification — corrigé avec `$this->user() !== null`
+- `StoreTransactionRequest` / `UpdateTransactionRequest` : la validation de `category_id` ne vérifiait pas l'appartenance à l'utilisateur — ajout de `Rule::exists('categories', 'id')->where('user_id', $this->user()->id)`
+
+#### Modèles — cohérence avec Laravel 13
+
+`Category` et `Transaction` utilisaient `protected $fillable = [...]` alors que `User` utilisait déjà l'attribut PHP 8 `#[Fillable]` (style Laravel 13).
+
+```php
+// Avant
+protected $fillable = ['name', 'user_id'];
+
+// Après
+#[Fillable(['name', 'user_id'])]
+class Category extends Model
+```
+
+#### Controllers — return types + $request->user()
+
+Ajout des return types PHP sur toutes les méthodes (`Response`, `RedirectResponse`) et remplacement de `auth()->user()` par `$request->user()` (injection explicite, plus testable).
+
+#### Controller de base — AuthorizesRequests
+
+En Laravel 11, le `Controller` de base est vide. Le trait `AuthorizesRequests` (qui fournit `$this->authorize()`) n'est pas inclus par défaut — ajouté manuellement.
+
+```php
+abstract class Controller
+{
+    use AuthorizesRequests;
+}
+```
+
+#### DashboardController
+
+La logique du dashboard était directement dans une closure dans `web.php` — extrait dans `DashboardController::index()`.
+
+#### Services — création directe via le modèle
+
+`CategoryService::create()` et `TransactionService::create()` utilisaient `$user->categories()->create()` — PHPStan ne pouvait pas inférer le type de retour (`Model` au lieu de `Category`). Remplacé par `Category::create([..., 'user_id' => $user->id])`.
+
+#### Frontend — titres de page
+
+Ajout de `<Head title="..." />` sur toutes les pages Categories et Transactions.
+
+#### useTransactionForm — onSuccess
+
+Le `form.post('/transactions')` ne réinitialisait pas le formulaire après succès — ajout du callback `onSuccess: () => form.reset()`.
+
+### Toolchain qualité de code
+
+Mise en place des mêmes outils que le projet cloud, adaptés à Laravel.
+
+#### Structure
+
+```
+tools/
+├── phpstan/
+│   ├── composer.json   → larastan/larastan
+│   └── phpstan.neon
+└── rector/
+    ├── composer.json   → rector/rector
+    └── rector.php
+pint.json               → preset Laravel
+eslint.config.js        → Prettier (JS) + Vue plugin (Vue)
+.prettierrc
+Makefile
+```
+
+#### PHPStan (Larastan)
+
+- Niveau 5
+- Analyse uniquement `app/`
+- Exclut `app/Http/Controllers/Auth/` et `app/Http/Requests/Auth/` (code Breeze)
+- `bootstrapFiles` pointe sur `vendor/autoload.php` du projet principal pour que Larastan puisse accéder aux classes Laravel
+
+```bash
+make stan
+```
+
+#### Pint
+
+Laravel Pint (wrapper PHP CS Fixer officiel Laravel) — déjà en dépendance dev. Configuré avec le preset Laravel + règles supplémentaires (`declare_strict_types`, `no_useless_else`, etc.).
+
+Exécuté via des chemins explicites pour ne toucher que notre code (pas les fichiers Breeze, config, migrations) :
+
+```bash
+make lint-php   # dry-run
+make fix-php    # applique
+```
+
+#### Rector
+
+Sets utilisés : `codeQuality`, `codingStyle`, `earlyReturn`, `deadCode` — cible PHP 8.3.
+
+```bash
+make rector     # dry-run
+make fix-rector # applique
+```
+
+#### ESLint + Prettier
+
+- Prettier pour les fichiers `.js` (composables, plugins)
+- `eslint-plugin-vue` avec règles strictes pour les fichiers `.vue`
+- `vue/v-on-style: longform` — enforce `v-on:` au lieu de `@`
+- `vue/require-default-prop: off` — incompatible avec Inertia (props toujours fournies par le serveur)
+
+```bash
+make lint-js   # check
+make fix-js    # applique
+```
+
+#### Makefile
+
+Commandes disponibles :
+
+| Commande | Rôle |
+|---|---|
+| `make install` | Composer + tools + pnpm |
+| `make stan` | PHPStan |
+| `make lint-php` / `make fix-php` | Pint |
+| `make lint-js` / `make fix-js` | ESLint |
+| `make rector` / `make fix-rector` | Rector |
+| `make fix` | Tout corriger + PHPStan |
+
+### Structure des composants Vue
+
+Séparation entre composants Breeze et composants custom par convention de casse :
+
+```
+resources/js/
+├── Components/     ← Breeze (jamais modifié directement)
+└── components/     ← Notre code custom
+    ├── ConfirmModal.vue
+    ├── DateInput.vue
+    └── SelectInput.vue
+```
+
+ESLint ignore `Components/` (majuscule) et cible `components/` (minuscule) — aucune liste à maintenir.
+
+### Format de la date des transactions
+
+Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :
+
+```php
+'date' => 'date:d/m/Y',
+```
+
+La date est maintenant formatée côté serveur (`04/04/2026`) — aucun formatage nécessaire dans les templates Vue.
