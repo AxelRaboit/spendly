@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
-#[Fillable(['user_id', 'category_id', 'amount', 'description', 'date'])]
+#[Fillable(['user_id', 'category_id', 'wallet_id', 'type', 'amount', 'description', 'date'])]
 class Transaction extends Model
 {
     use Filterable;
@@ -34,5 +34,10 @@ class Transaction extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function wallet(): BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
     }
 }

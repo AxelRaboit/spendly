@@ -4,6 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { CategoryScale, Chart as ChartJS, Filler, LinearScale, LineElement, PointElement, Tooltip } from 'chart.js';
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
+import { useCurrency } from '@/composables/useCurrency';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
@@ -16,6 +17,8 @@ const props = defineProps({
     dailyAverage: Number,
     bestDay: Object,
 });
+
+const { fmt } = useCurrency();
 
 const sparklineData = computed(() => ({
     labels: props.sparkline.map((d) => d.day.slice(5)),
@@ -99,12 +102,12 @@ const topCategoryMax = computed(() => {
                     <div class="bg-gray-900 rounded-2xl p-6 shadow-lg space-y-4">
                         <div>
                             <p class="text-xs text-gray-500 uppercase tracking-wider">Moyenne / dépense ce mois</p>
-                            <p class="text-2xl font-bold text-white mt-1">{{ dailyAverage.toFixed(2) }} €</p>
+                            <p class="text-2xl font-bold text-white mt-1">{{ fmt(dailyAverage) }}</p>
                         </div>
                         <div v-if="bestDay">
                             <p class="text-xs text-gray-500 uppercase tracking-wider">Jour le plus dépensier</p>
                             <p class="text-lg font-semibold text-white mt-1">{{ bestDay.day }}</p>
-                            <p class="text-sm text-gray-400">{{ parseFloat(bestDay.total).toFixed(2) }} €</p>
+                            <p class="text-sm text-gray-400">{{ fmt(bestDay.total) }}</p>
                         </div>
                     </div>
                 </div>
@@ -116,7 +119,7 @@ const topCategoryMax = computed(() => {
                             <div v-for="cat in topCategories" :key="cat.name">
                                 <div class="flex justify-between text-sm mb-1">
                                     <span class="text-gray-300">{{ cat.name }}</span>
-                                    <span class="text-gray-400">{{ parseFloat(cat.total).toFixed(2) }} €</span>
+                                    <span class="text-gray-400">{{ fmt(cat.total) }}</span>
                                 </div>
                                 <div class="h-2 rounded-full bg-gray-700">
                                     <div
@@ -155,7 +158,7 @@ const topCategoryMax = computed(() => {
                                             {{ transaction.category.name }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-right text-sm font-semibold text-gray-100">{{ transaction.amount }} €</td>
+                                    <td class="px-6 py-4 text-right text-sm font-semibold text-gray-100">{{ fmt(transaction.amount) }}</td>
                                 </tr>
                             </tbody>
                         </table>

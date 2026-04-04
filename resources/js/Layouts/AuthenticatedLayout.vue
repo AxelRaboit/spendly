@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import AppLogo from '@/components/AppLogo.vue';
+import AppLogo from '@/components/ui/AppLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -32,6 +32,9 @@ const showingNavigationDropdown = ref(false);
                             </NavLink>
                             <NavLink :href="route('transactions.index')" :active="route().current('transactions.*')">
                                 Dépenses
+                            </NavLink>
+                            <NavLink :href="route('wallets.index')" :active="route().current('wallets.*')">
+                                Portefeuilles
                             </NavLink>
                             <NavLink :href="route('statistics.index')" :active="route().current('statistics.*')">
                                 Statistiques
@@ -87,6 +90,7 @@ const showingNavigationDropdown = ref(false);
                     <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Tableau de bord</ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('categories.index')" :active="route().current('categories.*')">Catégories</ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('transactions.index')" :active="route().current('transactions.*')">Dépenses</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('wallets.index')" :active="route().current('wallets.*')">Portefeuilles</ResponsiveNavLink>
                 </div>
 
                 <div class="border-t border-gray-800 pb-1 pt-4">

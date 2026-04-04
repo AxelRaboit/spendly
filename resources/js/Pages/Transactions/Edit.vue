@@ -2,6 +2,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useTransactionForm } from '@/composables/useTransactionForm';
+import TypeToggle from '@/components/form/TypeToggle.vue';
+import { useCurrency } from '@/composables/useCurrency';
 
 const props = defineProps({
     transaction: Object,
@@ -9,14 +11,15 @@ const props = defineProps({
 });
 
 const { form, submit } = useTransactionForm(props.transaction);
+const { symbol } = useCurrency();
 </script>
 
 <template>
-    <Head title="Modifier la dépense" />
+    <Head title="Modifier la transaction" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Modifier la dépense</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Modifier la transaction</h2>
         </template>
 
         <div class="py-12">
@@ -24,6 +27,12 @@ const { form, submit } = useTransactionForm(props.transaction);
                 <div class="bg-gray-900 shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-100">
                         <form v-on:submit.prevent="submit">
+                            <div class="mb-6">
+                                <InputLabel value="Type" />
+                                <TypeToggle v-model="form.type" />
+                                <InputError :message="form.errors.type" />
+                            </div>
+
                             <div class="mb-4">
                                 <InputLabel value="Catégorie" />
                                 <SelectInput v-model="form.category_id">
@@ -36,7 +45,7 @@ const { form, submit } = useTransactionForm(props.transaction);
                             </div>
 
                             <div class="mb-4">
-                                <InputLabel value="Montant (€)" />
+                                <InputLabel :value="`Montant (${symbol})`" />
                                 <TextInput v-model="form.amount" type="number" step="0.01" min="0.01" />
                                 <InputError :message="form.errors.amount" />
                             </div>

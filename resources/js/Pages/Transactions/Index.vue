@@ -2,6 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
+import { useCurrency } from '@/composables/useCurrency';
+
+const { fmt } = useCurrency();
 
 defineProps({
     transactions: Object,
@@ -51,7 +54,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                     <td class="py-2">{{ transaction.date }}</td>
                                     <td class="py-2">{{ transaction.description ?? '—' }}</td>
                                     <td class="py-2">{{ transaction.category.name }}</td>
-                                    <td class="py-2">{{ transaction.amount }} €</td>
+                                    <td class="py-2">{{ fmt(transaction.amount) }}</td>
                                     <td class="py-2 space-x-2 text-right">
                                         <EditButton :href="`/transactions/${transaction.id}/edit`" />
                                         <DeleteButton v-on:click="confirmDelete(`/transactions/${transaction.id}`)" />

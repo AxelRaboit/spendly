@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
 import { computed } from 'vue';
 import { Bar, Doughnut } from 'vue-chartjs';
+import { useCurrency } from '@/composables/useCurrency';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
 
@@ -13,6 +14,8 @@ const props = defineProps({
     currentMonth: Number,
     previousMonth: Number,
 });
+
+const { fmt, currency } = useCurrency();
 
 const evolution = computed(() => {
     if (props.previousMonth === 0) return null;
@@ -37,7 +40,7 @@ const donutData = computed(() => ({
 const barData = computed(() => ({
     labels: props.byMonth.map((m) => m.month),
     datasets: [{
-        label: 'Dépenses (€)',
+        label: `Dépenses (${currency.value})`,
         data: props.byMonth.map((m) => parseFloat(m.total)),
         backgroundColor: '#6366f1',
         borderRadius: 6,
@@ -74,14 +77,14 @@ const barOptions = {
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="bg-gray-900 rounded-lg p-6">
                         <p class="text-sm text-gray-400 mb-1">Ce mois-ci</p>
-                        <p class="text-3xl font-bold text-white">{{ currentMonth.toFixed(2) }} €</p>
+                        <p class="text-3xl font-bold text-white">{{ fmt(currentMonth) }}</p>
                         <p v-if="evolution !== null" class="text-sm mt-1" :class="evolution > 0 ? 'text-red-400' : 'text-green-400'">
                             {{ evolution > 0 ? '+' : '' }}{{ evolution.toFixed(1) }}% vs mois dernier
                         </p>
                     </div>
                     <div class="bg-gray-900 rounded-lg p-6">
                         <p class="text-sm text-gray-400 mb-1">Mois dernier</p>
-                        <p class="text-3xl font-bold text-white">{{ previousMonth.toFixed(2) }} €</p>
+                        <p class="text-3xl font-bold text-white">{{ fmt(previousMonth) }}</p>
                     </div>
                 </div>
 

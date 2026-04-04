@@ -4,16 +4,16 @@ import DangerButton from '@/Components/DangerButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import ConfirmModal from '@/components/ConfirmModal.vue';
-import DateInput from '@/components/DateInput.vue';
-import DeleteButton from '@/components/DeleteButton.vue';
-import EditButton from '@/components/EditButton.vue';
-import AppPagination from '@/components/AppPagination.vue';
-import EmptyState from '@/components/EmptyState.vue';
-import FilterSelect from '@/components/FilterSelect.vue';
-import SearchInput from '@/components/SearchInput.vue';
-import SubmitButton from '@/components/SubmitButton.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import ConfirmModal from '@/components/ui/ConfirmModal.vue';
+import DateInput from '@/components/form/DateInput.vue';
+import DeleteButton from '@/components/ui/DeleteButton.vue';
+import EditButton from '@/components/ui/EditButton.vue';
+import AppPagination from '@/components/ui/AppPagination.vue';
+import EmptyState from '@/components/ui/EmptyState.vue';
+import FilterSelect from '@/components/form/FilterSelect.vue';
+import SearchInput from '@/components/form/SearchInput.vue';
+import SubmitButton from '@/components/form/SubmitButton.vue';
+import SelectInput from '@/components/form/SelectInput.vue';
 
 export default {
     install(app) {

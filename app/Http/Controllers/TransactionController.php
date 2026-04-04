@@ -49,7 +49,7 @@ class TransactionController extends Controller
     {
         $transactionService->create($request->user(), $request->validated());
 
-        return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
+        return redirect(url()->previous(route('transactions.index')))->with('success', 'Transaction créée.');
     }
 
     public function show(Request $request, Transaction $transaction): Response

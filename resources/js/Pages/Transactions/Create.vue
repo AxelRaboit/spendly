@@ -2,20 +2,23 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useTransactionForm } from '@/composables/useTransactionForm';
+import TypeToggle from '@/components/form/TypeToggle.vue';
+import { useCurrency } from '@/composables/useCurrency';
 
 defineProps({
     categories: Array,
 });
 
 const { form, submit } = useTransactionForm();
+const { symbol } = useCurrency();
 </script>
 
 <template>
-    <Head title="Ajouter une dépense" />
+    <Head title="Ajouter une transaction" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Ajouter une dépense</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Ajouter une transaction</h2>
         </template>
 
         <div class="py-12">
@@ -23,6 +26,12 @@ const { form, submit } = useTransactionForm();
                 <div class="bg-gray-900 shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-100">
                         <form v-on:submit.prevent="submit">
+                            <div class="mb-6">
+                                <InputLabel value="Type" />
+                                <TypeToggle v-model="form.type" />
+                                <InputError :message="form.errors.type" />
+                            </div>
+
                             <div class="mb-4">
                                 <InputLabel value="Catégorie" />
                                 <SelectInput v-model="form.category_id">
@@ -35,7 +44,7 @@ const { form, submit } = useTransactionForm();
                             </div>
 
                             <div class="mb-4">
-                                <InputLabel value="Montant (€)" />
+                                <InputLabel :value="`Montant (${symbol})`" />
                                 <TextInput v-model="form.amount" type="number" step="0.01" min="0.01" />
                                 <InputError :message="form.errors.amount" />
                             </div>
