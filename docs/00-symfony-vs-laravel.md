@@ -179,3 +179,98 @@ Symfony = composants découplés. Tu dois assembler. Laravel = scaffolding clé 
 **Laravel** : Batteries included. Les tables `cache` et `jobs` sont créées par défaut. C'est la philosophie "zero config" de Laravel.
 
 En Symfony c'est une entité que tu crées. En Laravel c'est une table livrée avec le framework.
+
+---
+
+## Flow d'une requête Laravel (gros projet)
+
+Exemple avec `PATCH /categories/{category}` :
+
+```
+Request → Route → FormRequest (auth + validation) → Policy → Controller → Service → Model → DB
+```
+
+**Étape par étape :**
+
+1. **Route** (`routes/web.php`)
+   - Identifie le controller et la méthode
+   - Résout automatiquement l'objet `Category` via le **Model Binding** (équivalent `#[MapEntity]` Symfony)
+
+2. **Form Request** (`UpdateCategoryRequest`)
+   - Instancié avant d'entrer dans le controller
+   - `authorize()` → vérifie les droits via la Policy
+   - `rules()` → valide les données. Si invalide, retourne les erreurs sans entrer dans le controller
+
+3. **Policy** (`CategoryPolicy`)
+   - Appelée par `authorize()` du Form Request
+   - Si refusé → 403 automatique
+
+4. **Controller** (`CategoryController@update`)
+   - Si on arrive ici : utilisateur authentifié, autorisé, données valides
+   - Délègue au Service
+
+5. **Service** (`CategoryService`)
+   - Logique métier
+   - Try/catch + logging
+   - Appelle le Model
+
+6. **Model** (`Category`)
+   - Eloquent exécute le `UPDATE` en base
+
+---
+
+### edit() vs update()
+
+En Symfony, GET et POST sont souvent dans une seule méthode. En Laravel, c'est séparé :
+
+| Méthode | HTTP | Rôle |
+|---------|------|------|
+| `edit()` | `GET /categories/{id}/edit` | Affiche le formulaire |
+| `update()` | `PATCH /categories/{id}` | Traite la soumission |
+
+Respecte le principe de responsabilité unique — plus lisible.
+
+---
+
+## Autorisation (Voters vs Policies)
+
+### Symfony Voters
+
+```php
+class CategoryVoter extends Voter
+{
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    {
+        $user = $token->getUser();
+        if ($attribute === 'edit') {
+            return $user->getId() === $subject->getUserId();
+        }
+        return false;
+    }
+}
+```
+
+Enregistré dans `config/security.yaml` ou auto-découvert. Gère plusieurs attributs dans un seul Voter.
+
+### Laravel Policies
+
+```php
+class CategoryPolicy
+{
+    public function update(User $user, Category $category): bool
+    {
+        return $user->id === $category->user_id;
+    }
+    
+    public function delete(User $user, Category $category): bool
+    {
+        return $user->id === $category->user_id;
+    }
+}
+```
+
+Auto-découvert par convention. Une méthode = une action.
+
+**Différence clé :**
+- Symfony = logique centralisée dans un Voter
+- Laravel = une méthode par action (plus simple, plus lisible)
