@@ -1,0 +1,62 @@
+<template>
+    <AuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Categories</h2>
+        </template>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <div class="mb-6">
+                            <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                                Create Category
+                            </Link>
+                        </div>
+
+                        <table class="min-w-full table-auto">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-2">Name</th>
+                                    <th class="text-left py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="category in categories" :key="category.id" class="border-b hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="py-2">{{ category.name }}</td>
+                                    <td class="py-2 space-x-2">
+                                        <Link :href="`/categories/${category.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
+                                            Edit
+                                        </Link>
+                                        <button @click="deleteCategory(category.id)" class="text-red-600 hover:text-red-900">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div v-if="categories.length === 0" class="text-center py-8 text-gray-500">
+                            No categories yet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>
+
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+
+defineProps({
+    categories: Array,
+});
+
+const deleteCategory = (categoryId) => {
+    if (confirm('Are you sure you want to delete this category?')) {
+        router.delete(`/categories/${categoryId}`);
+    }
+};
+</script>
