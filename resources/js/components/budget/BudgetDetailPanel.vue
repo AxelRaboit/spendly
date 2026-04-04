@@ -6,11 +6,10 @@ import { useI18n } from 'vue-i18n';
 const { t, locale } = useI18n();
 const { fmt } = useCurrency();
 
-function fmtDay(yyyyMmDd) {
-    if (!yyyyMmDd) return '';
-    const [y, m, d] = yyyyMmDd.split('-');
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short' })
-        .format(new Date(Number(y), Number(m) - 1, Number(d)));
+function fmtDay(date) {
+    if (!date) return '';
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', timeZone: 'UTC' })
+        .format(new Date(date));
 }
 
 const props = defineProps({

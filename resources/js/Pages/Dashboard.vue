@@ -10,11 +10,11 @@ import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
 
-function fmtDay(yyyyMmDd) {
-    if (!yyyyMmDd) return '';
-    const [y, m, d] = yyyyMmDd.split('-');
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'long' })
-        .format(new Date(Number(y), Number(m) - 1, Number(d)));
+function fmtDay(date) {
+    if (!date) return '';
+    const d = new Date(date);
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'long', timeZone: 'UTC' })
+        .format(d);
 }
 
 const props = defineProps({
