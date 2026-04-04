@@ -23,8 +23,8 @@ defineProps({
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
-                        <div class="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-                        <div class="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
+                        <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+                        <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
                         <p class="text-sm font-medium text-violet-200">Dépenses</p>
                         <p class="mt-2 text-5xl font-bold text-white">{{ totalTransactions }}</p>
                         <div class="mt-6 flex gap-3">
@@ -38,8 +38,8 @@ defineProps({
                     </div>
 
                     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg">
-                        <div class="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-                        <div class="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
+                        <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+                        <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
                         <p class="text-sm font-medium text-emerald-100">Catégories</p>
                         <p class="mt-2 text-5xl font-bold text-white">{{ totalCategories }}</p>
                         <div class="mt-6 flex gap-3">
