@@ -48,7 +48,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
                         <EmptyState v-if="categories.data.length === 0" message="Aucune catégorie pour l'instant." />
 
-                        <AppPagination :meta="categories.meta" />
+                        <AppPagination :meta="categories" />
                     </div>
                 </div>
             </div>

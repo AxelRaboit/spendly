@@ -54,7 +54,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
                         <EmptyState v-if="transactions.data.length === 0" message="Aucune dépense pour l'instant." />
 
-                        <AppPagination :meta="transactions.meta" />
+                        <AppPagination :meta="transactions" />
                     </div>
                 </div>
             </div>

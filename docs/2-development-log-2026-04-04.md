@@ -524,6 +524,65 @@ resources/js/
 
 ESLint ignore `Components/` (majuscule) et cible `components/` (minuscule) — aucune liste à maintenir.
 
+### Pagination sur les listes
+
+Ajout de la pagination sur les listes Catégories et Dépenses.
+
+**Backend :**
+- `CategoryController::index()` : `paginate(10)` au lieu de `get()`
+- `TransactionController::index()` : `paginate(15)` avec `latest('date')`
+
+**Composant `AppPagination.vue`** (dans `components/` lowercase) :
+- Reçoit l'objet paginator complet (structure plate de Laravel, pas de clé `meta`)
+- Affiche les liens de pagination via `meta.links` (tableau fourni par Laravel)
+- `preserve-scroll` + `preserve-state` pour navigation SPA propre
+- Masqué si `last_page <= 1`
+
+**Fix important — structure du paginator Laravel :**
+
+Quand `paginate()` est passé directement à Inertia (sans API Resources), la structure JSON est **plate** — il n'y a pas de clé `meta` :
+
+```json
+{
+  "data": [...],
+  "last_page": 3,
+  "links": [...],
+  "from": 1,
+  "to": 10,
+  "total": 25
+}
+```
+
+Passer `:meta="categories.meta"` causait une page blanche (`undefined`). Corrigé en passant l'objet entier : `:meta="categories"`.
+
+**Fix `v-html` sur composant Inertia `<Link>` :**
+
+`vue/no-v-text-v-html-on-component` interdit `v-html` sur un composant Vue. Les labels de pagination contiennent des entités HTML (`&laquo;`, `&raquo;`). Résolu sans `v-html` en décodant les entités côté JS :
+
+```js
+function decodeLabel(html) {
+    const el = document.createElement('textarea');
+    el.innerHTML = html;
+    return el.value;
+}
+```
+
+Utilisation avec interpolation `{{ decodeLabel(link.label) }}` — plus de risque XSS.
+
+**Convention de nommage :**
+
+ESLint `vue/multi-word-component-names` impose les noms multi-mots → `Pagination` renommé en `AppPagination`.
+
+### Composant EmptyState
+
+Création d'un composant `EmptyState.vue` pour les états vides des listes :
+
+```vue
+<EmptyState message="Aucune catégorie pour l'instant." />
+```
+
+Remplace les `<div>` inline répétés dans chaque liste.
+
 ### Format de la date des transactions
 
 Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :
