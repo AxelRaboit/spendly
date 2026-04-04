@@ -583,6 +583,45 @@ Création d'un composant `EmptyState.vue` pour les états vides des listes :
 
 Remplace les `<div>` inline répétés dans chaque liste.
 
+### Factories et seeders
+
+Ajout de données de test reproductibles.
+
+**Factories :**
+- `CategoryFactory` — 15 noms de catégories en français (`Alimentation`, `Transport`, etc.)
+- `TransactionFactory` — montant aléatoire, description optionnelle (70%), date sur les 6 derniers mois
+
+**Modèles :** ajout du trait `HasFactory` sur `Category` et `Transaction` (requis pour `Model::factory()`).
+
+**DatabaseSeeder :** 3 users fixes (`alice@example.com`, `bob@example.com`, `test@example.com`) + mot de passe `password`, chacun avec 12 catégories et 60 transactions.
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+**Fix seeder — factory imbriquée :** `Transaction::factory()->make()` déclenchait `User::factory()` et `Category::factory()` en cascade, créant des centaines d'enregistrements parasites. Corrigé en passant `user_id` et `category_id` explicitement lors du `save()`.
+
+### Composant SubmitButton
+
+Création d'un composant `SubmitButton.vue` dédié aux boutons de soumission de formulaire (`type="submit"` fixe).
+
+**Problème découvert :** `PrimaryButton` avait `default: 'button'` — tous les formulaires de login/register ne soumettaient pas. Résolu en remplaçant `PrimaryButton` par `SubmitButton` partout où c'est un bouton de soumission (pages auth, profile, categories, transactions).
+
+`PrimaryButton` reste à `default: 'button'` — c'est maintenant un bouton générique, `SubmitButton` est explicitement pour les formulaires.
+
+### Fix dark mode pages auth
+
+Plusieurs textes et liens des pages Breeze (Login, Register, ForgotPassword, VerifyEmail, ConfirmPassword) avaient des couleurs light-mode hardcodées :
+- Liens : `text-gray-600 hover:text-gray-900` → `text-white underline`
+- Textes descriptifs : `text-gray-600` → `text-gray-300`
+- "Se souvenir de moi", séparateur "ou" : `text-gray-600/500` → `text-gray-300`
+
+### Fix autofocus TextInput
+
+`TextInput.vue` (Breeze) appelait `.focus()` dans `onMounted` sans condition — provoquait le warning browser *"Autofocus processing was blocked because a document already has a focused element"* lors de la navigation SPA Inertia.
+
+Corrigé en vérifiant `document.activeElement === document.body` avant d'appeler `.focus()`.
+
 ### Format de la date des transactions
 
 Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :
