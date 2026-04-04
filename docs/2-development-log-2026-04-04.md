@@ -227,3 +227,26 @@ php artisan make:request DestroyTransactionRequest
 **Prochaines étapes :**
 - Tester l'application en conditions réelles
 - Ajouter les seeders pour les données de test
+
+### Redirection de la page d'accueil
+
+Remplacé la page de bienvenue Laravel par une redirection intelligente :
+- Connecté → `/dashboard`
+- Non connecté → `/login`
+
+```php
+Route::get('/', function () {
+    return Auth::check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+});
+```
+
+### Amélioration de la page Login
+
+- Ajout du lien **"No account yet? Register"** manquant
+- Réorganisation du layout :
+  - "Remember me" + "Forgot your password?" sur la même ligne
+  - Bouton "Log in" en pleine largeur
+  - Séparateur **— or —**
+  - Lien Register centré en dessous
