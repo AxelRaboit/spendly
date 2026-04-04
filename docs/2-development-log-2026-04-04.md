@@ -700,6 +700,40 @@ Configuration dark mode des charts : couleurs des axes et légendes en `#9ca3af`
 
 L'évolution affiche `+X%` en rouge si les dépenses augmentent, en vert si elles diminuent.
 
+### Tests PHPUnit
+
+Mise en place d'une suite de tests feature avec PostgreSQL.
+
+**Configuration :**
+- Base de données dédiée `spendly_test`
+- `phpunit.xml` — `DB_CONNECTION=pgsql`, reste de la config DB dans `.env.testing`
+- `.env.testing` ajouté au `.gitignore` (contient le mot de passe)
+- `RefreshDatabase` sur chaque test — base remise à zéro entre chaque test
+
+**`CategoryTest` (11 tests) :**
+
+| Test | Catégorie |
+|---|---|
+| Guest redirigé vers login | Authorization |
+| User ne peut pas voir/modifier/supprimer la catégorie d'un autre | Authorization |
+| User voit uniquement ses propres catégories | Index |
+| Création, validation du nom requis, mise à jour, suppression | CRUD |
+| Filtre de recherche retourne les bons résultats | Filtre |
+| Recherche accent-insensitive (`sante` → `Santé`) | Filtre |
+
+**`TransactionTest` (13 tests) :**
+
+| Test | Catégorie |
+|---|---|
+| Guest redirigé vers login | Authorization |
+| User ne peut pas modifier/supprimer la transaction d'un autre | Authorization |
+| User ne peut pas utiliser la catégorie d'un autre user | Authorization |
+| User voit uniquement ses propres transactions | Index |
+| Création, validation (amount + date requis, amount positif), mise à jour, suppression | CRUD |
+| Filtre par description, filtre par catégorie | Filtres |
+
+**Total : 49 tests, 166 assertions.**
+
 ### Format de la date des transactions
 
 Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :

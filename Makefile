@@ -33,8 +33,14 @@ migrate-fresh: ## Drop all tables and re-run all migrations
 	$(ARTISAN) migrate:fresh
 
 # === Tests ===
-test: ## Run PHPUnit tests
+test: ## Run all PHPUnit tests
 	$(ARTISAN) test
+
+test-feature: ## Run feature tests only
+	$(ARTISAN) test tests/Feature
+
+test-unit: ## Run unit tests only
+	$(ARTISAN) test tests/Unit
 
 # === Code Quality ===
 stan: ## Run PHPStan static analysis

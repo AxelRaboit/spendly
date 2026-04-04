@@ -2,7 +2,7 @@
 
 ## Étapes à faire
 
-- [ ] Tests (PHPUnit)
+(aucune)
 
 ## En cours
 
@@ -34,5 +34,7 @@
 - [x] Filtres de recherche accent-insensitive (QueryFilter pattern, PostgreSQL unaccent)
 - [x] Composants SearchInput et FilterSelect
 - [x] Logo et favicon SVG custom (AppLogo)
-- [x] Factories et seeders (3 users, 12 catégories, 60 transactions chacun)
+- [x] Factories et seeders
 - [x] Page Statistiques (donut par catégorie, bar 6 mois, comparaison mois en cours)
+- [x] Dashboard enrichi (sparkline 30 jours, top 3 catégories, moyenne et jour le plus dépensier)
+- [x] Tests PHPUnit (49 tests — authorization, CRUD, filtres, accent-insensitif)
