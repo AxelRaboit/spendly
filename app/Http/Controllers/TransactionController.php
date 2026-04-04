@@ -7,36 +7,39 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\Transaction;
 use App\Services\TransactionService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request): Response
     {
-        $transactions = auth()->user()->transactions()->with('category')->get();
+        $transactions = $request->user()->transactions()->with('category')->get();
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
         ]);
     }
 
-    public function create()
+    public function create(Request $request): Response
     {
-        $categories = auth()->user()->categories()->get();
+        $categories = $request->user()->categories()->get();
 
         return Inertia::render('Transactions/Create', [
             'categories' => $categories,
         ]);
     }
 
-    public function store(StoreTransactionRequest $request, TransactionService $transactionService)
+    public function store(StoreTransactionRequest $request, TransactionService $transactionService): RedirectResponse
     {
-        $transactionService->create(auth()->user(), $request->validated());
+        $transactionService->create($request->user(), $request->validated());
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
 
-    public function show(Transaction $transaction)
+    public function show(Request $request, Transaction $transaction): Response
     {
         $this->authorize('view', $transaction);
 
@@ -45,11 +48,11 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function edit(Transaction $transaction)
+    public function edit(Request $request, Transaction $transaction): Response
     {
         $this->authorize('update', $transaction);
 
-        $categories = auth()->user()->categories()->get();
+        $categories = $request->user()->categories()->get();
 
         return Inertia::render('Transactions/Edit', [
             'transaction' => $transaction,
@@ -57,14 +60,14 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function update(UpdateTransactionRequest $request, Transaction $transaction, TransactionService $transactionService)
+    public function update(UpdateTransactionRequest $request, Transaction $transaction, TransactionService $transactionService): RedirectResponse
     {
         $transactionService->update($transaction, $request->validated());
 
         return redirect()->route('transactions.index')->with('success', 'Transaction updated successfully.');
     }
 
-    public function destroy(DestroyTransactionRequest $request, Transaction $transaction, TransactionService $transactionService)
+    public function destroy(DestroyTransactionRequest $request, Transaction $transaction, TransactionService $transactionService): RedirectResponse
     {
         $transactionService->delete($transaction);
 

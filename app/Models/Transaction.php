@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['user_id', 'category_id', 'amount', 'description', 'date'])]
 class Transaction extends Model
 {
-    protected $fillable = ['user_id', 'category_id', 'amount', 'description', 'date'];
-
     protected function casts(): array
     {
         return [
-            'date' => 'date',
+            'date'   => 'date',
             'amount' => 'decimal:2',
         ];
     }

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
 
 defineProps({
@@ -11,6 +11,8 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 </script>
 
 <template>
+    <Head title="Catégories" />
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-100 leading-tight">Catégories</h2>

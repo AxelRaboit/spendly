@@ -12,7 +12,9 @@ export function useTransactionForm(transaction = null) {
         if (transaction) {
             form.patch(`/transactions/${transaction.id}`);
         } else {
-            form.post('/transactions');
+            form.post('/transactions', {
+                onSuccess: () => form.reset(),
+            });
         }
     };
 

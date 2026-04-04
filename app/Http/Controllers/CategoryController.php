@@ -7,32 +7,35 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request): Response
     {
-        $categories = auth()->user()->categories()->get();
+        $categories = $request->user()->categories()->get();
 
         return Inertia::render('Categories/Index', [
             'categories' => $categories,
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('Categories/Create');
     }
 
-    public function store(StoreCategoryRequest $request, CategoryService $categoryService)
+    public function store(StoreCategoryRequest $request, CategoryService $categoryService): RedirectResponse
     {
-        $categoryService->create(auth()->user(), $request->validated()['name']);
+        $categoryService->create($request->user(), $request->validated()['name']);
 
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
-    public function show(Category $category)
+    public function show(Request $request, Category $category): Response
     {
         $this->authorize('view', $category);
 
@@ -41,7 +44,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function edit(Category $category)
+    public function edit(Request $request, Category $category): Response
     {
         $this->authorize('update', $category);
 
@@ -50,14 +53,14 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category, CategoryService $categoryService)
+    public function update(UpdateCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
     {
         $categoryService->update($category, $request->validated()['name']);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
-    public function destroy(DestroyCategoryRequest $request, Category $category, CategoryService $categoryService)
+    public function destroy(DestroyCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
     {
         $categoryService->delete($category);
 

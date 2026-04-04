@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useCategoryForm } from '@/composables/useCategoryForm';
 
 const props = defineProps({
@@ -11,6 +11,8 @@ const { form, submit } = useCategoryForm(props.category);
 </script>
 
 <template>
+    <Head title="Modifier la catégorie" />
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-100 leading-tight">Modifier la catégorie</h2>

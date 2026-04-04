@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useTransactionForm } from '@/composables/useTransactionForm';
 
 const props = defineProps({
@@ -12,6 +12,8 @@ const { form, submit } = useTransactionForm(props.transaction);
 </script>
 
 <template>
+    <Head title="Modifier la dépense" />
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-100 leading-tight">Modifier la dépense</h2>

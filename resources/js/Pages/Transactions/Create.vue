@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useTransactionForm } from '@/composables/useTransactionForm';
 
 defineProps({
@@ -11,6 +11,8 @@ const { form, submit } = useTransactionForm();
 </script>
 
 <template>
+    <Head title="Ajouter une dépense" />
+
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-100 leading-tight">Ajouter une dépense</h2>
