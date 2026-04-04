@@ -69,31 +69,42 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
+            <div class="mt-4 flex items-center justify-between">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
+                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
-            </div>
 
-            <div class="mt-4 flex items-center justify-end">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="text-sm text-gray-600 underline hover:text-gray-900"
                 >
                     Forgot your password?
                 </Link>
+            </div>
 
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+            <PrimaryButton
+                class="mt-6 w-full justify-center"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+            >
+                Log in
+            </PrimaryButton>
+
+            <div class="mt-6 flex items-center gap-4">
+                <div class="flex-1 border-t border-gray-300"></div>
+                <span class="text-sm text-gray-500">or</span>
+                <div class="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <Link
+                    :href="route('register')"
+                    class="text-sm text-indigo-600 underline hover:text-indigo-900"
                 >
-                    Log in
-                </PrimaryButton>
+                    No account yet? Register
+                </Link>
             </div>
         </form>
     </GuestLayout>
