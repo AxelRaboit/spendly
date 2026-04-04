@@ -97,9 +97,14 @@ export default {
         placeholder: 'Ej: Cuenta corriente',
         colName: 'Nombre',
         colBalance: 'Saldo inicial',
+        viewBudget: 'Ver presupuesto',
         colActions: 'Acciones',
         none: 'Aún no hay carteras.',
         confirmDelete: '¿Seguro que quieres eliminar esta cartera?',
+        addFavorite: 'Añadir a favoritos',
+        removeFavorite: 'Quitar de favoritos',
+        favoriteWallets: 'Acceso rápido',
+        noFavorites: 'Sin favoritos. Marca una cartera desde la página de Carteras.',
     },
 
     categories: {

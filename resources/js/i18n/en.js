@@ -97,9 +97,14 @@ export default {
         placeholder: 'E.g. Checking account',
         colName: 'Name',
         colBalance: 'Starting balance',
+        viewBudget: 'View budget',
         colActions: 'Actions',
         none: 'No wallets yet.',
         confirmDelete: 'Are you sure you want to delete this wallet?',
+        addFavorite: 'Add to favorites',
+        removeFavorite: 'Remove from favorites',
+        favoriteWallets: 'Quick access',
+        noFavorites: 'No favorites yet. Star a wallet from the Wallets page.',
     },
 
     categories: {

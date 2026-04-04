@@ -86,14 +86,14 @@ const barOptions   = barThemeOptions;
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface rounded-lg p-6">
                     <h3 class="text-primary font-semibold mb-4">{{ t('statistics.byCategory') }}</h3>
-                    <div class="h-64">
+                    <div class="h-48 sm:h-64">
                         <Doughnut :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface rounded-lg p-6">
                     <h3 class="text-primary font-semibold mb-4">{{ t('statistics.evolution') }}</h3>
-                    <div class="h-64">
+                    <div class="h-48 sm:h-64">
                         <Bar :data="barData" :options="barOptions" />
                     </div>
                 </div>

@@ -78,7 +78,7 @@ function updatePassword() {
                 <p v-if="form.errors.password_confirmation" class="mt-1 text-xs text-rose-400">{{ form.errors.password_confirmation }}</p>
             </div>
 
-            <div class="flex items-center gap-4 pt-1">
+            <div class="flex items-center gap-3 pt-1">
                 <AppButton type="submit" :disabled="form.processing">{{ t('common.save') }}</AppButton>
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                     <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">{{ t('common.saved') }}</p>

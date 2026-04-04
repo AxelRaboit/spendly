@@ -20,6 +20,7 @@ function fmtDay(date) {
 const props = defineProps({
     spentThisMonth: Number,
     totalWallets: Number,
+    favoriteWallets: Array,
     recentTransactions: Array,
     sparkline: Array,
     topCategories: Array,
@@ -68,6 +69,29 @@ const topCategoryMax = computed(() => {
         </template>
 
         <div class="space-y-6">
+            <!-- ── Favorite wallets ── -->
+            <div v-if="favoriteWallets.length > 0">
+                <h3 class="text-xs font-medium text-muted uppercase tracking-wider mb-3">{{ t('wallets.favoriteWallets') }}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <Link
+                        v-for="wallet in favoriteWallets"
+                        :key="wallet.id"
+                        :href="`/wallets/${wallet.id}/budget`"
+                        class="flex items-center justify-between bg-surface border border-base/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
+                    >
+                        <div class="flex items-center gap-3 min-w-0">
+                            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                            <span class="text-sm font-medium text-primary truncate">{{ wallet.name }}</span>
+                        </div>
+                        <svg class="w-4 h-4 text-muted group-hover:text-indigo-400 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </Link>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
                     <div class="bubble-1 pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
@@ -135,28 +159,47 @@ const topCategoryMax = computed(() => {
                         <h3 class="text-base font-semibold text-primary">{{ t('dashboard.recentExpenses') }}</h3>
                     </div>
 
-                    <table v-if="recentTransactions.length > 0" class="min-w-full">
-                        <thead>
-                            <tr class="bg-surface-2/50">
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.date') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.description') }}</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.category') }}</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.amount') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-subtle">
-                            <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition">
-                                <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
-                                <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="rounded-full bg-indigo-900 px-3 py-1 text-xs font-medium text-indigo-300">
-                                        {{ transaction.category.name }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right text-sm font-semibold text-primary">{{ fmt(transaction.amount) }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <template v-if="recentTransactions.length > 0">
+                        <!-- Mobile cards -->
+                        <div class="sm:hidden divide-y divide-subtle">
+                            <div v-for="transaction in recentTransactions" :key="transaction.id" class="flex items-center justify-between px-4 py-3 gap-3">
+                                <div class="flex flex-col gap-1 min-w-0">
+                                    <span class="text-sm text-primary font-medium truncate">{{ transaction.description ?? '—' }}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="rounded-full bg-indigo-900 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ transaction.category.name }}</span>
+                                        <span class="text-xs text-muted">{{ fmtDay(transaction.date) }}</span>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary shrink-0 font-mono">{{ fmt(transaction.amount) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Desktop table -->
+                        <div class="hidden sm:block overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-surface-2/50">
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.date') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.description') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.category') }}</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.amount') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-subtle">
+                                    <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition">
+                                        <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
+                                        <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="rounded-full bg-indigo-900 px-3 py-1 text-xs font-medium text-indigo-300">
+                                                {{ transaction.category.name }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-sm font-semibold text-primary">{{ fmt(transaction.amount) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
 
                     <div v-else class="flex flex-col items-center justify-center py-16 text-secondary">
                         <p class="text-sm">{{ t('dashboard.noExpenses') }}</p>

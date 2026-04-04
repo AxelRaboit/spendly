@@ -61,7 +61,7 @@ function deleteUser() {
         <div v-if="confirmingDeletion" class="fixed inset-0 z-50 flex items-center justify-center px-4">
             <div class="absolute inset-0 bg-black/60" v-on:click="closeModal" />
 
-            <div class="relative z-10 w-full max-w-md bg-surface border border-base rounded-xl p-6 shadow-2xl" v-on:keydown.esc="closeModal">
+            <div class="relative z-10 w-full max-w-md bg-surface border border-base rounded-xl p-4 sm:p-6 shadow-2xl" v-on:keydown.esc="closeModal">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-900/40">
                         <svg

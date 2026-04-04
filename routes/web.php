@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class)->only(['store', 'destroy']);
     Route::resource('wallets', WalletController::class);
+    Route::post('/wallets/{wallet}/favorite', [WalletController::class, 'toggleFavorite'])->name('wallets.favorite');
 
     // Budget routes (nested under wallet)
     Route::get('/wallets/{wallet}/budget', [BudgetController::class, 'show'])->name('wallets.budget.show');

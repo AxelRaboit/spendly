@@ -11,11 +11,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'start_balance'])]
+#[Fillable(['user_id', 'name', 'start_balance', 'is_favorite'])]
 class Wallet extends Model
 {
     use Filterable;
     use HasFactory;
+
+    protected $casts = [
+        'is_favorite' => 'boolean',
+    ];
 
     public function user(): BelongsTo
     {

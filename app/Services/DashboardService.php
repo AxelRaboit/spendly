@@ -54,4 +54,12 @@ class DashboardService
             ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
             ->sum('amount');
     }
+
+    public function favoriteWallets(User $user): Collection
+    {
+        return $user->wallets()
+            ->where('is_favorite', true)
+            ->orderBy('name')
+            ->get();
+    }
 }

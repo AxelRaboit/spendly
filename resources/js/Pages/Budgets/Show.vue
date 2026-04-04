@@ -20,7 +20,7 @@ import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, toRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // ─── i18n / currency ─────────────────────────────────────────────────────────
@@ -91,6 +91,11 @@ const { budgetNotesOpen, budgetNotesText, saveBudgetNotes } =
 // ─── Export XLSX ─────────────────────────────────────────────────────────────
 const { exportXlsx } = useBudgetExport(sections, totals, SECTION_META, budget, t);
 
+// ─── Mobile row context menu ──────────────────────────────────────────────────
+const mobileMenuOpenId = ref(null);
+function toggleMobileMenu(id) { mobileMenuOpenId.value = mobileMenuOpenId.value === id ? null : id; }
+function closeMobileMenu() { mobileMenuOpenId.value = null; }
+
 // ─── Cross-cancel wrappers ────────────────────────────────────────────────────
 function openTxPanelFromRow(categoryId, label, type, section) {
     openTxPanel(categoryId, label, type, { cancelEditing, cancelAdding }, section);
@@ -127,8 +132,14 @@ function onGlobalKeydown(e) {
     if (e.key === 'ArrowRight') router.visit(`/wallets/${props.wallet.id}/budget?month=${props.nextMonth}`);
     if (e.key === 'n' || e.key === 'N') startAddingItem(Object.keys(props.sections)[0] ?? 'income');
 }
-onMounted(() => document.addEventListener('keydown', onGlobalKeydown));
-onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
+onMounted(() => {
+    document.addEventListener('keydown', onGlobalKeydown);
+    document.addEventListener('click', closeMobileMenu);
+});
+onUnmounted(() => {
+    document.removeEventListener('keydown', onGlobalKeydown);
+    document.removeEventListener('click', closeMobileMenu);
+});
 </script>
 
 <template>
@@ -136,31 +147,31 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3 text-sm">
-                    <Link href="/wallets" class="text-secondary hover:text-primary transition-colors">{{ t('nav.wallets') }}</Link>
-                    <span class="text-subtle">/</span>
-                    <span class="text-primary font-medium">{{ wallet.name }}</span>
-                </div>
-                <button
-                    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                    v-on:click="openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding })"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                    {{ t('budgets.newTransaction') }}
-                </button>
+            <div class="flex items-center gap-3 text-sm">
+                <Link href="/wallets" class="text-secondary hover:text-primary transition-colors">{{ t('nav.wallets') }}</Link>
+                <span class="text-subtle">/</span>
+                <span class="text-primary font-medium">{{ wallet.name }}</span>
             </div>
         </template>
 
         <!-- ── Month navigation ── -->
         <div class="space-y-6">
+            <div class="flex justify-end">
+                <button
+                    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                    v-on:click="openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding })"
+                >
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    {{ t('budgets.newTransaction') }}
+                </button>
+            </div>
             <div class="flex items-center justify-between">
                 <Link
                     :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                    {{ fmtMonth(prevMonth) }}
+                    <span class="hidden sm:inline">{{ fmtMonth(prevMonth) }}</span>
                 </Link>
                 <div class="flex flex-col items-center gap-1">
                     <h2 class="text-xl font-bold text-primary capitalize">{{ fmtMonth(budget.month) }}</h2>
@@ -175,13 +186,13 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                     :href="`/wallets/${wallet.id}/budget?month=${nextMonth}`"
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
-                    {{ fmtMonth(nextMonth) }}
+                    <span class="hidden sm:inline">{{ fmtMonth(nextMonth) }}</span>
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </Link>
             </div>
 
             <!-- ── KPI cards ── -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
                     <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
@@ -289,7 +300,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                     <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         {{ t('budgets.notes.label') }}
-                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal">{{ budgetNotesText.length > 60 ? budgetNotesText.slice(0, 60) + '…' : budgetNotesText }}</span>
+                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-[120px] sm:max-w-xs">{{ budgetNotesText }}</span>
                     </span>
                     <svg
                         class="w-3.5 h-3.5 transition-transform duration-200"
@@ -312,9 +323,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
             </div>
 
             <!-- ── Table toolbar ── -->
-            <div class="flex items-center justify-between -mb-1">
-                <p class="text-xs text-subtle">{{ t('budgets.hint') }}</p>
-                <div class="flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 -mb-1">
+                <p class="hidden sm:block text-xs text-subtle">{{ t('budgets.hint') }}</p>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <AppButton
                         v-if="!isBudgetEmpty"
                         size="sm"
@@ -334,7 +345,234 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
 
             <!-- ── Budget table ── -->
             <div class="bg-surface border border-base/60 rounded-lg overflow-clip">
-                <table class="w-full text-sm">
+                <!-- ── Mobile card view ─────────────────────────────────────── -->
+                <div class="md:hidden divide-y divide-base/40">
+                    <template v-for="(items, type) in sections" :key="`mob-${type}`">
+                        <!-- Section header -->
+                        <div
+                            :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b px-4 py-2.5 flex flex-col gap-1 cursor-pointer select-none']"
+                            v-on:click="toggleSection(type)"
+                        >
+                            <div class="flex items-center justify-between">
+                                <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
+                                    {{ SECTION_META[type].label }}
+                                </span>
+                                <svg
+                                    class="w-3.5 h-3.5 transition-transform duration-200"
+                                    :class="[SECTION_META[type].color, collapsedSections[type] ? '-rotate-90' : '']"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span :class="[SECTION_META[type].color, 'text-sm font-mono font-semibold']">{{ fmt(totals[type]?.actual ?? 0) }}</span>
+                                <span class="text-xs text-muted font-mono">/ {{ fmt(totals[type]?.planned ?? 0) }}</span>
+                                <span v-if="collapsedSections[type]" class="text-xs text-subtle ml-1">· {{ items.length }} ligne{{ items.length > 1 ? 's' : '' }}</span>
+                            </div>
+                        </div>
+
+                        <template v-if="!collapsedSections[type]">
+                            <template v-for="item in items" :key="`mob-item-${item.id}`">
+                                <!-- Mobile inline edit -->
+                                <div v-if="editingId === item.id" class="bg-surface-2 px-4 py-3 space-y-2" data-editing>
+                                    <input
+                                        v-model="editForm.label"
+                                        type="text"
+                                        :placeholder="t('budgets.editRow.labelPlaceholder')"
+                                        class="w-full bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
+                                    >
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                        <select
+                                            v-model="editForm.category_id"
+                                            class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
+                                        >
+                                            <option :value="null">—</option>
+                                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                        </select>
+                                        <input
+                                            v-model="editForm.planned_amount"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            placeholder="0,00"
+                                            class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                        >
+                                    </div>
+                                    <textarea
+                                        v-model="editForm.notes"
+                                        :placeholder="t('budgets.editRow.notePlaceholder')"
+                                        rows="2"
+                                        class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                    />
+                                    <div class="flex items-center justify-between">
+                                        <select
+                                            v-model="editForm.type"
+                                            class="bg-surface-3 text-primary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none"
+                                        >
+                                            <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
+                                        </select>
+                                        <div class="flex gap-3">
+                                            <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitEdit(item)">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                            </button>
+                                            <button class="text-muted hover:text-secondary" v-on:click="cancelEditing">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile read card -->
+                                <div
+                                    v-else
+                                    class="px-4 py-3 flex flex-col gap-1.5"
+                                    :class="[
+                                        item.planned_amount > 0 && item.actual_amount > item.planned_amount ? 'border-l-2 border-l-rose-500/60' : '',
+                                        deletingItem && deletingItem.id === item.id ? 'opacity-40' : '',
+                                    ]"
+                                >
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <span class="text-sm text-primary font-medium">{{ item.label }}</span>
+                                            <NoteTooltip v-if="item.notes" :note="item.notes" />
+                                            <span
+                                                v-if="item.is_recurring"
+                                                class="inline-flex items-center gap-0.5 text-[10px] text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
+                                            >
+                                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-2 shrink-0">
+                                            <button
+                                                class="text-muted hover:text-indigo-400 transition-colors"
+                                                v-on:click="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
+                                            >
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            </button>
+                                            <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="startEditingItem(item)">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                            <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="requestDelete(item)">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                            <!-- More actions -->
+                                            <div class="relative">
+                                                <button
+                                                    class="text-muted hover:text-secondary transition-colors"
+                                                    v-on:click.stop="toggleMobileMenu(item.id)"
+                                                >
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
+                                                </button>
+                                                <div
+                                                    v-if="mobileMenuOpenId === item.id"
+                                                    class="absolute right-0 top-6 z-20 w-44 bg-surface border border-base rounded-lg shadow-xl overflow-hidden"
+                                                    v-on:click.stop
+                                                >
+                                                    <button
+                                                        class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-surface-2"
+                                                        :class="item.is_recurring ? 'text-indigo-400' : 'text-secondary'"
+                                                        v-on:click="toggleRecurring(item); closeMobileMenu()"
+                                                    >
+                                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                        {{ t('budgets.actions.toggleRecurring') }}
+                                                    </button>
+                                                    <button
+                                                        class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-secondary transition-colors hover:bg-surface-2"
+                                                        v-on:click="duplicateItem(item); closeMobileMenu()"
+                                                    >
+                                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                        {{ t('budgets.actions.duplicate') }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span v-if="item.category" class="inline-flex items-center bg-surface-2 text-secondary rounded px-2 py-0.5 border border-base">
+                                            {{ item.category.name }}
+                                        </span>
+                                        <span v-else class="text-subtle">—</span>
+                                        <div class="flex items-center gap-2 font-mono">
+                                            <span class="text-muted">{{ fmt(item.planned_amount) }}</span>
+                                            <button
+                                                v-if="item.category_id && item.actual_amount > 0"
+                                                :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                                class="font-semibold hover:underline decoration-dotted"
+                                                v-on:click="openTxDetail(item)"
+                                            >
+                                                {{ fmt(item.actual_amount) }}
+                                            </button>
+                                            <span v-else :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)" class="font-semibold">{{ fmt(item.actual_amount) }}</span>
+                                        </div>
+                                    </div>
+                                    <div v-if="item.planned_amount > 0" class="h-1 w-full bg-surface-3 rounded-full">
+                                        <div
+                                            v-show="progress(item.planned_amount, item.actual_amount) > 0"
+                                            class="h-full rounded-full transition-all duration-300"
+                                            :class="item.actual_amount > item.planned_amount ? 'bg-rose-400' : SECTION_META[type]?.barColor"
+                                            :style="{ width: progress(item.planned_amount, item.actual_amount) + '%' }"
+                                        />
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Mobile add row -->
+                            <div v-if="addingType === type" class="bg-surface-2/60 px-4 py-3 space-y-2" data-adding>
+                                <input
+                                    :id="`add-label-${type}`"
+                                    v-model="addForm.label"
+                                    type="text"
+                                    :placeholder="t('budgets.addRow.labelPlaceholder')"
+                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
+                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                >
+                                <div class="grid grid-cols-2 gap-2">
+                                    <select
+                                        v-model="addForm.category_id"
+                                        class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    >
+                                        <option :value="null">—</option>
+                                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                    </select>
+                                    <input
+                                        v-model="addForm.planned_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="0,00"
+                                        class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    >
+                                </div>
+                                <div class="flex justify-end gap-3">
+                                    <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                    </button>
+                                    <button class="text-muted hover:text-secondary" v-on:click="cancelAdding">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="px-4 py-2">
+                                <button
+                                    class="text-xs text-subtle hover:text-secondary transition-colors flex items-center gap-1"
+                                    v-on:click="startAdding(type)"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    {{ t('budgets.addRow.addLine') }}
+                                </button>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+
+                <!-- ── Desktop table view ────────────────────────────────────── -->
+                <table class="hidden md:table w-full text-sm">
                     <thead>
                         <tr class="border-b border-base/60 text-xs text-muted uppercase tracking-wider sticky top-0 z-10 bg-surface">
                             <th class="text-left px-4 py-3 font-medium w-[34%]">{{ t('budgets.table.label') }}</th>
@@ -349,7 +587,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                         <template v-for="(items, type) in sections" :key="type">
                             <!-- ── Section header ── -->
                             <tr
-                                :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-y cursor-pointer select-none']"
+                                :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b cursor-pointer select-none']"
                                 v-on:click="toggleSection(type)"
                             >
                                 <td class="px-4 py-2" colspan="2">

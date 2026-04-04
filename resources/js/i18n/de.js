@@ -97,9 +97,14 @@ export default {
         placeholder: 'Z.B. Girokonto',
         colName: 'Name',
         colBalance: 'Anfangsguthaben',
+        viewBudget: 'Budget anzeigen',
         colActions: 'Aktionen',
         none: 'Noch keine Geldbörsen.',
         confirmDelete: 'Möchtest du diese Geldbörse wirklich löschen?',
+        addFavorite: 'Zu Favoriten hinzufügen',
+        removeFavorite: 'Aus Favoriten entfernen',
+        favoriteWallets: 'Schnellzugriff',
+        noFavorites: 'Noch keine Favoriten. Markiere eine Geldbörse auf der Geldbörsen-Seite.',
     },
 
     categories: {

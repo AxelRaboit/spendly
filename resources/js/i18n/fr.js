@@ -97,9 +97,14 @@ export default {
         placeholder: 'Ex : Compte courant',
         colName: 'Nom',
         colBalance: 'Solde de départ',
+        viewBudget: 'Voir le budget',
         colActions: 'Actions',
         none: "Aucun portefeuille pour l'instant.",
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer ce portefeuille ?',
+        addFavorite: 'Ajouter aux favoris',
+        removeFavorite: 'Retirer des favoris',
+        favoriteWallets: 'Accès rapide',
+        noFavorites: 'Aucun favori. Étoilez un portefeuille depuis la page Portefeuilles.',
     },
 
     categories: {

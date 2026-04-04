@@ -12,7 +12,7 @@ defineProps({
         :type="type"
         :disabled="disabled"
         :class="[
-            'inline-flex items-center font-bold rounded transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-50',
+            'inline-flex items-center justify-center font-bold rounded transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface disabled:opacity-50',
             size === 'sm' ? 'py-1.5 px-3 text-xs' : 'py-2 px-4',
             variant === 'secondary'
                 ? 'bg-surface-3 hover:bg-surface-2 text-primary border border-base focus:ring-base'

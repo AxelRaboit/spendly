@@ -23,7 +23,7 @@ const styles = computed(() => ({
 
 <template>
     <div
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 border text-primary text-sm px-5 py-3 rounded-xl shadow-2xl whitespace-nowrap"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 border text-primary text-sm px-4 py-3 rounded-xl shadow-2xl w-max max-w-[calc(100vw-2rem)]"
         :class="styles.wrap"
     >
         <!-- colored dot -->

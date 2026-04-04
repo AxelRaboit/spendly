@@ -63,6 +63,14 @@ class WalletController extends Controller
         return redirect()->route('wallets.index')->with('success', 'Portefeuille mis à jour.');
     }
 
+    public function toggleFavorite(Wallet $wallet, Request $request): RedirectResponse
+    {
+        $this->authorize('update', $wallet);
+        $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
+
+        return back();
+    }
+
     public function destroy(Wallet $wallet, WalletService $walletService): RedirectResponse
     {
         $this->authorize('delete', $wallet);
