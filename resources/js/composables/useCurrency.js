@@ -16,7 +16,7 @@ export const CURRENCIES = [
 const LOCALE_MAP = { fr: 'fr-FR', en: 'en-US', es: 'es-ES', de: 'de-DE' };
 
 export function useCurrency() {
-    const currency   = computed(() => usePage().props.auth?.user?.currency ?? 'EUR');
+    const currency = computed(() => usePage().props.auth?.user?.currency ?? 'EUR');
     const intlLocale = computed(() => LOCALE_MAP[usePage().props.locale ?? 'fr'] ?? 'fr-FR');
 
     const symbol = computed(

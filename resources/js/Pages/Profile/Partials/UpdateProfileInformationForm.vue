@@ -94,7 +94,7 @@ const form = useForm({
                 id="locale"
                 :value="locale"
                 class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
-                @change="setLocale($event.target.value)"
+                v-on:change="setLocale($event.target.value)"
             >
                 <option v-for="loc in SUPPORTED_LOCALES" :key="loc.code" :value="loc.code">{{ t(`locales.${loc.code}`) }}</option>
             </select>

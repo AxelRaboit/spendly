@@ -31,12 +31,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
         return [
             ...parent::share($request),
             'auth'   => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
-            'locale' => $request->user()?->locale ?? config('app.fallback_locale', 'fr'),
+            'locale' => $user !== null ? $user->locale : config('app.fallback_locale', 'fr'),
         ];
     }
 }

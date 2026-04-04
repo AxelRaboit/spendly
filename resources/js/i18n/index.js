@@ -6,11 +6,11 @@ import de from './de.js';
 
 export function createI18nInstance(locale = 'fr') {
     return createI18n({
-        legacy:         false,
+        legacy: false,
         locale,
         fallbackLocale: 'fr',
-        messages:       { fr, en, es, de },
-        missingWarn:    false,
-        fallbackWarn:   false,
+        messages: { fr, en, es, de },
+        missingWarn: false,
+        fallbackWarn: false,
     });
 }
