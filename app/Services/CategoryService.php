@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\Category;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class CategoryService
@@ -11,8 +14,9 @@ class CategoryService
     public function create(User $user, string $name): Category
     {
         try {
-            $category = $user->categories()->create([
+            $category = Category::create([
                 'name' => $name,
+                'user_id' => $user->id,
             ]);
 
             Log::info('Category created', [
@@ -22,7 +26,7 @@ class CategoryService
             ]);
 
             return $category;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error('Failed to create category', [
                 'user_id' => $user->id,
                 'error' => $exception->getMessage(),
@@ -45,7 +49,7 @@ class CategoryService
             ]);
 
             return $category;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error('Failed to update category', [
                 'category_id' => $category->id,
                 'error' => $exception->getMessage(),
@@ -64,7 +68,7 @@ class CategoryService
             Log::info('Category deleted', [
                 'category_id' => $categoryId,
             ]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error('Failed to delete category', [
                 'category_id' => $category->id,
                 'error' => $exception->getMessage(),

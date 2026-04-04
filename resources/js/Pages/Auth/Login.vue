@@ -37,15 +37,15 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form v-on:submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
 
                 <TextInput
                     id="email"
+                    v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
-                    v-model="form.email"
                     required
                     autofocus
                     autocomplete="username"
@@ -59,9 +59,9 @@ const submit = () => {
 
                 <TextInput
                     id="password"
+                    v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
-                    v-model="form.password"
                     required
                     autocomplete="current-password"
                 />
@@ -71,7 +71,7 @@ const submit = () => {
 
             <div class="mt-4 flex items-center justify-between">
                 <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
+                    <Checkbox v-model:checked="form.remember" name="remember" />
                     <span class="ms-2 text-sm text-gray-600">Se souvenir de moi</span>
                 </label>
 
@@ -93,9 +93,9 @@ const submit = () => {
             </PrimaryButton>
 
             <div class="mt-6 flex items-center gap-4">
-                <div class="flex-1 border-t border-gray-300"></div>
+                <div class="flex-1 border-t border-gray-300" />
                 <span class="text-sm text-gray-500">ou</span>
-                <div class="flex-1 border-t border-gray-300"></div>
+                <div class="flex-1 border-t border-gray-300" />
             </div>
 
             <div class="mt-4 text-center">

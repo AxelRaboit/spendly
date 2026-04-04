@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -13,8 +15,8 @@ class DashboardController extends Controller
         $user = $request->user();
 
         return Inertia::render('Dashboard', [
-            'totalTransactions'  => $user->transactions()->count(),
-            'totalCategories'    => $user->categories()->count(),
+            'totalTransactions' => $user->transactions()->count(),
+            'totalCategories' => $user->categories()->count(),
             'recentTransactions' => $user->transactions()->with('category')->latest('date')->limit(5)->get(),
         ]);
     }

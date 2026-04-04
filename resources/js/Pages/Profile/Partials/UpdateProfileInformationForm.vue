@@ -35,17 +35,17 @@ const form = useForm({
         </header>
 
         <form
-            @submit.prevent="form.patch(route('profile.update'))"
             class="mt-6 space-y-6"
+            v-on:submit.prevent="form.patch(route('profile.update'))"
         >
             <div>
                 <InputLabel for="name" value="Name" />
 
                 <TextInput
                     id="name"
+                    v-model="form.name"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
                     required
                     autofocus
                     autocomplete="name"
@@ -59,9 +59,9 @@ const form = useForm({
 
                 <TextInput
                     id="email"
+                    v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
-                    v-model="form.email"
                     required
                     autocomplete="username"
                 />

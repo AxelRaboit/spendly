@@ -2,11 +2,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-import DateInput from '@/Components/DateInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import ConfirmModal from '@/Components/ConfirmModal.vue';
+import ConfirmModal from '@/components/ConfirmModal.vue';
+import DateInput from '@/components/DateInput.vue';
+import SelectInput from '@/components/SelectInput.vue';
 
 export default {
     install(app) {

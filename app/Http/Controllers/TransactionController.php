@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DestroyTransactionRequest;
@@ -56,7 +58,7 @@ class TransactionController extends Controller
 
         return Inertia::render('Transactions/Edit', [
             'transaction' => $transaction,
-            'categories'  => $categories,
+            'categories' => $categories,
         ]);
     }
 

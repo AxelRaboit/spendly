@@ -1,4 +1,10 @@
 *.log
+/storage/phpstan
+/storage/rector
+/tools/phpstan/vendor
+/tools/phpstan/composer.lock
+/tools/rector/vendor
+/tools/rector/composer.lock
 .DS_Store
 .env
 .env.backup

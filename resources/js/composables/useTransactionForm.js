@@ -3,9 +3,9 @@ import { useForm } from '@inertiajs/vue3';
 export function useTransactionForm(transaction = null) {
     const form = useForm({
         category_id: transaction?.category_id ?? '',
-        amount:      transaction?.amount ?? '',
+        amount: transaction?.amount ?? '',
         description: transaction?.description ?? '',
-        date:        transaction?.date ?? '',
+        date: transaction?.date ?? '',
     });
 
     const submit = () => {

@@ -48,7 +48,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                         <Link :href="`/transactions/${transaction.id}/edit`" class="text-indigo-400 hover:text-indigo-300">
                                             Modifier
                                         </Link>
-                                        <button v-on:click="confirmDelete(`/transactions/${transaction.id}`)" class="text-red-400 hover:text-red-300">
+                                        <button class="text-red-400 hover:text-red-300" v-on:click="confirmDelete(`/transactions/${transaction.id}`)">
                                             Supprimer
                                         </button>
                                     </td>

@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "lint": "eslint resources/js",
+        "lint:fix": "eslint resources/js --fix"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^2.0.0",
@@ -15,8 +17,13 @@
         "autoprefixer": "^10.4.12",
         "axios": ">=1.11.0 <=1.14.0",
         "concurrently": "^9.0.1",
+        "eslint": "^10.2.0",
+        "eslint-plugin-prettier": "^5.5.5",
+        "eslint-plugin-vue": "^10.8.0",
+        "globals": "^17.4.0",
         "laravel-vite-plugin": "^3.0.0",
         "postcss": "^8.4.31",
+        "prettier": "^3.8.1",
         "tailwindcss": "^3.2.1",
         "vite": "^8.0.0",
         "vue": "^3.4.0"

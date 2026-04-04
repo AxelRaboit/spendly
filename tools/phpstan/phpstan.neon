@@ -1,0 +1,13 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - ../../app/
+    excludePaths:
+        - ../../app/Http/Controllers/Auth/
+        - ../../app/Http/Requests/Auth/
+    bootstrapFiles:
+        - ../../vendor/autoload.php
+    tmpDir: ../../storage/phpstan

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "larastan/larastan": "^3.4"
+    }
+}

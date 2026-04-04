@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,9 +18,9 @@ class UpdateTransactionRequest extends FormRequest
     {
         return [
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
-            'amount'      => ['required', 'numeric', 'min:0.01'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
             'description' => ['nullable', 'string', 'max:255'],
-            'date'        => ['required', 'date'],
+            'date' => ['required', 'date'],
         ];
     }
 }
