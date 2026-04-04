@@ -185,3 +185,45 @@ public function authorize(): bool
 **Prochaines étapes :**
 - Implémenter le Transaction CRUD avec Service + Form Requests aussi
 - Tester l'application
+
+### Implémentation du Transaction CRUD
+
+Même architecture que Category (gros projet) :
+
+```bash
+php artisan make:controller TransactionController --model=Transaction
+php artisan make:policy TransactionPolicy --model=Transaction
+php artisan make:request StoreTransactionRequest
+php artisan make:request UpdateTransactionRequest
+php artisan make:request DestroyTransactionRequest
+```
+
+**TransactionService** (`app/Services/TransactionService.php`) :
+- `create()`, `update()`, `delete()`
+- Try/catch + logging sur chaque action
+
+**TransactionPolicy** :
+- `view()`, `update()`, `delete()` basés sur `user_id`
+
+**Form Requests :**
+- `StoreTransactionRequest` — validation + `authorize: true`
+- `UpdateTransactionRequest` — validation + authorization via Policy
+- `DestroyTransactionRequest` — authorization via Policy uniquement
+
+**Champs validés :**
+- `category_id` : required, exists dans categories
+- `amount` : required, numeric, min:0.01
+- `description` : nullable, string
+- `date` : required, date
+
+**Routes :**
+- `Route::resource('transactions', TransactionController::class)`
+
+**Vues Vue.js :**
+- `Transactions/Index.vue` — liste avec date, description, catégorie, montant
+- `Transactions/Create.vue` — formulaire avec select catégorie
+- `Transactions/Edit.vue` — formulaire pré-rempli
+
+**Prochaines étapes :**
+- Tester l'application en conditions réelles
+- Ajouter les seeders pour les données de test
