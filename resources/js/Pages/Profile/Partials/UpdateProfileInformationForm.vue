@@ -76,7 +76,7 @@ const form = useForm({
             </div>
 
             <div class="flex items-center gap-4 pt-1">
-                <SubmitButton :disabled="form.processing">Enregistrer</SubmitButton>
+                <AppButton type="submit" :disabled="form.processing">Enregistrer</AppButton>
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
                     <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">Enregistré.</p>
                 </Transition>

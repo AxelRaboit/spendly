@@ -62,9 +62,9 @@ const { symbol } = useCurrency();
                             </div>
 
                             <div class="flex gap-2">
-                                <SubmitButton>Ajouter</SubmitButton>
+                                <AppButton type="submit">Ajouter</AppButton>
                                 <Link href="/transactions">
-                                    <SecondaryButton type="button">Annuler</SecondaryButton>
+                                    <AppButton variant="secondary">Annuler</AppButton>
                                 </Link>
                             </div>
                         </form>

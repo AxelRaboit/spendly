@@ -41,12 +41,13 @@ const verificationLinkSent = computed(
 
         <form v-on:submit.prevent="submit">
             <div class="mt-4 flex items-center justify-between">
-                <SubmitButton
+                <AppButton
+                    type="submit"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     Resend Verification Email
-                </SubmitButton>
+                </AppButton>
 
                 <Link
                     :href="route('logout')"

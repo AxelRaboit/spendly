@@ -89,12 +89,13 @@ const submit = () => {
             </div>
 
             <div class="mt-4 flex items-center justify-end">
-                <SubmitButton
+                <AppButton
+                    type="submit"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     Reset Password
-                </SubmitButton>
+                </AppButton>
             </div>
         </form>
     </GuestLayout>

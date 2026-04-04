@@ -42,13 +42,14 @@ const submit = () => {
             </div>
 
             <div class="mt-4 flex justify-end">
-                <SubmitButton
+                <AppButton
+                    type="submit"
                     class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     Confirm
-                </SubmitButton>
+                </AppButton>
             </div>
         </form>
     </GuestLayout>

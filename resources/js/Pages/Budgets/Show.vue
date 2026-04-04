@@ -475,13 +475,14 @@ function onKeydown(e, submitFn, cancelFn) {
                                 <!-- ── Add row button ── -->
                                 <tr v-if="addingType !== type" class="border-b border-gray-800/60">
                                     <td colspan="6" class="pl-8 py-1.5">
-                                        <button
-                                            class="flex items-center gap-1 text-xs text-gray-600 hover:text-indigo-400 transition-colors"
+                                        <AppButton
+                                            size="sm"
+                                            class="flex items-center gap-1.5"
                                             v-on:click="startAddingItem(type)"
                                         >
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                             Ajouter une ligne
-                                        </button>
+                                        </AppButton>
                                     </td>
                                 </tr>
                             </template>

@@ -30,9 +30,9 @@ const { form, submit } = useCategoryForm(props.category);
                             </div>
 
                             <div class="flex gap-2">
-                                <SubmitButton>Mettre à jour</SubmitButton>
+                                <AppButton type="submit">Mettre à jour</AppButton>
                                 <Link href="/categories">
-                                    <SecondaryButton type="button">Annuler</SecondaryButton>
+                                    <AppButton variant="secondary">Annuler</AppButton>
                                 </Link>
                             </div>
                         </form>

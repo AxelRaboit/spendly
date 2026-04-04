@@ -100,13 +100,14 @@ const submit = () => {
                     Déjà inscrit ?
                 </Link>
 
-                <SubmitButton
+                <AppButton
+                    type="submit"
                     class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     S'inscrire
-                </SubmitButton>
+                </AppButton>
             </div>
         </form>
     </GuestLayout>

@@ -46,12 +46,12 @@ defineEmits(['confirm', 'cancel']);
                 </div>
 
                 <div class="flex justify-end gap-3 mt-6">
-                    <SecondaryButton type="button" v-on:click="$emit('cancel')">
+                    <AppButton variant="secondary" v-on:click="$emit('cancel')">
                         Annuler
-                    </SecondaryButton>
-                    <DangerButton type="button" v-on:click="$emit('confirm')">
+                    </AppButton>
+                    <AppButton variant="danger" v-on:click="$emit('confirm')">
                         Supprimer
-                    </DangerButton>
+                    </AppButton>
                 </div>
             </div>
         </div>

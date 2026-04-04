@@ -1,6 +1,4 @@
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import AppButton from '@/components/ui/AppButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -12,14 +10,11 @@ import AppPagination from '@/components/ui/AppPagination.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
 import FilterSelect from '@/components/form/FilterSelect.vue';
 import SearchInput from '@/components/form/SearchInput.vue';
-import SubmitButton from '@/components/form/SubmitButton.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 
 export default {
     install(app) {
-        app.component('PrimaryButton', PrimaryButton);
-        app.component('SecondaryButton', SecondaryButton);
-        app.component('DangerButton', DangerButton);
+        app.component('AppButton', AppButton);
         app.component('TextInput', TextInput);
         app.component('SelectInput', SelectInput);
         app.component('DateInput', DateInput);
@@ -32,6 +27,5 @@ export default {
         app.component('EmptyState', EmptyState);
         app.component('FilterSelect', FilterSelect);
         app.component('SearchInput', SearchInput);
-        app.component('SubmitButton', SubmitButton);
     },
 };

@@ -84,13 +84,14 @@ const submit = () => {
                 </Link>
             </div>
 
-            <SubmitButton
+            <AppButton
+                type="submit"
                 class="mt-6 w-full justify-center"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
             >
                 Se connecter
-            </SubmitButton>
+            </AppButton>
 
             <div class="mt-6 flex items-center gap-4">
                 <div class="flex-1 border-t border-gray-300" />
