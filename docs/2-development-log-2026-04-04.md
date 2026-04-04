@@ -676,6 +676,30 @@ $query->whereRaw('unaccent(name) ILIKE unaccent(?)', [sprintf('%%%s%%', $value)]
 
 `FilterSelect` prend un prop `param` (nom du query param) pour être réutilisable sur n'importe quel filtre.
 
+### Page Statistiques
+
+Création d'une page dédiée `/statistics` accessible depuis la navbar.
+
+**Backend — `StatisticsController::index()` :**
+
+- **Dépenses par catégorie** : `JOIN` + `SUM` groupé par `categories.name`, trié par total décroissant
+- **Évolution sur 6 mois** : `TO_CHAR(date, 'YYYY-MM')` + `SUM` groupé par mois (PostgreSQL)
+- **Mois en cours / mois précédent** : deux `sum()` avec `whereBetween` + calcul d'évolution en %
+
+**Frontend — `Statistics/Index.vue` :**
+
+Librairie : `chart.js` + `vue-chartjs` (wrapper Vue 3 officiel).
+
+| Élément | Type | Données |
+|---|---|---|
+| Cards du haut | — | Mois en cours, mois dernier, évolution % |
+| Donut chart | `Doughnut` | Répartition des dépenses par catégorie |
+| Bar chart | `Bar` | Total par mois sur les 6 derniers mois |
+
+Configuration dark mode des charts : couleurs des axes et légendes en `#9ca3af` / `#d1d5db`, grille en `#374151`.
+
+L'évolution affiche `+X%` en rouge si les dépenses augmentent, en vert si elles diminuent.
+
 ### Format de la date des transactions
 
 Le cast `'date'` de Laravel sérialisait la date en ISO complet (`2026-04-04T00:00:00.000000Z`). Corrigé via le format dans le cast :

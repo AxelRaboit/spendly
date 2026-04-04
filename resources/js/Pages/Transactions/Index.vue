@@ -43,7 +43,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                     <th class="text-left py-2">Description</th>
                                     <th class="text-left py-2">Catégorie</th>
                                     <th class="text-left py-2">Montant</th>
-                                    <th class="text-left py-2">Actions</th>
+                                    <th class="text-right py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,7 +52,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                     <td class="py-2">{{ transaction.description ?? '—' }}</td>
                                     <td class="py-2">{{ transaction.category.name }}</td>
                                     <td class="py-2">{{ transaction.amount }} €</td>
-                                    <td class="py-2 space-x-2">
+                                    <td class="py-2 space-x-2 text-right">
                                         <EditButton :href="`/transactions/${transaction.id}/edit`" />
                                         <DeleteButton v-on:click="confirmDelete(`/transactions/${transaction.id}`)" />
                                     </td>

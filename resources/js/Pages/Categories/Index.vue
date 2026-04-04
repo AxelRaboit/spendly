@@ -34,13 +34,13 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                             <thead>
                                 <tr class="border-b border-gray-700">
                                     <th class="text-left py-2">Nom</th>
-                                    <th class="text-left py-2">Actions</th>
+                                    <th class="text-right py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="category in categories.data" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
                                     <td class="py-2">{{ category.name }}</td>
-                                    <td class="py-2 space-x-2">
+                                    <td class="py-2 space-x-2 text-right">
                                         <EditButton :href="`/categories/${category.id}/edit`" />
                                         <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />
                                     </td>
