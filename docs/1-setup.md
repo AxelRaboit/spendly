@@ -57,8 +57,3 @@ create_cache_table .................... 11.42ms DONE
 create_jobs_table ..................... 17.89ms DONE
 ```
 
-## Prochaines étapes
-
-- Installer l'authentification avec Laravel Breeze
-- Créer les modèles `Category` et `Transaction`
-- Implémenter les CRUDs
