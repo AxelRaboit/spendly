@@ -4,6 +4,9 @@ import { Head, Link } from '@inertiajs/vue3';
 import { useTransactionForm } from '@/composables/useTransactionForm';
 import TypeToggle from '@/components/form/TypeToggle.vue';
 import { useCurrency } from '@/composables/useCurrency';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     transaction: Object,
@@ -15,26 +18,26 @@ const { symbol } = useCurrency();
 </script>
 
 <template>
-    <Head title="Modifier la transaction" />
+    <Head :title="t('transactions.editTitle')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Modifier la transaction</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('transactions.editTitle') }}</h2>
         </template>
 
         <div class="bg-gray-900 shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-100">
                 <form v-on:submit.prevent="submit">
                     <div class="mb-6">
-                        <InputLabel value="Type" />
+                        <InputLabel :value="t('transactions.fieldType')" />
                         <TypeToggle v-model="form.type" />
                         <InputError :message="form.errors.type" />
                     </div>
 
                     <div class="mb-4">
-                        <InputLabel value="Catégorie" />
+                        <InputLabel :value="t('transactions.fieldCategory')" />
                         <SelectInput v-model="form.category_id">
-                            <option value="" disabled>Sélectionner une catégorie</option>
+                            <option value="" disabled>{{ t('transactions.placeholderCategory') }}</option>
                             <option v-for="category in categories" :key="category.id" :value="category.id">
                                 {{ category.name }}
                             </option>
@@ -43,27 +46,27 @@ const { symbol } = useCurrency();
                     </div>
 
                     <div class="mb-4">
-                        <InputLabel :value="`Montant (${symbol})`" />
+                        <InputLabel :value="t('transactions.fieldAmount', { symbol })" />
                         <TextInput v-model="form.amount" type="number" step="0.01" min="0.01" />
                         <InputError :message="form.errors.amount" />
                     </div>
 
                     <div class="mb-4">
-                        <InputLabel value="Description" />
-                        <TextInput v-model="form.description" type="text" placeholder="Description (optionnelle)" />
+                        <InputLabel :value="t('transactions.fieldDescription')" />
+                        <TextInput v-model="form.description" type="text" :placeholder="t('transactions.placeholderDesc')" />
                         <InputError :message="form.errors.description" />
                     </div>
 
                     <div class="mb-4">
-                        <InputLabel value="Date" />
+                        <InputLabel :value="t('transactions.fieldDate')" />
                         <DateInput v-model="form.date" />
                         <InputError :message="form.errors.date" />
                     </div>
 
                     <div class="flex gap-2">
-                        <AppButton type="submit">Mettre à jour</AppButton>
+                        <AppButton type="submit">{{ t('common.update') }}</AppButton>
                         <Link href="/transactions">
-                            <AppButton variant="secondary">Annuler</AppButton>
+                            <AppButton variant="secondary">{{ t('common.cancel') }}</AppButton>
                         </Link>
                     </div>
                 </form>

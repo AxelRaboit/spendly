@@ -1,11 +1,16 @@
 <script setup>
 import { CURRENCIES } from '@/composables/useCurrency';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { useLocale, SUPPORTED_LOCALES } from '@/composables/useLocale.js';
 
 defineProps({
     mustVerifyEmail: { type: Boolean },
     status:          { type: String },
 });
+
+const { t } = useI18n();
+const { locale, setLocale } = useLocale();
 
 const user = usePage().props.auth.user;
 
@@ -19,13 +24,13 @@ const form = useForm({
 <template>
     <section>
         <header class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-100">Informations du profil</h2>
-            <p class="mt-1 text-sm text-gray-400">Mettez à jour votre nom, adresse e-mail et devise.</p>
+            <h2 class="text-lg font-semibold text-gray-100">{{ t('profile.info.title') }}</h2>
+            <p class="mt-1 text-sm text-gray-400">{{ t('profile.info.subtitle') }}</p>
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="form.patch(route('profile.update'))">
             <div>
-                <label for="name" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Nom</label>
+                <label for="name" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldName') }}</label>
                 <input
                     id="name"
                     v-model="form.name"
@@ -39,7 +44,7 @@ const form = useForm({
             </div>
 
             <div>
-                <label for="email" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Adresse e-mail</label>
+                <label for="email" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldEmail') }}</label>
                 <input
                     id="email"
                     v-model="form.email"
@@ -52,7 +57,7 @@ const form = useForm({
             </div>
 
             <div>
-                <label for="currency" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Devise</label>
+                <label for="currency" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldCurrency') }}</label>
                 <select
                     id="currency"
                     v-model="form.currency"
@@ -65,22 +70,34 @@ const form = useForm({
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="mt-2 text-sm text-gray-400">
-                    Votre adresse e-mail n'est pas vérifiée.
+                    {{ t('profile.info.unverified') }}
                     <Link :href="route('verification.send')" method="post" as="button" class="underline text-indigo-400 hover:text-indigo-300">
-                        Renvoyer l'e-mail de vérification.
+                        {{ t('profile.info.resend') }}
                     </Link>
                 </p>
                 <div v-show="status === 'verification-link-sent'" class="mt-2 text-xs text-emerald-400">
-                    Un nouveau lien de vérification a été envoyé à votre adresse e-mail.
+                    {{ t('profile.info.verificationSent') }}
                 </div>
             </div>
 
             <div class="flex items-center gap-4 pt-1">
-                <AppButton type="submit" :disabled="form.processing">Enregistrer</AppButton>
+                <AppButton type="submit" :disabled="form.processing">{{ t('common.save') }}</AppButton>
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">Enregistré.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">{{ t('common.saved') }}</p>
                 </Transition>
             </div>
         </form>
+
+        <div class="mt-6">
+            <label for="locale" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldLocale') }}</label>
+            <select
+                id="locale"
+                :value="locale"
+                class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                @change="setLocale($event.target.value)"
+            >
+                <option v-for="loc in SUPPORTED_LOCALES" :key="loc.code" :value="loc.code">{{ t(`locales.${loc.code}`) }}</option>
+            </select>
+        </div>
     </section>
 </template>

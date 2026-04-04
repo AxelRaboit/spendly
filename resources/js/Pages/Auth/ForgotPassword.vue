@@ -5,6 +5,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 
 import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps({
     status: {
@@ -23,12 +26,10 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Forgot Password" />
+        <Head :title="t('auth.forgotPassword.title')" />
 
         <div class="mb-4 text-sm text-gray-300">
-            Forgot your password? No problem. Just let us know your email
-            address and we will email you a password reset link that will allow
-            you to choose a new one.
+            {{ t('auth.forgotPassword.instructions') }}
         </div>
 
         <div
@@ -40,7 +41,7 @@ const submit = () => {
 
         <form v-on:submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="t('auth.login.email')" />
 
                 <TextInput
                     id="email"
@@ -61,7 +62,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Email Password Reset Link
+                    {{ t('auth.forgotPassword.submit') }}
                 </AppButton>
             </div>
         </form>

@@ -5,8 +5,11 @@ import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, Linear
 import { computed } from 'vue';
 import { Bar, Doughnut } from 'vue-chartjs';
 import { useCurrency } from '@/composables/useCurrency';
+import { useI18n } from 'vue-i18n';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, BarElement, CategoryScale, LinearScale);
+
+const { t } = useI18n();
 
 const props = defineProps({
     byCategory: Array,
@@ -40,7 +43,7 @@ const donutData = computed(() => ({
 const barData = computed(() => ({
     labels: props.byMonth.map((m) => m.month),
     datasets: [{
-        label: `Dépenses (${currency.value})`,
+        label: t('statistics.chartLabel', { currency: currency.value }),
         data: props.byMonth.map((m) => parseFloat(m.total)),
         backgroundColor: '#6366f1',
         borderRadius: 6,
@@ -65,38 +68,38 @@ const barOptions = {
 </script>
 
 <template>
-    <Head title="Statistiques" />
+    <Head :title="t('statistics.title')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Statistiques</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('statistics.title') }}</h2>
         </template>
 
         <div class="space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="bg-gray-900 rounded-lg p-6">
-                    <p class="text-sm text-gray-400 mb-1">Ce mois-ci</p>
+                    <p class="text-sm text-gray-400 mb-1">{{ t('statistics.thisMonth') }}</p>
                     <p class="text-3xl font-bold text-white">{{ fmt(currentMonth) }}</p>
                     <p v-if="evolution !== null" class="text-sm mt-1" :class="evolution > 0 ? 'text-red-400' : 'text-green-400'">
-                        {{ evolution > 0 ? '+' : '' }}{{ evolution.toFixed(1) }}% vs mois dernier
+                        {{ t('statistics.vsLast', { sign: evolution > 0 ? '+' : '', pct: evolution.toFixed(1) }) }}
                     </p>
                 </div>
                 <div class="bg-gray-900 rounded-lg p-6">
-                    <p class="text-sm text-gray-400 mb-1">Mois dernier</p>
+                    <p class="text-sm text-gray-400 mb-1">{{ t('statistics.lastMonth') }}</p>
                     <p class="text-3xl font-bold text-white">{{ fmt(previousMonth) }}</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-gray-900 rounded-lg p-6">
-                    <h3 class="text-gray-100 font-semibold mb-4">Dépenses par catégorie</h3>
+                    <h3 class="text-gray-100 font-semibold mb-4">{{ t('statistics.byCategory') }}</h3>
                     <div class="h-64">
                         <Doughnut :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
                 <div class="bg-gray-900 rounded-lg p-6">
-                    <h3 class="text-gray-100 font-semibold mb-4">Évolution sur 6 mois</h3>
+                    <h3 class="text-gray-100 font-semibold mb-4">{{ t('statistics.evolution') }}</h3>
                     <div class="h-64">
                         <Bar :data="barData" :options="barOptions" />
                     </div>

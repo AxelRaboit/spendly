@@ -5,8 +5,11 @@ import { CategoryScale, Chart as ChartJS, Filler, LinearScale, LineElement, Poin
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/useCurrency';
+import { useI18n } from 'vue-i18n';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
+
+const { t } = useI18n();
 
 const props = defineProps({
     totalTransactions: Number,
@@ -50,11 +53,11 @@ const topCategoryMax = computed(() => {
 </script>
 
 <template>
-    <Head title="Tableau de bord" />
+    <Head :title="t('dashboard.title')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-100">Tableau de bord</h2>
+            <h2 class="text-xl font-semibold leading-tight text-gray-100">{{ t('dashboard.title') }}</h2>
         </template>
 
         <div class="space-y-6">
@@ -62,14 +65,14 @@ const topCategoryMax = computed(() => {
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
                     <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
                     <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
-                    <p class="text-sm font-medium text-violet-200">Dépenses</p>
+                    <p class="text-sm font-medium text-violet-200">{{ t('dashboard.expenses') }}</p>
                     <p class="mt-2 text-5xl font-bold text-white">{{ totalTransactions }}</p>
                     <div class="mt-6 flex gap-3">
                         <Link href="/transactions" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
-                            Voir tout
+                            {{ t('common.seeAll') }}
                         </Link>
                         <Link href="/transactions/create" class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-violet-50 transition">
-                            + Ajouter
+                            {{ t('dashboard.addExpense') }}
                         </Link>
                     </div>
                 </div>
@@ -77,14 +80,14 @@ const topCategoryMax = computed(() => {
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg">
                     <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
                     <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
-                    <p class="text-sm font-medium text-emerald-100">Catégories</p>
+                    <p class="text-sm font-medium text-emerald-100">{{ t('dashboard.categories') }}</p>
                     <p class="mt-2 text-5xl font-bold text-white">{{ totalCategories }}</p>
                     <div class="mt-6 flex gap-3">
                         <Link href="/categories" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
-                            Voir tout
+                            {{ t('common.seeAll') }}
                         </Link>
                         <Link href="/categories/create" class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-teal-600 hover:bg-emerald-50 transition">
-                            + Ajouter
+                            {{ t('dashboard.addExpense') }}
                         </Link>
                     </div>
                 </div>
@@ -92,7 +95,7 @@ const topCategoryMax = computed(() => {
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 bg-gray-900 rounded-2xl p-6 shadow-lg">
-                    <h3 class="text-sm font-medium text-gray-400 mb-1">Dépenses — 30 derniers jours</h3>
+                    <h3 class="text-sm font-medium text-gray-400 mb-1">{{ t('dashboard.chart') }}</h3>
                     <div class="h-32">
                         <Line :data="sparklineData" :options="sparklineOptions" />
                     </div>
@@ -100,11 +103,11 @@ const topCategoryMax = computed(() => {
 
                 <div class="bg-gray-900 rounded-2xl p-6 shadow-lg space-y-4">
                     <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Moyenne / dépense ce mois</p>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider">{{ t('dashboard.avgExpense') }}</p>
                         <p class="text-2xl font-bold text-white mt-1">{{ fmt(dailyAverage) }}</p>
                     </div>
                     <div v-if="bestDay">
-                        <p class="text-xs text-gray-500 uppercase tracking-wider">Jour le plus dépensier</p>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider">{{ t('dashboard.biggestDay') }}</p>
                         <p class="text-lg font-semibold text-white mt-1">{{ bestDay.day }}</p>
                         <p class="text-sm text-gray-400">{{ fmt(bestDay.total) }}</p>
                     </div>
@@ -113,7 +116,7 @@ const topCategoryMax = computed(() => {
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-gray-900 rounded-2xl p-6 shadow-lg">
-                    <h3 class="text-sm font-medium text-gray-400 mb-4">Top catégories ce mois</h3>
+                    <h3 class="text-sm font-medium text-gray-400 mb-4">{{ t('dashboard.topCategories') }}</h3>
                     <div v-if="topCategories.length" class="space-y-3">
                         <div v-for="cat in topCategories" :key="cat.name">
                             <div class="flex justify-between text-sm mb-1">
@@ -128,24 +131,24 @@ const topCategoryMax = computed(() => {
                             </div>
                         </div>
                     </div>
-                    <p v-else class="text-sm text-gray-500">Aucune dépense ce mois.</p>
+                    <p v-else class="text-sm text-gray-500">{{ t('dashboard.noCatExpenses') }}</p>
                 </div>
 
                 <div class="lg:col-span-2 overflow-hidden rounded-2xl bg-gray-900 shadow-lg">
                     <div class="flex items-center justify-between border-b border-gray-800 px-6 py-4">
-                        <h3 class="text-base font-semibold text-gray-100">Dernières dépenses</h3>
+                        <h3 class="text-base font-semibold text-gray-100">{{ t('dashboard.recentExpenses') }}</h3>
                         <Link href="/transactions" class="text-sm text-indigo-400 hover:text-indigo-300">
-                            Voir tout →
+                            {{ t('dashboard.seeAll') }}
                         </Link>
                     </div>
 
                     <table v-if="recentTransactions.length > 0" class="min-w-full">
                         <thead>
                             <tr class="bg-gray-800/50">
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Description</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Catégorie</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Montant</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{{ t('common.date') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{{ t('common.description') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">{{ t('common.category') }}</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">{{ t('common.amount') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-800">
@@ -163,9 +166,9 @@ const topCategoryMax = computed(() => {
                     </table>
 
                     <div v-else class="flex flex-col items-center justify-center py-16 text-gray-400">
-                        <p class="text-sm">Aucune dépense pour l'instant.</p>
+                        <p class="text-sm">{{ t('dashboard.noExpenses') }}</p>
                         <Link href="/transactions/create" class="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition">
-                            + Ajouter une dépense
+                            {{ t('dashboard.addFirst') }}
                         </Link>
                     </div>
                 </div>

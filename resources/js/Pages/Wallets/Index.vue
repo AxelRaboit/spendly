@@ -3,37 +3,39 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { useCurrency } from '@/composables/useCurrency';
+import { useI18n } from 'vue-i18n';
 
 defineProps({
     wallets: Array,
 });
 
-const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer ce portefeuille ?');
+const { t } = useI18n();
+const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
 const { fmt } = useCurrency();
 </script>
 
 <template>
-    <Head title="Portefeuilles" />
+    <Head :title="t('wallets.title')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Portefeuilles</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('wallets.title') }}</h2>
         </template>
 
         <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-100">
                 <div class="mb-6 flex items-center justify-end">
                     <Link href="/wallets/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                        Créer un portefeuille
+                        {{ t('wallets.createBtn') }}
                     </Link>
                 </div>
 
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr class="border-b border-gray-700">
-                            <th class="text-left py-2">Nom</th>
-                            <th class="text-left py-2">Solde de départ</th>
-                            <th class="text-right py-2">Actions</th>
+                            <th class="text-left py-2">{{ t('wallets.colName') }}</th>
+                            <th class="text-left py-2">{{ t('wallets.colBalance') }}</th>
+                            <th class="text-right py-2">{{ t('wallets.colActions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +54,7 @@ const { fmt } = useCurrency();
                     </tbody>
                 </table>
 
-                <EmptyState v-if="wallets.length === 0" message="Aucun portefeuille pour l'instant." />
+                <EmptyState v-if="wallets.length === 0" :message="t('wallets.none')" />
             </div>
         </div>
 

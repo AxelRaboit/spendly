@@ -2,37 +2,39 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
+import { useI18n } from 'vue-i18n';
 
 defineProps({
     categories: Object,
     filters: Object,
 });
 
-const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette catégorie ?');
+const { t } = useI18n();
+const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('categories.confirmDelete'));
 </script>
 
 <template>
-    <Head title="Catégories" />
+    <Head :title="t('categories.title')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">Catégories</h2>
+            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('categories.title') }}</h2>
         </template>
 
         <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-100">
                 <div class="mb-6 flex items-center justify-between gap-4">
-                    <SearchInput :model-value="filters.search" placeholder="Rechercher une catégorie…" class="max-w-xs" />
+                    <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="max-w-xs" />
                     <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0">
-                        Créer une catégorie
+                        {{ t('categories.createBtn') }}
                     </Link>
                 </div>
 
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr class="border-b border-gray-700">
-                            <th class="text-left py-2">Nom</th>
-                            <th class="text-right py-2">Actions</th>
+                            <th class="text-left py-2">{{ t('categories.colName') }}</th>
+                            <th class="text-right py-2">{{ t('categories.colActions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +48,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     </tbody>
                 </table>
 
-                <EmptyState v-if="categories.data.length === 0" message="Aucune catégorie pour l'instant." />
+                <EmptyState v-if="categories.data.length === 0" :message="t('categories.none')" />
 
                 <AppPagination :meta="categories" />
             </div>

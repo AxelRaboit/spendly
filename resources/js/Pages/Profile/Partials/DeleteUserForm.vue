@@ -1,6 +1,9 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const confirmingDeletion = ref(false);
 const passwordInput = ref(null);
@@ -31,9 +34,9 @@ function deleteUser() {
 <template>
     <section>
         <header class="mb-6">
-            <h2 class="text-lg font-semibold text-rose-400">Supprimer le compte</h2>
+            <h2 class="text-lg font-semibold text-rose-400">{{ t('profile.delete.title') }}</h2>
             <p class="mt-1 text-sm text-gray-400">
-                Une fois votre compte supprimé, toutes les données associées seront définitivement effacées.
+                {{ t('profile.delete.subtitle') }}
             </p>
         </header>
 
@@ -42,7 +45,7 @@ function deleteUser() {
             class="px-4 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-600/40 rounded-lg text-sm font-medium transition-colors"
             v-on:click="openModal"
         >
-            Supprimer mon compte
+            {{ t('profile.delete.openBtn') }}
         </button>
     </section>
 
@@ -72,19 +75,19 @@ function deleteUser() {
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-100">Supprimer le compte</h3>
-                        <p class="text-sm text-gray-400 mt-0.5">Cette action est irréversible. Confirmez avec votre mot de passe.</p>
+                        <h3 class="text-base font-semibold text-gray-100">{{ t('profile.delete.modalTitle') }}</h3>
+                        <p class="text-sm text-gray-400 mt-0.5">{{ t('profile.delete.modalSubtitle') }}</p>
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label for="delete-password" class="sr-only">Mot de passe</label>
+                    <label for="delete-password" class="sr-only">{{ t('profile.delete.fieldPassword') }}</label>
                     <input
                         id="delete-password"
                         ref="passwordInput"
                         v-model="form.password"
                         type="password"
-                        placeholder="Votre mot de passe"
+                        :placeholder="t('profile.delete.fieldPassword')"
                         class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-rose-500 focus:outline-none"
                         v-on:keyup.enter="deleteUser"
                     >
@@ -97,7 +100,7 @@ function deleteUser() {
                         class="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 border border-gray-700 rounded-lg transition-colors"
                         v-on:click="closeModal"
                     >
-                        Annuler
+                        {{ t('common.cancel') }}
                     </button>
                     <button
                         type="button"
@@ -105,7 +108,7 @@ function deleteUser() {
                         class="px-4 py-2 text-sm font-medium bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-lg transition-colors"
                         v-on:click="deleteUser"
                     >
-                        {{ form.processing ? 'Suppression…' : 'Supprimer définitivement' }}
+                        {{ form.processing ? t('profile.delete.submitting') : t('profile.delete.submitConfirm') }}
                     </button>
                 </div>
             </div>

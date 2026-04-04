@@ -5,6 +5,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const form = useForm({
     name: '',
@@ -22,11 +25,11 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Inscription" />
+        <Head :title="t('auth.register.title')" />
 
         <form v-on:submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Nom" />
+                <InputLabel for="name" :value="t('auth.register.name')" />
 
                 <TextInput
                     id="name"
@@ -42,7 +45,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="t('auth.register.email')" />
 
                 <TextInput
                     id="email"
@@ -57,7 +60,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Mot de passe" />
+                <InputLabel for="password" :value="t('auth.register.password')" />
 
                 <TextInput
                     id="password"
@@ -74,7 +77,7 @@ const submit = () => {
             <div class="mt-4">
                 <InputLabel
                     for="password_confirmation"
-                    value="Confirmer le mot de passe"
+                    :value="t('auth.register.passwordConfirm')"
                 />
 
                 <TextInput
@@ -97,7 +100,7 @@ const submit = () => {
                     :href="route('login')"
                     class="text-sm text-white underline"
                 >
-                    Déjà inscrit ?
+                    {{ t('auth.register.alreadyAccount') }}
                 </Link>
 
                 <AppButton
@@ -106,7 +109,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    S'inscrire
+                    {{ t('auth.register.submit') }}
                 </AppButton>
             </div>
         </form>

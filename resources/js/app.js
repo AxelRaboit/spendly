@@ -7,6 +7,7 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 import components from '@/plugins/components';
+import { createI18nInstance } from '@/i18n/index';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -14,10 +15,14 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
+        const locale = props.initialPage.props.locale ?? 'fr';
+        const i18n = createI18nInstance(locale);
+
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
             .use(components)
+            .use(i18n)
             .mount(el);
     },
     progress: {

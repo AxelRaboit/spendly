@@ -1,9 +1,10 @@
-import { ref } from 'vue';
+import { isRef, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
-export function useConfirmDelete(message = 'Êtes-vous sûr de vouloir supprimer cet élément ?') {
+export function useConfirmDelete(messageOrRef = 'Êtes-vous sûr de vouloir supprimer cet élément ?') {
     const isOpen = ref(false);
     const pendingUrl = ref(null);
+    const message = isRef(messageOrRef) ? messageOrRef : ref(messageOrRef);
 
     const confirmDelete = (url) => {
         pendingUrl.value = url;

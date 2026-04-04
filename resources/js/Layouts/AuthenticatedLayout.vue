@@ -6,7 +6,9 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const showingNavigationDropdown = ref(false);
 </script>
 
@@ -24,21 +26,11 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                Tableau de bord
-                            </NavLink>
-                            <NavLink :href="route('categories.index')" :active="route().current('categories.*')">
-                                Catégories
-                            </NavLink>
-                            <NavLink :href="route('transactions.index')" :active="route().current('transactions.*')">
-                                Dépenses
-                            </NavLink>
-                            <NavLink :href="route('wallets.index')" :active="route().current('wallets.*')">
-                                Portefeuilles
-                            </NavLink>
-                            <NavLink :href="route('statistics.index')" :active="route().current('statistics.*')">
-                                Statistiques
-                            </NavLink>
+                            <NavLink :href="route('dashboard')" :active="route().current('dashboard')">{{ t('nav.dashboard') }}</NavLink>
+                            <NavLink :href="route('categories.index')" :active="route().current('categories.*')">{{ t('nav.categories') }}</NavLink>
+                            <NavLink :href="route('transactions.index')" :active="route().current('transactions.*')">{{ t('nav.transactions') }}</NavLink>
+                            <NavLink :href="route('wallets.index')" :active="route().current('wallets.*')">{{ t('nav.wallets') }}</NavLink>
+                            <NavLink :href="route('statistics.index')" :active="route().current('statistics.*')">{{ t('nav.statistics') }}</NavLink>
                         </div>
                     </div>
 
@@ -56,8 +48,8 @@ const showingNavigationDropdown = ref(false);
                             </template>
 
                             <template #content>
-                                <DropdownLink :href="route('profile.edit')">Profil</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">Déconnexion</DropdownLink>
+                                <DropdownLink :href="route('profile.edit')">{{ t('nav.profile') }}</DropdownLink>
+                                <DropdownLink :href="route('logout')" method="post" as="button">{{ t('nav.logout') }}</DropdownLink>
                             </template>
                         </Dropdown>
                     </div>
@@ -65,20 +57,8 @@ const showingNavigationDropdown = ref(false);
                     <div class="-me-2 flex items-center sm:hidden">
                         <button class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition hover:bg-gray-800 hover:text-white focus:outline-none" v-on:click="showingNavigationDropdown = !showingNavigationDropdown">
                             <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                <path
-                                    :class="{ hidden: showingNavigationDropdown, 'inline-flex': !showingNavigationDropdown }"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                />
-                                <path
-                                    :class="{ hidden: !showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
+                                <path :class="{ hidden: showingNavigationDropdown, 'inline-flex': !showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                <path :class="{ hidden: !showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -87,10 +67,11 @@ const showingNavigationDropdown = ref(false);
 
             <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
                 <div class="space-y-1 pb-3 pt-2">
-                    <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Tableau de bord</ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('categories.index')" :active="route().current('categories.*')">Catégories</ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('transactions.index')" :active="route().current('transactions.*')">Dépenses</ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('wallets.index')" :active="route().current('wallets.*')">Portefeuilles</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">{{ t('nav.dashboard') }}</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('categories.index')" :active="route().current('categories.*')">{{ t('nav.categories') }}</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('transactions.index')" :active="route().current('transactions.*')">{{ t('nav.transactions') }}</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('wallets.index')" :active="route().current('wallets.*')">{{ t('nav.wallets') }}</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('statistics.index')" :active="route().current('statistics.*')">{{ t('nav.statistics') }}</ResponsiveNavLink>
                 </div>
 
                 <div class="border-t border-gray-800 pb-1 pt-4">
@@ -99,8 +80,8 @@ const showingNavigationDropdown = ref(false);
                         <div class="text-sm font-medium text-gray-400">{{ $page.props.auth.user.email }}</div>
                     </div>
                     <div class="mt-3 space-y-1">
-                        <ResponsiveNavLink :href="route('profile.edit')">Profil</ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('logout')" method="post" as="button">Déconnexion</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('profile.edit')">{{ t('nav.profile') }}</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('logout')" method="post" as="button">{{ t('nav.logout') }}</ResponsiveNavLink>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,9 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
@@ -32,13 +35,13 @@ function updatePassword() {
 <template>
     <section>
         <header class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-100">Modifier le mot de passe</h2>
-            <p class="mt-1 text-sm text-gray-400">Utilisez un mot de passe long et aléatoire pour sécuriser votre compte.</p>
+            <h2 class="text-lg font-semibold text-gray-100">{{ t('profile.password.title') }}</h2>
+            <p class="mt-1 text-sm text-gray-400">{{ t('profile.password.subtitle') }}</p>
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="updatePassword">
             <div>
-                <label for="current_password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Mot de passe actuel</label>
+                <label for="current_password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldCurrent') }}</label>
                 <input
                     id="current_password"
                     ref="currentPasswordInput"
@@ -51,7 +54,7 @@ function updatePassword() {
             </div>
 
             <div>
-                <label for="password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Nouveau mot de passe</label>
+                <label for="password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldNew') }}</label>
                 <input
                     id="password"
                     ref="passwordInput"
@@ -64,7 +67,7 @@ function updatePassword() {
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">Confirmer le mot de passe</label>
+                <label for="password_confirmation" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldConfirm') }}</label>
                 <input
                     id="password_confirmation"
                     v-model="form.password_confirmation"
@@ -76,9 +79,9 @@ function updatePassword() {
             </div>
 
             <div class="flex items-center gap-4 pt-1">
-                <AppButton type="submit" :disabled="form.processing">Enregistrer</AppButton>
+                <AppButton type="submit" :disabled="form.processing">{{ t('common.save') }}</AppButton>
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0" leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">Enregistré.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-emerald-400">{{ t('common.saved') }}</p>
                 </Transition>
             </div>
         </form>

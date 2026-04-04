@@ -22,6 +22,7 @@ class ProfileUpdateRequest extends FormRequest
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'currency' => ['required', 'string', Rule::in(['EUR', 'USD', 'GBP', 'CHF', 'CAD', 'JPY', 'KRW', 'TWD', 'CNY'])],
+            'locale'   => ['sometimes', 'string', Rule::in(['fr', 'en', 'es', 'de'])],
         ];
     }
 }

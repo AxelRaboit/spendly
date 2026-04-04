@@ -6,6 +6,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps({
     canResetPassword: {
@@ -31,7 +34,7 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Connexion" />
+        <Head :title="t('auth.login.title')" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
@@ -39,7 +42,7 @@ const submit = () => {
 
         <form v-on:submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" :value="t('auth.login.email')" />
 
                 <TextInput
                     id="email"
@@ -55,7 +58,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Mot de passe" />
+                <InputLabel for="password" :value="t('auth.login.password')" />
 
                 <TextInput
                     id="password"
@@ -72,7 +75,7 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-between">
                 <label class="flex items-center">
                     <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ms-2 text-sm text-gray-300">Se souvenir de moi</span>
+                    <span class="ms-2 text-sm text-gray-300">{{ t('auth.login.rememberMe') }}</span>
                 </label>
 
                 <Link
@@ -80,7 +83,7 @@ const submit = () => {
                     :href="route('password.request')"
                     class="text-sm text-white underline"
                 >
-                    Mot de passe oublié ?
+                    {{ t('auth.login.forgot') }}
                 </Link>
             </div>
 
@@ -90,12 +93,12 @@ const submit = () => {
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
             >
-                Se connecter
+                {{ t('auth.login.submit') }}
             </AppButton>
 
             <div class="mt-6 flex items-center gap-4">
                 <div class="flex-1 border-t border-gray-300" />
-                <span class="text-sm text-gray-300">ou</span>
+                <span class="text-sm text-gray-300">{{ t('common.or') }}</span>
                 <div class="flex-1 border-t border-gray-300" />
             </div>
 
@@ -104,7 +107,7 @@ const submit = () => {
                     :href="route('register')"
                     class="text-sm text-white underline"
                 >
-                    Pas encore de compte ? S'inscrire
+                    {{ t('auth.login.noAccount') }}
                 </Link>
             </div>
         </form>
