@@ -8,7 +8,13 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+function fmtMonth(yyyyMm) {
+    const [year, month] = yyyyMm.split('-');
+    return new Intl.DateTimeFormat(locale.value, { month: 'short', year: 'numeric' })
+        .format(new Date(Number(year), Number(month) - 1, 1));
+}
 
 const props = defineProps({
     byCategory: Array,
@@ -41,7 +47,7 @@ const donutData = computed(() => ({
 }));
 
 const barData = computed(() => ({
-    labels: props.byMonth.map((m) => m.month),
+    labels: props.byMonth.map((m) => fmtMonth(m.month)),
     datasets: [{
         label: t('statistics.chartLabel', { currency: currency.value }),
         data: props.byMonth.map((m) => parseFloat(m.total)),

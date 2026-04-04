@@ -8,7 +8,14 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+
+function fmtDay(yyyyMmDd) {
+    if (!yyyyMmDd) return '';
+    const [y, m, d] = yyyyMmDd.split('-');
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'long' })
+        .format(new Date(Number(y), Number(m) - 1, Number(d)));
+}
 
 const props = defineProps({
     totalTransactions: Number,
@@ -108,7 +115,7 @@ const topCategoryMax = computed(() => {
                     </div>
                     <div v-if="bestDay">
                         <p class="text-xs text-muted uppercase tracking-wider">{{ t('dashboard.biggestDay') }}</p>
-                        <p class="text-lg font-semibold text-primary mt-1">{{ bestDay.day }}</p>
+                        <p class="text-lg font-semibold text-primary mt-1">{{ fmtDay(bestDay.day) }}</p>
                         <p class="text-sm text-secondary">{{ fmt(bestDay.total) }}</p>
                     </div>
                 </div>
@@ -153,7 +160,7 @@ const topCategoryMax = computed(() => {
                         </thead>
                         <tbody class="divide-y divide-subtle">
                             <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition">
-                                <td class="px-6 py-4 text-sm text-secondary">{{ transaction.date }}</td>
+                                <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
                                 <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
                                 <td class="px-6 py-4">
                                     <span class="rounded-full bg-indigo-900 px-3 py-1 text-xs font-medium text-indigo-300">

@@ -3,8 +3,15 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { t }   = useI18n();
+const { t, locale } = useI18n();
 const { fmt } = useCurrency();
+
+function fmtDay(yyyyMmDd) {
+    if (!yyyyMmDd) return '';
+    const [y, m, d] = yyyyMmDd.split('-');
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short' })
+        .format(new Date(Number(y), Number(m) - 1, Number(d)));
+}
 
 const props = defineProps({
     open:         { type: Boolean, required: true },
@@ -58,7 +65,7 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                         >
                             <div class="min-w-0">
                                 <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
-                                <p class="text-xs text-muted mt-0.5">{{ tx.date }}</p>
+                                <p class="text-xs text-muted mt-0.5">{{ fmtDay(tx.date) }}</p>
                             </div>
                             <span
                                 class="ml-4 font-mono text-sm font-medium shrink-0"

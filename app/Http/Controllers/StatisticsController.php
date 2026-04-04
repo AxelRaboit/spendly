@@ -21,12 +21,17 @@ class StatisticsController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        $byMonth = $user->transactions()
+        $rawByMonth = $user->transactions()
             ->selectRaw("TO_CHAR(date, 'YYYY-MM') as month, SUM(amount) as total")
             ->where('date', '>=', now()->subMonths(5)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')
-            ->get();
+            ->pluck('total', 'month');
+
+        $byMonth = collect(range(5, 0))->map(function ($i) use ($rawByMonth) {
+            $month = now()->subMonths($i)->format('Y-m');
+            return ['month' => $month, 'total' => (float) ($rawByMonth[$month] ?? 0)];
+        });
 
         $currentMonth = (float) $user->transactions()
             ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])

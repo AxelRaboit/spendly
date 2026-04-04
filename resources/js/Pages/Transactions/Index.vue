@@ -5,8 +5,15 @@ import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { fmt } = useCurrency();
+
+function fmtDay(yyyyMmDd) {
+    if (!yyyyMmDd) return '';
+    const [y, m, d] = yyyyMmDd.split('-');
+    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric' })
+        .format(new Date(Number(y), Number(m) - 1, Number(d)));
+}
 
 defineProps({
     transactions: Object,
@@ -51,7 +58,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     </thead>
                     <tbody>
                         <tr v-for="transaction in transactions.data" :key="transaction.id" class="border-b border-base hover:bg-surface-2">
-                            <td class="py-2">{{ transaction.date }}</td>
+                            <td class="py-2">{{ fmtDay(transaction.date) }}</td>
                             <td class="py-2">{{ transaction.description ?? '—' }}</td>
                             <td class="py-2">{{ transaction.category.name }}</td>
                             <td class="py-2">{{ fmt(transaction.amount) }}</td>
