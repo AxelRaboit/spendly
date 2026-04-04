@@ -26,6 +26,63 @@ Une fois ta structure stable, gèle les migrations : chaque changement futur = n
 
 ---
 
+## Création d'entités avec relations
+
+### Symfony
+
+```bash
+php bin/console make:entity User
+# Questions interactives : fields, relations
+```
+
+Une seule commande génère l'entité **ET** la migration.
+
+```bash
+php bin/console doctrine:migrations:diff
+# Génère la migration automatiquement
+```
+
+### Laravel
+
+```bash
+php artisan make:model Category -m
+# Crée le modèle + une migration vide
+```
+
+Tu dois écrire **à la main** :
+1. Les champs dans la migration
+2. Les relations dans le modèle
+
+```php
+// app/Models/Category.php
+public function user(): BelongsTo
+{
+    return $this->belongsTo(User::class);
+}
+```
+
+**Symfony = plus automatisé**, **Laravel = plus manuel**.
+
+### Rôle de la migration vs Model
+
+**Symfony :**
+- Tu définis l'Entity
+- Doctrine génère la migration
+- Flux : Entity → Migration
+
+**Laravel :**
+- La migration crée la structure brute de la table (colonnes, clés étrangères)
+- Le Model définit comment interagir avec la table (relations, logique métier)
+- Ils marchent en parallèle — tu dois les garder synchronisés
+
+Exemple : si tu ajoutes une colonne `description` dans la migration, il faut aussi l'ajouter dans `$fillable` du Model pour qu'il soit assignable en masse.
+
+**Analogie Symfony :** C'est similaire à ajouter un champ dans une Entity et le rajouter dans son DTO (synchronisation manuelle). Mais la raison diffère :
+- Symfony/DTO : mapping de données (optionnel)
+- Laravel/$fillable : **sécurité** contre l'assignement en masse malveillant (obligatoire)
+
+---
+
 ## ORM et Modèles
 
 ### Doctrine (Symfony)
