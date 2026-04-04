@@ -5,7 +5,7 @@ PHP_BIN  = php
 ARTISAN  = $(PHP_BIN) artisan
 COMPOSER = composer
 PNPM     = pnpm
-PINT     = $(PHP_BIN) vendor/bin/pint app/Http/Controllers/CategoryController.php app/Http/Controllers/Controller.php app/Http/Controllers/DashboardController.php app/Http/Controllers/TransactionController.php app/Http/Requests/DestroyCategoryRequest.php app/Http/Requests/DestroyTransactionRequest.php app/Http/Requests/StoreCategoryRequest.php app/Http/Requests/StoreTransactionRequest.php app/Http/Requests/UpdateCategoryRequest.php app/Http/Requests/UpdateTransactionRequest.php app/Models app/Policies app/Services routes/web.php
+PINT     = $(PHP_BIN) vendor/bin/pint app/ routes/
 PHPSTAN  = $(PHP_BIN) tools/phpstan/vendor/bin/phpstan
 RECTOR   = $(PHP_BIN) tools/rector/vendor/bin/rector
 

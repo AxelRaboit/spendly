@@ -41,9 +41,13 @@ class DashboardController extends Controller
             ->orderByDesc('total')
             ->first();
 
+        $spentThisMonth = (float) $user->transactions()
+            ->whereBetween('date', [now()->startOfMonth(), now()->endOfMonth()])
+            ->sum('amount');
+
         return Inertia::render('Dashboard', [
-            'totalTransactions' => $user->transactions()->count(),
-            'totalCategories' => $user->categories()->count(),
+            'spentThisMonth' => round($spentThisMonth, 2),
+            'totalWallets' => $user->wallets()->count(),
             'recentTransactions' => $user->transactions()->with('category')->latest('date')->limit(5)->get(),
             'sparkline' => $sparkline,
             'topCategories' => $topCategories,

@@ -2,7 +2,6 @@ export default {
     nav: {
         dashboard: 'Panel',
         categories: 'Categorías',
-        transactions: 'Gastos',
         wallets: 'Carteras',
         statistics: 'Estadísticas',
         profile: 'Perfil',
@@ -76,9 +75,8 @@ export default {
 
     dashboard: {
         title: 'Panel',
-        expenses: 'Gastos',
-        categories: 'Categorías',
-        addExpense: '+ Añadir',
+        spentThisMonth: 'Gastado este mes',
+        wallets: 'Carteras',
         chart: 'Gastos — últimos 30 días',
         avgExpense: 'Media / gasto este mes',
         biggestDay: 'Día de mayor gasto',
@@ -86,7 +84,6 @@ export default {
         recentExpenses: 'Últimos gastos',
         seeAll: 'Ver todo →',
         noExpenses: 'Aún no hay gastos.',
-        addFirst: '+ Añadir un gasto',
         noCatExpenses: 'Sin gastos este mes.',
     },
 
@@ -117,29 +114,6 @@ export default {
         colActions: 'Acciones',
         none: 'Aún no hay categorías.',
         confirmDelete: '¿Seguro que quieres eliminar esta categoría?',
-    },
-
-    transactions: {
-        title: 'Gastos',
-        addBtn: 'Añadir gasto',
-        addTitle: 'Añadir transacción',
-        editTitle: 'Editar transacción',
-        fieldType: 'Tipo',
-        fieldCategory: 'Categoría',
-        fieldAmount: 'Importe ({symbol})',
-        fieldDescription: 'Descripción',
-        fieldDate: 'Fecha',
-        placeholderCategory: 'Seleccionar categoría',
-        placeholderDesc: 'Descripción (opcional)',
-        searchPlaceholder: 'Buscar un gasto…',
-        allCategories: 'Todas las categorías',
-        colDate: 'Fecha',
-        colDescription: 'Descripción',
-        colCategory: 'Categoría',
-        colAmount: 'Importe',
-        colActions: 'Acciones',
-        none: 'Aún no hay gastos.',
-        confirmDelete: '¿Seguro que quieres eliminar este gasto?',
     },
 
     budgets: {

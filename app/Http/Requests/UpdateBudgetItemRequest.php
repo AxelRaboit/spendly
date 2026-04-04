@@ -17,12 +17,12 @@ class UpdateBudgetItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'label'          => ['required', 'string', 'max:255'],
+            'label' => ['required', 'string', 'max:255'],
             'planned_amount' => ['required', 'numeric', 'min:0'],
-            'category_id'    => ['nullable', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
-            'notes'          => ['nullable', 'string', 'max:2000'],
-            'type'           => ['sometimes', Rule::in(['income', 'savings', 'bills', 'expenses', 'debt'])],
-            'is_recurring'   => ['sometimes', 'boolean'],
+            'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'type' => ['sometimes', Rule::in(['income', 'savings', 'bills', 'expenses', 'debt'])],
+            'is_recurring' => ['sometimes', 'boolean'],
         ];
     }
 }

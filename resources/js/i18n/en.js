@@ -2,7 +2,6 @@ export default {
     nav: {
         dashboard: 'Dashboard',
         categories: 'Categories',
-        transactions: 'Expenses',
         wallets: 'Wallets',
         statistics: 'Statistics',
         profile: 'Profile',
@@ -76,9 +75,8 @@ export default {
 
     dashboard: {
         title: 'Dashboard',
-        expenses: 'Expenses',
-        categories: 'Categories',
-        addExpense: '+ Add',
+        spentThisMonth: 'Spent this month',
+        wallets: 'Wallets',
         chart: 'Expenses — last 30 days',
         avgExpense: 'Avg. per expense this month',
         biggestDay: 'Biggest spending day',
@@ -86,7 +84,6 @@ export default {
         recentExpenses: 'Recent expenses',
         seeAll: 'See all →',
         noExpenses: 'No expenses yet.',
-        addFirst: '+ Add an expense',
         noCatExpenses: 'No expenses this month.',
     },
 
@@ -117,29 +114,6 @@ export default {
         colActions: 'Actions',
         none: 'No categories yet.',
         confirmDelete: 'Are you sure you want to delete this category?',
-    },
-
-    transactions: {
-        title: 'Expenses',
-        addBtn: 'Add expense',
-        addTitle: 'Add transaction',
-        editTitle: 'Edit transaction',
-        fieldType: 'Type',
-        fieldCategory: 'Category',
-        fieldAmount: 'Amount ({symbol})',
-        fieldDescription: 'Description',
-        fieldDate: 'Date',
-        placeholderCategory: 'Select a category',
-        placeholderDesc: 'Description (optional)',
-        searchPlaceholder: 'Search an expense…',
-        allCategories: 'All categories',
-        colDate: 'Date',
-        colDescription: 'Description',
-        colCategory: 'Category',
-        colAmount: 'Amount',
-        colActions: 'Actions',
-        none: 'No expenses yet.',
-        confirmDelete: 'Are you sure you want to delete this expense?',
     },
 
     budgets: {

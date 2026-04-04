@@ -30,6 +30,7 @@ class StatisticsController extends Controller
 
         $byMonth = collect(range(5, 0))->map(function ($i) use ($rawByMonth) {
             $month = now()->subMonths($i)->format('Y-m');
+
             return ['month' => $month, 'total' => (float) ($rawByMonth[$month] ?? 0)];
         });
 

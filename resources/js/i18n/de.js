@@ -2,7 +2,6 @@ export default {
     nav: {
         dashboard: 'Dashboard',
         categories: 'Kategorien',
-        transactions: 'Ausgaben',
         wallets: 'Geldbörsen',
         statistics: 'Statistiken',
         profile: 'Profil',
@@ -76,9 +75,8 @@ export default {
 
     dashboard: {
         title: 'Dashboard',
-        expenses: 'Ausgaben',
-        categories: 'Kategorien',
-        addExpense: '+ Hinzufügen',
+        spentThisMonth: 'Ausgaben diesen Monat',
+        wallets: 'Geldbörsen',
         chart: 'Ausgaben — letzte 30 Tage',
         avgExpense: 'Durchschnitt / Ausgabe diesen Monat',
         biggestDay: 'Ausgabenreichster Tag',
@@ -86,7 +84,6 @@ export default {
         recentExpenses: 'Letzte Ausgaben',
         seeAll: 'Alle anzeigen →',
         noExpenses: 'Noch keine Ausgaben.',
-        addFirst: '+ Ausgabe hinzufügen',
         noCatExpenses: 'Keine Ausgaben diesen Monat.',
     },
 
@@ -117,29 +114,6 @@ export default {
         colActions: 'Aktionen',
         none: 'Noch keine Kategorien.',
         confirmDelete: 'Möchtest du diese Kategorie wirklich löschen?',
-    },
-
-    transactions: {
-        title: 'Ausgaben',
-        addBtn: 'Ausgabe hinzufügen',
-        addTitle: 'Transaktion hinzufügen',
-        editTitle: 'Transaktion bearbeiten',
-        fieldType: 'Typ',
-        fieldCategory: 'Kategorie',
-        fieldAmount: 'Betrag ({symbol})',
-        fieldDescription: 'Beschreibung',
-        fieldDate: 'Datum',
-        placeholderCategory: 'Kategorie auswählen',
-        placeholderDesc: 'Beschreibung (optional)',
-        searchPlaceholder: 'Ausgabe suchen…',
-        allCategories: 'Alle Kategorien',
-        colDate: 'Datum',
-        colDescription: 'Beschreibung',
-        colCategory: 'Kategorie',
-        colAmount: 'Betrag',
-        colActions: 'Aktionen',
-        none: 'Noch keine Ausgaben.',
-        confirmDelete: 'Möchtest du diese Ausgabe wirklich löschen?',
     },
 
     budgets: {

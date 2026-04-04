@@ -18,8 +18,8 @@ function fmtDay(date) {
 }
 
 const props = defineProps({
-    totalTransactions: Number,
-    totalCategories: Number,
+    spentThisMonth: Number,
+    totalWallets: Number,
     recentTransactions: Array,
     sparkline: Array,
     topCategories: Array,
@@ -70,31 +70,20 @@ const topCategoryMax = computed(() => {
         <div class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
-                    <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-                    <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
-                    <p class="text-sm font-medium text-violet-200">{{ t('dashboard.expenses') }}</p>
-                    <p class="mt-2 text-5xl font-bold text-white">{{ totalTransactions }}</p>
-                    <div class="mt-6 flex gap-3">
-                        <Link href="/transactions" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
-                            {{ t('common.seeAll') }}
-                        </Link>
-                        <Link href="/transactions/create" class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-violet-50 transition">
-                            {{ t('dashboard.addExpense') }}
-                        </Link>
-                    </div>
+                    <div class="bubble-1 pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+                    <div class="bubble-2 pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
+                    <p class="text-sm font-medium text-violet-200">{{ t('dashboard.spentThisMonth') }}</p>
+                    <p class="mt-2 text-4xl font-bold text-white font-mono">{{ fmt(spentThisMonth) }}</p>
                 </div>
 
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg">
-                    <div class="pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-                    <div class="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
-                    <p class="text-sm font-medium text-emerald-100">{{ t('dashboard.categories') }}</p>
-                    <p class="mt-2 text-5xl font-bold text-white">{{ totalCategories }}</p>
-                    <div class="mt-6 flex gap-3">
-                        <Link href="/categories" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
+                    <div class="bubble-2 pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+                    <div class="bubble-1 pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
+                    <p class="text-sm font-medium text-emerald-100">{{ t('dashboard.wallets') }}</p>
+                    <p class="mt-2 text-5xl font-bold text-white">{{ totalWallets }}</p>
+                    <div class="mt-6">
+                        <Link href="/wallets" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
                             {{ t('common.seeAll') }}
-                        </Link>
-                        <Link href="/categories/create" class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-teal-600 hover:bg-emerald-50 transition">
-                            {{ t('dashboard.addExpense') }}
                         </Link>
                     </div>
                 </div>
@@ -144,9 +133,6 @@ const topCategoryMax = computed(() => {
                 <div class="lg:col-span-2 overflow-hidden rounded-2xl bg-surface shadow-lg">
                     <div class="flex items-center justify-between border-b border-subtle px-6 py-4">
                         <h3 class="text-base font-semibold text-primary">{{ t('dashboard.recentExpenses') }}</h3>
-                        <Link href="/transactions" class="text-sm text-indigo-400 hover:text-indigo-300">
-                            {{ t('dashboard.seeAll') }}
-                        </Link>
                     </div>
 
                     <table v-if="recentTransactions.length > 0" class="min-w-full">
@@ -174,9 +160,6 @@ const topCategoryMax = computed(() => {
 
                     <div v-else class="flex flex-col items-center justify-center py-16 text-secondary">
                         <p class="text-sm">{{ t('dashboard.noExpenses') }}</p>
-                        <Link href="/transactions/create" class="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition">
-                            {{ t('dashboard.addFirst') }}
-                        </Link>
                     </div>
                 </div>
             </div>

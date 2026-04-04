@@ -43,15 +43,15 @@ class BudgetController extends Controller
         return Inertia::render('Budgets/Show', [
             'wallet' => $wallet,
             'budget' => [
-                'id'          => $budget->id,
-                'month'       => $budget->month->format('Y-m'),
+                'id' => $budget->id,
+                'month' => $budget->month->format('Y-m'),
                 'month_label' => $budget->month->locale(App::getLocale())->translatedFormat('F Y'),
-                'notes'       => $budget->notes,
+                'notes' => $budget->notes,
             ],
-            'sections'     => $sections,
-            'categories'   => $categories,
-            'prevMonth'    => $prevMonth,
-            'nextMonth'    => $nextMonth,
+            'sections' => $sections,
+            'categories' => $categories,
+            'prevMonth' => $prevMonth,
+            'nextMonth' => $nextMonth,
             'startBalance' => $budgetService->computeRollingStartBalance($wallet, $month),
         ]);
     }
@@ -68,7 +68,7 @@ class BudgetController extends Controller
 
         return redirect()->back()->with(
             'success',
-            $copied > 0 ? $copied . ' lignes copiées depuis le mois précédent.' : 'Aucune ligne trouvée dans le mois précédent.'
+            $copied > 0 ? $copied.' lignes copiées depuis le mois précédent.' : 'Aucune ligne trouvée dans le mois précédent.'
         );
     }
 
@@ -135,13 +135,13 @@ class BudgetController extends Controller
         $this->authorize('view', $wallet);
 
         $monthParam = $request->input('month');
-        $month      = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
-        $budget     = $budgetService->getOrCreate($wallet, $month);
-        $copied     = $budgetService->copyRecurringFromPreviousMonth($budget, $month);
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
+        $budget = $budgetService->getOrCreate($wallet, $month);
+        $copied = $budgetService->copyRecurringFromPreviousMonth($budget, $month);
 
         return redirect()->back()->with(
             'success',
-            $copied > 0 ? $copied . ' lignes récurrentes copiées.' : 'Aucune ligne récurrente dans le mois précédent.'
+            $copied > 0 ? $copied.' lignes récurrentes copiées.' : 'Aucune ligne récurrente dans le mois précédent.'
         );
     }
 
@@ -154,7 +154,7 @@ class BudgetController extends Controller
             'notes' => ['nullable', 'string', 'max:5000'],
         ]);
 
-        $month  = Carbon::createFromFormat('Y-m', $validated['month']);
+        $month = Carbon::createFromFormat('Y-m', $validated['month']);
         $budget = $budgetService->getOrCreate($wallet, $month);
         $budget->update(['notes' => $validated['notes']]);
 
@@ -169,46 +169,46 @@ class BudgetController extends Controller
 
         $months = [];
         for ($m = 1; $m <= 12; $m++) {
-            $month  = Carbon::create($year, $m, 1);
-            $key    = $month->format('Y-m');
+            $month = Carbon::create($year, $m, 1);
+            $key = $month->format('Y-m');
             $budget = Budget::where('wallet_id', $wallet->id)
                 ->where('month', $month->startOfMonth()->toDateString())
                 ->first();
 
             if ($budget) {
                 $sections = $budgetService->loadWithActuals($budget);
-                $incomePlanned  = array_sum(array_column($sections['income'],   'planned_amount'));
-                $incomeActual   = array_sum(array_column($sections['income'],   'actual_amount'));
-                $expPlanned     = 0;
-                $expActual      = 0;
+                $incomePlanned = array_sum(array_column($sections['income'], 'planned_amount'));
+                $incomeActual = array_sum(array_column($sections['income'], 'actual_amount'));
+                $expPlanned = 0;
+                $expActual = 0;
                 foreach (['savings', 'bills', 'expenses', 'debt'] as $type) {
                     $expPlanned += array_sum(array_column($sections[$type], 'planned_amount'));
-                    $expActual  += array_sum(array_column($sections[$type], 'actual_amount'));
+                    $expActual += array_sum(array_column($sections[$type], 'actual_amount'));
                 }
 
                 $months[$key] = [
-                    'has_budget'       => true,
-                    'label'            => $month->locale(App::getLocale())->translatedFormat('F'),
-                    'income_planned'   => $incomePlanned,
-                    'income_actual'    => $incomeActual,
+                    'has_budget' => true,
+                    'label' => $month->locale(App::getLocale())->translatedFormat('F'),
+                    'income_planned' => $incomePlanned,
+                    'income_actual' => $incomeActual,
                     'expenses_planned' => $expPlanned,
-                    'expenses_actual'  => $expActual,
+                    'expenses_actual' => $expActual,
                     'cash_flow_actual' => $incomeActual - $expActual,
                 ];
             } else {
                 $months[$key] = [
                     'has_budget' => false,
-                    'label'      => $month->locale(App::getLocale())->translatedFormat('F'),
+                    'label' => $month->locale(App::getLocale())->translatedFormat('F'),
                 ];
             }
         }
 
         return Inertia::render('Budgets/Year', [
-            'wallet'   => $wallet,
-            'year'     => $year,
+            'wallet' => $wallet,
+            'year' => $year,
             'prevYear' => $year - 1,
             'nextYear' => $year + 1,
-            'months'   => $months,
+            'months' => $months,
         ]);
     }
 
@@ -231,11 +231,11 @@ class BudgetController extends Controller
             ->orderByDesc('id')
             ->get(['id', 'date', 'description', 'amount', 'type'])
             ->map(fn (Transaction $tx) => [
-                'id'          => $tx->id,
-                'date'        => $tx->date,
+                'id' => $tx->id,
+                'date' => $tx->date,
                 'description' => $tx->description,
-                'amount'      => (float) $tx->amount,
-                'type'        => $tx->type,
+                'amount' => (float) $tx->amount,
+                'type' => $tx->type,
             ]);
 
         return response()->json($transactions);

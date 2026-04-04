@@ -14,7 +14,7 @@ class SetLocale
 
     public function handle(Request $request, Closure $next): mixed
     {
-        $user   = $request->user();
+        $user = $request->user();
         $locale = $user !== null ? $user->locale : config('app.fallback_locale', 'fr');
 
         App::setLocale(in_array($locale, self::SUPPORTED, true) ? $locale : 'fr');

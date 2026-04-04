@@ -2,7 +2,6 @@ export default {
     nav: {
         dashboard: 'Tableau de bord',
         categories: 'Catégories',
-        transactions: 'Dépenses',
         wallets: 'Portefeuilles',
         statistics: 'Statistiques',
         profile: 'Profil',
@@ -76,9 +75,8 @@ export default {
 
     dashboard: {
         title: 'Tableau de bord',
-        expenses: 'Dépenses',
-        categories: 'Catégories',
-        addExpense: '+ Ajouter',
+        spentThisMonth: 'Dépenses ce mois',
+        wallets: 'Portefeuilles',
         chart: 'Dépenses — 30 derniers jours',
         avgExpense: 'Moyenne / dépense ce mois',
         biggestDay: 'Jour le plus dépensier',
@@ -86,7 +84,6 @@ export default {
         recentExpenses: 'Dernières dépenses',
         seeAll: 'Voir tout →',
         noExpenses: "Aucune dépense pour l'instant.",
-        addFirst: '+ Ajouter une dépense',
         noCatExpenses: 'Aucune dépense ce mois.',
     },
 
@@ -117,29 +114,6 @@ export default {
         colActions: 'Actions',
         none: "Aucune catégorie pour l'instant.",
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
-    },
-
-    transactions: {
-        title: 'Dépenses',
-        addBtn: 'Ajouter une dépense',
-        addTitle: 'Ajouter une transaction',
-        editTitle: 'Modifier la transaction',
-        fieldType: 'Type',
-        fieldCategory: 'Catégorie',
-        fieldAmount: 'Montant ({symbol})',
-        fieldDescription: 'Description',
-        fieldDate: 'Date',
-        placeholderCategory: 'Sélectionner une catégorie',
-        placeholderDesc: 'Description (optionnelle)',
-        searchPlaceholder: 'Rechercher une dépense…',
-        allCategories: 'Toutes les catégories',
-        colDate: 'Date',
-        colDescription: 'Description',
-        colCategory: 'Catégorie',
-        colAmount: 'Montant',
-        colActions: 'Actions',
-        none: "Aucune dépense pour l'instant.",
-        confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette dépense ?',
     },
 
     budgets: {

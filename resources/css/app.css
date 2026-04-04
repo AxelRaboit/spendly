@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Dashboard card bubble animations ───────────────────────────────────────── */
+@keyframes bubble-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(-6px, -8px) scale(1.05); }
+}
+@keyframes bubble-float-alt {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(6px, 8px) scale(1.08); }
+}
+.bubble-1 { animation: bubble-float     7s ease-in-out infinite; }
+.bubble-2 { animation: bubble-float-alt 9s ease-in-out infinite; }
+
 /* ── Semantic color tokens ───────────────────────────────────────────────────
    RGB format (no commas) so Tailwind opacity modifiers work: bg-surface/50
    ─────────────────────────────────────────────────────────────────────────── */

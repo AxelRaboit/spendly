@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::resource('categories', CategoryController::class);
-    Route::resource('transactions', TransactionController::class);
+    Route::resource('transactions', TransactionController::class)->only(['store', 'destroy']);
     Route::resource('wallets', WalletController::class);
 
     // Budget routes (nested under wallet)

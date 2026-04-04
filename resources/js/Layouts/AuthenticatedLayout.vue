@@ -33,7 +33,6 @@ const { theme, toggle: toggleTheme } = useTheme();
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                             <NavLink :href="route('dashboard')" :active="route().current('dashboard')">{{ t('nav.dashboard') }}</NavLink>
                             <NavLink :href="route('categories.index')" :active="route().current('categories.*')">{{ t('nav.categories') }}</NavLink>
-                            <NavLink :href="route('transactions.index')" :active="route().current('transactions.*')">{{ t('nav.transactions') }}</NavLink>
                             <NavLink :href="route('wallets.index')" :active="route().current('wallets.*')">{{ t('nav.wallets') }}</NavLink>
                             <NavLink :href="route('statistics.index')" :active="route().current('statistics.*')">{{ t('nav.statistics') }}</NavLink>
                         </div>
@@ -115,7 +114,6 @@ const { theme, toggle: toggleTheme } = useTheme();
                 <div class="space-y-1 pb-3 pt-2">
                     <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">{{ t('nav.dashboard') }}</ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('categories.index')" :active="route().current('categories.*')">{{ t('nav.categories') }}</ResponsiveNavLink>
-                    <ResponsiveNavLink :href="route('transactions.index')" :active="route().current('transactions.*')">{{ t('nav.transactions') }}</ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('wallets.index')" :active="route().current('wallets.*')">{{ t('nav.wallets') }}</ResponsiveNavLink>
                     <ResponsiveNavLink :href="route('statistics.index')" :active="route().current('statistics.*')">{{ t('nav.statistics') }}</ResponsiveNavLink>
                 </div>
