@@ -46,9 +46,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                             </tbody>
                         </table>
 
-                        <div v-if="categories.data.length === 0" class="text-center py-8 text-gray-500">
-                            Aucune catégorie pour l'instant.
-                        </div>
+                        <EmptyState v-if="categories.data.length === 0" message="Aucune catégorie pour l'instant." />
 
                         <AppPagination :meta="categories.meta" />
                     </div>

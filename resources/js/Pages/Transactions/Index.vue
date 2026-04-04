@@ -52,9 +52,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                             </tbody>
                         </table>
 
-                        <div v-if="transactions.data.length === 0" class="text-center py-8 text-gray-500">
-                            Aucune dépense pour l'instant.
-                        </div>
+                        <EmptyState v-if="transactions.data.length === 0" message="Aucune dépense pour l'instant." />
 
                         <AppPagination :meta="transactions.meta" />
                     </div>
