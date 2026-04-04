@@ -228,6 +228,30 @@ php artisan make:request DestroyTransactionRequest
 - Tester l'application en conditions réelles
 - Ajouter les seeders pour les données de test
 
+### Traduction en français
+
+**Vues frontend :** Tous les textes des vues Vue.js traduits manuellement en français (login, register, categories, transactions).
+
+**Messages d'erreur Laravel :** Installation du package officiel de traductions :
+
+```bash
+composer require laravel-lang/lang --dev
+php artisan lang:add fr
+```
+
+Fichiers générés dans `lang/fr/` :
+- `auth.php` — messages d'authentification
+- `validation.php` — messages de validation
+- `passwords.php` — messages de mot de passe
+- `pagination.php` — messages de pagination
+
+Locale configurée dans `.env` :
+```env
+APP_LOCALE=fr
+APP_FALLBACK_LOCALE=fr
+APP_FAKER_LOCALE=fr_FR
+```
+
 ### Redirection de la page d'accueil
 
 Remplacé la page de bienvenue Laravel par une redirection intelligente :

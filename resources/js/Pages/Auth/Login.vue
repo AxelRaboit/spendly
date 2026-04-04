@@ -31,7 +31,7 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head title="Connexion" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
@@ -55,7 +55,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" value="Mot de passe" />
 
                 <TextInput
                     id="password"
@@ -72,7 +72,7 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-between">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                    <span class="ms-2 text-sm text-gray-600">Se souvenir de moi</span>
                 </label>
 
                 <Link
@@ -80,7 +80,7 @@ const submit = () => {
                     :href="route('password.request')"
                     class="text-sm text-gray-600 underline hover:text-gray-900"
                 >
-                    Forgot your password?
+                    Mot de passe oublié ?
                 </Link>
             </div>
 
@@ -89,12 +89,12 @@ const submit = () => {
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="form.processing"
             >
-                Log in
+                Se connecter
             </PrimaryButton>
 
             <div class="mt-6 flex items-center gap-4">
                 <div class="flex-1 border-t border-gray-300"></div>
-                <span class="text-sm text-gray-500">or</span>
+                <span class="text-sm text-gray-500">ou</span>
                 <div class="flex-1 border-t border-gray-300"></div>
             </div>
 
@@ -103,7 +103,7 @@ const submit = () => {
                     :href="route('register')"
                     class="text-sm text-indigo-600 underline hover:text-indigo-900"
                 >
-                    No account yet? Register
+                    Pas encore de compte ? S'inscrire
                 </Link>
             </div>
         </form>

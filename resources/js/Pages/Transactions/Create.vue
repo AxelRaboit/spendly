@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Add Transaction</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Ajouter une dépense</h2>
         </template>
 
         <div class="py-12">
@@ -10,9 +10,9 @@
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <form @submit.prevent="submit">
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Category</label>
+                                <label class="block text-sm font-medium mb-1">Catégorie</label>
                                 <select v-model="form.category_id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700">
-                                    <option value="" disabled>Select a category</option>
+                                    <option value="" disabled>Sélectionner une catégorie</option>
                                     <option v-for="category in categories" :key="category.id" :value="category.id">
                                         {{ category.name }}
                                     </option>
@@ -21,7 +21,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Amount (€)</label>
+                                <label class="block text-sm font-medium mb-1">Montant (€)</label>
                                 <input v-model="form.amount" type="number" step="0.01" min="0.01"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700" />
                                 <span v-if="form.errors.amount" class="text-red-600 text-sm">{{ form.errors.amount }}</span>
@@ -31,7 +31,7 @@
                                 <label class="block text-sm font-medium mb-1">Description</label>
                                 <input v-model="form.description" type="text"
                                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700"
-                                    placeholder="Optional description" />
+                                    placeholder="Description (optionnelle)" />
                                 <span v-if="form.errors.description" class="text-red-600 text-sm">{{ form.errors.description }}</span>
                             </div>
 
@@ -44,10 +44,10 @@
 
                             <div class="flex gap-2">
                                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                    Add
+                                    Ajouter
                                 </button>
                                 <Link href="/transactions" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">
-                                    Cancel
+                                    Annuler
                                 </Link>
                             </div>
                         </form>

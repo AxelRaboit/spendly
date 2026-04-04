@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Transactions</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Dépenses</h2>
         </template>
 
         <div class="py-12">
@@ -10,7 +10,7 @@
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <div class="mb-6">
                             <Link href="/transactions/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                Add Transaction
+                                Ajouter une dépense
                             </Link>
                         </div>
 
@@ -19,8 +19,8 @@
                                 <tr class="border-b">
                                     <th class="text-left py-2">Date</th>
                                     <th class="text-left py-2">Description</th>
-                                    <th class="text-left py-2">Category</th>
-                                    <th class="text-left py-2">Amount</th>
+                                    <th class="text-left py-2">Catégorie</th>
+                                    <th class="text-left py-2">Montant</th>
                                     <th class="text-left py-2">Actions</th>
                                 </tr>
                             </thead>
@@ -32,10 +32,10 @@
                                     <td class="py-2">{{ transaction.amount }} €</td>
                                     <td class="py-2 space-x-2">
                                         <Link :href="`/transactions/${transaction.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
-                                            Edit
+                                            Modifier
                                         </Link>
                                         <button @click="deleteTransaction(transaction.id)" class="text-red-600 hover:text-red-900">
-                                            Delete
+                                            Supprimer
                                         </button>
                                     </td>
                                 </tr>
@@ -43,7 +43,7 @@
                         </table>
 
                         <div v-if="transactions.length === 0" class="text-center py-8 text-gray-500">
-                            No transactions yet.
+                            Aucune dépense pour l'instant.
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ defineProps({
 });
 
 const deleteTransaction = (transactionId) => {
-    if (confirm('Are you sure you want to delete this transaction?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?')) {
         router.delete(`/transactions/${transactionId}`);
     }
 };

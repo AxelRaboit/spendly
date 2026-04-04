@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Categories</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Catégories</h2>
         </template>
 
         <div class="py-12">
@@ -10,14 +10,14 @@
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <div class="mb-6">
                             <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                Create Category
+                                Créer une catégorie
                             </Link>
                         </div>
 
                         <table class="min-w-full table-auto">
                             <thead>
                                 <tr class="border-b">
-                                    <th class="text-left py-2">Name</th>
+                                    <th class="text-left py-2">Nom</th>
                                     <th class="text-left py-2">Actions</th>
                                 </tr>
                             </thead>
@@ -26,10 +26,10 @@
                                     <td class="py-2">{{ category.name }}</td>
                                     <td class="py-2 space-x-2">
                                         <Link :href="`/categories/${category.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
-                                            Edit
+                                            Modifier
                                         </Link>
                                         <button @click="deleteCategory(category.id)" class="text-red-600 hover:text-red-900">
-                                            Delete
+                                            Supprimer
                                         </button>
                                     </td>
                                 </tr>
@@ -37,7 +37,7 @@
                         </table>
 
                         <div v-if="categories.length === 0" class="text-center py-8 text-gray-500">
-                            No categories yet.
+                            Aucune catégorie pour l'instant.
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ defineProps({
 });
 
 const deleteCategory = (categoryId) => {
-    if (confirm('Are you sure you want to delete this category?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
         router.delete(`/categories/${categoryId}`);
     }
 };
