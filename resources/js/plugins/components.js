@@ -6,6 +6,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import DateInput from '@/components/DateInput.vue';
+import DeleteButton from '@/components/DeleteButton.vue';
+import EditButton from '@/components/EditButton.vue';
 import SelectInput from '@/components/SelectInput.vue';
 
 export default {
@@ -19,5 +21,7 @@ export default {
         app.component('InputLabel', InputLabel);
         app.component('InputError', InputError);
         app.component('ConfirmModal', ConfirmModal);
+        app.component('DeleteButton', DeleteButton);
+        app.component('EditButton', EditButton);
     },
 };

@@ -39,12 +39,8 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                 <tr v-for="category in categories" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
                                     <td class="py-2">{{ category.name }}</td>
                                     <td class="py-2 space-x-2">
-                                        <Link :href="`/categories/${category.id}/edit`" class="text-indigo-400 hover:text-indigo-300">
-                                            Modifier
-                                        </Link>
-                                        <button class="text-red-400 hover:text-red-300" v-on:click="confirmDelete(`/categories/${category.id}`)">
-                                            Supprimer
-                                        </button>
+                                        <EditButton :href="`/categories/${category.id}/edit`" />
+                                        <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />
                                     </td>
                                 </tr>
                             </tbody>

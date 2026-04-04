@@ -45,12 +45,8 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                     <td class="py-2">{{ transaction.category.name }}</td>
                                     <td class="py-2">{{ transaction.amount }} €</td>
                                     <td class="py-2 space-x-2">
-                                        <Link :href="`/transactions/${transaction.id}/edit`" class="text-indigo-400 hover:text-indigo-300">
-                                            Modifier
-                                        </Link>
-                                        <button class="text-red-400 hover:text-red-300" v-on:click="confirmDelete(`/transactions/${transaction.id}`)">
-                                            Supprimer
-                                        </button>
+                                        <EditButton :href="`/transactions/${transaction.id}/edit`" />
+                                        <DeleteButton v-on:click="confirmDelete(`/transactions/${transaction.id}`)" />
                                     </td>
                                 </tr>
                             </tbody>
