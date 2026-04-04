@@ -75,13 +75,13 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-between">
                 <label class="flex items-center">
                     <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ms-2 text-sm text-gray-300">{{ t('auth.login.rememberMe') }}</span>
+                    <span class="ms-2 text-sm text-secondary">{{ t('auth.login.rememberMe') }}</span>
                 </label>
 
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="text-sm text-white underline"
+                    class="text-sm text-primary underline"
                 >
                     {{ t('auth.login.forgot') }}
                 </Link>
@@ -97,15 +97,15 @@ const submit = () => {
             </AppButton>
 
             <div class="mt-6 flex items-center gap-4">
-                <div class="flex-1 border-t border-gray-300" />
-                <span class="text-sm text-gray-300">{{ t('common.or') }}</span>
-                <div class="flex-1 border-t border-gray-300" />
+                <div class="flex-1 border-t border-base" />
+                <span class="text-sm text-secondary">{{ t('common.or') }}</span>
+                <div class="flex-1 border-t border-base" />
             </div>
 
             <div class="mt-4 text-center">
                 <Link
                     :href="route('register')"
-                    class="text-sm text-white underline"
+                    class="text-sm text-primary underline"
                 >
                     {{ t('auth.login.noAccount') }}
                 </Link>

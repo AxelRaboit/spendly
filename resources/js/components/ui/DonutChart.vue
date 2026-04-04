@@ -77,7 +77,7 @@ const paths = computed(() => {
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="#374151"
+                stroke="rgb(var(--color-surface-3))"
                 :stroke-width="innerR"
             />
         </svg>
@@ -86,11 +86,11 @@ const paths = computed(() => {
             <li
                 v-for="seg in paths"
                 :key="seg.label"
-                class="flex items-center gap-1.5 text-gray-400"
+                class="flex items-center gap-1.5 text-secondary"
             >
                 <span class="w-2 h-2 rounded-full shrink-0" :style="{ backgroundColor: seg.color }" />
                 <span class="truncate">{{ seg.label }}</span>
-                <span class="ml-auto pl-2 font-mono text-gray-300 shrink-0">{{ seg.percent }}%</span>
+                <span class="ml-auto pl-2 font-mono text-secondary shrink-0">{{ seg.percent }}%</span>
             </li>
         </ul>
     </div>

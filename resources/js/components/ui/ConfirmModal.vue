@@ -29,7 +29,7 @@ defineEmits(['confirm', 'cancel']);
         <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
             <div class="absolute inset-0 bg-black/60" v-on:click="$emit('cancel')" />
 
-            <div class="relative z-10 w-full max-w-md rounded-xl bg-gray-800 border border-gray-700 p-6 shadow-xl">
+            <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-base p-6 shadow-xl">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-900/50">
                         <svg
@@ -44,8 +44,8 @@ defineEmits(['confirm', 'cancel']);
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-100">{{ t('common.confirm') }}</h3>
-                        <p class="text-sm text-gray-400 mt-1">{{ message }}</p>
+                        <h3 class="text-base font-semibold text-primary">{{ t('common.confirm') }}</h3>
+                        <p class="text-sm text-secondary mt-1">{{ message }}</p>
                     </div>
                 </div>
 

@@ -35,45 +35,45 @@ function updatePassword() {
 <template>
     <section>
         <header class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-100">{{ t('profile.password.title') }}</h2>
-            <p class="mt-1 text-sm text-gray-400">{{ t('profile.password.subtitle') }}</p>
+            <h2 class="text-lg font-semibold text-primary">{{ t('profile.password.title') }}</h2>
+            <p class="mt-1 text-sm text-secondary">{{ t('profile.password.subtitle') }}</p>
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="updatePassword">
             <div>
-                <label for="current_password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldCurrent') }}</label>
+                <label for="current_password" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldCurrent') }}</label>
                 <input
                     id="current_password"
                     ref="currentPasswordInput"
                     v-model="form.current_password"
                     type="password"
                     autocomplete="current-password"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.current_password" class="mt-1 text-xs text-rose-400">{{ form.errors.current_password }}</p>
             </div>
 
             <div>
-                <label for="password" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldNew') }}</label>
+                <label for="password" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldNew') }}</label>
                 <input
                     id="password"
                     ref="passwordInput"
                     v-model="form.password"
                     type="password"
                     autocomplete="new-password"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.password" class="mt-1 text-xs text-rose-400">{{ form.errors.password }}</p>
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldConfirm') }}</label>
+                <label for="password_confirmation" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldConfirm') }}</label>
                 <input
                     id="password_confirmation"
                     v-model="form.password_confirmation"
                     type="password"
                     autocomplete="new-password"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.password_confirmation" class="mt-1 text-xs text-rose-400">{{ form.errors.password_confirmation }}</p>
             </div>

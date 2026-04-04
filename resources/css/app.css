@@ -2,32 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* vue3-datepicker */
+/* ── Semantic color tokens ───────────────────────────────────────────────────
+   RGB format (no commas) so Tailwind opacity modifiers work: bg-surface/50
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+    /* Backgrounds */
+    --color-bg:        249 250 251; /* gray-50  */
+    --color-surface:   255 255 255; /* white    */
+    --color-surface-2: 243 244 246; /* gray-100 */
+    --color-surface-3: 229 231 235; /* gray-200 */
+
+    /* Borders */
+    --color-border:        229 231 235; /* gray-200 */
+    --color-border-strong: 209 213 219; /* gray-300 */
+    --color-border-subtle: 243 244 246; /* gray-100 */
+
+    /* Text */
+    --color-text-primary:    17  24  39; /* gray-900 */
+    --color-text-secondary: 107 114 128; /* gray-500 */
+    --color-text-muted:     156 163 175; /* gray-400 */
+    --color-text-subtle:    209 213 219; /* gray-300 */
+}
+
+.dark {
+    /* Backgrounds */
+    --color-bg:          3   7  18; /* gray-950 */
+    --color-surface:    17  24  39; /* gray-900 */
+    --color-surface-2:  31  41  55; /* gray-800 */
+    --color-surface-3:  55  65  81; /* gray-700 */
+
+    /* Borders */
+    --color-border:        55  65  81; /* gray-700 */
+    --color-border-strong: 75  85  99; /* gray-600 */
+    --color-border-subtle: 31  41  55; /* gray-800 */
+
+    /* Text */
+    --color-text-primary:   243 244 246; /* gray-100 */
+    --color-text-secondary: 156 163 175; /* gray-400 */
+    --color-text-muted:     107 114 128; /* gray-500 */
+    --color-text-subtle:     75  85  99; /* gray-600 */
+}
+
+/* ── Datepicker ──────────────────────────────────────────────────────────── */
 .v3dp__datepicker {
-    --vdp-bg-color: #1f2937;
-    --vdp-text-color: #f3f4f6;
+    --vdp-bg-color: rgb(var(--color-surface-2));
+    --vdp-text-color: rgb(var(--color-text-primary));
     --vdp-border-radius: 0.5rem;
-    --vdp-heading-hover-color: #374151;
-    --vdp-arrow-color: #f3f4f6;
-    --vdp-elem-color: #f3f4f6;
-    --vdp-disabled-color: #4b5563;
+    --vdp-heading-hover-color: rgb(var(--color-surface-3));
+    --vdp-arrow-color: rgb(var(--color-text-primary));
+    --vdp-elem-color: rgb(var(--color-text-primary));
+    --vdp-disabled-color: rgb(var(--color-text-muted));
     --vdp-hover-color: #ffffff;
     --vdp-hover-bg-color: #4f46e5;
     --vdp-selected-color: #ffffff;
     --vdp-selected-bg-color: #4f46e5;
     --vdp-current-date-outline-color: #818cf8;
-    --vdp-divider-color: #374151;
+    --vdp-divider-color: rgb(var(--color-border));
 }
 
 .v3dp__input_wrapper input {
     width: 100%;
     padding: 0.5rem 0.75rem;
-    border: 1px solid #374151;
+    border: 1px solid rgb(var(--color-border));
     border-radius: 0.375rem;
-    background-color: #374151;
-    color: #f3f4f6;
+    background-color: rgb(var(--color-surface-3));
+    color: rgb(var(--color-text-primary));
 }
 
 .v3dp__input_wrapper input::placeholder {
-    color: #9ca3af;
+    color: rgb(var(--color-text-muted));
 }

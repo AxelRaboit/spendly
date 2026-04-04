@@ -18,11 +18,11 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('categories.title') }}</h2>
+            <h2 class="font-semibold text-xl text-primary leading-tight">{{ t('categories.title') }}</h2>
         </template>
 
-        <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-100">
+        <div class="bg-surface overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-primary">
                 <div class="mb-6 flex items-center justify-between gap-4">
                     <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="max-w-xs" />
                     <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0">
@@ -32,13 +32,13 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
                 <table class="min-w-full table-auto">
                     <thead>
-                        <tr class="border-b border-gray-700">
+                        <tr class="border-b border-base">
                             <th class="text-left py-2">{{ t('categories.colName') }}</th>
                             <th class="text-right py-2">{{ t('categories.colActions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="category in categories.data" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr v-for="category in categories.data" :key="category.id" class="border-b border-base hover:bg-surface-2">
                             <td class="py-2">{{ category.name }}</td>
                             <td class="py-2 space-x-2 text-right">
                                 <EditButton :href="`/categories/${category.id}/edit`" />

@@ -5,6 +5,7 @@ import '@/plugins/chartjs';
 import { computed } from 'vue';
 import { Bar, Doughnut } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -17,6 +18,7 @@ const props = defineProps({
 });
 
 const { fmt, currency } = useCurrency();
+const { baseOptions, barOptions: barThemeOptions } = useChartTheme();
 
 const evolution = computed(() => {
     if (props.previousMonth === 0) return null;
@@ -48,21 +50,8 @@ const barData = computed(() => ({
     }],
 }));
 
-const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: { labels: { color: '#d1d5db' } },
-    },
-};
-
-const barOptions = {
-    ...chartOptions,
-    scales: {
-        x: { ticks: { color: '#9ca3af' }, grid: { color: '#374151' } },
-        y: { ticks: { color: '#9ca3af' }, grid: { color: '#374151' } },
-    },
-};
+const chartOptions = baseOptions;
+const barOptions   = barThemeOptions;
 </script>
 
 <template>
@@ -70,34 +59,34 @@ const barOptions = {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('statistics.title') }}</h2>
+            <h2 class="font-semibold text-xl text-primary leading-tight">{{ t('statistics.title') }}</h2>
         </template>
 
         <div class="space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div class="bg-gray-900 rounded-lg p-6">
-                    <p class="text-sm text-gray-400 mb-1">{{ t('statistics.thisMonth') }}</p>
-                    <p class="text-3xl font-bold text-white">{{ fmt(currentMonth) }}</p>
+                <div class="bg-surface rounded-lg p-6">
+                    <p class="text-sm text-secondary mb-1">{{ t('statistics.thisMonth') }}</p>
+                    <p class="text-3xl font-bold text-primary">{{ fmt(currentMonth) }}</p>
                     <p v-if="evolution !== null" class="text-sm mt-1" :class="evolution > 0 ? 'text-red-400' : 'text-green-400'">
                         {{ t('statistics.vsLast', { sign: evolution > 0 ? '+' : '', pct: evolution.toFixed(1) }) }}
                     </p>
                 </div>
-                <div class="bg-gray-900 rounded-lg p-6">
-                    <p class="text-sm text-gray-400 mb-1">{{ t('statistics.lastMonth') }}</p>
-                    <p class="text-3xl font-bold text-white">{{ fmt(previousMonth) }}</p>
+                <div class="bg-surface rounded-lg p-6">
+                    <p class="text-sm text-secondary mb-1">{{ t('statistics.lastMonth') }}</p>
+                    <p class="text-3xl font-bold text-primary">{{ fmt(previousMonth) }}</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-gray-900 rounded-lg p-6">
-                    <h3 class="text-gray-100 font-semibold mb-4">{{ t('statistics.byCategory') }}</h3>
+                <div class="bg-surface rounded-lg p-6">
+                    <h3 class="text-primary font-semibold mb-4">{{ t('statistics.byCategory') }}</h3>
                     <div class="h-64">
                         <Doughnut :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
-                <div class="bg-gray-900 rounded-lg p-6">
-                    <h3 class="text-gray-100 font-semibold mb-4">{{ t('statistics.evolution') }}</h3>
+                <div class="bg-surface rounded-lg p-6">
+                    <h3 class="text-primary font-semibold mb-4">{{ t('statistics.evolution') }}</h3>
                     <div class="h-64">
                         <Bar :data="barData" :options="barOptions" />
                     </div>

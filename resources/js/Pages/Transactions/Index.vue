@@ -22,11 +22,11 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">{{ t('transactions.title') }}</h2>
+            <h2 class="font-semibold text-xl text-primary leading-tight">{{ t('transactions.title') }}</h2>
         </template>
 
-        <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-100">
+        <div class="bg-surface overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-primary">
                 <div class="mb-6 flex flex-wrap items-center gap-3">
                     <SearchInput :model-value="filters.search" :placeholder="t('transactions.searchPlaceholder')" class="max-w-xs" />
                     <FilterSelect param="category_id" :model-value="filters.category_id" :placeholder="t('transactions.allCategories')">
@@ -41,7 +41,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
                 <table class="min-w-full table-auto">
                     <thead>
-                        <tr class="border-b border-gray-700">
+                        <tr class="border-b border-base">
                             <th class="text-left py-2">{{ t('transactions.colDate') }}</th>
                             <th class="text-left py-2">{{ t('transactions.colDescription') }}</th>
                             <th class="text-left py-2">{{ t('transactions.colCategory') }}</th>
@@ -50,7 +50,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="transaction in transactions.data" :key="transaction.id" class="border-b border-gray-700 hover:bg-gray-800">
+                        <tr v-for="transaction in transactions.data" :key="transaction.id" class="border-b border-base hover:bg-surface-2">
                             <td class="py-2">{{ transaction.date }}</td>
                             <td class="py-2">{{ transaction.description ?? '—' }}</td>
                             <td class="py-2">{{ transaction.category.name }}</td>

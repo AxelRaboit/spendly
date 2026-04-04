@@ -98,7 +98,7 @@ const submit = () => {
             <div class="mt-4 flex items-center justify-end">
                 <Link
                     :href="route('login')"
-                    class="text-sm text-white underline"
+                    class="text-sm text-primary underline"
                 >
                     {{ t('auth.register.alreadyAccount') }}
                 </Link>

@@ -24,13 +24,13 @@ const form = useForm({
 <template>
     <section>
         <header class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-100">{{ t('profile.info.title') }}</h2>
-            <p class="mt-1 text-sm text-gray-400">{{ t('profile.info.subtitle') }}</p>
+            <h2 class="text-lg font-semibold text-primary">{{ t('profile.info.title') }}</h2>
+            <p class="mt-1 text-sm text-secondary">{{ t('profile.info.subtitle') }}</p>
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="form.patch(route('profile.update'))">
             <div>
-                <label for="name" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldName') }}</label>
+                <label for="name" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldName') }}</label>
                 <input
                     id="name"
                     v-model="form.name"
@@ -38,30 +38,30 @@ const form = useForm({
                     required
                     autofocus
                     autocomplete="name"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.name" class="mt-1 text-xs text-rose-400">{{ form.errors.name }}</p>
             </div>
 
             <div>
-                <label for="email" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldEmail') }}</label>
+                <label for="email" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldEmail') }}</label>
                 <input
                     id="email"
                     v-model="form.email"
                     type="email"
                     required
                     autocomplete="username"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.email" class="mt-1 text-xs text-rose-400">{{ form.errors.email }}</p>
             </div>
 
             <div>
-                <label for="currency" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldCurrency') }}</label>
+                <label for="currency" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldCurrency') }}</label>
                 <select
                     id="currency"
                     v-model="form.currency"
-                    class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 >
                     <option v-for="c in CURRENCIES" :key="c.code" :value="c.code">{{ c.label }}</option>
                 </select>
@@ -69,7 +69,7 @@ const form = useForm({
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="mt-2 text-sm text-gray-400">
+                <p class="mt-2 text-sm text-secondary">
                     {{ t('profile.info.unverified') }}
                     <Link :href="route('verification.send')" method="post" as="button" class="underline text-indigo-400 hover:text-indigo-300">
                         {{ t('profile.info.resend') }}
@@ -89,11 +89,11 @@ const form = useForm({
         </form>
 
         <div class="mt-6">
-            <label for="locale" class="block text-xs text-gray-400 uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldLocale') }}</label>
+            <label for="locale" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldLocale') }}</label>
             <select
                 id="locale"
                 :value="locale"
-                class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                 v-on:change="setLocale($event.target.value)"
             >
                 <option v-for="loc in SUPPORTED_LOCALES" :key="loc.code" :value="loc.code">{{ t(`locales.${loc.code}`) }}</option>

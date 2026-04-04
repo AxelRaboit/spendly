@@ -212,6 +212,7 @@ export default {
             distribution: 'Répartition réelle',
             projection: 'Projection fin de mois',
             planned: 'prévu',
+            spent: 'dépensé',
         },
         table: {
             label: 'Libellé',

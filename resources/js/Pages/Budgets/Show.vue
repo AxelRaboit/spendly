@@ -104,7 +104,7 @@ function progress(planned, actual) {
     return Math.min(100, Math.round((actual / planned) * 100));
 }
 function diffClass(diff, positiveIsGood) {
-    if (diff === 0) return 'text-gray-400';
+    if (diff === 0) return 'text-secondary';
     return (positiveIsGood ? diff > 0 : diff < 0) ? 'text-emerald-400' : 'text-rose-400';
 }
 function onKeydown(e, submitFn, cancelFn) {
@@ -138,9 +138,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
         <template #header>
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3 text-sm">
-                    <Link href="/wallets" class="text-gray-400 hover:text-gray-200 transition-colors">{{ t('nav.wallets') }}</Link>
-                    <span class="text-gray-600">/</span>
-                    <span class="text-gray-100 font-medium">{{ wallet.name }}</span>
+                    <Link href="/wallets" class="text-secondary hover:text-primary transition-colors">{{ t('nav.wallets') }}</Link>
+                    <span class="text-subtle">/</span>
+                    <span class="text-primary font-medium">{{ wallet.name }}</span>
                 </div>
                 <button
                     class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
@@ -157,23 +157,23 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
             <div class="flex items-center justify-between">
                 <Link
                     :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
-                    class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm capitalize"
+                    class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                     {{ fmtMonth(prevMonth) }}
                 </Link>
                 <div class="flex flex-col items-center gap-1">
-                    <h2 class="text-xl font-bold text-gray-100 capitalize">{{ fmtMonth(budget.month) }}</h2>
+                    <h2 class="text-xl font-bold text-primary capitalize">{{ fmtMonth(budget.month) }}</h2>
                     <Link
                         :href="`/wallets/${wallet.id}/budget/year?year=${budget.month.slice(0, 4)}`"
-                        class="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+                        class="text-xs text-subtle hover:text-secondary transition-colors"
                     >
                         {{ t('budgets.year.viewYear', { year: budget.month.slice(0, 4) }) }}
                     </Link>
                 </div>
                 <Link
                     :href="`/wallets/${wallet.id}/budget?month=${nextMonth}`"
-                    class="flex items-center gap-1 text-gray-400 hover:text-gray-100 transition-colors text-sm capitalize"
+                    class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
                     {{ fmtMonth(nextMonth) }}
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
@@ -182,80 +182,97 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
 
             <!-- ── KPI cards ── -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
-                    <p class="text-lg font-bold text-gray-100 font-mono">{{ fmt(startBalance) }}</p>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
+                    <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
                 </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
                     <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome.actual) }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
                     <p class="text-lg font-bold font-mono" :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
                         {{ fmt(cashFlow.actual, true) }}
                     </p>
-                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
                     <p class="text-lg font-bold font-mono" :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
                         {{ fmt(leftToSpend.actual) }}
                     </p>
-                    <p class="text-xs text-gray-500 mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
-                    <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-gray-600' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
+                    <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                         {{ savingsRate !== null ? savingsRate + '%' : '—' }}
                     </p>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+                    <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
                 </div>
             </div>
 
             <!-- ── Donut + gauge + projection ── -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
                     <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                    <p v-else class="text-sm text-gray-600">{{ t('budgets.noneThisMonth') }}</p>
+                    <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
                 </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4 flex flex-col items-center justify-center">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide mb-3 self-start">{{ t('budgets.kpi.leftToSpend') }}</p>
-                    <BudgetGauge
-                        :spent="totalExpenses.actual"
-                        :total="totalIncome.actual"
-                        :center="fmt(leftToSpend.actual)"
-                        :sublabel="t('budgets.kpi.leftToSpend')"
-                        :size="160"
-                    />
-                </div>
-                <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-4 flex flex-col justify-between">
+                <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
+                    <p class="text-xs text-muted uppercase tracking-wide">{{ t('budgets.kpi.leftToSpend') }}</p>
                     <div>
-                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                        <div class="flex items-end justify-between mb-2">
+                            <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                {{ fmt(leftToSpend.actual) }}
+                            </span>
+                            <span class="text-sm text-muted font-mono">
+                                {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
+                            </span>
+                        </div>
+                        <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
+                            <div
+                                v-show="totalIncome.actual > 0"
+                                class="h-full rounded-full transition-all duration-500"
+                                :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
+                                :style="{
+                                    width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%',
+                                }"
+                            />
+                        </div>
+                        <div class="flex justify-between text-xs text-muted mt-1.5">
+                            <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
+                            <span>{{ fmt(totalIncome.actual) }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
+                    <div>
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">
                             {{ t('budgets.kpi.projection') }}
-                            <span v-if="!isCurrentMonth" class="normal-case text-gray-600 ml-1">{{ t('budgets.projectionPast') }}</span>
+                            <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
                         </p>
                         <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
                             {{ fmt(projectedExpenses) }}
                         </p>
-                        <p v-else class="text-lg font-bold text-gray-500 font-mono">—</p>
-                        <p v-if="projectedExpenses !== null" class="text-xs text-gray-500 mt-0.5">
+                        <p v-else class="text-lg font-bold text-muted font-mono">—</p>
+                        <p v-if="projectedExpenses !== null" class="text-xs text-muted mt-0.5">
                             vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
                         </p>
                     </div>
-                    <p v-if="projectedExpenses !== null" class="text-xs text-gray-600 mt-2">
+                    <p v-if="projectedExpenses !== null" class="text-xs text-subtle mt-2">
                         {{ t('budgets.projectionBased', { days: new Date().getDate() }) }}
                     </p>
                 </div>
             </div>
 
             <!-- ── Copy from previous / empty state ── -->
-            <div v-if="isBudgetEmpty" class="bg-gray-900 border border-dashed border-gray-700 rounded-lg p-8 text-center">
-                <p class="text-gray-400 mb-4">{{ t('budgets.emptyBudget') }}</p>
+            <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-base rounded-lg p-8 text-center">
+                <p class="text-secondary mb-4">{{ t('budgets.emptyBudget') }}</p>
                 <button
-                    class="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium px-4 py-2 rounded-lg border border-gray-700 transition-colors"
+                    class="inline-flex items-center gap-2 bg-surface-2 hover:bg-surface-3 text-primary text-sm font-medium px-4 py-2 rounded-lg border border-base transition-colors"
                     v-on:click="copyFromPrevious"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
@@ -264,9 +281,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
             </div>
 
             <!-- ── Budget notes ── -->
-            <div class="bg-gray-900 border border-gray-700/60 rounded-lg">
+            <div class="bg-surface border border-base/60 rounded-lg">
                 <button
-                    class="flex items-center justify-between w-full px-4 py-3 text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                    class="flex items-center justify-between w-full px-4 py-3 text-xs text-muted hover:text-secondary transition-colors"
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
                 >
                     <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
@@ -287,7 +304,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                         v-model="budgetNotesText"
                         :placeholder="t('budgets.notes.placeholder')"
                         rows="3"
-                        class="w-full bg-gray-800 text-gray-200 rounded-lg px-3 py-2 text-sm border border-gray-700 focus:border-indigo-500 focus:outline-none resize-none"
+                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2 text-sm border border-base focus:border-indigo-500 focus:outline-none resize-none"
                         v-on:blur="saveBudgetNotes"
                         v-on:keydown.esc="saveBudgetNotes"
                     />
@@ -296,7 +313,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
 
             <!-- ── Table toolbar ── -->
             <div class="flex items-center justify-between -mb-1">
-                <p class="text-xs text-gray-600">{{ t('budgets.hint') }}</p>
+                <p class="text-xs text-subtle">{{ t('budgets.hint') }}</p>
                 <div class="flex items-center gap-2">
                     <AppButton
                         v-if="!isBudgetEmpty"
@@ -316,10 +333,10 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
             </div>
 
             <!-- ── Budget table ── -->
-            <div class="bg-gray-900 border border-gray-700/60 rounded-lg overflow-clip">
+            <div class="bg-surface border border-base/60 rounded-lg overflow-clip">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="border-b border-gray-700/60 text-xs text-gray-500 uppercase tracking-wider sticky top-0 z-10 bg-gray-900">
+                        <tr class="border-b border-base/60 text-xs text-muted uppercase tracking-wider sticky top-0 z-10 bg-surface">
                             <th class="text-left px-4 py-3 font-medium w-[34%]">{{ t('budgets.table.label') }}</th>
                             <th class="text-left px-4 py-3 font-medium w-[20%]">{{ t('budgets.table.category') }}</th>
                             <th class="text-right px-4 py-3 font-medium w-[13%]">{{ t('budgets.table.planned') }}</th>
@@ -341,19 +358,20 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                             {{ SECTION_META[type].label }}
                                         </span>
                                         <template v-if="!collapsedSections[type]">
-                                            <div class="flex-1 max-w-[120px] h-1.5 bg-gray-700 rounded-full">
+                                            <div class="flex-1 max-w-[120px] h-1.5 bg-surface-3 rounded-full">
                                                 <div
+                                                    v-show="progress(totals[type]?.planned, totals[type]?.actual) > 0"
                                                     class="h-full rounded-full transition-all duration-300"
                                                     :class="SECTION_META[type].barColor"
-                                                    :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%', boxShadow: progress(totals[type]?.planned, totals[type]?.actual) > 0 ? `0 0 6px 1px ${SECTION_META[type].glow}80` : 'none' }"
+                                                    :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%' }"
                                                 />
                                             </div>
-                                            <span class="text-xs text-gray-500">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
+                                            <span class="text-xs text-muted">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
                                         </template>
-                                        <span v-else class="text-xs text-gray-600">{{ items.length }} ligne{{ items.length > 1 ? 's' : '' }}</span>
+                                        <span v-else class="text-xs text-subtle">{{ items.length }} ligne{{ items.length > 1 ? 's' : '' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-4 py-2 text-right font-mono text-gray-300 text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
+                                <td class="px-4 py-2 text-right font-mono text-secondary text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
                                 <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
                                 <td
                                     class="px-4 py-2 text-right font-mono text-xs"
@@ -379,7 +397,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                 <template v-for="item in items" :key="item.id">
                                     <!-- Inline edit -->
                                     <template v-if="editingId === item.id">
-                                        <tr class="bg-gray-800 border-b border-gray-700/40" data-editing>
+                                        <tr class="bg-surface-2 border-b border-base/40" data-editing>
                                             <td class="pl-8 pr-2 py-1.5">
                                                 <input
                                                     :id="`edit-label-${item.id}`"
@@ -387,7 +405,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                                     type="text"
                                                     tabindex="1"
                                                     :placeholder="t('budgets.editRow.labelPlaceholder')"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
                                                 >
                                             </td>
@@ -395,7 +413,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                                 <select
                                                     v-model="editForm.category_id"
                                                     tabindex="2"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
                                                 >
                                                     <option :value="null">—</option>
@@ -410,38 +428,38 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                                     min="0"
                                                     tabindex="3"
                                                     placeholder="0,00"
-                                                    class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
                                                 >
                                             </td>
-                                            <td class="px-2 py-1.5 text-right text-gray-500 font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
+                                            <td class="px-2 py-1.5 text-right text-muted font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
                                             <td />
                                             <td class="px-3 py-1.5">
                                                 <div class="flex items-center gap-2 justify-end">
                                                     <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.editRow.confirm')" v-on:click="submitEdit(item)">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                                     </button>
-                                                    <button class="text-gray-500 hover:text-gray-300 transition-colors" :title="t('budgets.editRow.cancel')" v-on:click="cancelEditing">
+                                                    <button class="text-muted hover:text-secondary transition-colors" :title="t('budgets.editRow.cancel')" v-on:click="cancelEditing">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr class="bg-gray-800 border-b border-gray-700/40" data-editing>
+                                        <tr class="bg-surface-2 border-b border-base/40" data-editing>
                                             <td colspan="6" class="pl-8 pr-3 pb-2 space-y-1.5">
                                                 <textarea
                                                     v-model="editForm.notes"
                                                     :placeholder="t('budgets.editRow.notePlaceholder')"
                                                     rows="2"
                                                     tabindex="4"
-                                                    class="w-full bg-gray-700 text-gray-300 rounded px-2 py-1 text-xs border border-gray-600 focus:border-indigo-500 focus:outline-none resize-none"
+                                                    class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
                                                     v-on:keydown="onNotesKeydown($event, item)"
                                                 />
                                                 <div class="flex items-center gap-2">
-                                                    <label class="text-xs text-gray-500">{{ t('budgets.editRow.section') }}</label>
+                                                    <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
                                                     <select
                                                         v-model="editForm.type"
-                                                        class="bg-gray-700 text-gray-200 rounded px-2 py-0.5 text-xs border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                                        class="bg-surface-3 text-primary rounded px-2 py-0.5 text-xs border border-strong focus:border-indigo-500 focus:outline-none"
                                                     >
                                                         <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
                                                     </select>
@@ -454,7 +472,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                     <tr
                                         v-else
                                         draggable="true"
-                                        class="border-b border-gray-800/60 group hover:bg-gray-800/40 cursor-pointer transition-colors"
+                                        class="border-b border-subtle/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
                                         :class="[
                                             item.planned_amount > 0 && item.actual_amount > item.planned_amount ? 'border-l-2 border-l-rose-500/60' : '',
                                             deletingItem && deletingItem.id === item.id ? 'opacity-40 pointer-events-none' : '',
@@ -468,9 +486,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                         v-on:dragover="onDragOver($event, item)"
                                         v-on:drop.prevent="onDrop(item)"
                                     >
-                                        <td class="pl-4 pr-4 py-2.5 text-gray-200">
+                                        <td class="pl-4 pr-4 py-2.5 text-primary">
                                             <div class="flex items-center gap-2">
-                                                <div class="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                                <div class="text-base opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                                                     <svg class="w-3 h-4" fill="currentColor" viewBox="0 0 24 24">
                                                         <circle cx="9" cy="5" r="1.5" /><circle cx="15" cy="5" r="1.5" />
                                                         <circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
@@ -489,18 +507,19 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                             </div>
                                         </td>
                                         <td class="px-4 py-2.5">
-                                            <span v-if="item.category" class="inline-flex items-center text-xs bg-gray-800 text-gray-300 rounded px-2 py-0.5 border border-gray-700">
+                                            <span v-if="item.category" class="inline-flex items-center text-xs bg-surface-2 text-secondary rounded px-2 py-0.5 border border-base">
                                                 {{ item.category.name }}
                                             </span>
-                                            <span v-else class="text-gray-600">—</span>
+                                            <span v-else class="text-subtle">—</span>
                                         </td>
-                                        <td class="px-4 py-2.5 text-right text-gray-400 font-mono">
+                                        <td class="px-4 py-2.5 text-right text-secondary font-mono">
                                             <div>{{ fmt(item.planned_amount) }}</div>
-                                            <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-gray-700 rounded-full">
+                                            <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-surface-3 rounded-full">
                                                 <div
+                                                    v-show="progress(item.planned_amount, item.actual_amount) > 0"
                                                     class="h-full rounded-full transition-all duration-300"
                                                     :class="item.actual_amount > item.planned_amount ? 'bg-rose-400' : SECTION_META[type]?.barColor"
-                                                    :style="{ width: progress(item.planned_amount, item.actual_amount) + '%', boxShadow: progress(item.planned_amount, item.actual_amount) > 0 ? `0 0 4px 1px ${item.actual_amount > item.planned_amount ? '#fb7185' : SECTION_META[type]?.glow}80` : 'none' }"
+                                                    :style="{ width: progress(item.planned_amount, item.actual_amount) + '%' }"
                                                 />
                                             </div>
                                         </td>
@@ -528,7 +547,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                             <div class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <!-- Add a transaction for this row -->
                                                 <button
-                                                    class="text-gray-500 hover:text-indigo-400 transition-colors"
+                                                    class="text-muted hover:text-indigo-400 transition-colors"
                                                     :title="t('budgets.actions.addTx')"
                                                     v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
                                                 >
@@ -537,7 +556,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                                 <!-- Toggle recurring -->
                                                 <button
                                                     class="transition-colors"
-                                                    :class="item.is_recurring ? 'text-indigo-400 hover:text-indigo-300' : 'text-gray-500 hover:text-indigo-400'"
+                                                    :class="item.is_recurring ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'"
                                                     :title="t('budgets.actions.toggleRecurring')"
                                                     v-on:click.stop="toggleRecurring(item)"
                                                 >
@@ -545,16 +564,16 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                                 </button>
                                                 <!-- Duplicate -->
                                                 <button
-                                                    class="text-gray-500 hover:text-amber-400 transition-colors"
+                                                    class="text-muted hover:text-amber-400 transition-colors"
                                                     :title="t('budgets.actions.duplicate')"
                                                     v-on:click.stop="duplicateItem(item)"
                                                 >
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                                                 </button>
-                                                <button class="text-gray-500 hover:text-sky-400 transition-colors" :title="t('budgets.actions.edit')" v-on:click.stop="startEditingItem(item)">
+                                                <button class="text-muted hover:text-sky-400 transition-colors" :title="t('budgets.actions.edit')" v-on:click.stop="startEditingItem(item)">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                                 </button>
-                                                <button class="text-gray-500 hover:text-rose-400 transition-colors" :title="t('budgets.actions.delete')" v-on:click.stop="requestDelete(item)">
+                                                <button class="text-muted hover:text-rose-400 transition-colors" :title="t('budgets.actions.delete')" v-on:click.stop="requestDelete(item)">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                 </button>
                                             </div>
@@ -563,21 +582,21 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                 </template>
 
                                 <!-- ── Add budget row ── -->
-                                <tr v-if="addingType === type" class="bg-gray-800/60 border-b border-gray-700/40" data-adding>
+                                <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
                                     <td class="pl-8 pr-2 py-1.5">
                                         <input
                                             :id="`add-label-${type}`"
                                             v-model="addForm.label"
                                             type="text"
                                             :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
+                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
                                         >
                                     </td>
                                     <td class="px-2 py-1.5">
                                         <select
                                             v-model="addForm.category_id"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none"
+                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
                                         >
                                             <option :value="null">—</option>
@@ -591,7 +610,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                             step="0.01"
                                             min="0"
                                             placeholder="0,00"
-                                            class="w-full bg-gray-700 text-gray-100 rounded px-2 py-1 text-sm border border-gray-600 focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
                                         >
                                     </td>
@@ -601,7 +620,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                             <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.addRow.confirm')" v-on:click="submitAdd">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                             </button>
-                                            <button class="text-gray-500 hover:text-gray-300 transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
+                                            <button class="text-muted hover:text-secondary transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
                                         </div>
@@ -609,7 +628,7 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                                 </tr>
 
                                 <!-- ── Add row button ── -->
-                                <tr v-if="addingType !== type" class="border-b border-gray-800/60">
+                                <tr v-if="addingType !== type" class="border-b border-subtle/60">
                                     <td colspan="6" class="pl-8 py-1.5">
                                         <AppButton
                                             size="sm"
@@ -625,9 +644,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                         </template>
 
                         <!-- ── Cash flow summary ── -->
-                        <tr class="border-t-2 border-gray-600 bg-gray-800/30">
-                            <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.cashFlow') }}</td>
-                            <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(cashFlow.planned, true) }}</td>
+                        <tr class="border-t-2 border-strong bg-surface-2/30">
+                            <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.cashFlow') }}</td>
+                            <td class="px-4 py-3 text-right font-mono text-secondary text-sm">{{ fmt(cashFlow.planned, true) }}</td>
                             <td
                                 class="px-4 py-3 text-right font-mono text-sm font-semibold"
                                 :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
@@ -644,9 +663,9 @@ onUnmounted(() => document.removeEventListener('keydown', onGlobalKeydown));
                         </tr>
 
                         <!-- ── Left to spend ── -->
-                        <tr class="bg-gray-800/30">
-                            <td class="px-4 py-3 font-semibold text-gray-300 text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.leftToSpend') }}</td>
-                            <td class="px-4 py-3 text-right font-mono text-gray-400 text-sm">{{ fmt(leftToSpend.planned) }}</td>
+                        <tr class="bg-surface-2/30">
+                            <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.leftToSpend') }}</td>
+                            <td class="px-4 py-3 text-right font-mono text-secondary text-sm">{{ fmt(leftToSpend.planned) }}</td>
                             <td
                                 class="px-4 py-3 text-right font-mono text-sm font-bold"
                                 :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"

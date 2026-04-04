@@ -31,34 +31,34 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
-                class="relative ml-auto w-full max-w-sm bg-gray-900 border-l border-gray-700 shadow-2xl flex flex-col"
+                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <!-- Header -->
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
-                        <h3 class="font-semibold text-gray-100">{{ item?.label }}</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ t('budgets.detailPanel.subtitle') }}</p>
+                        <h3 class="font-semibold text-primary">{{ item?.label }}</h3>
+                        <p class="text-xs text-secondary mt-0.5">{{ t('budgets.detailPanel.subtitle') }}</p>
                     </div>
-                    <button class="text-gray-400 hover:text-gray-200 transition-colors" v-on:click="emit('close')">
+                    <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
                 <!-- List -->
                 <div class="flex-1 overflow-y-auto px-6 py-4">
-                    <div v-if="loading" class="flex items-center justify-center py-12 text-gray-500 text-sm">
+                    <div v-if="loading" class="flex items-center justify-center py-12 text-muted text-sm">
                         {{ t('budgets.detailPanel.loading') }}
                     </div>
                     <template v-else-if="transactions.length">
                         <div
                             v-for="tx in transactions"
                             :key="tx.id"
-                            class="flex items-center justify-between py-3 border-b border-gray-800 last:border-0"
+                            class="flex items-center justify-between py-3 border-b border-subtle last:border-0"
                         >
                             <div class="min-w-0">
-                                <p class="text-sm text-gray-200 truncate">{{ tx.description || '—' }}</p>
-                                <p class="text-xs text-gray-500 mt-0.5">{{ tx.date }}</p>
+                                <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
+                                <p class="text-xs text-muted mt-0.5">{{ tx.date }}</p>
                             </div>
                             <span
                                 class="ml-4 font-mono text-sm font-medium shrink-0"
@@ -68,13 +68,13 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                             </span>
                         </div>
                     </template>
-                    <p v-else class="text-sm text-gray-500 text-center py-12">{{ t('budgets.detailPanel.none') }}</p>
+                    <p v-else class="text-sm text-muted text-center py-12">{{ t('budgets.detailPanel.none') }}</p>
                 </div>
 
                 <!-- Footer total -->
-                <div class="px-6 py-4 border-t border-gray-700 flex items-center justify-between">
-                    <span class="text-sm text-gray-400">{{ t('budgets.detailPanel.total') }}</span>
-                    <span class="font-mono font-bold text-gray-100">{{ fmt(total) }}</span>
+                <div class="px-6 py-4 border-t border-base flex items-center justify-between">
+                    <span class="text-sm text-secondary">{{ t('budgets.detailPanel.total') }}</span>
+                    <span class="font-mono font-bold text-primary">{{ fmt(total) }}</span>
                 </div>
             </div>
         </div>

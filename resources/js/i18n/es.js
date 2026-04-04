@@ -212,6 +212,7 @@ export default {
             distribution: 'Distribución real',
             projection: 'Proyección fin de mes',
             planned: 'previsto',
+            spent: 'gastado',
         },
         table: {
             label: 'Etiqueta',

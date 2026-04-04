@@ -212,6 +212,7 @@ export default {
             distribution: 'Actual breakdown',
             projection: 'End-of-month projection',
             planned: 'planned',
+            spent: 'spent',
         },
         table: {
             label: 'Label',

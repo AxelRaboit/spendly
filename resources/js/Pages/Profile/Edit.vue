@@ -19,19 +19,19 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-100">{{ t('profile.title') }}</h2>
+            <h2 class="text-xl font-semibold leading-tight text-primary">{{ t('profile.title') }}</h2>
         </template>
 
         <div class="mx-auto max-w-2xl space-y-6">
-            <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-6">
+            <div class="bg-surface border border-base/60 rounded-lg p-6">
                 <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
             </div>
 
-            <div class="bg-gray-900 border border-gray-700/60 rounded-lg p-6">
+            <div class="bg-surface border border-base/60 rounded-lg p-6">
                 <UpdatePasswordForm />
             </div>
 
-            <div class="bg-gray-900 border border-rose-900/40 rounded-lg p-6">
+            <div class="bg-surface border border-rose-900/40 rounded-lg p-6">
                 <DeleteUserForm />
             </div>
         </div>

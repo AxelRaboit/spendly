@@ -23,13 +23,13 @@ const { form, submit } = useTransactionForm(props.transaction ?? undefined);
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+            <h2 class="font-semibold text-xl text-primary leading-tight">
                 {{ isEdit ? t('transactions.editTitle') : t('transactions.addTitle') }}
             </h2>
         </template>
 
-        <div class="bg-gray-900 shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-100">
+        <div class="bg-surface shadow-sm sm:rounded-lg">
+            <div class="p-6 text-primary">
                 <form v-on:submit.prevent="submit">
                     <div class="mb-6">
                         <InputLabel :value="t('transactions.fieldType')" />

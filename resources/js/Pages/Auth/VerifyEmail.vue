@@ -28,7 +28,7 @@ const verificationLinkSent = computed(
     <GuestLayout>
         <Head :title="t('auth.verifyEmail.title')" />
 
-        <div class="mb-4 text-sm text-gray-300">
+        <div class="mb-4 text-sm text-secondary">
             {{ t('auth.verifyEmail.instructions') }}
         </div>
 
@@ -53,7 +53,7 @@ const verificationLinkSent = computed(
                     :href="route('logout')"
                     method="post"
                     as="button"
-                    class="text-sm text-white underline"
+                    class="text-sm text-primary underline"
                 >
                     {{ t('auth.verifyEmail.logout') }}
                 </Link>

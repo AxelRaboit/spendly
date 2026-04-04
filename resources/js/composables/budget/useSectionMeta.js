@@ -28,7 +28,7 @@ export function useSectionMeta() {
             barColor: 'bg-sky-400',
             bg: 'bg-sky-400/10',
             border: 'border-sky-400/30',
-            positiveIsGood: false,
+            positiveIsGood: true,
             glow: SECTION_COLORS.savings,
         },
         bills: {
@@ -55,7 +55,7 @@ export function useSectionMeta() {
             barColor: 'bg-purple-400',
             bg: 'bg-purple-400/10',
             border: 'border-purple-400/30',
-            positiveIsGood: false,
+            positiveIsGood: true,
             glow: SECTION_COLORS.debt,
         },
     }));

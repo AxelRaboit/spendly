@@ -21,13 +21,13 @@ const { form, submit } = useWalletForm(props.wallet ?? undefined);
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
+            <h2 class="font-semibold text-xl text-primary leading-tight">
                 {{ isEdit ? t('wallets.editTitle') : t('wallets.createTitle') }}
             </h2>
         </template>
 
-        <div class="bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-100">
+        <div class="bg-surface overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-primary">
                 <form v-on:submit.prevent="submit">
                     <div class="mb-4">
                         <InputLabel :value="t('wallets.fieldName')" />

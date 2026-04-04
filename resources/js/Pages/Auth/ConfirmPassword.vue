@@ -24,7 +24,7 @@ const submit = () => {
     <GuestLayout>
         <Head :title="t('auth.confirmPassword.title')" />
 
-        <div class="mb-4 text-sm text-gray-300">
+        <div class="mb-4 text-sm text-secondary">
             {{ t('auth.confirmPassword.instructions') }}
         </div>
 

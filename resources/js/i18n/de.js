@@ -212,6 +212,7 @@ export default {
             distribution: 'Tatsächliche Verteilung',
             projection: 'Monatsendprognose',
             planned: 'geplant',
+            spent: 'ausgegeben',
         },
         table: {
             label: 'Bezeichnung',

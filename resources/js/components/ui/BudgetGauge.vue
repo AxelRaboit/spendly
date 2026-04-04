@@ -31,35 +31,18 @@ const color = computed(() => {
     return '#fb7185';                        // rose
 });
 
-const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
 </script>
 
 <template>
     <div class="flex flex-col items-center overflow-hidden" :style="{ height: size * 0.86 + 'px' }">
         <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
-            <defs>
-                <filter
-                    :id="glowId"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
-                >
-                    <feGaussianBlur stdDeviation="3" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-
             <!-- Track -->
             <circle
                 :cx="cx"
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="#1f2937"
+                stroke="rgb(var(--color-surface-3))"
                 :stroke-width="sw"
                 :stroke-dasharray="`${arcLen} ${C - arcLen}`"
                 stroke-linecap="round"
@@ -72,7 +55,7 @@ const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="#374151"
+                stroke="rgb(var(--color-border))"
                 :stroke-width="sw * 0.15"
                 :stroke-dasharray="`${arcLen} ${C - arcLen}`"
                 stroke-linecap="round"
@@ -81,6 +64,7 @@ const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
 
             <!-- Fill -->
             <circle
+                v-if="pct > 0"
                 :cx="cx"
                 :cy="cy"
                 :r="r"
@@ -90,7 +74,6 @@ const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
                 :stroke-dasharray="`${fillLen} ${C - fillLen}`"
                 stroke-linecap="round"
                 :transform="`rotate(135, ${cx}, ${cy})`"
-                :filter="`url(#${glowId})`"
                 style="transition: stroke-dasharray 0.6s cubic-bezier(.4,0,.2,1), stroke 0.4s ease"
             />
 
@@ -102,7 +85,7 @@ const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
                 dominant-baseline="middle"
                 :font-size="size * 0.13"
                 font-weight="700"
-                fill="white"
+                fill="rgb(var(--color-text-primary))"
                 font-family="ui-monospace, monospace"
             >{{ center }}</text>
 
@@ -113,7 +96,7 @@ const glowId = computed(() => `glow-${Math.random().toString(36).slice(2)}`);
                 text-anchor="middle"
                 dominant-baseline="middle"
                 :font-size="size * 0.072"
-                fill="#6b7280"
+                fill="rgb(var(--color-text-muted))"
                 letter-spacing="0.5"
             >{{ sublabel }}</text>
 

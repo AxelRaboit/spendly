@@ -33,16 +33,16 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
-                class="relative ml-auto w-full max-w-sm bg-gray-900 border-l border-gray-700 shadow-2xl flex flex-col"
+                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <!-- Header -->
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
-                        <h3 class="font-semibold text-gray-100">{{ t('budgets.txPanel.title') }}</h3>
-                        <p v-if="prefillLabel" class="text-xs text-gray-400 mt-0.5">{{ prefillLabel }}</p>
+                        <h3 class="font-semibold text-primary">{{ t('budgets.txPanel.title') }}</h3>
+                        <p v-if="prefillLabel" class="text-xs text-secondary mt-0.5">{{ prefillLabel }}</p>
                     </div>
-                    <button class="text-gray-400 hover:text-gray-200 transition-colors" v-on:click="emit('close')">
+                    <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
@@ -51,7 +51,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                 <form class="flex-1 overflow-y-auto px-6 py-6 space-y-5" v-on:submit.prevent="emit('submit')">
                     <!-- Section -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">{{ t('budgets.txPanel.section') }}</label>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.section') }}</label>
                         <div class="flex flex-wrap gap-1.5">
                             <button
                                 v-for="(meta, stype) in sectionMeta"
@@ -60,7 +60,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                                 class="px-2.5 py-1 rounded text-xs font-medium border transition-colors"
                                 :class="txSection === stype
                                     ? [meta.bg, meta.border, meta.color]
-                                    : 'bg-gray-800 border-gray-700 text-gray-500 hover:text-gray-300'"
+                                    : 'bg-surface-2 border-base text-muted hover:text-secondary'"
                                 v-on:click="emit('section-change', txSection === stype ? null : stype)"
                             >
                                 {{ meta.label }}
@@ -70,13 +70,13 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
 
                     <!-- Type -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">{{ t('budgets.txPanel.type') }}</label>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.type') }}</label>
                         <TypeToggle v-model="txForm.type" />
                     </div>
 
                     <!-- Amount -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">{{ t('budgets.txPanel.amount') }}</label>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.amount') }}</label>
                         <div class="relative">
                             <input
                                 id="tx-amount"
@@ -86,52 +86,52 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                                 min="0.01"
                                 placeholder="0,00"
                                 required
-                                class="w-full bg-gray-800 text-gray-100 text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-gray-700 focus:border-indigo-500 focus:outline-none text-right"
+                                class="w-full bg-surface-2 text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-base focus:border-indigo-500 focus:outline-none text-right"
                             >
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl font-bold">{{ symbol }}</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-xl font-bold">{{ symbol }}</span>
                         </div>
                         <p v-if="txForm.errors.amount" class="text-rose-400 text-xs mt-1">{{ txForm.errors.amount }}</p>
                     </div>
 
                     <!-- Category -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
                         <select
                             v-model="txForm.category_id"
                             required
-                            class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                         >
                             <option :value="null" disabled>{{ t('budgets.txPanel.pickCategory') }}</option>
                             <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                         </select>
                         <p v-if="txForm.errors.category_id" class="text-rose-400 text-xs mt-1">{{ txForm.errors.category_id }}</p>
-                        <p v-if="txSection && filteredCategories.length === 0" class="text-gray-600 text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
+                        <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
                     </div>
 
                     <!-- Date -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">{{ t('budgets.txPanel.date') }}</label>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.date') }}</label>
                         <DateInput v-model="txForm.date" />
                         <p v-if="txForm.errors.date" class="text-rose-400 text-xs mt-1">{{ txForm.errors.date }}</p>
                     </div>
 
                     <!-- Description -->
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wide mb-2">
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.descLabel') }}
-                            <span class="normal-case text-gray-600">{{ t('budgets.txPanel.descOptional') }}</span>
+                            <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
                         </label>
                         <input
                             v-model="txForm.description"
                             type="text"
                             :placeholder="t('budgets.txPanel.descPlaceholder')"
-                            class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-indigo-500 focus:outline-none"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                         >
                     </div>
                 </form>
 
                 <!-- Footer -->
-                <div class="px-6 py-4 border-t border-gray-700 flex gap-3">
+                <div class="px-6 py-4 border-t border-base flex gap-3">
                     <button
                         type="button"
                         :disabled="txForm.processing"
@@ -142,7 +142,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                     </button>
                     <button
                         type="button"
-                        class="px-4 py-2.5 text-gray-400 hover:text-gray-200 border border-gray-700 rounded-lg transition-colors"
+                        class="px-4 py-2.5 text-secondary hover:text-primary border border-base rounded-lg transition-colors"
                         v-on:click="emit('close')"
                     >
                         {{ t('budgets.txPanel.cancel') }}

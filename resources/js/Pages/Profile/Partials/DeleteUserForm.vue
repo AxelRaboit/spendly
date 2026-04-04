@@ -35,7 +35,7 @@ function deleteUser() {
     <section>
         <header class="mb-6">
             <h2 class="text-lg font-semibold text-rose-400">{{ t('profile.delete.title') }}</h2>
-            <p class="mt-1 text-sm text-gray-400">
+            <p class="mt-1 text-sm text-secondary">
                 {{ t('profile.delete.subtitle') }}
             </p>
         </header>
@@ -61,7 +61,7 @@ function deleteUser() {
         <div v-if="confirmingDeletion" class="fixed inset-0 z-50 flex items-center justify-center px-4">
             <div class="absolute inset-0 bg-black/60" v-on:click="closeModal" />
 
-            <div class="relative z-10 w-full max-w-md bg-gray-900 border border-gray-700 rounded-xl p-6 shadow-2xl" v-on:keydown.esc="closeModal">
+            <div class="relative z-10 w-full max-w-md bg-surface border border-base rounded-xl p-6 shadow-2xl" v-on:keydown.esc="closeModal">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-900/40">
                         <svg
@@ -75,8 +75,8 @@ function deleteUser() {
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-base font-semibold text-gray-100">{{ t('profile.delete.modalTitle') }}</h3>
-                        <p class="text-sm text-gray-400 mt-0.5">{{ t('profile.delete.modalSubtitle') }}</p>
+                        <h3 class="text-base font-semibold text-primary">{{ t('profile.delete.modalTitle') }}</h3>
+                        <p class="text-sm text-secondary mt-0.5">{{ t('profile.delete.modalSubtitle') }}</p>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@ function deleteUser() {
                         v-model="form.password"
                         type="password"
                         :placeholder="t('profile.delete.fieldPassword')"
-                        class="w-full bg-gray-800 text-gray-100 rounded-lg px-3 py-2.5 border border-gray-700 focus:border-rose-500 focus:outline-none"
+                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-rose-500 focus:outline-none"
                         v-on:keyup.enter="deleteUser"
                     >
                     <p v-if="form.errors.password" class="mt-1 text-xs text-rose-400">{{ form.errors.password }}</p>
@@ -97,7 +97,7 @@ function deleteUser() {
                 <div class="flex justify-end gap-3 mt-6">
                     <button
                         type="button"
-                        class="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 border border-gray-700 rounded-lg transition-colors"
+                        class="px-4 py-2 text-sm text-secondary hover:text-primary border border-base rounded-lg transition-colors"
                         v-on:click="closeModal"
                     >
                         {{ t('common.cancel') }}

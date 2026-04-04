@@ -14,7 +14,7 @@ function decodeLabel(html) {
 
 <template>
     <div v-if="meta.last_page > 1" class="flex items-center justify-between mt-6">
-        <p class="text-sm text-gray-400">
+        <p class="text-sm text-secondary">
             {{ meta.from }}–{{ meta.to }} sur {{ meta.total }} résultats
         </p>
 
@@ -26,13 +26,13 @@ function decodeLabel(html) {
                     preserve-scroll
                     preserve-state
                     class="px-3 py-1 rounded text-sm transition"
-                    :class="link.active ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'"
+                    :class="link.active ? 'bg-indigo-600 text-white' : 'bg-surface-2 text-secondary hover:bg-surface-3'"
                 >
                     {{ decodeLabel(link.label) }}
                 </Link>
                 <span
                     v-else
-                    class="px-3 py-1 rounded text-sm text-gray-600"
+                    class="px-3 py-1 rounded text-sm text-subtle"
                 >{{ decodeLabel(link.label) }}</span>
             </template>
         </div>
