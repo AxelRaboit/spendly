@@ -1,3 +1,16 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Link } from '@inertiajs/vue3';
+import { useTransactionForm } from '@/composables/useTransactionForm';
+
+const props = defineProps({
+    transaction: Object,
+    categories: Array,
+});
+
+const { form, submit } = useTransactionForm(props.transaction);
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -8,50 +21,40 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-gray-900 shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-100">
-                        <form @submit.prevent="submit">
+                        <form v-on:submit.prevent="submit">
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Catégorie</label>
-                                <select v-model="form.category_id" class="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-gray-100">
+                                <InputLabel value="Catégorie" />
+                                <SelectInput v-model="form.category_id">
                                     <option value="" disabled>Sélectionner une catégorie</option>
                                     <option v-for="category in categories" :key="category.id" :value="category.id">
                                         {{ category.name }}
                                     </option>
-                                </select>
-                                <span v-if="form.errors.category_id" class="text-red-600 text-sm">{{ form.errors.category_id }}</span>
+                                </SelectInput>
+                                <InputError :message="form.errors.category_id" />
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Montant (€)</label>
-                                <input v-model="form.amount" type="number" step="0.01" min="0.01"
-                                    class="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-gray-100" />
-                                <span v-if="form.errors.amount" class="text-red-600 text-sm">{{ form.errors.amount }}</span>
+                                <InputLabel value="Montant (€)" />
+                                <TextInput v-model="form.amount" type="number" step="0.01" min="0.01" />
+                                <InputError :message="form.errors.amount" />
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Description</label>
-                                <input v-model="form.description" type="text"
-                                    class="w-full px-3 py-2 border border-gray-700 rounded-md bg-gray-700 text-gray-100"
-                                    placeholder="Description (optionnelle)" />
-                                <span v-if="form.errors.description" class="text-red-600 text-sm">{{ form.errors.description }}</span>
+                                <InputLabel value="Description" />
+                                <TextInput v-model="form.description" type="text" placeholder="Description (optionnelle)" />
+                                <InputError :message="form.errors.description" />
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium mb-1">Date</label>
-                                <Datepicker
-                                    v-model="selectedDate"
-                                    :locale="fr"
-                                    input-format="dd/MM/yyyy"
-                                    placeholder="Sélectionner une date"
-                                />
-                                <span v-if="form.errors.date" class="text-red-600 text-sm">{{ form.errors.date }}</span>
+                                <InputLabel value="Date" />
+                                <DateInput v-model="form.date" />
+                                <InputError :message="form.errors.date" />
                             </div>
 
                             <div class="flex gap-2">
-                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
-                                    Mettre à jour
-                                </button>
-                                <Link href="/transactions" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">
-                                    Annuler
+                                <PrimaryButton type="submit">Mettre à jour</PrimaryButton>
+                                <Link href="/transactions">
+                                    <SecondaryButton type="button">Annuler</SecondaryButton>
                                 </Link>
                             </div>
                         </form>
@@ -61,36 +64,3 @@
         </div>
     </AuthenticatedLayout>
 </template>
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link, useForm } from '@inertiajs/vue3';
-import { watch } from 'vue';
-import Datepicker from 'vue3-datepicker';
-import { ref } from 'vue';
-import { fr } from 'date-fns/locale';
-
-const props = defineProps({
-    transaction: Object,
-    categories: Array,
-});
-
-const form = useForm({
-    category_id: props.transaction.category_id,
-    amount: props.transaction.amount,
-    description: props.transaction.description ?? '',
-    date: props.transaction.date,
-});
-
-const selectedDate = ref(form.date ? new Date(form.date) : null);
-
-watch(selectedDate, (date) => {
-    if (!date) { form.date = ''; return; }
-    const d = new Date(date);
-    form.date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-});
-
-const submit = () => {
-    form.patch(`/transactions/${props.transaction.id}`);
-};
-</script>

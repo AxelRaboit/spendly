@@ -1,3 +1,15 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Link } from '@inertiajs/vue3';
+import { useConfirmDelete } from '@/composables/useConfirmDelete';
+
+defineProps({
+    categories: Array,
+});
+
+const { confirmDelete } = useConfirmDelete('Êtes-vous sûr de vouloir supprimer cette catégorie ?');
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -16,19 +28,19 @@
 
                         <table class="min-w-full table-auto">
                             <thead>
-                                <tr class="border-b">
+                                <tr class="border-b border-gray-700">
                                     <th class="text-left py-2">Nom</th>
                                     <th class="text-left py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="category in categories" :key="category.id" class="border-b hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <tr v-for="category in categories" :key="category.id" class="border-b border-gray-700 hover:bg-gray-800">
                                     <td class="py-2">{{ category.name }}</td>
                                     <td class="py-2 space-x-2">
-                                        <Link :href="`/categories/${category.id}/edit`" class="text-indigo-600 hover:text-indigo-900">
+                                        <Link :href="`/categories/${category.id}/edit`" class="text-indigo-400 hover:text-indigo-300">
                                             Modifier
                                         </Link>
-                                        <button @click="deleteCategory(category.id)" class="text-red-600 hover:text-red-900">
+                                        <button v-on:click="confirmDelete(`/categories/${category.id}`)" class="text-red-400 hover:text-red-300">
                                             Supprimer
                                         </button>
                                     </td>
@@ -45,18 +57,3 @@
         </div>
     </AuthenticatedLayout>
 </template>
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
-
-defineProps({
-    categories: Array,
-});
-
-const deleteCategory = (categoryId) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-        router.delete(`/categories/${categoryId}`);
-    }
-};
-</script>

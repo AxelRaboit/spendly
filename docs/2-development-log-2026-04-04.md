@@ -315,3 +315,55 @@ Forcé le dark mode sur l'ensemble de l'application.
 - Tous les titres `text-gray-800 dark:text-gray-200` → `text-gray-100`
 - Tous les contenus `text-gray-900 dark:text-gray-100` → `text-gray-100`
 - Tous les inputs/selects `border-gray-300 dark:bg-gray-700` → `border-gray-700 bg-gray-700 text-gray-100`
+
+### Datepicker : vue3-datepicker
+
+Après plusieurs tentatives infructueuses avec `@vuepic/vue-datepicker` (v9 et v12 — incompatible avec Inertia à cause du système de teleport), choix de **`vue3-datepicker`** + **`date-fns` v3**.
+
+```bash
+pnpm add vue3-datepicker date-fns@3
+```
+
+**Configuration :**
+- Locale française via objet date-fns : `:locale="fr"` (pas une string)
+- Format affiché : `dd/MM/yyyy`
+- Valeur envoyée au backend : `YYYY-MM-DD` via un `watch` sur le ref date
+- Styles dark mode via CSS variables dans `app.css` (`--vdp-bg-color`, `--vdp-selected-bg-color`, etc.)
+
+**Composant `DateInput.vue`** créé pour encapsuler toute la logique.
+
+### Composants réutilisables
+
+Création de composants UI globaux dans `resources/js/Components/` :
+
+| Composant | Rôle |
+|---|---|
+| `PrimaryButton.vue` | Bouton indigo principal |
+| `SecondaryButton.vue` | Bouton gris secondaire |
+| `DangerButton.vue` | Bouton rouge suppression |
+| `TextInput.vue` | Input texte dark |
+| `SelectInput.vue` | Select dark |
+| `DateInput.vue` | Datepicker encapsulé |
+| `InputLabel.vue` | Label `text-gray-300` |
+| `InputError.vue` | Message d'erreur `text-red-400` |
+
+**Enregistrement global** via un plugin dédié `resources/js/plugins/components.js` — les pages n'ont plus besoin d'importer ces composants.
+
+### Composables
+
+Création de `resources/js/composables/` — équivalent des Services côté frontend :
+
+| Composable | Rôle |
+|---|---|
+| `useConfirmDelete.js` | Suppression avec confirmation + `router.delete(url)` |
+| `useCategoryForm.js` | Logique create/edit catégorie |
+| `useTransactionForm.js` | Logique create/edit transaction |
+
+Les pages ne contiennent plus que le template + les imports nécessaires.
+
+### Conventions Vue adoptées
+
+- `<script setup>` toujours en haut, `<template>` en dessous
+- `v-on:click` / `v-on:submit` à la place des raccourcis `@click` / `@submit`
+- Pas de commentaires dans les templates
+- Composants UI enregistrés globalement, composables importés localement
