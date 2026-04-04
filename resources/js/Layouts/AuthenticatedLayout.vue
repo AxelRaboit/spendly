@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import AppLogo from '@/components/AppLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -17,8 +17,9 @@ const showingNavigationDropdown = ref(false);
                 <div class="flex h-16 justify-between">
                     <div class="flex">
                         <div class="flex shrink-0 items-center">
-                            <Link :href="route('dashboard')">
-                                <ApplicationLogo class="block h-9 w-auto fill-current text-white" />
+                            <Link :href="route('dashboard')" class="flex items-center gap-2">
+                                <AppLogo :size="36" />
+                                <span class="text-white font-semibold text-lg">Spendly</span>
                             </Link>
                         </div>
 
