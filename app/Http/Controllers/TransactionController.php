@@ -11,11 +11,6 @@ use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index()
     {
         $transactions = auth()->user()->transactions()->with('category')->get();

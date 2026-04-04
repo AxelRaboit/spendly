@@ -275,6 +275,24 @@ Route::get('/', function () {
   - Séparateur **— or —**
   - Lien Register centré en dessous
 
+### Fix : suppression du middleware dans les constructeurs
+
+En Laravel 11, `$this->middleware('auth')` dans le constructeur d'un controller n'est plus supporté — cela provoque une erreur 500.
+
+**Supprimé le constructeur** dans `CategoryController` et `TransactionController`.
+
+Le middleware `auth` est déjà appliqué au niveau des routes dans `web.php` :
+```php
+Route::middleware('auth')->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::resource('transactions', TransactionController::class);
+});
+```
+
+| Symfony | Laravel 11 |
+|---------|------------|
+| `#[IsGranted('IS_AUTHENTICATED')]` sur le controller | middleware `auth` sur le groupe de routes |
+
 ### Dark mode complet
 
 Forcé le dark mode sur l'ensemble de l'application.
