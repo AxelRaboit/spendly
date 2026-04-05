@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 #[Signature('app:prune-import-files {--hours=24 : Delete files older than this many hours}')]
-#[Description('Delete orphaned temporary import files from storage/app/csv-imports')]
+#[Description('Delete orphaned temporary import files from storage/app/xlsx-imports')]
 class PruneImportFiles extends Command
 {
     public function handle(): void
@@ -19,7 +19,7 @@ class PruneImportFiles extends Command
         $threshold = now()->subHours($hours)->getTimestamp();
         $pruned = 0;
 
-        foreach (Storage::files('csv-imports') as $path) {
+        foreach (Storage::files('xlsx-imports') as $path) {
             if (Storage::lastModified($path) < $threshold) {
                 Storage::delete($path);
                 $pruned++;

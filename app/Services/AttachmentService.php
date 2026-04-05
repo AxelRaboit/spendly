@@ -20,7 +20,7 @@ class AttachmentService
     public function store(UploadedFile $file, Transaction $transaction): string
     {
         $path = $file->store(
-            sprintf('%s/%d', self::DIRECTORY, $transaction->user_id),
+            sprintf('%s/%d/%s', self::DIRECTORY, $transaction->user_id, now()->format('Y/m')),
             self::DISK
         );
 

@@ -63,7 +63,7 @@ class ImportController extends Controller
         abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
 
         $path = $request->file('file')->storeAs(
-            'csv-imports',
+            'xlsx-imports',
             sprintf('%s.%s', uniqid('import_', true), FileExtension::Xlsx->value),
             'local'
         );
