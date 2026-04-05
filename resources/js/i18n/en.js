@@ -189,6 +189,7 @@ export default {
         noPrevItems: 'No items found in the previous month.',
         repeatNextMonth: 'Repeat',
         overageAlert: 'no lines | 1 line exceeds the planned budget. | {count} lines exceed the planned budget.',
+        overageToast: '1 line over budget | {count} lines over budget',
         overageGood: 'no lines | 1 line exceeds the planned target. | {count} lines exceed the planned target.',
         toast: {
             deleted: '"{label}" deleted',

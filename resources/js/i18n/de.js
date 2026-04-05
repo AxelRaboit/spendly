@@ -190,6 +190,7 @@ export default {
         repeatNextMonth: 'Übernehmen',
         overageAlert:
             'keine Zeilen | 1 Zeile überschreitet das geplante Budget. | {count} Zeilen überschreiten das geplante Budget.',
+        overageToast: '1 Zeile über Budget | {count} Zeilen über Budget',
         overageGood:
             'keine Zeilen | 1 Zeile übertrifft das geplante Ziel. | {count} Zeilen übertreffen das geplante Ziel.',
         toast: {

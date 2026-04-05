@@ -189,6 +189,7 @@ export default {
         noPrevItems: 'Aucune ligne dans le mois précédent.',
         repeatNextMonth: 'Reconduire',
         overageAlert: 'Aucune ligne | 1 ligne dépasse le budget prévu. | {count} lignes dépassent le budget prévu.',
+        overageToast: '1 ligne dépasse le budget | {count} lignes dépassent le budget',
         overageGood: "Aucune ligne | 1 ligne dépasse l'objectif prévu. | {count} lignes dépassent l'objectif prévu.",
         toast: {
             deleted: '« {label} » supprimé',

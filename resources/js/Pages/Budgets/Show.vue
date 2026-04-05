@@ -30,7 +30,7 @@ import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
-import { computed, nextTick, onMounted, onUnmounted, ref, toRef } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // ─── i18n / currency ─────────────────────────────────────────────────────────
@@ -242,6 +242,17 @@ const overageGoodCount = computed(() =>
         )
         .length
 );
+
+// ─── Overage toast ──────────────────────────────────────────────────────────
+const overageToast = ref(null);
+let prevOverageCount = overageCount.value;
+
+watch(overageCount, (newVal) => {
+    if (newVal > prevOverageCount) {
+        overageToast.value = t('budgets.overageToast', newVal, { count: newVal });
+    }
+    prevOverageCount = newVal;
+});
 
 // ─── Goal deposit modal ───────────────────────────────────────────────────────
 const depositGoal = ref(null);
@@ -1702,6 +1713,13 @@ onUnmounted(() => {
                 :duration="5000"
                 v-on:action="undoDelete"
                 v-on:dismiss="undoDelete"
+            />
+            <AppToast
+                v-else-if="overageToast"
+                :message="overageToast"
+                type="warning"
+                :duration="4000"
+                v-on:dismiss="overageToast = null"
             />
         </Transition>
     </AuthenticatedLayout>

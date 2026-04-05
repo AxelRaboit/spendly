@@ -190,6 +190,7 @@ export default {
         repeatNextMonth: 'Reconducir',
         overageAlert:
             'sin líneas | 1 línea supera el presupuesto previsto. | {count} líneas superan el presupuesto previsto.',
+        overageToast: '1 línea supera el presupuesto | {count} líneas superan el presupuesto',
         overageGood: 'sin líneas | 1 línea supera el objetivo previsto. | {count} líneas superan el objetivo previsto.',
         toast: {
             deleted: '"{label}" eliminado',
