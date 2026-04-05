@@ -1,4 +1,5 @@
 <script setup>
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -43,7 +44,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                     :href="`/wallets/${wallet.id}/budget/year?year=${prevYear}`"
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm"
                 >
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    <ChevronLeft class="w-4 h-4 shrink-0" />
                     {{ prevYear }}
                 </Link>
                 <h2 class="text-xl font-bold text-primary">{{ year }}</h2>
@@ -52,7 +53,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm"
                 >
                     {{ nextYear }}
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <ChevronRight class="w-4 h-4 shrink-0" />
                 </Link>
             </div>
 

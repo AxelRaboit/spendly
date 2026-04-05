@@ -2,6 +2,7 @@
 import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { AlertTriangle, Eye, EyeOff } from 'lucide-vue-next';
 
 const { t } = useI18n();
 
@@ -53,15 +54,7 @@ function deleteUser() {
     <AppModal :show="confirmingDeletion" v-on:close="closeModal">
         <div class="flex items-center gap-4 mb-4">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-900/40">
-                <svg
-                    class="h-5 w-5 text-rose-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
+                <AlertTriangle class="h-5 w-5 text-rose-400" />
             </div>
             <div>
                 <h3 class="text-base font-semibold text-primary">{{ t('profile.delete.modalTitle') }}</h3>
@@ -82,20 +75,8 @@ function deleteUser() {
                     v-on:keyup.enter="deleteUser"
                 >
                 <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showPassword = !showPassword">
-                    <svg
-                        v-if="!showPassword"
-                        class="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                    <svg
-                        v-else
-                        class="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
+                    <Eye v-if="!showPassword" class="w-4 h-4" />
+                    <EyeOff v-else class="w-4 h-4" />
                 </button>
             </div>
             <p v-if="form.errors.password" class="mt-1 text-xs text-rose-400">{{ form.errors.password }}</p>

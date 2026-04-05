@@ -1,4 +1,5 @@
 <script setup>
+import { X } from 'lucide-vue-next';
 import AppButton from '@/components/ui/AppButton.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
@@ -85,7 +86,7 @@ function submit() {
                             <h3 class="font-semibold text-primary">{{ goal.name }}</h3>
                         </div>
                         <button class="text-muted hover:text-secondary transition-colors" v-on:click="emit('close')">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                            <X class="w-4 h-4" />
                         </button>
                     </div>
 

@@ -1,4 +1,5 @@
 <script setup>
+import { Plus, ChevronDown, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import TabBadge from '@/components/ui/TabBadge.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -208,7 +209,7 @@ function toggleGroup(id) {
                             :class="!canCreateRecurring ? 'opacity-60 cursor-not-allowed' : ''"
                             v-on:click="openCreate"
                         >
-                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                            <Plus class="w-4 h-4 mr-1.5" />
                             {{ t('recurring.new') }}
                         </AppButton>
                         <span v-if="!isPro && props.recurring.length >= recurringLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
@@ -226,15 +227,10 @@ function toggleGroup(id) {
                             <span class="text-sm font-semibold text-primary">{{ group.wallet.name }}</span>
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-muted">{{ t('recurring.count', group.items.length, { count: group.items.length }) }}</span>
-                                <svg
+                                <ChevronDown
                                     class="w-4 h-4 text-muted transition-transform duration-200"
                                     :class="collapsed[group.wallet.id] ? '-rotate-90' : ''"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                />
                             </div>
                         </button>
                         <div v-show="!collapsed[group.wallet.id]" class="border-t border-base/60 divide-y divide-base/40">
@@ -287,12 +283,12 @@ function toggleGroup(id) {
                                         </AppTooltip>
                                         <AppTooltip :text="t('recurring.editTip')">
                                             <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEdit(item)">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                <Pencil class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
                                         <AppTooltip :text="t('recurring.deleteTip')">
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(item)">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                <Trash2 class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
                                     </div>
@@ -302,13 +298,13 @@ function toggleGroup(id) {
                     </div>
                 </div>
 
-                <EmptyState v-else-if="recurring.length === 0" :message="t('recurring.none')" />
+                <EmptyState v-else-if="recurring.length === 0" :message="t('recurring.none')" icon="repeat" />
             </div>
 
             <div v-if="activeTab === 'scheduled'" class="space-y-4">
                 <div class="flex justify-end">
                     <AppButton v-on:click="openCreateScheduled">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('scheduled.new') }}
                     </AppButton>
                 </div>
@@ -340,12 +336,12 @@ function toggleGroup(id) {
                             <div class="flex items-center gap-1">
                                 <AppTooltip :text="t('scheduled.editTip')">
                                     <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEditScheduled(item)">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        <Pencil class="w-4 h-4" />
                                     </button>
                                 </AppTooltip>
                                 <AppTooltip :text="t('scheduled.deleteTip')">
                                     <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDeleteScheduled(item)">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        <Trash2 class="w-4 h-4" />
                                     </button>
                                 </AppTooltip>
                             </div>
@@ -353,7 +349,7 @@ function toggleGroup(id) {
                     </div>
                 </div>
 
-                <EmptyState v-else :message="t('scheduled.none')" />
+                <EmptyState v-else :message="t('scheduled.none')" icon="calendar" />
             </div>
         </div>
 

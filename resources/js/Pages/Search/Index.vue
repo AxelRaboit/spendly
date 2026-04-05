@@ -1,4 +1,5 @@
 <script setup>
+import { Search, AlertTriangle, Pencil, Trash2 } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
@@ -139,9 +140,7 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                             class="w-full pl-9 pr-3 py-2 bg-surface-2 text-primary border border-base rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
                             v-on:input="search"
                         >
-                        <svg class="absolute left-2.5 top-2.5 h-4 w-4 text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-                        </svg>
+                        <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted pointer-events-none" />
                     </div>
                     <AppButton v-if="hasFilters()" variant="secondary" size="sm" v-on:click="reset">
                         {{ t('search.reset') }}
@@ -185,16 +184,7 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
             </div>
 
             <div v-if="isFreeLimited" class="bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
-                <svg
-                    class="h-5 w-5 text-amber-400 shrink-0"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                </svg>
+                <AlertTriangle class="h-5 w-5 text-amber-400 shrink-0" :stroke-width="1.5" />
                 <p class="text-sm text-amber-200">{{ t('search.freeLimitWarning', { days: freeLimitDays }) }}</p>
             </div>
 
@@ -211,10 +201,10 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                 <div class="flex items-center gap-2 shrink-0">
                                     <template v-if="!tx.transfer_id">
                                         <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            <Pencil class="w-3.5 h-3.5" />
                                         </button>
                                         <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            <Trash2 class="w-3.5 h-3.5" />
                                         </button>
                                     </template>
                                     <span
@@ -288,10 +278,10 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                     <td class="px-2 py-3">
                                         <div v-if="!tx.transfer_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                <Pencil class="w-3.5 h-3.5" />
                                             </button>
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                <Trash2 class="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                     </td>

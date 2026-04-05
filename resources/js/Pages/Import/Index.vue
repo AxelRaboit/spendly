@@ -1,4 +1,5 @@
 <script setup>
+import { Check, Download, FileSpreadsheet, ChevronRight, X, Plus } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import FormHint from '@/components/form/FormHint.vue';
@@ -132,15 +133,7 @@ function submitImport() {
                             class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors"
                             :class="step > idx + 1 ? 'bg-emerald-500 text-white' : step === idx + 1 ? 'bg-indigo-600 text-white' : 'bg-surface-2 text-muted'"
                         >
-                            <svg
-                                v-if="step > idx + 1"
-                                class="w-4 h-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check v-if="step > idx + 1" class="w-4 h-4" />
                             <span v-else>{{ idx + 1 }}</span>
                         </div>
                         <span class="text-sm" :class="step === idx + 1 ? 'text-primary font-medium' : 'text-muted'">{{ label }}</span>
@@ -159,9 +152,7 @@ function submitImport() {
                         href="/import/template"
                         class="flex items-center gap-1.5 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors shrink-0 ml-4"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
+                        <Download class="w-4 h-4" />
                         {{ t('import.templateDownload') }}
                     </a>
                 </div>
@@ -174,9 +165,7 @@ function submitImport() {
                     v-on:drop.prevent="onDrop"
                 >
                     <input type="file" accept=".xlsx" class="hidden" v-on:change="onFileInput">
-                    <svg class="w-10 h-10 text-muted mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <FileSpreadsheet class="w-10 h-10 text-muted mx-auto mb-3" :stroke-width="1.5" />
                     <p v-if="!file" class="text-secondary text-sm font-medium">{{ t('import.dropzone') }}</p>
                     <p v-if="!file" class="text-muted text-xs mt-1">{{ t('import.dropzoneOr') }}</p>
                     <p v-if="file" class="text-primary font-medium text-sm">{{ t('import.fileSelected') }}: {{ file.name }}</p>
@@ -199,15 +188,7 @@ function submitImport() {
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
                         {{ uploading ? '…' : t('import.next') }}
-                        <svg
-                            v-if="!uploading"
-                            class="w-4 h-4 ml-1.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <ChevronRight v-if="!uploading" class="w-4 h-4 ml-1.5" />
                     </AppButton>
                 </div>
             </div>
@@ -305,7 +286,7 @@ function submitImport() {
                                             class="opacity-0 group-hover:opacity-100 text-muted hover:text-rose-400 transition-all"
                                             v-on:click="removeRow(row._id)"
                                         >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            <X class="w-3.5 h-3.5" />
                                         </button>
                                     </td>
                                 </tr>
@@ -316,7 +297,7 @@ function submitImport() {
                                             class="text-xs text-muted hover:text-indigo-400 transition-colors flex items-center gap-1.5"
                                             v-on:click="addRow"
                                         >
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            <Plus class="w-3.5 h-3.5" />
                                             {{ t('import.addRow') }}
                                         </button>
                                     </td>

@@ -29,6 +29,7 @@ import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -395,7 +396,7 @@ onUnmounted(() => {
                     class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                     v-on:click="openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding })"
                 >
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    <Plus class="w-4 h-4 shrink-0" />
                     {{ t('budgets.newTransaction') }}
                 </button>
             </div>
@@ -404,7 +405,7 @@ onUnmounted(() => {
                     :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    <ChevronLeft class="w-4 h-4 shrink-0" />
                     <span class="hidden sm:inline">{{ fmtMonth(prevMonth) }}</span>
                 </Link>
                 <div class="flex flex-col items-center gap-1">
@@ -421,7 +422,7 @@ onUnmounted(() => {
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
                 >
                     <span class="hidden sm:inline">{{ fmtMonth(nextMonth) }}</span>
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    <ChevronRight class="w-4 h-4 shrink-0" />
                 </Link>
             </div>
 
@@ -471,18 +472,14 @@ onUnmounted(() => {
                     v-if="overageCount > 0"
                     class="flex items-center gap-3 bg-rose-500/10 border border-rose-500/30 rounded-lg px-4 py-3"
                 >
-                    <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                    </svg>
+                    <AlertTriangle class="w-4 h-4 text-rose-400 shrink-0" />
                     <p class="text-sm text-rose-300">{{ t('budgets.overageAlert', overageCount, { count: overageCount }) }}</p>
                 </div>
                 <div
                     v-if="overageGoodCount > 0"
                     class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3"
                 >
-                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <CheckCircle class="w-4 h-4 text-emerald-400 shrink-0" />
                     <p class="text-sm text-emerald-300">{{ t('budgets.overageGood', overageGoodCount, { count: overageGoodCount }) }}</p>
                 </div>
             </div>
@@ -537,7 +534,7 @@ onUnmounted(() => {
                     <div class="bg-surface border border-base/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                         <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                        <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
+                        <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
                         <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
@@ -595,7 +592,7 @@ onUnmounted(() => {
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                         <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                         <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                        <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
+                        <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                         <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
@@ -647,13 +644,10 @@ onUnmounted(() => {
                 class="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
                 v-on:click="toggleMoreKpi"
             >
-                <svg
+                <ChevronDown
                     class="w-3 h-3 transition-transform duration-200"
                     :class="showMoreKpi ? '' : '-rotate-90'"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                />
                 {{ showMoreKpi ? t('budgets.kpi.showLess') : t('budgets.kpi.showMore') }}
             </button>
 
@@ -663,7 +657,7 @@ onUnmounted(() => {
                     class="inline-flex items-center gap-2 bg-surface-2 hover:bg-surface-3 text-primary text-sm font-medium px-4 py-2 rounded-lg border border-base transition-colors"
                     v-on:click="copyFromPrevious"
                 >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    <Copy class="w-4 h-4" />
                     {{ t('budgets.copyFromPrevious', { month: fmtMonth(prevMonth) }) }}
                 </button>
             </div>
@@ -677,14 +671,14 @@ onUnmounted(() => {
                             :disabled="quickStartForm.processing"
                             v-on:click="quickStartAll"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <Zap class="w-4 h-4" />
                             {{ t('budgets.quickStart.addAll') }}
                         </button>
                         <Link
                             href="/profile"
                             class="inline-flex items-center gap-2 text-sm text-muted hover:text-indigo-400 font-medium px-4 py-2 transition-colors"
                         >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <Settings class="w-4 h-4" />
                             {{ t('budgets.quickStart.customize') }}
                         </Link>
                     </div>
@@ -717,18 +711,15 @@ onUnmounted(() => {
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
                 >
                     <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <FileText class="w-3.5 h-3.5" />
                         {{ t('budgets.notes.label') }}
                         <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-[120px] sm:max-w-xs">{{ budgetNotesText }}</span>
                     </span>
                     <div class="flex items-center gap-2">
-                        <svg
+                        <ChevronDown
                             class="w-3.5 h-3.5 transition-transform duration-200"
                             :class="budgetNotesOpen ? '' : '-rotate-90'"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        />
                     </div>
                 </button>
                 <div v-if="budgetNotesOpen" class="px-4 pb-3">
@@ -761,7 +752,7 @@ onUnmounted(() => {
                             </div>
                             <AppTooltip v-if="!goal.category_id" :text="t('goals.deposit')">
                                 <button class="shrink-0 text-muted hover:text-emerald-400 transition-colors" v-on:click="depositGoal = goal">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    <Plus class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
                             <span v-else class="shrink-0 text-xs text-indigo-400">↻</span>
@@ -847,15 +838,10 @@ onUnmounted(() => {
                                 <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
                                     {{ SECTION_META[type].label }}
                                 </span>
-                                <svg
+                                <ChevronDown
                                     class="w-3.5 h-3.5 transition-transform duration-200"
                                     :class="[SECTION_META[type].color, collapsedSections[type] ? '-rotate-90' : '']"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
+                                />
                             </div>
                             <div class="flex items-center gap-2">
                                 <span :class="[SECTION_META[type].color, 'text-sm font-mono font-semibold']">{{ fmt(totals[type]?.actual ?? 0) }}</span>
@@ -881,10 +867,10 @@ onUnmounted(() => {
                                             v-on:keydown.escape="cancelCreateCategory"
                                         />
                                         <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                            <Check class="w-4 h-4" />
                                         </button>
                                         <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            <X class="w-4 h-4" />
                                         </button>
                                     </div>
                                     <BudgetSelect v-else v-model="editForm.category_id" v-on:change="onCategoryChange(editForm)">
@@ -932,10 +918,10 @@ onUnmounted(() => {
                                         </BudgetSelect>
                                         <div class="flex gap-3">
                                             <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitEdit(item)">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                <Check class="w-5 h-5" />
                                             </button>
                                             <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                <X class="w-5 h-5" />
                                             </button>
                                         </div>
                                     </div>
@@ -959,7 +945,7 @@ onUnmounted(() => {
                                                 v-if="item.repeat_next_month"
                                                 class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
                                             >
-                                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                <Repeat class="w-2.5 h-2.5" />
                                             </span>
                                             <AppTooltip
                                                 v-if="item.target_type"
@@ -980,20 +966,20 @@ onUnmounted(() => {
                                                 class="text-muted hover:text-indigo-400 transition-colors"
                                                 v-on:click="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
                                             >
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                                <Plus class="w-4 h-4" />
                                             </button>
                                             <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="startEditingItem(item)">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                <Pencil class="w-4 h-4" />
                                             </button>
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="requestDelete(item)">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                <Trash2 class="w-4 h-4" />
                                             </button>
                                             <div class="relative">
                                                 <button
                                                     class="text-muted hover:text-secondary transition-colors"
                                                     v-on:click.stop="toggleMobileMenu(item.id)"
                                                 >
-                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
+                                                    <MoreHorizontal class="w-4 h-4" />
                                                 </button>
                                                 <div
                                                     v-if="mobileMenuOpenId === item.id"
@@ -1006,7 +992,7 @@ onUnmounted(() => {
                                                         :class="item.repeat_next_month ? 'text-indigo-400' : 'text-secondary'"
                                                         v-on:click="toggleRepeat(item); closeMobileMenu()"
                                                     >
-                                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                        <Repeat class="w-3.5 h-3.5 shrink-0" />
                                                         {{ t('budgets.actions.toggleRepeat') }}
                                                     </button>
                                                     <button
@@ -1014,7 +1000,7 @@ onUnmounted(() => {
                                                         class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-secondary transition-colors hover:bg-surface-2"
                                                         v-on:click="duplicateItem(item); closeMobileMenu()"
                                                     >
-                                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                        <Copy class="w-3.5 h-3.5 shrink-0" />
                                                         {{ t('budgets.actions.duplicate') }}
                                                     </button>
                                                 </div>
@@ -1086,10 +1072,10 @@ onUnmounted(() => {
                                         v-on:keydown.escape="cancelCreateCategory"
                                     />
                                     <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        <Check class="w-4 h-4" />
                                     </button>
                                     <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        <X class="w-4 h-4" />
                                     </button>
                                 </div>
                                 <BudgetSelect
@@ -1137,17 +1123,17 @@ onUnmounted(() => {
                                 />
                                 <div class="flex justify-end gap-3">
                                     <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        <Check class="w-5 h-5" />
                                     </button>
                                     <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        <X class="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
 
                             <div class="px-4 py-2">
                                 <AppLink v-on:click="startAddingItem(type)">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    <Plus class="w-3 h-3" />
                                     {{ t('budgets.addRow.addLine') }}
                                 </AppLink>
                             </div>
@@ -1156,7 +1142,7 @@ onUnmounted(() => {
 
                     <div v-if="hasUnbudgeted" class="border-t-2 border-amber-500/30 bg-amber-500/5 px-4 py-3 space-y-1">
                         <div class="flex items-center gap-2">
-                            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+                            <AlertTriangle class="w-3.5 h-3.5 text-amber-400 shrink-0" />
                             <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-xs font-mono">
@@ -1217,15 +1203,10 @@ onUnmounted(() => {
                                     {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
                                 </td>
                                 <td class="px-3 py-2 text-right">
-                                    <svg
+                                    <ChevronDown
                                         class="w-3.5 h-3.5 inline transition-transform duration-200"
                                         :class="[SECTION_META[type].color, collapsedSections[type] ? '-rotate-90' : '']"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
+                                    />
                                 </td>
                             </tr>
 
@@ -1257,10 +1238,10 @@ onUnmounted(() => {
                                                         v-on:keydown.escape="cancelCreateCategory"
                                                     />
                                                     <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                        <Check class="w-3.5 h-3.5" />
                                                     </button>
                                                     <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                        <X class="w-3.5 h-3.5" />
                                                     </button>
                                                 </div>
                                                 <BudgetSelect
@@ -1293,12 +1274,12 @@ onUnmounted(() => {
                                                 <div class="flex items-center gap-2 justify-end">
                                                     <AppTooltip :text="t('budgets.editRow.confirm')">
                                                         <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitEdit(item)">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                            <Check class="w-4 h-4" />
                                                         </button>
                                                     </AppTooltip>
                                                     <AppTooltip :text="t('budgets.editRow.cancel')">
                                                         <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                            <X class="w-4 h-4" />
                                                         </button>
                                                     </AppTooltip>
                                                 </div>
@@ -1368,11 +1349,7 @@ onUnmounted(() => {
                                         <td class="pl-4 pr-4 py-2.5 text-primary">
                                             <div class="flex items-center gap-2">
                                                 <div class="text-base opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                    <svg class="w-3 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                                        <circle cx="9" cy="5" r="1.5" /><circle cx="15" cy="5" r="1.5" />
-                                                        <circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
-                                                        <circle cx="9" cy="19" r="1.5" /><circle cx="15" cy="19" r="1.5" />
-                                                    </svg>
+                                                    <GripVertical class="w-3 h-4" />
                                                 </div>
                                                 <span>{{ item.label }}</span>
                                                 <NoteTooltip v-if="item.notes" :note="item.notes" />
@@ -1380,7 +1357,7 @@ onUnmounted(() => {
                                                     <span
                                                         class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none cursor-help"
                                                     >
-                                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                        <Repeat class="w-2.5 h-2.5" />
                                                     </span>
                                                 </AppTooltip>
                                                 <AppTooltip
@@ -1448,27 +1425,27 @@ onUnmounted(() => {
                                             <div v-if="!item.category?.is_system" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <AppTooltip :text="t('budgets.actions.addTx')">
                                                     <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                                        <Plus class="w-3.5 h-3.5" />
                                                     </button>
                                                 </AppTooltip>
                                                 <AppTooltip v-if="isPro" :text="t('budgets.actions.toggleRepeat')">
                                                     <button class="transition-colors" :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'" v-on:click.stop="toggleRepeat(item)">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                        <Repeat class="w-3.5 h-3.5" />
                                                     </button>
                                                 </AppTooltip>
                                                 <AppTooltip v-if="isPro" :text="t('budgets.actions.duplicate')">
                                                     <button class="text-muted hover:text-amber-400 transition-colors" v-on:click.stop="duplicateItem(item)">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                        <Copy class="w-3.5 h-3.5" />
                                                     </button>
                                                 </AppTooltip>
                                                 <AppTooltip :text="t('budgets.actions.edit')">
                                                     <button class="text-muted hover:text-sky-400 transition-colors" v-on:click.stop="startEditingItem(item)">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                        <Pencil class="w-3.5 h-3.5" />
                                                     </button>
                                                 </AppTooltip>
                                                 <AppTooltip :text="t('budgets.actions.delete')">
                                                     <button class="text-muted hover:text-rose-400 transition-colors" v-on:click.stop="requestDelete(item)">
-                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                        <Trash2 class="w-3.5 h-3.5" />
                                                     </button>
                                                 </AppTooltip>
                                             </div>
@@ -1503,10 +1480,10 @@ onUnmounted(() => {
                                                 v-on:keydown.escape="cancelCreateCategory"
                                             />
                                             <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                <Check class="w-3.5 h-3.5" />
                                             </button>
                                             <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                <X class="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                         <BudgetSelect
@@ -1540,12 +1517,12 @@ onUnmounted(() => {
                                         <div class="flex items-center gap-2 justify-end">
                                             <AppTooltip :text="t('budgets.addRow.confirm')">
                                                 <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitAdd">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                    <Check class="w-4 h-4" />
                                                 </button>
                                             </AppTooltip>
                                             <AppTooltip :text="t('budgets.addRow.cancel')">
                                                 <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    <X class="w-4 h-4" />
                                                 </button>
                                             </AppTooltip>
                                         </div>
@@ -1582,7 +1559,7 @@ onUnmounted(() => {
                                 <tr v-if="addingType !== type" class="border-b border-subtle/60">
                                     <td colspan="6" class="pl-8 py-1.5">
                                         <AppLink v-on:click="startAddingItem(type)">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                            <Plus class="w-3 h-3" />
                                             {{ t('budgets.addRow.addLine') }}
                                         </AppLink>
                                     </td>
@@ -1593,7 +1570,7 @@ onUnmounted(() => {
                         <tr v-if="hasUnbudgeted" class="border-t border-amber-500/30 bg-amber-500/5">
                             <td class="px-4 py-2.5" colspan="2">
                                 <div class="flex items-center gap-2">
-                                    <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+                                    <AlertTriangle class="w-3.5 h-3.5 text-amber-400 shrink-0" />
                                     <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
                                 </div>
                             </td>

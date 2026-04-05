@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { Check, X, GripVertical, Pencil, Trash2, Plus } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const { fmt } = useCurrency();
@@ -170,20 +171,16 @@ function onKeydown(e, submitFn) {
                         v-on:keydown="onKeydown($event, () => saveEdit(item))"
                     >
                     <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="saveEdit(item)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <Check class="w-4 h-4" />
                     </button>
                     <button class="text-muted hover:text-secondary transition-colors" v-on:click="cancelEdit">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <X class="w-4 h-4" />
                     </button>
                 </template>
 
                 <template v-else>
                     <div class="text-muted/40 shrink-0 pointer-events-none">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" />
-                            <circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
-                            <circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" />
-                        </svg>
+                        <GripVertical class="w-4 h-4" />
                     </div>
                     <span class="flex-1 text-sm text-primary font-medium">{{ item.label }}</span>
                     <span class="text-xs px-1.5 py-0.5 rounded-full" :class="[SECTION_STYLES[item.type]?.bg, SECTION_STYLES[item.type]?.color]">
@@ -191,17 +188,15 @@ function onKeydown(e, submitFn) {
                     </span>
                     <span v-if="item.planned_amount > 0" class="text-xs text-muted font-mono">{{ fmt(item.planned_amount) }}</span>
                     <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="startEdit(item)">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        <Pencil class="w-3.5 h-3.5" />
                     </button>
                     <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="remove(item)">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        <Trash2 class="w-3.5 h-3.5" />
                     </button>
                 </template>
             </div>
 
-            <div v-if="items.length === 0 && !adding" class="text-sm text-muted py-3 text-center">
-                {{ t('profile.presets.none') }}
-            </div>
+            <EmptyState v-if="items.length === 0 && !adding" :message="t('profile.presets.none')" icon="settings" compact />
 
             <div v-if="adding" class="flex items-center gap-3 px-3 py-2.5 bg-surface-2 rounded-lg border border-dashed border-indigo-500/40">
                 <input
@@ -228,10 +223,10 @@ function onKeydown(e, submitFn) {
                     v-on:keydown="onKeydown($event, addPreset)"
                 >
                 <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="addPreset">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    <Check class="w-4 h-4" />
                 </button>
                 <button class="text-muted hover:text-secondary transition-colors" v-on:click="adding = false">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    <X class="w-4 h-4" />
                 </button>
             </div>
 
@@ -240,7 +235,7 @@ function onKeydown(e, submitFn) {
                 class="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors pt-2"
                 v-on:click="adding = true"
             >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                <Plus class="w-4 h-4" />
                 {{ t('profile.presets.add') }}
             </button>
         </div>

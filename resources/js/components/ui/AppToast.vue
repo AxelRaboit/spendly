@@ -1,4 +1,5 @@
 <script setup>
+import { X } from 'lucide-vue-next';
 import { computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
@@ -37,9 +38,7 @@ const styles = computed(() => ({
             {{ action }}
         </button>
         <button class="ml-1 text-muted hover:text-secondary transition-colors" v-on:click="emit('dismiss')">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X class="w-3.5 h-3.5" />
         </button>
     </div>
 </template>

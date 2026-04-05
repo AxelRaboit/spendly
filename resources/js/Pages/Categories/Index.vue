@@ -49,7 +49,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </div>
             </div>
 
-            <EmptyState v-else :message="t('categories.none')" />
+            <EmptyState v-else :message="t('categories.none')" icon="tag" />
 
             <AppPagination :meta="categories" />
         </div>

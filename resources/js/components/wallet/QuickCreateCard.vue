@@ -1,4 +1,5 @@
 <script setup>
+import { Plus } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
 
@@ -34,9 +35,7 @@ const { fmt } = useCurrency();
         </div>
 
         <div class="pt-3 flex items-center gap-2 text-xs text-muted group-hover:text-indigo-400 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
+            <Plus class="w-4 h-4" />
             {{ t('wallets.quickHint') }}
         </div>
     </button>

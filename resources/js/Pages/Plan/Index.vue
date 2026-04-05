@@ -1,4 +1,5 @@
 <script setup>
+import { Check, X, Sparkles } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
@@ -63,51 +64,35 @@ function downgrade() {
 
                     <ul class="mt-6 space-y-3 flex-1">
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.wallets', { n: limits.wallet }) }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.goals', { n: limits.goal }) }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.recurring', { n: limits.recurring }) }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.history', { n: limits.transactionHistoryDays }) }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.budgetBasic') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X class="w-4 h-4 shrink-0 text-muted" />
                             <span class="text-muted line-through">{{ t('plan.features.budgetAdvanced') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.statsMonths') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                            <X class="w-4 h-4 shrink-0 text-muted" />
                             <span class="text-muted line-through">{{ t('plan.features.importExport') }}</span>
                         </li>
                     </ul>
@@ -151,57 +136,39 @@ function downgrade() {
 
                     <ul class="mt-6 space-y-3 flex-1">
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.walletsUnlimited') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.goalsUnlimited') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.recurringUnlimited') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.historyUnlimited') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.budgetBasic') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.budgetAdvanced') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.statsMonthsPro') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.importExport') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
-                            <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                            </svg>
+                            <Sparkles class="w-4 h-4 shrink-0 text-indigo-400" />
                             <span class="text-indigo-300/80 italic">{{ t('plan.features.andMore') }}</span>
                         </li>
                     </ul>

@@ -1,4 +1,5 @@
 <script setup>
+import { Plus, Pencil, Trash2, Zap } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
@@ -98,7 +99,7 @@ function fmtDate(d) {
                         :class="!canCreateGoal ? 'opacity-60 cursor-not-allowed' : ''"
                         v-on:click="openCreate"
                     >
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('goals.newGoal') }}
                     </AppButton>
                     <span v-if="!isPro && props.goals.length >= goalLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
@@ -124,12 +125,12 @@ function fmtDate(d) {
                         <div class="flex items-center gap-1.5 shrink-0">
                             <AppTooltip :text="t('goals.editTip')">
                                 <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEdit(goal)">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    <Pencil class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
                             <AppTooltip :text="t('goals.deleteTip')">
                                 <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(goal)">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <Trash2 class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
                         </div>
@@ -156,7 +157,7 @@ function fmtDate(d) {
 
                     <div v-if="goal.progress < 100">
                         <div v-if="goal.category_id" class="flex items-center gap-1.5 text-xs text-indigo-400">
-                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            <Zap class="w-3.5 h-3.5 shrink-0" />
                             {{ t('goals.autoSync', { category: goal.category.name }) }}
                         </div>
                         <button
@@ -170,7 +171,7 @@ function fmtDate(d) {
                 </div>
             </div>
 
-            <EmptyState v-else :message="t('goals.none')" />
+            <EmptyState v-else :message="t('goals.none')" icon="target" />
         </div>
 
         <AppModal :show="showForm" v-on:close="showForm = false">

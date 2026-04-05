@@ -1,4 +1,5 @@
 <script setup>
+import { ArrowLeftRight, GripVertical, ChevronRight, Star } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
@@ -92,9 +93,7 @@ function quickCreate(name) {
         <div class="space-y-4">
             <div class="flex justify-end gap-2">
                 <AppButton variant="secondary" v-on:click="showTransfer = true">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                    </svg>
+                    <ArrowLeftRight class="w-4 h-4 mr-1.5" />
                     {{ t('transfers.new') }}
                 </AppButton>
                 <div class="relative">
@@ -132,11 +131,7 @@ function quickCreate(name) {
                     <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
 
                     <div class="absolute top-3 right-3 text-muted/40 pointer-events-none">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" />
-                            <circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
-                            <circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" />
-                        </svg>
+                        <GripVertical class="w-4 h-4" />
                     </div>
 
                     <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
@@ -160,9 +155,7 @@ function quickCreate(name) {
                             v-on:dragstart.prevent
                         >
                             {{ t('wallets.viewBudget') }}
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
+                            <ChevronRight class="w-3 h-3" />
                         </Link>
                     </div>
 
@@ -173,9 +166,7 @@ function quickCreate(name) {
                                 :class="wallet.is_favorite ? 'text-amber-400 hover:text-amber-300' : 'text-muted hover:text-amber-400'"
                                 v-on:click="toggleFavorite(wallet)"
                             >
-                                <svg class="w-4 h-4" :fill="wallet.is_favorite ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
+                                <Star class="w-4 h-4" :fill="wallet.is_favorite ? 'currentColor' : 'none'" />
                             </button>
                         </AppTooltip>
                         <div class="flex items-center gap-2">
