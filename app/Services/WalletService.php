@@ -9,6 +9,7 @@ use App\Enums\TransactionType;
 use App\Exceptions\PlanLimitException;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Support\Text;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -48,7 +49,7 @@ class WalletService
 
         $wallet = Wallet::create([
             'user_id' => $user->id,
-            'name' => $data['name'],
+            'name' => Text::normalize($data['name']),
             'start_balance' => $data['start_balance'],
         ]);
 
@@ -60,7 +61,7 @@ class WalletService
     public function update(Wallet $wallet, array $data): Wallet
     {
         $wallet->update([
-            'name' => $data['name'],
+            'name' => Text::normalize($data['name']),
             'start_balance' => $data['start_balance'],
         ]);
 

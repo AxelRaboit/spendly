@@ -15,13 +15,13 @@ class WalletTransferController extends Controller
     {
         $service->create($request->user(), $request->validated());
 
-        return back()->with('success', 'Virement effectué.');
+        return back()->with('success', __('flash.transfer.created'));
     }
 
     public function destroy(Request $request, string $transferId, WalletTransferService $service): RedirectResponse
     {
         $service->deleteByTransferId($transferId, $request->user());
 
-        return back()->with('success', 'Virement supprimé.');
+        return back()->with('success', __('flash.transfer.deleted'));
     }
 }

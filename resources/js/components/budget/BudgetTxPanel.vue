@@ -1,10 +1,12 @@
 <script setup>
 /* eslint-disable vue/no-mutating-props */
 import AppButton from '@/components/ui/AppButton.vue';
+import FormHint from '@/components/form/FormHint.vue';
 import DateInput from '@/components/form/DateInput.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 import TypeToggle from '@/components/form/TypeToggle.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { evalMath } from '@/utils/evalMath';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
@@ -35,6 +37,8 @@ function onTagKeydown(e, form) {
 
 defineProps({
     open:               { type: Boolean,  required: true },
+    editing:            { type: Boolean,  default: false },
+    showSectionFilter:  { type: Boolean,  default: true },
     prefillLabel:       { type: String,   default: '' },
     txSection:          { type: String,   default: null },
     txForm:             { type: Object,   required: true },
@@ -63,7 +67,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
-                        <h3 class="font-semibold text-primary">{{ t('budgets.txPanel.title') }}</h3>
+                        <h3 class="font-semibold text-primary">{{ editing ? t('budgets.txPanel.titleEdit') : t('budgets.txPanel.title') }}</h3>
                         <p v-if="prefillLabel" class="text-xs text-secondary mt-0.5">{{ prefillLabel }}</p>
                     </div>
                     <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
@@ -72,7 +76,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                 </div>
 
                 <form class="flex-1 overflow-y-auto px-6 py-6 space-y-5" v-on:submit.prevent="emit('submit')">
-                    <div>
+                    <div v-if="showSectionFilter">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.section') }}</label>
                         <div class="flex flex-wrap gap-1.5">
                             <button
@@ -92,7 +96,8 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
 
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.type') }}</label>
-                        <TypeToggle v-model="txForm.type" />
+                        <TypeToggle v-model="txForm.type" :disabled="txSection !== null" />
+                        <FormHint>{{ t('budgets.txPanel.typeHint') }}</FormHint>
                     </div>
 
                     <div>
@@ -101,16 +106,17 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                             <input
                                 id="tx-amount"
                                 v-model="txForm.amount"
-                                type="number"
-                                step="0.01"
-                                min="0.01"
+                                type="text"
+                                inputmode="decimal"
                                 placeholder="0,00"
                                 required
                                 class="w-full bg-surface-2 text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-base focus:border-indigo-500 focus:outline-none text-right"
+                                v-on:blur="() => { const r = evalMath(String(txForm.amount)); if (r !== null) txForm.amount = r; }"
                             >
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-xl font-bold">{{ symbol }}</span>
                         </div>
                         <p v-if="txForm.errors.amount" class="text-rose-400 text-xs mt-1">{{ txForm.errors.amount }}</p>
+                        <FormHint>{{ t('budgets.txPanel.mathHint') }}</FormHint>
                     </div>
 
                     <div>
@@ -121,12 +127,14 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                         </SelectInput>
                         <p v-if="txForm.errors.category_id" class="text-rose-400 text-xs mt-1">{{ txForm.errors.category_id }}</p>
                         <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
+                        <FormHint>{{ t('budgets.txPanel.categoryHint') }}</FormHint>
                     </div>
 
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.date') }}</label>
                         <DateInput v-model="txForm.date" />
                         <p v-if="txForm.errors.date" class="text-rose-400 text-xs mt-1">{{ txForm.errors.date }}</p>
+                        <FormHint>{{ t('budgets.txPanel.dateHint') }}</FormHint>
                     </div>
 
                     <div>
@@ -140,6 +148,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                             :placeholder="t('budgets.txPanel.descPlaceholder')"
                             class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                         >
+                        <FormHint>{{ t('budgets.txPanel.descHint') }}</FormHint>
                     </div>
 
                     <div>
@@ -167,13 +176,13 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                                 v-on:blur="addTag(txForm)"
                             >
                         </div>
-                        <p class="mt-1 text-xs text-subtle">{{ t('budgets.txPanel.tagsHint') }}</p>
+                        <FormHint>{{ t('budgets.txPanel.tagsHint') }}</FormHint>
                     </div>
                 </form>
 
                 <div class="px-6 py-4 border-t border-base flex gap-3">
                     <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="emit('submit')">
-                        {{ txForm.processing ? t('budgets.txPanel.submitting') : t('budgets.txPanel.submit') }}
+                        {{ txForm.processing ? t('budgets.txPanel.submitting') : (editing ? t('budgets.txPanel.submitEdit') : t('budgets.txPanel.submit')) }}
                     </AppButton>
                     <AppButton class="flex-1" variant="secondary" v-on:click="emit('close')">
                         {{ t('budgets.txPanel.cancel') }}

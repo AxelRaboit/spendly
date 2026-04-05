@@ -11,6 +11,7 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -42,7 +43,14 @@ class CategoryController extends Controller
     {
         $categoryService->create($request->user(), $request->validated()['name']);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('categories.index')->with('success', __('flash.category.created'));
+    }
+
+    public function storeQuick(StoreCategoryRequest $request, CategoryService $categoryService): JsonResponse
+    {
+        $category = $categoryService->create($request->user(), $request->validated()['name']);
+
+        return response()->json(['id' => $category->id, 'name' => $category->name], HttpStatus::Created->value);
     }
 
     public function show(Request $request, Category $category): Response
@@ -69,7 +77,7 @@ class CategoryController extends Controller
 
         $categoryService->update($category, $request->validated()['name']);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('categories.index')->with('success', __('flash.category.updated'));
     }
 
     public function destroy(DestroyCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
@@ -78,6 +86,6 @@ class CategoryController extends Controller
 
         $categoryService->delete($category);
 
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('categories.index')->with('success', __('flash.category.deleted'));
     }
 }

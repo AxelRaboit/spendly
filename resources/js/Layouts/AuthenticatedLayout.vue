@@ -151,13 +151,13 @@ const navItems = [
                             v-html="item.icon"
                         />
                         <span v-if="!collapsed" class="truncate flex-1">{{ t('nav.' + item.key) }}</span>
-                        <span v-if="!collapsed" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
+                        <span v-if="!collapsed" class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
                         <span
                             v-if="collapsed"
                             class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg flex items-center gap-1.5"
                         >
                             {{ t('nav.' + item.key) }}
-                            <span class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
+                            <span class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
                         </span>
                     </span>
 
@@ -249,7 +249,7 @@ const navItems = [
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
                     <span v-if="!collapsed" class="truncate flex-1">{{ t('nav.plan') }}</span>
-                    <span v-if="!collapsed && !isPro" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
+                    <span v-if="!collapsed && !isPro" class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
                     <span
                         v-if="collapsed"
                         class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
@@ -359,7 +359,7 @@ const navItems = [
                                         v-html="item.icon"
                                     />
                                     <span class="flex-1">{{ t('nav.' + item.key) }}</span>
-                                    <span class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
+                                    <span class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
                                 </span>
 
                                 <Link
@@ -423,7 +423,7 @@ const navItems = [
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                                 <span>{{ t('nav.plan') }}</span>
-                                <span v-if="!isPro" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none ml-auto">Pro</span>
+                                <span v-if="!isPro" class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none ml-auto">Pro</span>
                             </Link>
                             <Link
                                 :href="route('profile.edit')"

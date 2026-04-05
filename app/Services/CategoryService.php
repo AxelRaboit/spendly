@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Models\User;
+use App\Support\Text;
 use Illuminate\Support\Facades\Log;
 
 class CategoryService
@@ -13,7 +14,7 @@ class CategoryService
     public function create(User $user, string $name): Category
     {
         $category = Category::create([
-            'name' => $name,
+            'name' => Text::normalize($name),
             'user_id' => $user->id,
         ]);
 
@@ -29,7 +30,7 @@ class CategoryService
     public function update(Category $category, string $name): Category
     {
         $category->update([
-            'name' => $name,
+            'name' => Text::normalize($name),
         ]);
 
         Log::info('Category updated', [

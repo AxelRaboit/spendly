@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Inertia\Response;
+use InvalidArgumentException;
 
 class BudgetController extends Controller
 {
@@ -78,7 +79,7 @@ class BudgetController extends Controller
 
         return redirect()->back()->with(
             'success',
-            $copied > 0 ? $copied.' lignes copiées depuis le mois précédent.' : 'Aucune ligne trouvée dans le mois précédent.'
+            $copied > 0 ? __('flash.budget.copied', ['count' => $copied]) : __('flash.budget.copied_none')
         );
     }
 
@@ -97,9 +98,13 @@ class BudgetController extends Controller
             unset($data['repeat_next_month']);
         }
 
-        $this->budgetService->addItem($budget, $data);
+        try {
+            $this->budgetService->addItem($budget, $data);
+        } catch (InvalidArgumentException) {
+            return redirect()->back()->withErrors(['category_id' => __('budgets.errors.categoryUsed')]);
+        }
 
-        return redirect()->back()->with('success', 'Ligne ajoutée.');
+        return redirect()->back()->with('success', __('flash.budget.item_added'));
     }
 
     public function updateItem(UpdateBudgetItemRequest $request, Wallet $wallet, BudgetItem $item): RedirectResponse
@@ -114,9 +119,13 @@ class BudgetController extends Controller
             unset($data['repeat_next_month']);
         }
 
-        $this->budgetService->updateItem($item, $data);
+        try {
+            $this->budgetService->updateItem($item, $data);
+        } catch (InvalidArgumentException) {
+            return redirect()->back()->withErrors(['category_id' => __('budgets.errors.categoryUsed')]);
+        }
 
-        return redirect()->back()->with('success', 'Ligne mise à jour.');
+        return redirect()->back()->with('success', __('flash.budget.item_updated'));
     }
 
     public function destroyItem(Request $request, Wallet $wallet, BudgetItem $item): RedirectResponse
@@ -127,7 +136,7 @@ class BudgetController extends Controller
 
         $item->delete();
 
-        return redirect()->back()->with('success', 'Ligne supprimée.');
+        return redirect()->back()->with('success', __('flash.budget.item_deleted'));
     }
 
     public function reorderItems(ReorderRequest $request, Wallet $wallet): RedirectResponse
@@ -149,7 +158,7 @@ class BudgetController extends Controller
 
         $this->budgetService->duplicateItem($item);
 
-        return redirect()->back()->with('success', 'Ligne dupliquée.');
+        return redirect()->back()->with('success', __('flash.budget.item_duplicated'));
     }
 
     public function copyRepeat(Request $request, Wallet $wallet): RedirectResponse
@@ -164,7 +173,7 @@ class BudgetController extends Controller
 
         return redirect()->back()->with(
             'success',
-            $copied > 0 ? $copied.' lignes à reconduire copiées.' : 'Aucune ligne à reconduire dans le mois précédent.'
+            $copied > 0 ? __('flash.budget.repeat_copied', ['count' => $copied]) : __('flash.budget.repeat_copied_none')
         );
     }
 

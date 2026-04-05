@@ -13,10 +13,12 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Support\Text;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class BudgetService
 {
@@ -85,6 +87,11 @@ class BudgetService
      */
     public function addItem(Budget $budget, array $data): BudgetItem
     {
+        if (! empty($data['category_id']) && BudgetItem::where('budget_id', $budget->id)
+            ->where('category_id', $data['category_id'])->exists()) {
+            throw new InvalidArgumentException('Category already used in this budget.');
+        }
+
         $position = BudgetItem::where('budget_id', $budget->id)
             ->where('type', $data['type'])
             ->max('position') ?? -1;
@@ -92,7 +99,7 @@ class BudgetService
         return BudgetItem::create([
             'budget_id' => $budget->id,
             'type' => $data['type'],
-            'label' => $data['label'],
+            'label' => Text::normalize($data['label']),
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'position' => $position + 1,
@@ -135,8 +142,16 @@ class BudgetService
      */
     public function updateItem(BudgetItem $item, array $data): BudgetItem
     {
+        $categoryId = $data['category_id'] ?? null;
+
+        if ($categoryId && $categoryId !== $item->category_id && BudgetItem::where('budget_id', $item->budget_id)
+            ->where('category_id', $categoryId)
+            ->where('id', '!=', $item->id)->exists()) {
+            throw new InvalidArgumentException('Category already used in this budget.');
+        }
+
         $item->update([
-            'label' => $data['label'],
+            'label' => Text::normalize($data['label']),
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'notes' => $data['notes'] ?? null,
@@ -174,19 +189,29 @@ class BudgetService
             return 0;
         }
 
+        $existingCategoryIds = BudgetItem::where('budget_id', $current->id)
+            ->whereNotNull('category_id')
+            ->pluck('category_id')
+            ->all();
+
         $now = now();
-        $rows = $items->map(fn (BudgetItem $item) => [
-            'budget_id' => $current->id,
-            'type' => $item->type,
-            'label' => $item->label,
-            'planned_amount' => $item->planned_amount,
-            'category_id' => $item->category_id,
-            'position' => $item->position,
-            'notes' => $item->notes,
-            'repeat_next_month' => $item->repeat_next_month,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ])->all();
+        $rows = $items->filter(fn (BudgetItem $item) => ! $item->category_id || ! in_array($item->category_id, $existingCategoryIds))
+            ->map(fn (BudgetItem $item) => [
+                'budget_id' => $current->id,
+                'type' => $item->type,
+                'label' => $item->label,
+                'planned_amount' => $item->planned_amount,
+                'category_id' => $item->category_id,
+                'position' => $item->position,
+                'notes' => $item->notes,
+                'repeat_next_month' => $item->repeat_next_month,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ])->all();
+
+        if ($rows === []) {
+            return 0;
+        }
 
         BudgetItem::insert($rows);
 
@@ -220,19 +245,29 @@ class BudgetService
             return 0;
         }
 
+        $existingCategoryIds = BudgetItem::where('budget_id', $current->id)
+            ->whereNotNull('category_id')
+            ->pluck('category_id')
+            ->all();
+
         $now = now();
-        $rows = $items->map(fn (BudgetItem $item) => [
-            'budget_id' => $current->id,
-            'type' => $item->type,
-            'label' => $item->label,
-            'planned_amount' => $item->planned_amount,
-            'category_id' => $item->category_id,
-            'position' => $item->position,
-            'notes' => $item->notes,
-            'repeat_next_month' => $item->repeat_next_month,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ])->all();
+        $rows = $items->filter(fn (BudgetItem $item) => ! $item->category_id || ! in_array($item->category_id, $existingCategoryIds))
+            ->map(fn (BudgetItem $item) => [
+                'budget_id' => $current->id,
+                'type' => $item->type,
+                'label' => $item->label,
+                'planned_amount' => $item->planned_amount,
+                'category_id' => $item->category_id,
+                'position' => $item->position,
+                'notes' => $item->notes,
+                'repeat_next_month' => $item->repeat_next_month,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ])->all();
+
+        if ($rows === []) {
+            return 0;
+        }
 
         BudgetItem::insert($rows);
 
@@ -286,9 +321,9 @@ class BudgetService
             'type' => $item->type,
             'label' => $item->label,
             'planned_amount' => $item->planned_amount,
-            'category_id' => $item->category_id,
+            'category_id' => null,
             'notes' => $item->notes,
-            'repeat_next_month' => $item->repeat_next_month,
+            'repeat_next_month' => false,
             'position' => $maxPosition + 1,
         ]);
     }
@@ -346,13 +381,17 @@ class BudgetService
             ->whereMonth('date', $month->month)
             ->orderByDesc('date')
             ->orderByDesc('id')
-            ->get(['id', 'date', 'description', 'amount', 'type'])
+            ->get(['id', 'date', 'description', 'amount', 'type', 'category_id', 'wallet_id', 'tags', 'transfer_id'])
             ->map(fn (Transaction $tx) => [
                 'id' => $tx->id,
                 'date' => $tx->date,
                 'description' => $tx->description,
                 'amount' => (float) $tx->amount,
                 'type' => $tx->type,
+                'category_id' => $tx->category_id,
+                'wallet_id' => $tx->wallet_id,
+                'tags' => $tx->tags ?? [],
+                'transfer_id' => $tx->transfer_id,
             ])
             ->all();
     }

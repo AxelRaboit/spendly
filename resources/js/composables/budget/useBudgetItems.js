@@ -7,7 +7,12 @@ import { useItemActions } from './useItemActions.js';
 export function useBudgetItems(walletId, sections, budget, flash) {
     const { editingId, editForm, startEditing, cancelEditing, submitEdit } = useEditItem(walletId, flash);
 
-    const { addingType, addForm, startAdding, cancelAdding, submitAdd } = useAddItem(walletId, sections, budget, flash);
+    const { addingType, addForm, addFormSubmitted, startAdding, cancelAdding, submitAdd } = useAddItem(
+        walletId,
+        sections,
+        budget,
+        flash
+    );
 
     const { pendingDeleteItem, deletingItem, requestDelete, confirmDelete, undoDelete, cancelDelete } =
         useDeleteItem(walletId);
@@ -27,6 +32,7 @@ export function useBudgetItems(walletId, sections, budget, flash) {
         submitEdit,
         addingType,
         addForm,
+        addFormSubmitted,
         startAdding,
         cancelAdding,
         submitAdd,

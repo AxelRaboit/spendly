@@ -10,7 +10,7 @@ import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
 const { t } = useI18n();
 const page = usePage();
 
-const isPro = computed(() => page.props.auth.plan === 'pro');
+const isPro = computed(() => page.props.auth?.plan === 'pro');
 const { isTrialing, label: trialLabel } = useTrialCountdown();
 const limits = computed(() => page.props.planLimits);
 
@@ -135,9 +135,9 @@ function downgrade() {
 
                     <span
                         v-else
-                        class="absolute top-4 right-4 text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full"
+                        class="absolute top-4 right-4 text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full"
                     >
-                        Pro
+                        {{ t('plan.pro.name') }}
                     </span>
 
                     <h2 class="text-xl font-bold text-primary">{{ t('plan.pro.name') }}</h2>

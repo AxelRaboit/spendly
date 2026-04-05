@@ -57,8 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'update'])->name('recurring.update');
     Route::patch('/recurring/{recurringTransaction}/toggle', [RecurringTransactionController::class, 'toggle'])->name('recurring.toggle');
     Route::delete('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'destroy'])->name('recurring.destroy');
+    Route::post('/categories/quick', [CategoryController::class, 'storeQuick'])->name('categories.storeQuick');
     Route::resource('categories', CategoryController::class);
-    Route::resource('transactions', TransactionController::class)->only(['store', 'destroy']);
+    Route::resource('transactions', TransactionController::class)->only(['store', 'update', 'destroy']);
     Route::post('/transfers', [WalletTransferController::class, 'store'])->name('transfers.store');
     Route::delete('/transfers/{transferId}', [WalletTransferController::class, 'destroy'])->name('transfers.destroy');
     Route::patch('/wallets/reorder', [WalletController::class, 'reorder'])->name('wallets.reorder');

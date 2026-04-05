@@ -15,7 +15,7 @@ const props = defineProps({
     categories: Array,
 });
 
-const isPro = computed(() => page.props.auth.user.plan === 'pro');
+const isPro = computed(() => page.props.auth?.plan === 'pro');
 const recurringLimit = computed(() => page.props.planLimits.recurring);
 const canCreateRecurring = computed(() => isPro.value || props.recurring.length < recurringLimit.value);
 

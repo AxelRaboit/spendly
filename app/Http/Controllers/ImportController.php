@@ -86,7 +86,9 @@ class ImportController extends Controller
 
         ['created' => $created, 'errors' => $errors, 'month' => $month] = $this->importService->process($data, $user, $wallet);
 
-        $message = $created.' transaction(s) importée(s)'.($errors > 0 ? sprintf(', %d ignorée(s)', $errors) : '').'.';
+        $message = $errors > 0
+            ? __('flash.import.created_with_errors', ['created' => $created, 'errors' => $errors])
+            : __('flash.import.created', ['created' => $created]);
 
         return redirect(sprintf('/wallets/%s/budget?month=%s', $wallet->id, $month))
             ->with('success', $message);

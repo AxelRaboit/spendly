@@ -37,7 +37,7 @@ class WalletController extends Controller
         try {
             $wallet = $this->walletService->create($request->user(), $request->validated());
 
-            return redirect()->route('wallets.budget.show', $wallet)->with('success', 'Portefeuille créé avec succès.');
+            return redirect()->route('wallets.budget.show', $wallet)->with('success', __('flash.wallet.created'));
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
@@ -66,7 +66,7 @@ class WalletController extends Controller
         $this->authorize('update', $wallet);
         $this->walletService->update($wallet, $request->validated());
 
-        return redirect()->route('wallets.index')->with('success', 'Portefeuille mis à jour.');
+        return redirect()->route('wallets.index')->with('success', __('flash.wallet.updated'));
     }
 
     public function toggleFavorite(Wallet $wallet): RedirectResponse
@@ -89,6 +89,6 @@ class WalletController extends Controller
         $this->authorize('delete', $wallet);
         $this->walletService->delete($wallet);
 
-        return redirect()->route('wallets.index')->with('success', 'Portefeuille supprimé.');
+        return redirect()->route('wallets.index')->with('success', __('flash.wallet.deleted'));
     }
 }

@@ -3,11 +3,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppToast from '@/components/ui/AppToast.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import CopyBudgetModal from '@/components/ui/CopyBudgetModal.vue';
+import AppLink from '@/components/ui/AppLink.vue';
 import NoteTooltip from '@/components/ui/NoteTooltip.vue';
 import DonutChart from '@/components/ui/DonutChart.vue';
 import BudgetGauge from '@/components/ui/BudgetGauge.vue';
 import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import BudgetDetailPanel from '@/components/budget/BudgetDetailPanel.vue';
+import BudgetInput from '@/components/budget/BudgetInput.vue';
+import BudgetSelect from '@/components/budget/BudgetSelect.vue';
+import FormHint from '@/components/form/FormHint.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
 import { useBudgetTotals }   from '@/composables/budget/useBudgetTotals';
 import { useBudgetItems }    from '@/composables/budget/useBudgetItems';
@@ -33,7 +37,7 @@ const { fmt } = useCurrency();
 const { fmtMonth } = useFmtMonth();
 const fmtDate = (d) => d ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d)) : '';
 const page = usePage();
-const isPro = computed(() => page.props.auth.user.plan === 'pro');
+const isPro = computed(() => page.props.auth?.plan === 'pro');
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 const props = defineProps({
@@ -57,7 +61,87 @@ const sections     = toRef(props, 'sections');
 const unbudgeted   = toRef(props, 'unbudgeted');
 const startBalance = toRef(props, 'startBalance');
 const prevMonth    = toRef(props, 'prevMonth');
-const categories   = computed(() => props.categories);
+const localCategories = ref([...props.categories]);
+
+const usedCategoryIds = computed(() => {
+    const used = new Set();
+    Object.values(sections.value).forEach(items => {
+        items.forEach(item => { if (item.category_id) used.add(item.category_id); });
+    });
+    return used;
+});
+
+const availableCategories = computed(() =>
+    localCategories.value.filter(c => !usedCategoryIds.value.has(c.id)),
+);
+
+const editingOriginalCategoryId = ref(null);
+const availableCategoriesForEdit = computed(() =>
+    localCategories.value.filter(c => !usedCategoryIds.value.has(c.id) || c.id === editingOriginalCategoryId.value),
+);
+
+const creatingCategory = ref(false);
+const newCategoryName = ref('');
+const creatingCategoryLoading = ref(false);
+const categoryTargetForm = ref(null);
+
+function onCategoryChange(form) {
+    if (form.category_id === '__create__') {
+        form.category_id = null;
+        categoryTargetForm.value = form;
+        creatingCategory.value = true;
+        nextTick(() => document.querySelector('[data-new-category]')?.focus());
+        return;
+    }
+    if (form.category_id && !form.label) {
+        const cat = localCategories.value.find(c => c.id === Number(form.category_id));
+        if (cat) form.label = cat.name;
+    }
+}
+
+async function createCategory() {
+    const name = newCategoryName.value.trim();
+    if (!name || creatingCategoryLoading.value) return;
+    creatingCategoryLoading.value = true;
+    try {
+        const { data: cat } = await window.axios.post('/categories/quick', { name });
+        localCategories.value = [...localCategories.value, cat].sort((a, b) => a.name.localeCompare(b.name));
+        if (categoryTargetForm.value) {
+            categoryTargetForm.value.category_id = cat.id;
+            if (!categoryTargetForm.value.label) categoryTargetForm.value.label = cat.name;
+        }
+    } finally {
+        creatingCategoryLoading.value = false;
+        creatingCategory.value = false;
+        newCategoryName.value = '';
+        categoryTargetForm.value = null;
+    }
+}
+
+function cancelCreateCategory() {
+    creatingCategory.value = false;
+    newCategoryName.value = '';
+    categoryTargetForm.value = null;
+}
+
+// ─── KPI toggle + mobile carousel ────────────────────────────────────────────
+const showMoreKpi = ref(localStorage.getItem('budget-show-more-kpi') === 'true');
+function toggleMoreKpi() {
+    showMoreKpi.value = !showMoreKpi.value;
+    localStorage.setItem('budget-show-more-kpi', String(showMoreKpi.value));
+}
+
+const kpiSlides = ref([0, 0, 0]);
+const trackedCarousels = new Set();
+
+function trackCarousel(el, index) {
+    if (!el || trackedCarousels.has(index)) return;
+    trackedCarousels.add(index);
+    el.addEventListener('scroll', () => {
+        const cardWidth = el.firstElementChild?.offsetWidth ?? 1;
+        kpiSlides.value[index] = Math.round(el.scrollLeft / (cardWidth + 12));
+    }, { passive: true });
+}
 
 // ─── Section meta + donut ─────────────────────────────────────────────────────
 const { SECTION_META } = useSectionMeta();
@@ -76,19 +160,45 @@ const { flash } = useRowFlash();
 // ─── Budget rows ─────────────────────────────────────────────────────────────
 const {
     editingId, editForm, startEditing, cancelEditing, submitEdit,
-    addingType, addForm, startAdding, cancelAdding, submitAdd,
+    addingType, addForm, addFormSubmitted, startAdding, cancelAdding, submitAdd,
     pendingDeleteItem, deletingItem, requestDelete, confirmDelete, undoDelete, cancelDelete,
     draggingId, dragOverId, onDragStart, onDragOver, onDrop, onDragEnd,
     duplicateItem, toggleRepeat,
 } = useBudgetItems(walletId, sections, budget, flash);
 
 // ─── Transaction panel ───────────────────────────────────────────────────────
-const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, openTxPanel, closeTxPanel, submitTx, onTxSectionChange } =
-    useTransactionPanel(walletId, budget, sections, flash, categories);
+const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editingTx, openTxPanel, openEditTx, closeTxPanel, submitTx, onTxSectionChange } =
+    useTransactionPanel(walletId, budget, sections, flash, localCategories);
 
 // ─── Item transactions panel ─────────────────────────────────────────────────
 const { open: txDetailOpen, loading: txDetailLoading, transactions: txDetailList, currentItem: txDetailItem, openPanel: openTxDetail, closePanel: closeTxDetail } =
     useItemTransactions(walletId);
+
+function editTxFromDetail(tx) {
+    closeTxDetail();
+    openEditTx(tx);
+}
+
+const pendingDeleteTx = ref(null);
+
+function deleteTxFromDetail(tx) {
+    pendingDeleteTx.value = tx;
+}
+
+function confirmDeleteTx() {
+    if (!pendingDeleteTx.value) return;
+    router.delete(`/transactions/${pendingDeleteTx.value.id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            pendingDeleteTx.value = null;
+            if (txDetailItem.value) openTxDetail(txDetailItem.value);
+        },
+    });
+}
+
+function cancelDeleteTx() {
+    pendingDeleteTx.value = null;
+}
 
 // ─── Section collapse ────────────────────────────────────────────────────────
 const { collapsedSections, toggleSection } =
@@ -136,7 +246,7 @@ const depositGoal = ref(null);
 const savingsCategories = computed(() => {
     const savingsItems = sections.value.savings ?? [];
     const ids = new Set(savingsItems.map(i => i.category_id).filter(Boolean));
-    return props.categories.filter(c => ids.has(c.id));
+    return localCategories.value.filter(c => ids.has(c.id));
 });
 
 // ─── Mobile row context menu ──────────────────────────────────────────────────
@@ -148,7 +258,10 @@ function closeMobileMenu() { mobileMenuOpenId.value = null; }
 function openTxPanelFromRow(categoryId, label, type, section) {
     openTxPanel(categoryId, label, type, { cancelEditing, cancelAdding }, section);
 }
-function startEditingItem(item) { startEditing(item, { cancelAdding }); }
+function startEditingItem(item) {
+    editingOriginalCategoryId.value = item.category_id;
+    startEditing(item, { cancelAdding });
+}
 function startAddingItem(type)  { startAdding(type, { cancelEditing }); }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -156,8 +269,9 @@ function progress(planned, actual) {
     if (!planned) return 0;
     return Math.min(100, Math.round((actual / planned) * 100));
 }
-function diffClass(diff, positiveIsGood) {
+function diffClass(diff, positiveIsGood, actual = null) {
     if (diff === 0) return 'text-secondary';
+    if (actual !== null && actual === 0) return 'text-muted';
     return (positiveIsGood ? diff > 0 : diff < 0) ? 'text-emerald-400' : 'text-rose-400';
 }
 function onKeydown(e, submitFn, cancelFn) {
@@ -216,7 +330,7 @@ onUnmounted(() => {
             />
         </template>
 
-        <div class="space-y-6">
+        <div class="space-y-3">
             <div class="flex justify-end">
                 <button
                     class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
@@ -252,34 +366,44 @@ onUnmounted(() => {
                 </Link>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
-                    <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
-                </div>
+            <div class="hidden md:grid grid-cols-3 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
-                    <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome.actual) }}</p>
+                    <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.expenses') }}</p>
-                    <p class="text-lg font-bold text-rose-400 font-mono">{{ fmt(totalExpenses.actual) }}</p>
+                    <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
-                    <p class="text-lg font-bold font-mono" :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-                        {{ fmt(cashFlow.actual, true) }}
-                    </p>
-                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
+                    <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
+                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
-                    <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
-                        {{ savingsRate !== null ? savingsRate + '%' : '—' }}
-                    </p>
-                    <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+            </div>
+
+            <div class="md:hidden">
+                <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
+                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.expenses') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
+                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
+                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                    </div>
+                </div>
+                <div class="flex justify-center gap-1.5 mt-2">
+                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[0] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
                 </div>
             </div>
 
@@ -304,44 +428,140 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
-                    <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                    <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
-                    <p class="text-xs text-muted uppercase tracking-wide">{{ t('budgets.kpi.leftToSpend') }}</p>
-                    <div>
-                        <div class="flex items-end justify-between mb-2">
-                            <div>
-                                <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
-                                    {{ fmt(leftToSpend.actual) }}
-                                </span>
-                                <span class="text-xs text-muted font-mono ml-1.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</span>
-                            </div>
-                            <span class="text-sm text-muted font-mono">
-                                {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
-                            </span>
-                        </div>
-                        <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
-                            <div
-                                v-show="totalIncome.actual > 0"
-                                class="h-full rounded-full transition-all duration-500"
-                                :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
-                                :style="{
-                                    width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%',
-                                }"
-                            />
-                        </div>
-                        <div class="flex justify-between text-xs text-muted mt-1.5">
-                            <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
-                            <span>{{ fmt(totalIncome.actual) }}</span>
-                        </div>
+            <div v-if="showMoreKpi" class="space-y-3">
+                <div class="hidden md:grid grid-cols-3 gap-3">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
+                        <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
+                            {{ fmt(cashFlow.actual, true) }}
+                        </p>
+                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
+                            {{ savingsRate !== null ? savingsRate + '%' : '—' }}
+                        </p>
+                        <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
                     </div>
                 </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
-                    <div>
+
+                <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
+                        <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
+                            {{ fmt(cashFlow.actual, true) }}
+                        </p>
+                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
+                        <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
+                            {{ savingsRate !== null ? savingsRate + '%' : '—' }}
+                        </p>
+                        <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+                    </div>
+                </div>
+                <div class="md:hidden flex justify-center gap-1.5 mt-2">
+                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[1] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
+                </div>
+
+                <div class="hidden md:grid grid-cols-3 gap-3">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
+                        <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
+                        <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
+                        <p class="text-xs text-muted uppercase tracking-wide">{{ t('budgets.kpi.spendProgress') }}</p>
+                        <div>
+                            <div class="flex items-end justify-between mb-2">
+                                <div>
+                                    <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                        {{ fmt(leftToSpend.actual) }}
+                                    </span>
+                                    <span class="text-xs text-muted font-mono ml-1.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</span>
+                                </div>
+                                <span class="text-sm text-muted font-mono">
+                                    {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
+                                </span>
+                            </div>
+                            <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
+                                <div
+                                    v-show="totalIncome.actual > 0"
+                                    class="h-full rounded-full transition-all duration-500"
+                                    :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
+                                    :style="{
+                                        width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%',
+                                    }"
+                                />
+                            </div>
+                            <div class="flex justify-between text-xs text-muted mt-1.5">
+                                <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
+                                <span>{{ fmt(totalIncome.actual) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
+                        <div>
+                            <p class="text-xs text-muted uppercase tracking-wide mb-1">
+                                {{ t('budgets.kpi.projection') }}
+                                <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
+                            </p>
+                            <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
+                                {{ fmt(projectedExpenses) }}
+                            </p>
+                            <p v-else class="text-lg font-bold text-muted font-mono">—</p>
+                            <p v-if="projectedExpenses !== null" class="text-xs text-muted mt-0.5">
+                                vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
+                            </p>
+                        </div>
+                        <p v-if="projectedExpenses !== null" class="text-xs text-subtle mt-2">
+                            {{ t('budgets.projectionBased', { days: new Date().getDate() }) }}
+                        </p>
+                    </div>
+                </div>
+
+                <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
+                        <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
+                        <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.spendProgress') }}</p>
+                        <div class="mt-3">
+                            <div class="flex items-end justify-between mb-2">
+                                <span class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                    {{ fmt(leftToSpend.actual) }}
+                                </span>
+                                <span class="text-sm text-muted font-mono">
+                                    {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
+                                </span>
+                            </div>
+                            <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
+                                <div
+                                    v-show="totalIncome.actual > 0"
+                                    class="h-full rounded-full transition-all duration-500"
+                                    :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
+                                    :style="{ width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%' }"
+                                />
+                            </div>
+                            <div class="flex justify-between text-xs text-muted mt-1.5">
+                                <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
+                                <span>{{ fmt(totalIncome.actual) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                         <p class="text-xs text-muted uppercase tracking-wide mb-1">
                             {{ t('budgets.kpi.projection') }}
                             <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
@@ -354,11 +574,25 @@ onUnmounted(() => {
                             vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
                         </p>
                     </div>
-                    <p v-if="projectedExpenses !== null" class="text-xs text-subtle mt-2">
-                        {{ t('budgets.projectionBased', { days: new Date().getDate() }) }}
-                    </p>
+                </div>
+                <div class="md:hidden flex justify-center gap-1.5 mt-2">
+                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[2] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
                 </div>
             </div>
+
+            <button
+                class="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                v-on:click="toggleMoreKpi"
+            >
+                <svg
+                    class="w-3 h-3 transition-transform duration-200"
+                    :class="showMoreKpi ? '' : '-rotate-90'"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                {{ showMoreKpi ? t('budgets.kpi.showLess') : t('budgets.kpi.showMore') }}
+            </button>
 
             <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-base rounded-lg p-8 text-center">
                 <p class="text-secondary mb-4">{{ t('budgets.emptyBudget') }}</p>
@@ -521,47 +755,54 @@ onUnmounted(() => {
                         <template v-if="!collapsedSections[type]">
                             <template v-for="item in items" :key="`mob-item-${item.id}`">
                                 <div v-if="editingId === item.id" class="bg-surface-2 px-4 py-3 space-y-2" data-editing>
-                                    <input
-                                        v-model="editForm.label"
-                                        type="text"
-                                        :placeholder="t('budgets.editRow.labelPlaceholder')"
-                                        class="w-full bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
-                                    >
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        <select
-                                            v-model="editForm.category_id"
-                                            class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
-                                        >
-                                            <option :value="null">—</option>
-                                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                        </select>
-                                        <input
-                                            v-model="editForm.planned_amount"
-                                            type="number"
-                                            step="0.01"
-                                            min="0"
-                                            placeholder="0,00"
-                                            class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
-                                        >
+                                    <BudgetInput v-model="editForm.label" type="text" :placeholder="t('budgets.editRow.labelPlaceholder')" />
+                                    <div v-if="creatingCategory && categoryTargetForm === editForm" class="flex items-center gap-1">
+                                        <BudgetInput
+                                            v-model="newCategoryName"
+                                            data-new-category
+                                            type="text"
+                                            variant="focus"
+                                            :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                            class="flex-1"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:keydown.enter.prevent="createCategory"
+                                            v-on:keydown.escape="cancelCreateCategory"
+                                        />
+                                        <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        </button>
+                                        <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
                                     </div>
+                                    <BudgetSelect v-else v-model="editForm.category_id" v-on:change="onCategoryChange(editForm)">
+                                        <option :value="null">—</option>
+                                        <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                        <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                    </BudgetSelect>
+                                    <BudgetInput
+                                        v-model="editForm.planned_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="0,00"
+                                        variant="mono"
+                                    />
                                     <textarea
                                         v-model="editForm.notes"
                                         :placeholder="t('budgets.editRow.notePlaceholder')"
                                         rows="2"
-                                        class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                        class="mt-2 w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
                                     />
                                     <div class="flex items-center justify-between">
-                                        <select
-                                            v-model="editForm.type"
-                                            class="bg-surface-3 text-primary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none"
-                                        >
+                                        <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
                                             <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
-                                        </select>
+                                        </BudgetSelect>
                                         <div class="flex gap-3">
                                             <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitEdit(item)">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                             </button>
-                                            <button class="text-muted hover:text-secondary" v-on:click="cancelEditing">
+                                            <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
                                         </div>
@@ -584,7 +825,7 @@ onUnmounted(() => {
                                             <NoteTooltip v-if="item.notes" :note="item.notes" />
                                             <span
                                                 v-if="item.repeat_next_month"
-                                                class="inline-flex items-center gap-0.5 text-[10px] text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
+                                                class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
                                             >
                                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             </span>
@@ -644,13 +885,13 @@ onUnmounted(() => {
                                             <span class="text-muted">{{ fmt(item.planned_amount) }}</span>
                                             <button
                                                 v-if="item.category_id && item.actual_amount > 0"
-                                                :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                                :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
                                                 class="font-semibold hover:underline decoration-dotted"
                                                 v-on:click="openTxDetail(item)"
                                             >
                                                 {{ fmt(item.actual_amount) }}
                                             </button>
-                                            <span v-else :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)" class="font-semibold">{{ fmt(item.actual_amount) }}</span>
+                                            <span v-else :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)" class="font-semibold">{{ fmt(item.actual_amount) }}</span>
                                         </div>
                                     </div>
                                     <div v-if="item.planned_amount > 0" class="h-1 w-full bg-surface-3 rounded-full">
@@ -665,51 +906,73 @@ onUnmounted(() => {
                             </template>
 
                             <div v-if="addingType === type" class="bg-surface-2/60 px-4 py-3 space-y-2" data-adding>
-                                <input
+                                <BudgetInput
                                     :id="`add-label-${type}`"
                                     v-model="addForm.label"
                                     type="text"
+                                    variant="focus"
+                                    :error="addFormSubmitted && !addForm.label"
                                     :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
                                     v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                >
-                                <div class="grid grid-cols-2 gap-2">
-                                    <select
-                                        v-model="addForm.category_id"
-                                        class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                    >
-                                        <option :value="null">—</option>
-                                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                    </select>
-                                    <input
-                                        v-model="addForm.planned_amount"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        placeholder="0,00"
-                                        class="bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                    >
+                                />
+                                <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
+                                <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
+                                    <BudgetInput
+                                        v-model="newCategoryName"
+                                        data-new-category
+                                        type="text"
+                                        variant="focus"
+                                        class="flex-1"
+                                        :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                        :disabled="creatingCategoryLoading"
+                                        v-on:keydown.enter.prevent="createCategory"
+                                        v-on:keydown.escape="cancelCreateCategory"
+                                    />
+                                    <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                    </button>
+                                    <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
                                 </div>
+                                <BudgetSelect
+                                    v-else
+                                    v-model="addForm.category_id"
+                                    :error="addFormSubmitted && !addForm.category_id"
+                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    v-on:change="onCategoryChange(addForm)"
+                                >
+                                    <option :value="null">—</option>
+                                    <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                    <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                </BudgetSelect>
+                                <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
+                                <BudgetInput
+                                    v-model="addForm.planned_amount"
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="0,00"
+                                    variant="mono"
+                                    :error="addFormSubmitted && addForm.planned_amount === ''"
+                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                />
+                                <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
                                 <div class="flex justify-end gap-3">
                                     <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                     </button>
-                                    <button class="text-muted hover:text-secondary" v-on:click="cancelAdding">
+                                    <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                     </button>
                                 </div>
                             </div>
 
                             <div class="px-4 py-2">
-                                <button
-                                    class="text-xs text-subtle hover:text-secondary transition-colors flex items-center gap-1"
-                                    v-on:click="startAdding(type)"
-                                >
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                <AppLink v-on:click="startAddingItem(type)">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                     {{ t('budgets.addRow.addLine') }}
-                                </button>
+                                </AppLink>
                             </div>
                         </template>
                     </template>
@@ -772,7 +1035,7 @@ onUnmounted(() => {
                                 <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
                                 <td
                                     class="px-4 py-2 text-right font-mono text-xs"
-                                    :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood)"
+                                    :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood, totals[type]?.actual ?? 0)"
                                 >
                                     {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
                                 </td>
@@ -794,38 +1057,58 @@ onUnmounted(() => {
                                     <template v-if="editingId === item.id">
                                         <tr class="bg-surface-2 border-b border-base/40" data-editing>
                                             <td class="pl-8 pr-2 py-1.5">
-                                                <input
+                                                <BudgetInput
                                                     :id="`edit-label-${item.id}`"
                                                     v-model="editForm.label"
                                                     type="text"
                                                     tabindex="1"
                                                     :placeholder="t('budgets.editRow.labelPlaceholder')"
-                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                >
+                                                />
                                             </td>
                                             <td class="px-2 py-1.5">
-                                                <select
+                                                <div v-if="creatingCategory && categoryTargetForm === editForm" class="flex items-center gap-1">
+                                                    <BudgetInput
+                                                        v-model="newCategoryName"
+                                                        data-new-category
+                                                        type="text"
+                                                        variant="focus"
+                                                        class="flex-1"
+                                                        :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                                        :disabled="creatingCategoryLoading"
+                                                        v-on:keydown.enter.prevent="createCategory"
+                                                        v-on:keydown.escape="cancelCreateCategory"
+                                                    />
+                                                    <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                    </button>
+                                                    <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    </button>
+                                                </div>
+                                                <BudgetSelect
+                                                    v-else
                                                     v-model="editForm.category_id"
                                                     tabindex="2"
-                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                                    v-on:change="onCategoryChange(editForm)"
                                                 >
                                                     <option :value="null">—</option>
-                                                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                                </select>
+                                                    <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                                    <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                                </BudgetSelect>
                                             </td>
                                             <td class="px-2 py-1.5">
-                                                <input
+                                                <BudgetInput
                                                     v-model="editForm.planned_amount"
                                                     type="number"
                                                     step="0.01"
                                                     min="0"
                                                     tabindex="3"
                                                     placeholder="0,00"
-                                                    class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                                    variant="mono"
                                                     v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                >
+                                                />
                                             </td>
                                             <td class="px-2 py-1.5 text-right text-muted font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
                                             <td />
@@ -834,14 +1117,14 @@ onUnmounted(() => {
                                                     <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.editRow.confirm')" v-on:click="submitEdit(item)">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                                     </button>
-                                                    <button class="text-muted hover:text-secondary transition-colors" :title="t('budgets.editRow.cancel')" v-on:click="cancelEditing">
+                                                    <button class="text-rose-400 hover:text-rose-300 transition-colors" :title="t('budgets.editRow.cancel')" v-on:click="cancelEditing">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr class="bg-surface-2 border-b border-base/40" data-editing>
-                                            <td colspan="6" class="pl-8 pr-3 pb-2 space-y-1.5">
+                                            <td colspan="6" class="pl-8 pr-3 py-2 space-y-1.5">
                                                 <textarea
                                                     v-model="editForm.notes"
                                                     :placeholder="t('budgets.editRow.notePlaceholder')"
@@ -852,12 +1135,9 @@ onUnmounted(() => {
                                                 />
                                                 <div class="flex items-center gap-2">
                                                     <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
-                                                    <select
-                                                        v-model="editForm.type"
-                                                        class="bg-surface-3 text-primary rounded px-2 py-0.5 text-xs border border-strong focus:border-indigo-500 focus:outline-none"
-                                                    >
+                                                    <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
                                                         <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
-                                                    </select>
+                                                    </BudgetSelect>
                                                 </div>
                                             </td>
                                         </tr>
@@ -895,7 +1175,7 @@ onUnmounted(() => {
                                                 <NoteTooltip v-if="item.notes" :note="item.notes" />
                                                 <span
                                                     v-if="item.repeat_next_month"
-                                                    class="inline-flex items-center gap-0.5 text-[10px] text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none"
+                                                    class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none"
                                                     :title="t('budgets.repeatNextMonth')"
                                                 >
                                                     <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -921,7 +1201,7 @@ onUnmounted(() => {
                                         </td>
                                         <td
                                             class="px-4 py-2.5 text-right font-mono"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
                                         >
                                             <button
                                                 v-if="item.category_id && item.actual_amount > 0"
@@ -935,7 +1215,7 @@ onUnmounted(() => {
                                         </td>
                                         <td
                                             class="px-4 py-2.5 text-right font-mono text-xs"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood)"
+                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
                                         >
                                             {{ fmt(item.actual_amount - item.planned_amount, true) }}
                                         </td>
@@ -978,35 +1258,62 @@ onUnmounted(() => {
 
                                 <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
                                     <td class="pl-8 pr-2 py-1.5">
-                                        <input
+                                        <BudgetInput
                                             :id="`add-label-${type}`"
                                             v-model="addForm.label"
                                             type="text"
+                                            variant="focus"
+                                            :error="addFormSubmitted && !addForm.label"
                                             :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-indigo-500/50 focus:border-indigo-500 focus:outline-none"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                        >
+                                        />
+                                        <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
                                     </td>
                                     <td class="px-2 py-1.5">
-                                        <select
+                                        <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
+                                            <BudgetInput
+                                                v-model="newCategoryName"
+                                                data-new-category
+                                                type="text"
+                                                variant="focus"
+                                                class="flex-1"
+                                                :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                                :disabled="creatingCategoryLoading"
+                                                v-on:keydown.enter.prevent="createCategory"
+                                                v-on:keydown.escape="cancelCreateCategory"
+                                            />
+                                            <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                            </button>
+                                            <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            </button>
+                                        </div>
+                                        <BudgetSelect
+                                            v-else
                                             v-model="addForm.category_id"
-                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none"
+                                            :error="addFormSubmitted && !addForm.category_id"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                            v-on:change="onCategoryChange(addForm)"
                                         >
                                             <option :value="null">—</option>
-                                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                        </select>
+                                            <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                            <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                        </BudgetSelect>
+                                        <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
                                     </td>
                                     <td class="px-2 py-1.5">
-                                        <input
+                                        <BudgetInput
                                             v-model="addForm.planned_amount"
                                             type="number"
                                             step="0.01"
                                             min="0"
                                             placeholder="0,00"
-                                            class="w-full bg-surface-3 text-primary rounded px-2 py-1 text-sm border border-strong focus:border-indigo-500 focus:outline-none text-right font-mono"
+                                            variant="mono"
+                                            :error="addFormSubmitted && addForm.planned_amount === ''"
                                             v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                        >
+                                        />
+                                        <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
                                     </td>
                                     <td colspan="2" />
                                     <td class="px-3 py-1.5">
@@ -1014,7 +1321,7 @@ onUnmounted(() => {
                                             <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.addRow.confirm')" v-on:click="submitAdd">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                             </button>
-                                            <button class="text-muted hover:text-secondary transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
+                                            <button class="text-rose-400 hover:text-rose-300 transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
                                         </div>
@@ -1023,14 +1330,10 @@ onUnmounted(() => {
 
                                 <tr v-if="addingType !== type" class="border-b border-subtle/60">
                                     <td colspan="6" class="pl-8 py-1.5">
-                                        <AppButton
-                                            size="sm"
-                                            class="flex items-center gap-1.5"
-                                            v-on:click="startAddingItem(type)"
-                                        >
+                                        <AppLink v-on:click="startAddingItem(type)">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                             {{ t('budgets.addRow.addLine') }}
-                                        </AppButton>
+                                        </AppLink>
                                     </td>
                                 </tr>
                             </template><!-- end v-if !collapsedSections -->
@@ -1094,6 +1397,7 @@ onUnmounted(() => {
 
         <BudgetTxPanel
             :open="txPanel"
+            :editing="editingTx !== null"
             :prefill-label="txPrefillLabel"
             :tx-section="txSection"
             :tx-form="txForm"
@@ -1110,6 +1414,8 @@ onUnmounted(() => {
             :loading="txDetailLoading"
             :transactions="txDetailList"
             v-on:close="closeTxDetail"
+            v-on:edit="editTxFromDetail"
+            v-on:delete="deleteTxFromDetail"
         />
 
         <CopyBudgetModal
@@ -1135,6 +1441,13 @@ onUnmounted(() => {
             :message="pendingDeleteItem ? t('budgets.actions.confirmDelete', { label: pendingDeleteItem.label }) : ''"
             v-on:confirm="confirmDelete"
             v-on:cancel="cancelDelete"
+        />
+
+        <ConfirmModal
+            :show="pendingDeleteTx !== null"
+            :message="t('budgets.detailPanel.confirmDelete')"
+            v-on:confirm="confirmDeleteTx"
+            v-on:cancel="cancelDeleteTx"
         />
 
         <Transition

@@ -12,7 +12,7 @@ const page = usePage();
 
 const props = defineProps({ goals: Array, wallets: Array, categories: Array });
 
-const isPro = computed(() => page.props.auth.user.plan === 'pro');
+const isPro = computed(() => page.props.auth?.plan === 'pro');
 const goalLimit = computed(() => page.props.planLimits.goal);
 const canCreateGoal = computed(() => isPro.value || props.goals.length < goalLimit.value);
 

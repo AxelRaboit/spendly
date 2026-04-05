@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/vue3';
 export function useAddItem(walletId, sections, budget, flash) {
     const addingType = ref(null);
     const addForm = useForm({ type: '', label: '', planned_amount: '', category_id: null, month: '' });
+    const addFormSubmitted = ref(false);
 
     function startAdding(type, { cancelEditing }) {
         cancelEditing();
@@ -19,16 +20,19 @@ export function useAddItem(walletId, sections, budget, flash) {
 
     function cancelAdding() {
         addingType.value = null;
+        addFormSubmitted.value = false;
         addForm.reset();
     }
 
     function submitAdd() {
-        if (!addForm.label || addForm.planned_amount === '') return;
+        addFormSubmitted.value = true;
+        if (!addForm.label || addForm.planned_amount === '' || !addForm.category_id) return;
         const sectionBefore = new Set((sections.value[addingType.value] ?? []).map((i) => i.id));
         const type = addingType.value;
         addForm.post(`/wallets/${walletId.value}/budget/items`, {
             onSuccess: () => {
                 addingType.value = null;
+                addFormSubmitted.value = false;
                 addForm.reset();
                 nextTick(() => {
                     const newItem = (sections.value[type] ?? []).find((i) => !sectionBefore.has(i.id));
@@ -54,5 +58,5 @@ export function useAddItem(walletId, sections, budget, flash) {
         }
     });
 
-    return { addingType, addForm, startAdding, cancelAdding, submitAdd };
+    return { addingType, addForm, addFormSubmitted, startAdding, cancelAdding, submitAdd };
 }

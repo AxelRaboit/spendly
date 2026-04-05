@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import FormHint from '@/components/form/FormHint.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
@@ -179,7 +180,7 @@ function submitImport() {
                     <p v-if="!file" class="text-secondary text-sm font-medium">{{ t('import.dropzone') }}</p>
                     <p v-if="!file" class="text-muted text-xs mt-1">{{ t('import.dropzoneOr') }}</p>
                     <p v-if="file" class="text-primary font-medium text-sm">{{ t('import.fileSelected') }}: {{ file.name }}</p>
-                    <p class="text-subtle text-xs mt-2">{{ t('import.dropzoneHint') }}</p>
+                    <FormHint>{{ t('import.dropzoneHint') }}</FormHint>
                 </label>
 
                 <p v-if="uploadError" class="text-rose-400 text-sm">{{ uploadError }}</p>
@@ -242,7 +243,7 @@ function submitImport() {
                                     <th class="px-3 py-2 text-left font-medium text-muted">Type</th>
                                     <th class="px-3 py-2 text-left font-medium text-muted">{{ t('common.category') }} *</th>
                                     <th class="px-3 py-2 text-left font-medium text-muted">{{ t('common.description') }}</th>
-                                    <th class="px-3 py-2 text-left font-medium text-muted">Tags</th>
+                                    <th class="px-3 py-2 text-left font-medium text-muted">{{ t('common.tags') }}</th>
                                     <th class="w-8" />
                                 </tr>
                             </thead>

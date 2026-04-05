@@ -24,7 +24,7 @@ class PlanController extends Controller
         $user->trial_ends_at = null;
         $user->save();
 
-        return redirect()->route('plan.index')->with('success', 'Vous êtes maintenant sur le plan Pro.');
+        return redirect()->route('plan.index')->with('success', __('flash.plan.upgraded'));
     }
 
     public function downgrade(Request $request): RedirectResponse
@@ -34,6 +34,6 @@ class PlanController extends Controller
         $user->trial_ends_at = null;
         $user->save();
 
-        return redirect()->route('plan.index')->with('success', 'Vous êtes repassé sur le plan Free.');
+        return redirect()->route('plan.index')->with('success', __('flash.plan.downgraded'));
     }
 }

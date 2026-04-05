@@ -34,7 +34,7 @@ class RecurringTransactionController extends Controller
         try {
             $this->recurringService->create($request->user(), $request->validated());
 
-            return back()->with('success', 'Transaction récurrente créée.');
+            return back()->with('success', __('flash.recurring.created'));
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
@@ -47,7 +47,7 @@ class RecurringTransactionController extends Controller
         $this->authorize('update', $recurringTransaction);
         $recurringTransaction->update($request->validated());
 
-        return back()->with('success', 'Transaction récurrente mise à jour.');
+        return back()->with('success', __('flash.recurring.updated'));
     }
 
     public function toggle(RecurringTransaction $recurringTransaction): RedirectResponse
@@ -63,6 +63,6 @@ class RecurringTransactionController extends Controller
         $this->authorize('delete', $recurringTransaction);
         $recurringTransaction->delete();
 
-        return back()->with('success', 'Transaction récurrente supprimée.');
+        return back()->with('success', __('flash.recurring.deleted'));
     }
 }

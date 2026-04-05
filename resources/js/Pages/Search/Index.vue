@@ -1,11 +1,14 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
+import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { reactive } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { reactive, ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useSectionMeta } from '@/composables/budget/useSectionMeta';
 import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
@@ -55,6 +58,62 @@ function fmtDay(date) {
 function filterByTag(tag) {
     form.tag = tag;
     search();
+}
+
+const pendingDeleteTx = ref(null);
+
+function deleteTx(tx) {
+    pendingDeleteTx.value = tx;
+}
+
+function confirmDeleteTx() {
+    if (!pendingDeleteTx.value) return;
+    router.delete(`/transactions/${pendingDeleteTx.value.id}`, {
+        preserveScroll: true,
+        onSuccess: () => { pendingDeleteTx.value = null; },
+    });
+}
+
+function cancelDeleteTx() {
+    pendingDeleteTx.value = null;
+}
+
+const { SECTION_META } = useSectionMeta();
+const editPanel = ref(false);
+const editingTx = ref(null);
+const editForm = useForm({
+    wallet_id: null,
+    type: 'expense',
+    category_id: null,
+    amount: '',
+    description: '',
+    date: '',
+    tags: [],
+});
+
+function editTx(tx) {
+    editingTx.value = tx;
+    editForm.wallet_id = tx.wallet_id;
+    editForm.type = tx.type;
+    editForm.category_id = tx.category_id;
+    editForm.amount = tx.amount;
+    editForm.description = tx.description ?? '';
+    editForm.date = tx.date?.slice(0, 10) ?? '';
+    editForm.tags = tx.tags ?? [];
+    editPanel.value = true;
+}
+
+function closeEditPanel() {
+    editPanel.value = false;
+    editingTx.value = null;
+    editForm.reset();
+}
+
+function submitEdit() {
+    if (!editingTx.value) return;
+    editForm.put(`/transactions/${editingTx.value.id}`, {
+        onSuccess: () => closeEditPanel(),
+    });
 }
 
 const hasFilters = () => Object.values(form).some(v => v !== '');
@@ -148,12 +207,22 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                         >
                             <div class="flex items-center justify-between gap-3">
                                 <span class="text-sm text-primary font-medium truncate">{{ tx.description ?? '—' }}</span>
-                                <span
-                                    class="text-sm font-semibold font-mono shrink-0"
-                                    :class="tx.type === 'income' ? 'text-emerald-400' : 'text-primary'"
-                                >
-                                    {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
-                                </span>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <template v-if="!tx.transfer_id">
+                                        <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        </button>
+                                        <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        </button>
+                                    </template>
+                                    <span
+                                        class="text-sm font-semibold font-mono"
+                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-primary'"
+                                    >
+                                        {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
+                                    </span>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span v-if="tx.transfer_id" class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300">{{ t('transfers.badge') }}</span>
@@ -182,12 +251,13 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.description') }}</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.category') }}</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('nav.wallets') }}</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">Tags</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.tags') }}</th>
                                     <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.amount') }}</th>
+                                    <th class="w-10" />
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-base/40">
-                                <tr v-for="tx in transactions.data" :key="tx.id" class="hover:bg-surface-2/40 transition-colors">
+                                <tr v-for="tx in transactions.data" :key="tx.id" class="group hover:bg-surface-2/40 transition-colors">
                                     <td class="px-4 py-3 text-sm text-secondary whitespace-nowrap">{{ fmtDay(tx.date) }}</td>
                                     <td class="px-4 py-3 text-sm text-primary">{{ tx.description ?? '—' }}</td>
                                     <td class="px-4 py-3">
@@ -214,6 +284,16 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                     >
                                         {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
                                     </td>
+                                    <td class="px-2 py-3">
+                                        <div v-if="!tx.transfer_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                            </button>
+                                            <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -227,5 +307,22 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
 
             <AppPagination :meta="transactions" />
         </div>
+        <BudgetTxPanel
+            :open="editPanel"
+            :editing="true"
+            :show-section-filter="false"
+            :tx-form="editForm"
+            :section-meta="SECTION_META"
+            :filtered-categories="categories"
+            v-on:close="closeEditPanel"
+            v-on:submit="submitEdit"
+        />
+
+        <ConfirmModal
+            :show="pendingDeleteTx !== null"
+            :message="t('transactions.confirmDelete')"
+            v-on:confirm="confirmDeleteTx"
+            v-on:cancel="cancelDeleteTx"
+        />
     </AuthenticatedLayout>
 </template>

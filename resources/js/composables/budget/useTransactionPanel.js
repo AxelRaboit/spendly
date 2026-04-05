@@ -6,6 +6,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
     const txPanel = ref(false);
     const txPrefillLabel = ref('');
     const txSection = ref(null);
+    const editingTx = ref(null);
     const txForm = useForm({
         wallet_id: walletId.value,
         type: 'expense',
@@ -46,16 +47,33 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         nextTick(() => document.getElementById('tx-amount')?.focus());
     }
 
+    function openEditTx(tx) {
+        editingTx.value = tx;
+        txForm.wallet_id = tx.wallet_id ?? walletId.value;
+        txForm.type = tx.type;
+        txForm.category_id = tx.category_id;
+        txForm.amount = tx.amount;
+        txForm.description = tx.description ?? '';
+        txForm.date = tx.date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
+        txForm.tags = tx.tags ?? [];
+        txPrefillLabel.value = '';
+        txSection.value = null;
+        txPanel.value = true;
+    }
+
     function closeTxPanel() {
         txPanel.value = false;
         txPrefillLabel.value = '';
         txSection.value = null;
+        editingTx.value = null;
         txForm.reset();
     }
 
     function submitTx() {
         const categoryId = txForm.category_id;
-        txForm.post('/transactions', {
+        const url = editingTx.value ? `/transactions/${editingTx.value.id}` : '/transactions';
+        const method = editingTx.value ? 'put' : 'post';
+        txForm[method](url, {
             onSuccess: () => {
                 const color = txForm.type === 'income' ? 'emerald' : 'rose';
                 closeTxPanel();
@@ -78,7 +96,9 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txForm,
         txSection,
         txFilteredCategories,
+        editingTx,
         openTxPanel,
+        openEditTx,
         closeTxPanel,
         submitTx,
         onTxSectionChange,

@@ -10,6 +10,7 @@ use App\Exceptions\PlanLimitException;
 use App\Models\Goal;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Support\Text;
 use Illuminate\Database\Eloquent\Collection;
 
 class GoalService
@@ -42,6 +43,8 @@ class GoalService
         if (! $this->planService->canCreateGoal($user)) {
             throw new PlanLimitException(PlanLimitKey::Goal);
         }
+
+        $data['name'] = Text::normalize($data['name']);
 
         /** @var Goal $goal */
         $goal = $user->goals()->create($data);

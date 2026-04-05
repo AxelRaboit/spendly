@@ -17,7 +17,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 const { fmt } = useCurrency();
 const showTransfer = ref(false);
 
-const isPro = computed(() => page.props.auth.user.plan === 'pro');
+const isPro = computed(() => page.props.auth?.plan === 'pro');
 const walletLimit = computed(() => page.props.planLimits.wallet);
 const canCreateWallet = computed(() => isPro.value || props.wallets.length < walletLimit.value);
 

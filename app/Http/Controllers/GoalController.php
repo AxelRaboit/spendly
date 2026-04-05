@@ -10,6 +10,7 @@ use App\Http\Requests\GoalRequest;
 use App\Models\Goal;
 use App\Services\GoalService;
 use App\Services\PlanService;
+use App\Support\Text;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -37,7 +38,7 @@ class GoalController extends Controller
         try {
             $this->goalService->create($request->user(), $request->validated());
 
-            return back()->with('success', 'Objectif créé.');
+            return back()->with('success', __('flash.goal.created'));
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
@@ -48,9 +49,11 @@ class GoalController extends Controller
     public function update(GoalRequest $request, Goal $goal): RedirectResponse
     {
         $this->authorize('update', $goal);
-        $goal->update($request->validated());
+        $data = $request->validated();
+        $data['name'] = Text::normalize($data['name']);
+        $goal->update($data);
 
-        return back()->with('success', 'Objectif mis à jour.');
+        return back()->with('success', __('flash.goal.updated'));
     }
 
     public function deposit(GoalDepositRequest $request, Goal $goal): RedirectResponse
@@ -59,7 +62,7 @@ class GoalController extends Controller
 
         $this->goalService->deposit($request->user(), $goal, $request->validated());
 
-        return back()->with('success', 'Dépôt effectué.');
+        return back()->with('success', __('flash.goal.deposit'));
     }
 
     public function destroy(Goal $goal): RedirectResponse
@@ -67,6 +70,6 @@ class GoalController extends Controller
         $this->authorize('delete', $goal);
         $goal->delete();
 
-        return back()->with('success', 'Objectif supprimé.');
+        return back()->with('success', __('flash.goal.deleted'));
     }
 }

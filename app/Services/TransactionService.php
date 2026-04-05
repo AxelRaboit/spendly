@@ -6,12 +6,17 @@ namespace App\Services;
 
 use App\Models\Transaction;
 use App\Models\User;
+use App\Support\Text;
 use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
     public function create(User $user, array $data): Transaction
     {
+        if (isset($data['description'])) {
+            $data['description'] = Text::normalize($data['description']);
+        }
+
         $transaction = Transaction::create([
             'user_id' => $user->id,
             ...$data,
@@ -27,6 +32,10 @@ class TransactionService
 
     public function update(Transaction $transaction, array $data): Transaction
     {
+        if (isset($data['description'])) {
+            $data['description'] = Text::normalize($data['description']);
+        }
+
         $transaction->update($data);
 
         Log::info('Transaction updated', [
