@@ -11,6 +11,7 @@ import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import BudgetDetailPanel from '@/components/budget/BudgetDetailPanel.vue';
 import BudgetInput from '@/components/budget/BudgetInput.vue';
 import BudgetSelect from '@/components/budget/BudgetSelect.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
 import { useBudgetTotals }   from '@/composables/budget/useBudgetTotals';
@@ -249,6 +250,19 @@ const savingsCategories = computed(() => {
     return localCategories.value.filter(c => ids.has(c.id));
 });
 
+function targetTooltip(item) {
+    const amount = fmt(item.target_amount);
+    if (item.target_type === 'spending') {
+        return item.actual_amount <= (item.target_amount ?? 0)
+            ? t('budgets.target.onTrack', { amount })
+            : t('budgets.target.overBudget', { amount });
+    }
+    if (item.target_type === 'by_date') {
+        return t('budgets.target.byDateInfo', { amount, date: item.target_deadline ?? '' });
+    }
+    return t('budgets.target.savingOnTrack', { amount });
+}
+
 // ─── Mobile row context menu ──────────────────────────────────────────────────
 const mobileMenuOpenId = ref(null);
 function toggleMobileMenu(id) { mobileMenuOpenId.value = mobileMenuOpenId.value === id ? null : id; }
@@ -368,17 +382,17 @@ onUnmounted(() => {
 
             <div class="hidden md:grid grid-cols-3 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
+                    <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                     <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.expenses') }}</p>
+                    <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
                     <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
+                    <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
                     <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
@@ -387,17 +401,17 @@ onUnmounted(() => {
             <div class="md:hidden">
                 <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.expenses') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
@@ -431,18 +445,18 @@ onUnmounted(() => {
             <div v-if="showMoreKpi" class="space-y-3">
                 <div class="hidden md:grid grid-cols-3 gap-3">
                     <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
                         <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
                             {{ fmt(cashFlow.actual, true) }}
                         </p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                             {{ savingsRate !== null ? savingsRate + '%' : '—' }}
                         </p>
@@ -452,18 +466,18 @@ onUnmounted(() => {
 
                 <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
                         <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
                             {{ fmt(cashFlow.actual, true) }}
                         </p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                             {{ savingsRate !== null ? savingsRate + '%' : '—' }}
                         </p>
@@ -476,12 +490,12 @@ onUnmounted(() => {
 
                 <div class="hidden md:grid grid-cols-3 gap-3">
                     <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                         <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
                         <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
-                        <p class="text-xs text-muted uppercase tracking-wide">{{ t('budgets.kpi.spendProgress') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
                         <div>
                             <div class="flex items-end justify-between mb-2">
                                 <div>
@@ -512,10 +526,12 @@ onUnmounted(() => {
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
                         <div>
-                            <p class="text-xs text-muted uppercase tracking-wide mb-1">
-                                {{ t('budgets.kpi.projection') }}
-                                <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
-                            </p>
+                            <AppTooltip :text="t('budgets.kpi.projectionTip')">
+                                <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
+                                    {{ t('budgets.kpi.projection') }}
+                                    <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
+                                </p>
+                            </AppTooltip>
                             <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
                                 {{ fmt(projectedExpenses) }}
                             </p>
@@ -532,12 +548,12 @@ onUnmounted(() => {
 
                 <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                         <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
                         <p v-else class="text-sm text-subtle">{{ t('budgets.noneThisMonth') }}</p>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.spendProgress') }}</p>
+                        <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
                         <div class="mt-3">
                             <div class="flex items-end justify-between mb-2">
                                 <span class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
@@ -562,10 +578,12 @@ onUnmounted(() => {
                         </div>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">
-                            {{ t('budgets.kpi.projection') }}
-                            <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
-                        </p>
+                        <AppTooltip :text="t('budgets.kpi.projectionTip')">
+                            <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
+                                {{ t('budgets.kpi.projection') }}
+                                <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
+                            </p>
+                        </AppTooltip>
                         <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
                             {{ fmt(projectedExpenses) }}
                         </p>
@@ -653,14 +671,11 @@ onUnmounted(() => {
                                 <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: goal.color }" />
                                 <span class="text-sm font-medium text-primary truncate">{{ goal.name }}</span>
                             </div>
-                            <button
-                                v-if="!goal.category_id"
-                                class="shrink-0 text-muted hover:text-emerald-400 transition-colors"
-                                :title="t('goals.deposit')"
-                                v-on:click="depositGoal = goal"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                            </button>
+                            <AppTooltip v-if="!goal.category_id" :text="t('goals.deposit')">
+                                <button class="shrink-0 text-muted hover:text-emerald-400 transition-colors" v-on:click="depositGoal = goal">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                </button>
+                            </AppTooltip>
                             <span v-else class="shrink-0 text-xs text-indigo-400">↻</span>
                         </div>
 
@@ -849,15 +864,19 @@ onUnmounted(() => {
                                             >
                                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             </span>
-                                            <span
+                                            <AppTooltip
                                                 v-if="item.target_type"
-                                                class="inline-flex items-center text-xs border rounded px-1 py-0.5"
-                                                :class="item.target_type === 'spending'
-                                                    ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
-                                                    : 'text-amber-400 border-amber-500/30'"
+                                                :text="targetTooltip(item)"
                                             >
-                                                {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
-                                            </span>
+                                                <span
+                                                    class="inline-flex items-center text-xs border rounded px-1 py-0.5 cursor-help"
+                                                    :class="item.target_type === 'spending'
+                                                        ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
+                                                        : 'text-amber-400 border-amber-500/30'"
+                                                >
+                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
+                                                </span>
+                                            </AppTooltip>
                                         </div>
                                         <div v-if="!item.category?.is_system" class="flex items-center gap-2 shrink-0">
                                             <button
@@ -913,9 +932,16 @@ onUnmounted(() => {
                                         <div class="flex items-center gap-2 font-mono">
                                             <span class="text-muted">
                                                 {{ fmt(item.planned_amount) }}
-                                                <span v-if="item.carried_over !== 0" class="text-xs" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
-                                                    {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
-                                                </span>
+                                                <AppTooltip
+                                                    v-if="item.carried_over !== 0"
+                                                    :text="item.carried_over > 0
+                                                        ? t('budgets.carriedOverTooltip', { amount: fmt(item.carried_over) })
+                                                        : t('budgets.carriedOverDeficitTooltip', { amount: fmt(Math.abs(item.carried_over)) })"
+                                                >
+                                                    <span class="text-xs cursor-help" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                        {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
+                                                    </span>
+                                                </AppTooltip>
                                             </span>
                                             <button
                                                 v-if="item.category_id && item.actual_amount > 0"
@@ -1168,12 +1194,16 @@ onUnmounted(() => {
                                             <td />
                                             <td class="px-3 py-1.5">
                                                 <div class="flex items-center gap-2 justify-end">
-                                                    <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.editRow.confirm')" v-on:click="submitEdit(item)">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                                    </button>
-                                                    <button class="text-rose-400 hover:text-rose-300 transition-colors" :title="t('budgets.editRow.cancel')" v-on:click="cancelEditing">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                    </button>
+                                                    <AppTooltip :text="t('budgets.editRow.confirm')">
+                                                        <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitEdit(item)">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                        </button>
+                                                    </AppTooltip>
+                                                    <AppTooltip :text="t('budgets.editRow.cancel')">
+                                                        <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                        </button>
+                                                    </AppTooltip>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1249,23 +1279,26 @@ onUnmounted(() => {
                                                 </div>
                                                 <span>{{ item.label }}</span>
                                                 <NoteTooltip v-if="item.notes" :note="item.notes" />
-                                                <span
-                                                    v-if="item.repeat_next_month"
-                                                    class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none"
-                                                    :title="t('budgets.repeatNextMonth')"
-                                                >
-                                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                                                </span>
-                                                <span
+                                                <AppTooltip v-if="item.repeat_next_month" :text="t('budgets.repeatNextMonth')">
+                                                    <span
+                                                        class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none cursor-help"
+                                                    >
+                                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                    </span>
+                                                </AppTooltip>
+                                                <AppTooltip
                                                     v-if="item.target_type"
-                                                    class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none"
-                                                    :class="item.target_type === 'spending'
-                                                        ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
-                                                        : 'text-amber-400 border-amber-500/30'"
-                                                    :title="t('budgets.target.' + (item.target_type === 'spending' ? (item.actual_amount <= (item.target_amount ?? 0) ? 'onTrack' : 'overBudget') : 'label'))"
+                                                    :text="targetTooltip(item)"
                                                 >
-                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
-                                                </span>
+                                                    <span
+                                                        class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none cursor-help"
+                                                        :class="item.target_type === 'spending'
+                                                            ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
+                                                            : 'text-amber-400 border-amber-500/30'"
+                                                    >
+                                                        {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
+                                                    </span>
+                                                </AppTooltip>
                                             </div>
                                         </td>
                                         <td class="px-4 py-2.5">
@@ -1277,9 +1310,16 @@ onUnmounted(() => {
                                         <td class="px-4 py-2.5 text-right text-secondary font-mono">
                                             <div>
                                                 {{ fmt(item.planned_amount) }}
-                                                <span v-if="item.carried_over !== 0" class="text-xs ml-1" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
-                                                    {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
-                                                </span>
+                                                <AppTooltip
+                                                    v-if="item.carried_over !== 0"
+                                                    :text="item.carried_over > 0
+                                                        ? t('budgets.carriedOverTooltip', { amount: fmt(item.carried_over) })
+                                                        : t('budgets.carriedOverDeficitTooltip', { amount: fmt(Math.abs(item.carried_over)) })"
+                                                >
+                                                    <span class="text-xs ml-1 cursor-help" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                        {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
+                                                    </span>
+                                                </AppTooltip>
                                             </div>
                                             <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-surface-3 rounded-full">
                                                 <div
@@ -1294,14 +1334,11 @@ onUnmounted(() => {
                                             class="px-4 py-2.5 text-right font-mono"
                                             :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
                                         >
-                                            <button
-                                                v-if="item.category_id && item.actual_amount > 0"
-                                                class="hover:underline decoration-dotted"
-                                                :title="`Voir les transactions`"
-                                                v-on:click.stop="openTxDetail(item)"
-                                            >
-                                                {{ fmt(item.actual_amount) }}
-                                            </button>
+                                            <AppTooltip v-if="item.category_id && item.actual_amount > 0" :text="t('budgets.detailPanel.subtitle')">
+                                                <button class="hover:underline decoration-dotted" v-on:click.stop="openTxDetail(item)">
+                                                    {{ fmt(item.actual_amount) }}
+                                                </button>
+                                            </AppTooltip>
                                             <span v-else>{{ fmt(item.actual_amount) }}</span>
                                         </td>
                                         <td
@@ -1312,36 +1349,31 @@ onUnmounted(() => {
                                         </td>
                                         <td class="px-3 py-2.5">
                                             <div v-if="!item.category?.is_system" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    class="text-muted hover:text-indigo-400 transition-colors"
-                                                    :title="t('budgets.actions.addTx')"
-                                                    v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
-                                                >
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                                                </button>
-                                                <button
-                                                    v-if="isPro"
-                                                    class="transition-colors"
-                                                    :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'"
-                                                    :title="t('budgets.actions.toggleRepeat')"
-                                                    v-on:click.stop="toggleRepeat(item)"
-                                                >
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                                                </button>
-                                                <button
-                                                    v-if="isPro"
-                                                    class="text-muted hover:text-amber-400 transition-colors"
-                                                    :title="t('budgets.actions.duplicate')"
-                                                    v-on:click.stop="duplicateItem(item)"
-                                                >
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                                                </button>
-                                                <button class="text-muted hover:text-sky-400 transition-colors" :title="t('budgets.actions.edit')" v-on:click.stop="startEditingItem(item)">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                                </button>
-                                                <button class="text-muted hover:text-rose-400 transition-colors" :title="t('budgets.actions.delete')" v-on:click.stop="requestDelete(item)">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                                </button>
+                                                <AppTooltip :text="t('budgets.actions.addTx')">
+                                                    <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                                    </button>
+                                                </AppTooltip>
+                                                <AppTooltip v-if="isPro" :text="t('budgets.actions.toggleRepeat')">
+                                                    <button class="transition-colors" :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'" v-on:click.stop="toggleRepeat(item)">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                    </button>
+                                                </AppTooltip>
+                                                <AppTooltip v-if="isPro" :text="t('budgets.actions.duplicate')">
+                                                    <button class="text-muted hover:text-amber-400 transition-colors" v-on:click.stop="duplicateItem(item)">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                    </button>
+                                                </AppTooltip>
+                                                <AppTooltip :text="t('budgets.actions.edit')">
+                                                    <button class="text-muted hover:text-sky-400 transition-colors" v-on:click.stop="startEditingItem(item)">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                                    </button>
+                                                </AppTooltip>
+                                                <AppTooltip :text="t('budgets.actions.delete')">
+                                                    <button class="text-muted hover:text-rose-400 transition-colors" v-on:click.stop="requestDelete(item)">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                    </button>
+                                                </AppTooltip>
                                             </div>
                                         </td>
                                     </tr>
@@ -1409,12 +1441,16 @@ onUnmounted(() => {
                                     <td colspan="2" />
                                     <td class="px-3 py-1.5">
                                         <div class="flex items-center gap-2 justify-end">
-                                            <button class="text-emerald-400 hover:text-emerald-300 transition-colors" :title="t('budgets.addRow.confirm')" v-on:click="submitAdd">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                                            </button>
-                                            <button class="text-rose-400 hover:text-rose-300 transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                            </button>
+                                            <AppTooltip :text="t('budgets.addRow.confirm')">
+                                                <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitAdd">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                </button>
+                                            </AppTooltip>
+                                            <AppTooltip :text="t('budgets.addRow.cancel')">
+                                                <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </button>
+                                            </AppTooltip>
                                         </div>
                                     </td>
                                 </tr>
