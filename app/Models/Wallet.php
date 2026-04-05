@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Override;
 
 #[Fillable(['user_id', 'name', 'start_balance', 'is_favorite', 'position'])]
 class Wallet extends Model
@@ -17,9 +18,13 @@ class Wallet extends Model
     use Filterable;
     use HasFactory;
 
-    protected $casts = [
-        'is_favorite' => 'boolean',
-    ];
+    #[Override]
+    protected function casts(): array
+    {
+        return [
+            'is_favorite' => 'boolean',
+        ];
+    }
 
     public function user(): BelongsTo
     {

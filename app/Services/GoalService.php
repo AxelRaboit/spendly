@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PlanLimitKey;
 use App\Enums\TransactionType;
+use App\Exceptions\PlanLimitException;
 use App\Models\Goal;
 use App\Models\User;
 use App\Models\Wallet;
@@ -14,6 +16,7 @@ class GoalService
 {
     public function __construct(
         private readonly TransactionService $transactionService,
+        private readonly PlanService $planService,
     ) {}
 
     public function list(User $user): Collection
@@ -32,6 +35,18 @@ class GoalService
             ->where('wallet_id', $wallet->id)
             ->get()
             ->append('progress');
+    }
+
+    public function create(User $user, array $data): Goal
+    {
+        if (! $this->planService->canCreateGoal($user)) {
+            throw new PlanLimitException(PlanLimitKey::Goal);
+        }
+
+        /** @var Goal $goal */
+        $goal = $user->goals()->create($data);
+
+        return $goal;
     }
 
     /**

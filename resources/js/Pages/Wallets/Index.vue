@@ -1,8 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TransferModal from '@/components/wallet/TransferModal.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
@@ -11,10 +11,15 @@ const props = defineProps({
     wallets: Array,
 });
 
+const page = usePage();
 const { t } = useI18n();
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
 const { fmt } = useCurrency();
 const showTransfer = ref(false);
+
+const isPro = computed(() => page.props.auth.user.plan === 'pro');
+const walletLimit = computed(() => page.props.planLimits.wallet);
+const canCreateWallet = computed(() => isPro.value || props.wallets.length < walletLimit.value);
 
 function toggleFavorite(wallet) {
     router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
@@ -77,9 +82,20 @@ function onDrop(event, targetWallet) {
                     </svg>
                     {{ t('transfers.new') }}
                 </AppButton>
-                <Link href="/wallets/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">
-                    {{ t('wallets.createBtn') }}
-                </Link>
+                <div class="relative">
+                    <Link
+                        href="/wallets/create"
+                        :class="[
+                            'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition inline-flex items-center gap-2',
+                            !canCreateWallet ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''
+                        ]"
+                    >
+                        {{ t('wallets.createBtn') }}
+                    </Link>
+                    <span v-if="!isPro && props.wallets.length >= walletLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
+                        Pro
+                    </span>
+                </div>
             </div>
 
             <div v-if="localWallets.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -97,11 +113,9 @@ function onDrop(event, targetWallet) {
                     v-on:dragover="onDragOver($event, wallet)"
                     v-on:drop="onDrop($event, wallet)"
                 >
-                    <!-- Decorative circles -->
                     <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
                     <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
 
-                    <!-- Drag handle hint -->
                     <div class="absolute top-3 right-3 text-muted/40 pointer-events-none">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" />
@@ -110,7 +124,6 @@ function onDrop(event, targetWallet) {
                         </svg>
                     </div>
 
-                    <!-- Card body -->
                     <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
                         <Link
                             :href="`/wallets/${wallet.id}/budget`"
@@ -138,7 +151,6 @@ function onDrop(event, targetWallet) {
                         </Link>
                     </div>
 
-                    <!-- Card footer -->
                     <div class="flex items-center justify-between pt-3">
                         <button
                             :title="wallet.is_favorite ? t('wallets.removeFavorite') : t('wallets.addFavorite')"

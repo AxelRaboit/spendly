@@ -25,7 +25,7 @@ const { form, submit } = useWalletForm(props.wallet ?? undefined);
         </template>
 
         <div class="max-w-lg">
-            <div class="bg-surface border border-base/60 rounded-2xl p-6 shadow-sm space-y-4">
+            <FormSection>
                 <form class="space-y-4" v-on:submit.prevent="submit">
                     <div>
                         <InputLabel :value="t('wallets.fieldName')" />
@@ -52,7 +52,7 @@ const { form, submit } = useWalletForm(props.wallet ?? undefined);
                         </Link>
                     </div>
                 </form>
-            </div>
+            </FormSection>
         </div>
     </AuthenticatedLayout>
 </template>

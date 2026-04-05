@@ -9,6 +9,7 @@ use App\Http\Requests\ProcessImportRequest;
 use App\Http\Requests\UploadImportFileRequest;
 use App\Models\Wallet;
 use App\Services\ImportService;
+use App\Services\PlanService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,10 +22,15 @@ use RuntimeException;
 
 class ImportController extends Controller
 {
-    public function __construct(private readonly ImportService $importService) {}
+    public function __construct(
+        private readonly ImportService $importService,
+        private readonly PlanService $planService,
+    ) {}
 
     public function index(Request $request): Response
     {
+        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+
         $user = $request->user();
 
         return Inertia::render('Import/Index', [
@@ -33,8 +39,10 @@ class ImportController extends Controller
         ]);
     }
 
-    public function template(): HttpResponse
+    public function template(Request $request): HttpResponse
     {
+        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+
         $spreadsheet = $this->importService->generateTemplate();
 
         ob_start();
@@ -49,6 +57,8 @@ class ImportController extends Controller
 
     public function preview(UploadImportFileRequest $request): JsonResponse
     {
+        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+
         $path = $request->file('file')->storeAs(
             'csv-imports',
             uniqid('import_', true).'.xlsx',
@@ -67,6 +77,8 @@ class ImportController extends Controller
 
     public function process(ProcessImportRequest $request): RedirectResponse
     {
+        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+
         $data = $request->validated();
         $user = $request->user();
         /** @var Wallet $wallet */

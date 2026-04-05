@@ -61,7 +61,6 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                 class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
-                <!-- Header -->
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
                         <h3 class="font-semibold text-primary">{{ t('budgets.txPanel.title') }}</h3>
@@ -72,9 +71,7 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                     </button>
                 </div>
 
-                <!-- Form -->
                 <form class="flex-1 overflow-y-auto px-6 py-6 space-y-5" v-on:submit.prevent="emit('submit')">
-                    <!-- Section -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.section') }}</label>
                         <div class="flex flex-wrap gap-1.5">
@@ -93,13 +90,11 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                         </div>
                     </div>
 
-                    <!-- Type -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.type') }}</label>
                         <TypeToggle v-model="txForm.type" />
                     </div>
 
-                    <!-- Amount -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.amount') }}</label>
                         <div class="relative">
@@ -118,7 +113,6 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                         <p v-if="txForm.errors.amount" class="text-rose-400 text-xs mt-1">{{ txForm.errors.amount }}</p>
                     </div>
 
-                    <!-- Category -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
                         <SelectInput v-model="txForm.category_id">
@@ -129,14 +123,12 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                         <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
                     </div>
 
-                    <!-- Date -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.date') }}</label>
                         <DateInput v-model="txForm.date" />
                         <p v-if="txForm.errors.date" class="text-rose-400 text-xs mt-1">{{ txForm.errors.date }}</p>
                     </div>
 
-                    <!-- Description -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.descLabel') }}
@@ -150,7 +142,6 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                         >
                     </div>
 
-                    <!-- Tags -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.tagsLabel') }}
@@ -180,7 +171,6 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                     </div>
                 </form>
 
-                <!-- Footer -->
                 <div class="px-6 py-4 border-t border-base flex gap-3">
                     <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="emit('submit')">
                         {{ txForm.processing ? t('budgets.txPanel.submitting') : t('budgets.txPanel.submit') }}

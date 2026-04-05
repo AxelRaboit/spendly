@@ -124,7 +124,6 @@ function submitImport() {
         </template>
 
         <div class="max-w-5xl mx-auto space-y-6">
-            <!-- Steps indicator -->
             <div class="flex items-center gap-2">
                 <template v-for="(label, idx) in [t('import.step1'), t('import.step3')]" :key="idx">
                     <div class="flex items-center gap-2">
@@ -149,9 +148,7 @@ function submitImport() {
                 </template>
             </div>
 
-            <!-- ── Step 1: File ── -->
             <div v-if="step === 1" class="bg-surface border border-base/60 rounded-xl p-6 space-y-4">
-                <!-- Template download -->
                 <div class="flex items-center justify-between bg-indigo-500/5 border border-indigo-500/20 rounded-lg px-4 py-3">
                     <div>
                         <p class="text-sm font-medium text-primary">{{ t('import.templateTitle') }}</p>
@@ -168,7 +165,6 @@ function submitImport() {
                     </a>
                 </div>
 
-                <!-- Dropzone -->
                 <label
                     class="block cursor-pointer border-2 border-dashed rounded-xl p-10 text-center transition-colors"
                     :class="isDragging ? 'border-indigo-500 bg-indigo-500/5' : 'border-base hover:border-indigo-500/50'"
@@ -215,19 +211,15 @@ function submitImport() {
                 </div>
             </div>
 
-            <!-- ── Step 2: Edit rows + confirm ── -->
             <div v-if="step === 2" class="space-y-4">
-                <!-- Header bar -->
                 <div class="flex items-center justify-between">
                     <span class="text-muted text-sm">{{ t('import.totalRows', { n: rows.length }) }}</span>
                     <div class="flex items-center gap-3">
-                        <!-- Wallet -->
                         <div class="w-44">
                             <SelectInput v-model="walletId">
                                 <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                             </SelectInput>
                         </div>
-                        <!-- Bulk category -->
                         <div class="w-52">
                             <SelectInput
                                 v-model="bulkCategory"
@@ -240,7 +232,6 @@ function submitImport() {
                     </div>
                 </div>
 
-                <!-- Editable table -->
                 <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-xs">
@@ -318,7 +309,6 @@ function submitImport() {
                                     </td>
                                 </tr>
 
-                                <!-- Add row -->
                                 <tr>
                                     <td colspan="7" class="px-3 py-2">
                                         <button
@@ -335,7 +325,6 @@ function submitImport() {
                     </div>
                 </div>
 
-                <!-- Hint if some rows missing category -->
                 <p v-if="rows.length > 0 && !allCategorized" class="text-xs text-rose-400">
                     {{ t('import.categoryRequired') }}
                 </p>

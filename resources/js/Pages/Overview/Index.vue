@@ -33,7 +33,6 @@ function cashFlowClass(val) {
         </template>
 
         <div class="space-y-6">
-            <!-- Month navigation -->
             <div class="flex items-center justify-between">
                 <Link
                     :href="`/overview?month=${prev}`"
@@ -52,26 +51,14 @@ function cashFlowClass(val) {
                 </Link>
             </div>
 
-            <!-- Global totals KPIs -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="bg-surface border border-base/60 rounded-xl p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('overview.income') }}</p>
-                    <p class="text-xl font-bold text-emerald-400 font-mono">{{ fmt(totals.income) }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-xl p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('overview.expenses') }}</p>
-                    <p class="text-xl font-bold text-rose-400 font-mono">{{ fmt(totals.expenses) }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-xl p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('overview.cashFlow') }}</p>
-                    <p class="text-xl font-bold font-mono" :class="cashFlowClass(totals.cash_flow)">{{ fmt(totals.cash_flow, true) }}</p>
-                </div>
+                <StatCard :label="t('overview.income')" value-class="text-emerald-400">{{ fmt(totals.income) }}</StatCard>
+                <StatCard :label="t('overview.expenses')" value-class="text-rose-400">{{ fmt(totals.expenses) }}</StatCard>
+                <StatCard :label="t('overview.cashFlow')" :value-class="cashFlowClass(totals.cash_flow)">{{ fmt(totals.cash_flow, true) }}</StatCard>
             </div>
 
-            <!-- Per-wallet breakdown -->
             <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
                 <template v-if="wallets.length > 0">
-                    <!-- Mobile cards -->
                     <div class="sm:hidden divide-y divide-base/40">
                         <div v-for="wallet in wallets" :key="wallet.id" class="p-4 space-y-2">
                             <div class="flex items-center justify-between">
@@ -105,7 +92,6 @@ function cashFlowClass(val) {
                         </div>
                     </div>
 
-                    <!-- Desktop table -->
                     <div class="hidden sm:block overflow-x-auto">
                         <table class="min-w-full">
                             <thead>
@@ -140,7 +126,6 @@ function cashFlowClass(val) {
                                     </td>
                                 </tr>
 
-                                <!-- Total row -->
                                 <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
                                     <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
                                     <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(totals.income) }}</td>

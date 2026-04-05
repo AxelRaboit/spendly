@@ -10,6 +10,12 @@ class GoalDepositRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        $goal = $this->route('goal');
+
+        if (! $goal || $goal->user_id !== $this->user()->id) {
+            return false;
+        }
+
         return true;
     }
 

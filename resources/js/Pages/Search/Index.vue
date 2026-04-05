@@ -16,6 +16,8 @@ const props = defineProps({
     categories:   Array,
     wallets:      Array,
     filters:      Object,
+    isFreeLimited: { type: Boolean, default: false },
+    freeLimitDays: { type: Number, default: 90 },
 });
 
 const form = reactive({
@@ -67,9 +69,7 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
         </template>
 
         <div class="space-y-4">
-            <!-- Filters -->
             <div class="bg-surface border border-base/60 rounded-xl p-4 space-y-3">
-                <!-- Search + reset -->
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <input
@@ -88,7 +88,6 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                     </AppButton>
                 </div>
 
-                <!-- Filter row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                     <SelectInput v-model="form.category_id" v-on:change="search">
                         <option value="">{{ t('search.allCategories') }}</option>
@@ -119,17 +118,28 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                     </div>
                 </div>
 
-                <!-- Date row -->
                 <div class="flex flex-col sm:flex-row gap-2">
                     <DateInput v-model="form.date_from" class="flex-1" v-on:change="search" />
                     <DateInput v-model="form.date_to" class="flex-1" v-on:change="search" />
                 </div>
             </div>
 
-            <!-- Results -->
+            <div v-if="isFreeLimited" class="bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3 flex items-center gap-3">
+                <svg
+                    class="h-5 w-5 text-amber-400 shrink-0"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+                <p class="text-sm text-amber-200">{{ t('search.freeLimitWarning', { days: freeLimitDays }) }}</p>
+            </div>
+
             <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
                 <template v-if="transactions.data.length > 0">
-                    <!-- Mobile cards -->
                     <div class="sm:hidden divide-y divide-base/40">
                         <div
                             v-for="tx in transactions.data"
@@ -164,7 +174,6 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                         </div>
                     </div>
 
-                    <!-- Desktop table -->
                     <div class="hidden sm:block overflow-x-auto">
                         <table class="min-w-full">
                             <thead>

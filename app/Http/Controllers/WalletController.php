@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PlanLimitException;
 use App\Http\Requests\ReorderRequest;
 use App\Http\Requests\StoreWalletRequest;
 use App\Http\Requests\UpdateWalletRequest;
 use App\Models\Wallet;
+use App\Services\PlanService;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,9 +34,15 @@ class WalletController extends Controller
 
     public function store(StoreWalletRequest $request): RedirectResponse
     {
-        $wallet = $this->walletService->create($request->user(), $request->validated());
+        try {
+            $wallet = $this->walletService->create($request->user(), $request->validated());
 
-        return redirect()->route('wallets.budget.show', $wallet)->with('success', 'Portefeuille créé avec succès.');
+            return redirect()->route('wallets.budget.show', $wallet)->with('success', 'Portefeuille créé avec succès.');
+        } catch (PlanLimitException $planLimitException) {
+            return back()
+                ->with('plan_error', $planLimitException->limitKey->value)
+                ->with('plan_error_limit', PlanService::FREE_WALLET_LIMIT);
+        }
     }
 
     public function show(Wallet $wallet): RedirectResponse

@@ -7,8 +7,9 @@ export default {
         statistics: 'Estadísticas',
         search: 'Transacciones',
         goals: 'Objetivos',
-        recurring: 'Recurrentes',
+        recurring: 'Automáticas',
         import: 'Importar',
+        plan: 'Plan',
         profile: 'Perfil',
         logout: 'Cerrar sesión',
         lightMode: 'Modo claro',
@@ -32,6 +33,7 @@ export default {
         description: 'Descripción',
         category: 'Categoría',
         or: 'o',
+        notNow: 'Ahora no',
     },
 
     auth: {
@@ -142,10 +144,10 @@ export default {
         hint: 'Clic para editar · N para añadir · ← → para navegar',
         confirmCopyAppend: '¿Añadir filas de {month}? Las filas existentes se conservarán.',
         exportXlsx: 'Exportar XLSX',
-        copyRecurring: 'Copiar recurrentes',
-        confirmCopyRecurring: '¿Copiar las transacciones recurrentes en este mes?',
+        copyRepeat: 'Copiar líneas a reconducir',
+        confirmCopyRepeat: '¿Copiar las líneas marcadas "reconducir" en este mes?',
         noPrevItems: 'No hay líneas en el mes anterior.',
-        recurring: 'Recurrente',
+        repeatNextMonth: 'Reconducir',
         overageAlert:
             'sin líneas | 1 línea supera el presupuesto previsto. | {count} líneas superan el presupuesto previsto.',
         overageGood: 'sin líneas | 1 línea supera el objetivo previsto. | {count} líneas superan el objetivo previsto.',
@@ -235,7 +237,7 @@ export default {
             delete: 'Eliminar fila',
             confirmDelete: '¿Eliminar "{label}"? Esta acción es irreversible.',
             duplicate: 'Duplicar fila',
-            toggleRecurring: 'Marcar como recurrente',
+            toggleRepeat: 'Marcar para reconducir',
         },
     },
 
@@ -316,8 +318,8 @@ export default {
     },
 
     recurring: {
-        title: 'Transacciones recurrentes',
-        new: 'Nueva recurrente',
+        title: 'Transacciones automáticas',
+        new: 'Nueva automática',
         fieldDesc: 'Descripción',
         fieldAmount: 'Importe ({symbol})',
         fieldDay: 'Día del mes',
@@ -328,11 +330,11 @@ export default {
         active: 'Activa',
         inactive: 'Inactiva',
         dayLabel: 'El día {day} de cada mes',
-        none: 'Sin transacciones recurrentes.',
-        confirmDelete: '¿Eliminar esta transacción recurrente?',
+        none: 'Sin transacciones automáticas.',
+        confirmDelete: '¿Eliminar esta transacción automática?',
         lastGenerated: 'Última generación: {date}',
         never: 'Nunca generada',
-        count: '{count} recurrente | {count} recurrentes',
+        count: '{count} automática | {count} automáticas',
     },
 
     search: {
@@ -348,6 +350,7 @@ export default {
         noResults: 'No se encontraron transacciones.',
         reset: 'Restablecer',
         tagPlaceholder: 'Filtrar por etiqueta',
+        freeLimitWarning: 'El historial está limitado a los últimos {days} días en el plan Free.',
     },
 
     overview: {
@@ -428,5 +431,84 @@ export default {
         submitting: 'Procesando…',
         badge: 'Transferencia',
         confirmDelete: '¿Eliminar esta transferencia? Ambas transacciones serán eliminadas.',
+    },
+
+    upgrade: {
+        default: {
+            title: 'Pasa a Spendly Pro',
+            message: 'Esta función está reservada a los usuarios de Spendly Pro.',
+        },
+        wallet: {
+            title: 'Límite de carteras alcanzado',
+            message:
+                'Has alcanzado el límite de {limit} cartera(s) en el plan Free. Pasa a Pro para crear carteras ilimitadas.',
+        },
+        goal: {
+            title: 'Límite de objetivos alcanzado',
+            message:
+                'Has alcanzado el límite de {limit} objetivo(s) en el plan Free. Pasa a Pro para crear objetivos ilimitados.',
+        },
+        recurring: {
+            title: 'Límite de transacciones automáticas alcanzado',
+            message:
+                'Has alcanzado el límite de {limit} transacción(es) automática(s) en el plan Free. Pasa a Pro para automáticas ilimitadas.',
+        },
+        budget: {
+            title: 'Edición de presupuesto reservada a Pro',
+            message:
+                'La edición de presupuestos está reservada a los usuarios de Spendly Pro. Los usuarios Free pueden consultar los presupuestos en modo lectura.',
+        },
+        import: {
+            title: 'Importar/Exportar reservado a Pro',
+            message: 'La importación y exportación de transacciones están reservadas a los usuarios de Spendly Pro.',
+        },
+        callToAction: '¡Desbloquea todas las funciones avanzadas y potencia tu gestión financiera!',
+        upgradeToPro: 'Pasar a Pro',
+    },
+
+    plan: {
+        title: 'Planes y Precios',
+        subtitle: 'Precios simples y transparentes. Cambia de plan cuando quieras.',
+        currentPlan: 'Plan actual',
+        perMonth: 'mes',
+        upgradeCta: 'Actualizar a Pro',
+        stripeSoon: 'Pago con Stripe próximamente — la actualización es gratuita por ahora',
+        downgradeFree: 'Volver a Free',
+        alreadyPro: '¡Estás en Pro — disfruta de todas las funciones!',
+        disclaimer: 'Los precios se confirmarán cuando Stripe esté integrado. Cambia tu plan en cualquier momento.',
+        free: {
+            name: 'Free',
+            price: '$0',
+            tagline: 'Las herramientas esenciales para empezar.',
+        },
+        pro: {
+            name: 'Pro',
+            price: '$4.99',
+            tagline: 'Todo el poder para una gestión seria.',
+        },
+        features: {
+            wallets: '{n} cartera',
+            goals: '{n} objetivos de ahorro',
+            recurring: '{n} transacciones automáticas',
+            history: 'Historial de {n} días',
+            walletsUnlimited: 'Carteras ilimitadas',
+            goalsUnlimited: 'Objetivos de ahorro ilimitados',
+            recurringUnlimited: 'Transacciones automáticas ilimitadas',
+            historyUnlimited: 'Historial completo',
+            budgetBasic: 'Crear y editar líneas presupuestarias',
+            budgetAdvanced: 'Herramientas avanzadas (duplicar, reconducir, copiar)',
+            importExport: 'Importar y exportar (XLSX)',
+            statsMonths: 'Estadísticas (1 mes)',
+            statsMonthsPro: 'Estadísticas (6 meses)',
+            andMore: '… ¡y muchas más funcionalidades extra!',
+        },
+    },
+    trial: {
+        bannerLink: 'Ver planes',
+        countdown: {
+            days: 'Prueba Pro: {days} día restante | Prueba Pro: {days} días restantes',
+            hours: 'Prueba Pro: {hours}h{minutes}min restantes',
+            minutes: 'Prueba Pro: {minutes} minuto restante | Prueba Pro: {minutes} minutos restantes',
+        },
     },
 };

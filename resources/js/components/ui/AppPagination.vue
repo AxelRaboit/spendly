@@ -21,12 +21,10 @@ function decodeLabel(html) {
 
 <template>
     <div v-if="meta.last_page > 1" class="mt-6 space-y-3">
-        <!-- Result count -->
         <p class="text-sm text-secondary text-center sm:text-left">
             {{ t('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
         </p>
 
-        <!-- Mobile: prev / next only -->
         <div class="flex gap-2 sm:hidden">
             <component
                 :is="prevLink?.url ? Link : 'span'"
@@ -50,7 +48,6 @@ function decodeLabel(html) {
             </component>
         </div>
 
-        <!-- Desktop: full page links -->
         <div class="hidden sm:flex gap-1">
             <template v-for="link in meta.links" :key="link.label">
                 <Link

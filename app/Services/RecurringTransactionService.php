@@ -4,12 +4,31 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PlanLimitKey;
+use App\Exceptions\PlanLimitException;
 use App\Models\RecurringTransaction;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 
 class RecurringTransactionService
 {
+    public function __construct(
+        private readonly PlanService $planService,
+    ) {}
+
+    public function create(User $user, array $data): RecurringTransaction
+    {
+        if (! $this->planService->canCreateRecurring($user)) {
+            throw new PlanLimitException(PlanLimitKey::Recurring);
+        }
+
+        /** @var RecurringTransaction $recurring */
+        $recurring = $user->recurringTransactions()->create($data);
+
+        return $recurring;
+    }
+
     public function toggle(RecurringTransaction $recurring): void
     {
         $newActive = ! $recurring->active;
@@ -22,7 +41,7 @@ class RecurringTransactionService
 
     public function generateIfDue(RecurringTransaction $rule): void
     {
-        $today = Carbon::today();
+        $today = today();
 
         $alreadyGeneratedThisMonth = $rule->last_generated_at
             && Carbon::parse($rule->last_generated_at)->format('Y-m') === $today->format('Y-m');

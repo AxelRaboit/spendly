@@ -81,13 +81,11 @@ function confirm() {
             <div class="absolute inset-0 bg-black/60" v-on:click="$emit('cancel')" />
 
             <div class="relative z-10 w-full max-w-lg rounded-xl bg-surface-2 border border-base shadow-xl flex flex-col max-h-[80vh]">
-                <!-- Header -->
                 <div class="px-6 py-4 border-b border-base">
                     <h3 class="text-base font-semibold text-primary">{{ title }}</h3>
                     <p class="text-sm text-secondary mt-0.5">{{ message }}</p>
                 </div>
 
-                <!-- Select all -->
                 <div class="px-6 py-2.5 border-b border-base flex items-center justify-between">
                     <label class="flex items-center gap-2 text-xs text-secondary cursor-pointer select-none">
                         <input
@@ -101,7 +99,6 @@ function confirm() {
                     <span class="text-xs text-muted">{{ selected.length }} / {{ items.length }}</span>
                 </div>
 
-                <!-- Items list -->
                 <div class="overflow-y-auto flex-1 px-6 py-3 space-y-4">
                     <div v-for="(groupItems, type) in grouped" :key="type">
                         <p class="text-xs font-semibold uppercase tracking-wide mb-2" :class="SECTION_COLORS[type]">
@@ -125,7 +122,7 @@ function confirm() {
                                     <span v-if="item.category" class="text-xs text-muted">{{ item.category.name }}</span>
                                 </span>
                                 <span class="text-xs font-mono text-secondary shrink-0">{{ fmt(item.planned_amount) }}</span>
-                                <span v-if="item.is_recurring" class="text-xs text-indigo-400 shrink-0">↻</span>
+                                <span v-if="item.repeat_next_month" class="text-xs text-indigo-400 shrink-0">↻</span>
                             </label>
                         </div>
                     </div>
@@ -135,7 +132,6 @@ function confirm() {
                     </p>
                 </div>
 
-                <!-- Footer -->
                 <div class="px-6 py-4 border-t border-base flex justify-end gap-3">
                     <AppButton variant="secondary" v-on:click="$emit('cancel')">
                         {{ t('common.cancel') }}

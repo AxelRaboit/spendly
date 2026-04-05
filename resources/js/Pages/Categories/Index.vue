@@ -22,7 +22,6 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
         </template>
 
         <div class="space-y-4">
-            <!-- Toolbar -->
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
                 <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="w-full sm:max-w-xs" />
                 <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 text-center sm:ml-auto transition">
@@ -30,23 +29,19 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </Link>
             </div>
 
-            <!-- Cards grid -->
             <div v-if="categories.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
                     v-for="category in categories.data"
                     :key="category.id"
                     class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
                 >
-                    <!-- Decorative circles -->
                     <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
                     <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
 
-                    <!-- Card body -->
                     <div class="pb-3 border-b border-base/40">
                         <p class="text-base font-semibold text-primary truncate">{{ category.name }}</p>
                     </div>
 
-                    <!-- Card footer -->
                     <div class="flex items-center justify-end pt-3 gap-2">
                         <EditButton :href="`/categories/${category.id}/edit`" />
                         <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />

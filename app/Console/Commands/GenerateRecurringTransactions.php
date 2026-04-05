@@ -9,7 +9,6 @@ use App\Services\RecurringTransactionService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
 #[Signature('app:generate-recurring-transactions')]
 #[Description('Generate transactions for active recurring rules due today')]
@@ -22,7 +21,7 @@ class GenerateRecurringTransactions extends Command
 
     public function handle(): void
     {
-        $today = Carbon::today();
+        $today = today();
 
         $due = RecurringTransaction::query()
             ->where('active', true)

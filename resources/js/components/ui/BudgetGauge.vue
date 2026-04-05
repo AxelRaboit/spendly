@@ -36,7 +36,6 @@ const color = computed(() => {
 <template>
     <div class="flex flex-col items-center overflow-hidden" :style="{ height: size * 0.86 + 'px' }">
         <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
-            <!-- Track -->
             <circle
                 :cx="cx"
                 :cy="cy"
@@ -49,7 +48,6 @@ const color = computed(() => {
                 :transform="`rotate(135, ${cx}, ${cy})`"
             />
 
-            <!-- Track inner ring (subtle) -->
             <circle
                 :cx="cx"
                 :cy="cy"
@@ -62,7 +60,6 @@ const color = computed(() => {
                 :transform="`rotate(135, ${cx}, ${cy})`"
             />
 
-            <!-- Fill -->
             <circle
                 v-if="pct > 0"
                 :cx="cx"
@@ -77,7 +74,6 @@ const color = computed(() => {
                 style="transition: stroke-dasharray 0.6s cubic-bezier(.4,0,.2,1), stroke 0.4s ease"
             />
 
-            <!-- Amount -->
             <text
                 :x="cx"
                 :y="cy - size * 0.06"
@@ -89,7 +85,6 @@ const color = computed(() => {
                 font-family="ui-monospace, monospace"
             >{{ center }}</text>
 
-            <!-- Sublabel -->
             <text
                 :x="cx"
                 :y="cy + size * 0.09"
@@ -100,7 +95,6 @@ const color = computed(() => {
                 letter-spacing="0.5"
             >{{ sublabel }}</text>
 
-            <!-- Percentage -->
             <text
                 :x="cx"
                 :y="cy + size * 0.23"

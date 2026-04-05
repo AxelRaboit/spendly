@@ -28,17 +28,18 @@ class StatisticsService
      *
      * @return array<int, array{month: string, total: float}>
      */
-    public function byMonth(User $user): array
+    public function byMonth(User $user, int $monthLimit = 6): array
     {
+        $monthsBack = $monthLimit - 1;
         $raw = $user->transactions()
             ->whereNull('transfer_id')
             ->selectRaw("TO_CHAR(date, 'YYYY-MM') as month, SUM(amount) as total")
-            ->where('date', '>=', now()->subMonths(5)->startOfMonth())
+            ->where('date', '>=', now()->subMonths($monthsBack)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');
 
-        return collect(range(5, 0))
+        return collect(range($monthsBack, 0))
             ->map(function (int $i) use ($raw): array {
                 $month = now()->subMonths($i)->format('Y-m');
 
@@ -71,13 +72,14 @@ class StatisticsService
      *
      * @return array<int, array{month: string, income: float, expenses: float, rate: float|null}>
      */
-    public function savingsRateHistory(User $user): array
+    public function savingsRateHistory(User $user, int $monthLimit = 6): array
     {
+        $monthsBack = $monthLimit - 1;
         $incomeRaw = $user->transactions()
             ->whereNull('transfer_id')
             ->selectRaw("TO_CHAR(date, 'YYYY-MM') as month, SUM(amount) as total")
             ->where('type', TransactionType::Income)
-            ->where('date', '>=', now()->subMonths(5)->startOfMonth())
+            ->where('date', '>=', now()->subMonths($monthsBack)->startOfMonth())
             ->groupBy('month')
             ->pluck('total', 'month');
 
@@ -85,11 +87,11 @@ class StatisticsService
             ->whereNull('transfer_id')
             ->selectRaw("TO_CHAR(date, 'YYYY-MM') as month, SUM(amount) as total")
             ->where('type', TransactionType::Expense)
-            ->where('date', '>=', now()->subMonths(5)->startOfMonth())
+            ->where('date', '>=', now()->subMonths($monthsBack)->startOfMonth())
             ->groupBy('month')
             ->pluck('total', 'month');
 
-        return collect(range(5, 0))
+        return collect(range($monthsBack, 0))
             ->map(function (int $i) use ($incomeRaw, $expenseRaw): array {
                 $month = now()->subMonths($i)->format('Y-m');
                 $income = (float) ($incomeRaw[$month] ?? 0);
@@ -139,8 +141,20 @@ class StatisticsService
     /**
      * Year-end projection based on average monthly expenses so far this year.
      */
-    public function yearEndProjection(User $user): array
+    public function yearEndProjection(User $user, int $monthLimit = 6): array
     {
+        if ($monthLimit < 6) {
+            // FREE plan: don't show year projection
+            return [
+                'spent_so_far' => 0,
+                'avg_per_month' => 0,
+                'projected' => 0,
+                'remaining' => 0,
+                'months_left' => 0,
+                'restricted' => true,
+            ];
+        }
+
         $currentMonth = (int) now()->format('n');
 
         $monthlyTotals = $user->transactions()

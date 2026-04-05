@@ -12,7 +12,7 @@ import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
 import { useBudgetTotals }   from '@/composables/budget/useBudgetTotals';
 import { useBudgetItems }    from '@/composables/budget/useBudgetItems';
 import { useCopyPrevious }   from '@/composables/budget/useCopyPrevious';
-import { useCopyRecurring }  from '@/composables/budget/useCopyRecurring';
+import { useCopyRepeat }  from '@/composables/budget/useCopyRepeat';
 import { useBudgetExport }   from '@/composables/budget/useBudgetExport';
 import { useBudgetNotes }    from '@/composables/budget/useBudgetNotes';
 import { useSectionMeta }    from '@/composables/budget/useSectionMeta';
@@ -23,7 +23,7 @@ import { useFmtMonth }       from '@/composables/core/useFmtMonth';
 import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -32,6 +32,8 @@ const { t, locale } = useI18n();
 const { fmt } = useCurrency();
 const { fmtMonth } = useFmtMonth();
 const fmtDate = (d) => d ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d)) : '';
+const page = usePage();
+const isPro = computed(() => page.props.auth.user.plan === 'pro');
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 const props = defineProps({
@@ -77,7 +79,7 @@ const {
     addingType, addForm, startAdding, cancelAdding, submitAdd,
     pendingDeleteItem, deletingItem, requestDelete, confirmDelete, undoDelete, cancelDelete,
     draggingId, dragOverId, onDragStart, onDragOver, onDrop, onDragEnd,
-    duplicateItem, toggleRecurring,
+    duplicateItem, toggleRepeat,
 } = useBudgetItems(walletId, sections, budget, flash);
 
 // ─── Transaction panel ───────────────────────────────────────────────────────
@@ -97,8 +99,8 @@ const isBudgetEmpty = computed(() => Object.values(sections.value).every((arr) =
 const { showModal: showCopyPreviousModal, modalMessage: copyPreviousModalMessage, open: copyFromPrevious, confirm: confirmCopyPrevious, cancel: cancelCopyPrevious } =
     useCopyPrevious(walletId, budget, isBudgetEmpty, prevMonth, fmtMonth, t);
 
-const { showModal: showCopyRecurringModal, open: copyRecurring, confirm: confirmCopyRecurring, cancel: cancelCopyRecurring } =
-    useCopyRecurring(walletId, budget);
+const { showModal: showCopyRepeatModal, open: copyRepeat, confirm: confirmCopyRepeat, cancel: cancelCopyRepeat } =
+    useCopyRepeat(walletId, budget);
 
 // ─── Budget notes ─────────────────────────────────────────────────────────────
 const { budgetNotesOpen, budgetNotesText, saveBudgetNotes } =
@@ -214,7 +216,6 @@ onUnmounted(() => {
             />
         </template>
 
-        <!-- ── Month navigation ── -->
         <div class="space-y-6">
             <div class="flex justify-end">
                 <button
@@ -251,7 +252,6 @@ onUnmounted(() => {
                 </Link>
             </div>
 
-            <!-- ── KPI cards ── -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
@@ -283,7 +283,6 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <!-- ── Overage alerts ── -->
             <div v-if="!isBudgetEmpty && (overageCount > 0 || overageGoodCount > 0)" class="flex flex-col gap-2">
                 <div
                     v-if="overageCount > 0"
@@ -305,7 +304,6 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <!-- ── Donut + gauge + projection ── -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-3">{{ t('budgets.kpi.distribution') }}</p>
@@ -362,7 +360,6 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <!-- ── Copy from previous / empty state ── -->
             <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-base rounded-lg p-8 text-center">
                 <p class="text-secondary mb-4">{{ t('budgets.emptyBudget') }}</p>
                 <button
@@ -374,10 +371,9 @@ onUnmounted(() => {
                 </button>
             </div>
 
-            <!-- ── Budget notes ── -->
-            <div class="bg-surface border border-base/60 rounded-lg">
+            <div class="bg-surface border border-base/60 rounded-lg relative">
                 <button
-                    class="flex items-center justify-between w-full px-4 py-3 text-xs text-muted hover:text-secondary transition-colors"
+                    class="flex items-center justify-between w-full px-4 py-3 text-xs transition-colors text-muted hover:text-secondary cursor-pointer"
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
                 >
                     <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
@@ -385,13 +381,15 @@ onUnmounted(() => {
                         {{ t('budgets.notes.label') }}
                         <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-[120px] sm:max-w-xs">{{ budgetNotesText }}</span>
                     </span>
-                    <svg
-                        class="w-3.5 h-3.5 transition-transform duration-200"
-                        :class="budgetNotesOpen ? '' : '-rotate-90'"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    <div class="flex items-center gap-2">
+                        <svg
+                            class="w-3.5 h-3.5 transition-transform duration-200"
+                            :class="budgetNotesOpen ? '' : '-rotate-90'"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </div>
                 </button>
                 <div v-if="budgetNotesOpen" class="px-4 pb-3">
                     <textarea
@@ -405,7 +403,6 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <!-- ── Savings goals ── -->
             <div v-if="goals.length > 0">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide">{{ t('goals.title') }}</h3>
@@ -417,7 +414,6 @@ onUnmounted(() => {
                         :key="`goal-card-${goal.id}`"
                         class="bg-surface-2 border border-base rounded-xl p-4 flex flex-col gap-3"
                     >
-                        <!-- Header -->
                         <div class="flex items-start justify-between gap-2">
                             <div class="flex items-center gap-2 min-w-0">
                                 <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: goal.color }" />
@@ -434,7 +430,6 @@ onUnmounted(() => {
                             <span v-else class="shrink-0 text-xs text-indigo-400">↻</span>
                         </div>
 
-                        <!-- Progress bar -->
                         <div>
                             <div class="h-2 bg-surface-3 rounded-full overflow-hidden">
                                 <div
@@ -451,7 +446,6 @@ onUnmounted(() => {
                             </div>
                         </div>
 
-                        <!-- Footer -->
                         <div class="text-xs text-muted">
                             <span v-if="goal.category_id" class="text-indigo-400">{{ t('goals.autoSync', { category: goal.category?.name }) }}</span>
                             <span v-else-if="goal.deadline">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
@@ -461,33 +455,44 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <!-- ── Table toolbar ── -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 -mb-1">
-                <p class="hidden sm:block text-xs text-subtle">{{ t('budgets.hint') }}</p>
+                <p class="hidden sm:block text-xs text-subtle">{{ isPro ? t('budgets.hint') : '' }}</p>
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <AppButton
                         v-if="!isBudgetEmpty"
                         size="sm"
                         variant="secondary"
-                        v-on:click="copyFromPrevious"
+                        :disabled="!isPro"
+                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
+                        v-on:click="isPro && copyFromPrevious()"
                     >
                         {{ t('budgets.copyFromPrevious', { month: fmtMonth(prevMonth) }) }}
                     </AppButton>
-                    <AppButton size="sm" variant="secondary" v-on:click="copyRecurring">
-                        {{ t('budgets.copyRecurring') }}
+                    <AppButton
+                        size="sm"
+                        variant="secondary"
+                        :disabled="!isPro"
+                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
+                        v-on:click="isPro && copyRepeat()"
+                    >
+                        {{ t('budgets.copyRepeat') }}
                     </AppButton>
-                    <AppButton size="sm" variant="secondary" v-on:click="exportXlsx">
+                    <AppButton
+                        size="sm"
+                        variant="secondary"
+                        :disabled="!isPro"
+                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
+                        v-on:click="isPro && exportXlsx()"
+                    >
                         {{ t('budgets.exportXlsx') }}
                     </AppButton>
+                    <span v-if="!isPro" class="text-xs font-semibold bg-amber-500 text-white px-2 py-1 rounded self-center">Pro</span>
                 </div>
             </div>
 
-            <!-- ── Budget table ── -->
             <div class="bg-surface border border-base/60 rounded-lg overflow-clip">
-                <!-- ── Mobile card view ─────────────────────────────────────── -->
                 <div class="md:hidden divide-y divide-base/40">
                     <template v-for="(items, type) in sections" :key="`mob-${type}`">
-                        <!-- Section header -->
                         <div
                             :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b px-4 py-2.5 flex flex-col gap-1 cursor-pointer select-none']"
                             v-on:click="toggleSection(type)"
@@ -515,7 +520,6 @@ onUnmounted(() => {
 
                         <template v-if="!collapsedSections[type]">
                             <template v-for="item in items" :key="`mob-item-${item.id}`">
-                                <!-- Mobile inline edit -->
                                 <div v-if="editingId === item.id" class="bg-surface-2 px-4 py-3 space-y-2" data-editing>
                                     <input
                                         v-model="editForm.label"
@@ -564,7 +568,6 @@ onUnmounted(() => {
                                     </div>
                                 </div>
 
-                                <!-- Mobile read card -->
                                 <div
                                     v-else
                                     class="px-4 py-3 flex flex-col gap-1.5"
@@ -580,7 +583,7 @@ onUnmounted(() => {
                                             <span class="text-sm text-primary font-medium">{{ item.label }}</span>
                                             <NoteTooltip v-if="item.notes" :note="item.notes" />
                                             <span
-                                                v-if="item.is_recurring"
+                                                v-if="item.repeat_next_month"
                                                 class="inline-flex items-center gap-0.5 text-[10px] text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
                                             >
                                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -599,7 +602,6 @@ onUnmounted(() => {
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="requestDelete(item)">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                             </button>
-                                            <!-- More actions -->
                                             <div class="relative">
                                                 <button
                                                     class="text-muted hover:text-secondary transition-colors"
@@ -613,14 +615,16 @@ onUnmounted(() => {
                                                     v-on:click.stop
                                                 >
                                                     <button
+                                                        v-if="isPro"
                                                         class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-surface-2"
-                                                        :class="item.is_recurring ? 'text-indigo-400' : 'text-secondary'"
-                                                        v-on:click="toggleRecurring(item); closeMobileMenu()"
+                                                        :class="item.repeat_next_month ? 'text-indigo-400' : 'text-secondary'"
+                                                        v-on:click="toggleRepeat(item); closeMobileMenu()"
                                                     >
                                                         <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                                                        {{ t('budgets.actions.toggleRecurring') }}
+                                                        {{ t('budgets.actions.toggleRepeat') }}
                                                     </button>
                                                     <button
+                                                        v-if="isPro"
                                                         class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-secondary transition-colors hover:bg-surface-2"
                                                         v-on:click="duplicateItem(item); closeMobileMenu()"
                                                     >
@@ -660,7 +664,6 @@ onUnmounted(() => {
                                 </div>
                             </template>
 
-                            <!-- Mobile add row -->
                             <div v-if="addingType === type" class="bg-surface-2/60 px-4 py-3 space-y-2" data-adding>
                                 <input
                                     :id="`add-label-${type}`"
@@ -711,7 +714,6 @@ onUnmounted(() => {
                         </template>
                     </template>
 
-                    <!-- ── Mobile unbudgeted row ── -->
                     <div v-if="hasUnbudgeted" class="border-t-2 border-amber-500/30 bg-amber-500/5 px-4 py-3 space-y-1">
                         <div class="flex items-center gap-2">
                             <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
@@ -730,7 +732,6 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <!-- ── Desktop table view ────────────────────────────────────── -->
                 <table class="hidden md:table w-full text-sm">
                     <thead>
                         <tr class="border-b border-base/60 text-xs text-muted uppercase tracking-wider sticky top-0 z-10 bg-surface">
@@ -744,7 +745,6 @@ onUnmounted(() => {
                     </thead>
                     <tbody>
                         <template v-for="(items, type) in sections" :key="type">
-                            <!-- ── Section header ── -->
                             <tr
                                 :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b cursor-pointer select-none']"
                                 v-on:click="toggleSection(type)"
@@ -789,10 +789,8 @@ onUnmounted(() => {
                                 </td>
                             </tr>
 
-                            <!-- ── Rows ── -->
                             <template v-if="!collapsedSections[type]">
                                 <template v-for="item in items" :key="item.id">
-                                    <!-- Inline edit -->
                                     <template v-if="editingId === item.id">
                                         <tr class="bg-surface-2 border-b border-base/40" data-editing>
                                             <td class="pl-8 pr-2 py-1.5">
@@ -865,7 +863,6 @@ onUnmounted(() => {
                                         </tr>
                                     </template>
 
-                                    <!-- Read + actions -->
                                     <tr
                                         v-else
                                         draggable="true"
@@ -897,9 +894,9 @@ onUnmounted(() => {
                                                 <span>{{ item.label }}</span>
                                                 <NoteTooltip v-if="item.notes" :note="item.notes" />
                                                 <span
-                                                    v-if="item.is_recurring"
+                                                    v-if="item.repeat_next_month"
                                                     class="inline-flex items-center gap-0.5 text-[10px] text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none"
-                                                    :title="t('budgets.recurring')"
+                                                    :title="t('budgets.repeatNextMonth')"
                                                 >
                                                     <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                                 </span>
@@ -944,7 +941,6 @@ onUnmounted(() => {
                                         </td>
                                         <td class="px-3 py-2.5">
                                             <div v-if="!item.category?.is_system" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <!-- Add a transaction for this row -->
                                                 <button
                                                     class="text-muted hover:text-indigo-400 transition-colors"
                                                     :title="t('budgets.actions.addTx')"
@@ -952,17 +948,17 @@ onUnmounted(() => {
                                                 >
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                                                 </button>
-                                                <!-- Toggle recurring -->
                                                 <button
+                                                    v-if="isPro"
                                                     class="transition-colors"
-                                                    :class="item.is_recurring ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'"
-                                                    :title="t('budgets.actions.toggleRecurring')"
-                                                    v-on:click.stop="toggleRecurring(item)"
+                                                    :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'"
+                                                    :title="t('budgets.actions.toggleRepeat')"
+                                                    v-on:click.stop="toggleRepeat(item)"
                                                 >
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                                 </button>
-                                                <!-- Duplicate -->
                                                 <button
+                                                    v-if="isPro"
                                                     class="text-muted hover:text-amber-400 transition-colors"
                                                     :title="t('budgets.actions.duplicate')"
                                                     v-on:click.stop="duplicateItem(item)"
@@ -980,7 +976,6 @@ onUnmounted(() => {
                                     </tr>
                                 </template>
 
-                                <!-- ── Add budget row ── -->
                                 <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
                                     <td class="pl-8 pr-2 py-1.5">
                                         <input
@@ -1026,7 +1021,6 @@ onUnmounted(() => {
                                     </td>
                                 </tr>
 
-                                <!-- ── Add row button ── -->
                                 <tr v-if="addingType !== type" class="border-b border-subtle/60">
                                     <td colspan="6" class="pl-8 py-1.5">
                                         <AppButton
@@ -1042,7 +1036,6 @@ onUnmounted(() => {
                             </template><!-- end v-if !collapsedSections -->
                         </template>
 
-                        <!-- ── Unbudgeted row ── -->
                         <tr v-if="hasUnbudgeted" class="border-t border-amber-500/30 bg-amber-500/5">
                             <td class="px-4 py-2.5" colspan="2">
                                 <div class="flex items-center gap-2">
@@ -1059,7 +1052,6 @@ onUnmounted(() => {
                             <td colspan="2" />
                         </tr>
 
-                        <!-- ── Cash flow summary ── -->
                         <tr class="border-t-2 border-strong bg-surface-2/30">
                             <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.cashFlow') }}</td>
                             <td class="px-4 py-3 text-right font-mono text-secondary text-sm">{{ fmt(cashFlow.planned, true) }}</td>
@@ -1078,7 +1070,6 @@ onUnmounted(() => {
                             <td />
                         </tr>
 
-                        <!-- ── Left to spend ── -->
                         <tr class="bg-surface-2/30">
                             <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.leftToSpend') }}</td>
                             <td class="px-4 py-3 text-right font-mono text-secondary text-sm">{{ fmt(leftToSpend.planned) }}</td>
@@ -1095,14 +1086,12 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <!-- ── Goal deposit modal ── -->
         <GoalDepositModal
             :goal="depositGoal"
             v-on:close="depositGoal = null"
             v-on:success="depositGoal = null"
         />
 
-        <!-- ── Transaction slide-over ── -->
         <BudgetTxPanel
             :open="txPanel"
             :prefill-label="txPrefillLabel"
@@ -1115,7 +1104,6 @@ onUnmounted(() => {
             v-on:section-change="onTxSectionChange"
         />
 
-        <!-- ── Transaction detail slide-over ── -->
         <BudgetDetailPanel
             :open="txDetailOpen"
             :item="txDetailItem"
@@ -1124,7 +1112,6 @@ onUnmounted(() => {
             v-on:close="closeTxDetail"
         />
 
-        <!-- ── Copy from previous modal ── -->
         <CopyBudgetModal
             :show="showCopyPreviousModal"
             :items="prevItems"
@@ -1134,17 +1121,15 @@ onUnmounted(() => {
             v-on:cancel="cancelCopyPrevious"
         />
 
-        <!-- ── Copy recurring modal ── -->
         <CopyBudgetModal
-            :show="showCopyRecurringModal"
-            :items="prevItems.filter(i => i.is_recurring)"
-            :title="t('budgets.copyRecurring')"
-            :message="t('budgets.confirmCopyRecurring')"
-            v-on:confirm="confirmCopyRecurring"
-            v-on:cancel="cancelCopyRecurring"
+            :show="showCopyRepeatModal"
+            :items="prevItems.filter(i => i.repeat_next_month)"
+            :title="t('budgets.copyRepeat')"
+            :message="t('budgets.confirmCopyRepeat')"
+            v-on:confirm="confirmCopyRepeat"
+            v-on:cancel="cancelCopyRepeat"
         />
 
-        <!-- ── Delete confirm modal ── -->
         <ConfirmModal
             :show="pendingDeleteItem !== null"
             :message="pendingDeleteItem ? t('budgets.actions.confirmDelete', { label: pendingDeleteItem.label }) : ''"
@@ -1152,7 +1137,6 @@ onUnmounted(() => {
             v-on:cancel="cancelDelete"
         />
 
-        <!-- ── Undo delete toast ── -->
         <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="opacity-0 translate-y-2"

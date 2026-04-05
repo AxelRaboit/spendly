@@ -40,7 +40,6 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                 class="relative ml-auto w-[480px] bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
-                <!-- Header -->
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
                         <h3 class="font-semibold text-primary">{{ item?.label }}</h3>
@@ -51,7 +50,6 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                     </button>
                 </div>
 
-                <!-- List -->
                 <div class="flex-1 overflow-y-auto px-6 py-4">
                     <div v-if="loading" class="flex items-center justify-center py-12 text-muted text-sm">
                         {{ t('budgets.detailPanel.loading') }}
@@ -77,7 +75,6 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                     <p v-else class="text-sm text-muted text-center py-12">{{ t('budgets.detailPanel.none') }}</p>
                 </div>
 
-                <!-- Footer total -->
                 <div class="px-6 py-4 border-t border-base flex items-center justify-between">
                     <span class="text-sm text-secondary">{{ t('budgets.detailPanel.total') }}</span>
                     <span class="font-mono font-bold text-primary">{{ fmt(total) }}</span>

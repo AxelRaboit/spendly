@@ -96,7 +96,7 @@ class BudgetService
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'position' => $position + 1,
-            'is_recurring' => (bool) ($data['is_recurring'] ?? false),
+            'repeat_next_month' => (bool) ($data['repeat_next_month'] ?? false),
         ]);
     }
 
@@ -140,7 +140,7 @@ class BudgetService
             'planned_amount' => $data['planned_amount'],
             'category_id' => $data['category_id'] ?? null,
             'notes' => $data['notes'] ?? null,
-            'is_recurring' => isset($data['is_recurring']) ? (bool) $data['is_recurring'] : $item->is_recurring,
+            'repeat_next_month' => isset($data['repeat_next_month']) ? (bool) $data['repeat_next_month'] : $item->repeat_next_month,
             'type' => $data['type'] ?? $item->type,
         ]);
 
@@ -183,7 +183,7 @@ class BudgetService
             'category_id' => $item->category_id,
             'position' => $item->position,
             'notes' => $item->notes,
-            'is_recurring' => $item->is_recurring,
+            'repeat_next_month' => $item->repeat_next_month,
             'created_at' => $now,
             'updated_at' => $now,
         ])->all();
@@ -197,7 +197,7 @@ class BudgetService
      * Copy only recurring items from the previous month's budget into the current one.
      * Returns the number of items copied, or 0 if no previous budget exists.
      */
-    public function copyRecurringFromPreviousMonth(Budget $current, Carbon $currentMonth, array $itemIds = []): int
+    public function copyRepeatFromPreviousMonth(Budget $current, Carbon $currentMonth, array $itemIds = []): int
     {
         $previousMonth = $currentMonth->copy()->subMonth();
 
@@ -209,7 +209,7 @@ class BudgetService
             return 0;
         }
 
-        $query = BudgetItem::where('budget_id', $previous->id)->where('is_recurring', true);
+        $query = BudgetItem::where('budget_id', $previous->id)->where('repeat_next_month', true);
         if ($itemIds !== []) {
             $query->whereIn('id', $itemIds);
         }
@@ -229,7 +229,7 @@ class BudgetService
             'category_id' => $item->category_id,
             'position' => $item->position,
             'notes' => $item->notes,
-            'is_recurring' => $item->is_recurring,
+            'repeat_next_month' => $item->repeat_next_month,
             'created_at' => $now,
             'updated_at' => $now,
         ])->all();
@@ -265,7 +265,7 @@ class BudgetService
             'type' => $item->type,
             'label' => $item->label,
             'planned_amount' => $item->planned_amount,
-            'is_recurring' => $item->is_recurring,
+            'repeat_next_month' => $item->repeat_next_month,
             'category' => $item->category instanceof Category
                 ? ['name' => $item->category->name]
                 : null,
@@ -288,7 +288,7 @@ class BudgetService
             'planned_amount' => $item->planned_amount,
             'category_id' => $item->category_id,
             'notes' => $item->notes,
-            'is_recurring' => $item->is_recurring,
+            'repeat_next_month' => $item->repeat_next_month,
             'position' => $maxPosition + 1,
         ]);
     }
@@ -447,7 +447,7 @@ class BudgetService
                     'actual_amount' => $item->category_id ? (float) ($actuals->get($item->category_id) ?? 0) : 0.0,
                     'category_id' => $item->category_id,
                     'notes' => $item->notes,
-                    'is_recurring' => (bool) $item->is_recurring,
+                    'repeat_next_month' => (bool) $item->repeat_next_month,
                     'category' => $item->category instanceof Category
                         ? ['id' => $item->category->id, 'name' => $item->category->name, 'is_system' => (bool) $item->category->is_system]
                         : null,

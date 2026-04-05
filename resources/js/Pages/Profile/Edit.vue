@@ -23,17 +23,17 @@ defineProps({
         </template>
 
         <div class="mx-auto max-w-2xl space-y-6">
-            <div class="bg-surface border border-base/60 rounded-lg p-6">
+            <FormSection>
                 <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
-            </div>
+            </FormSection>
 
-            <div class="bg-surface border border-base/60 rounded-lg p-6">
+            <FormSection>
                 <UpdatePasswordForm />
-            </div>
+            </FormSection>
 
-            <div class="bg-surface border border-rose-900/40 rounded-lg p-6">
+            <FormSection border-class="border-rose-900/40">
                 <DeleteUserForm />
-            </div>
+            </FormSection>
         </div>
     </AuthenticatedLayout>
 </template>

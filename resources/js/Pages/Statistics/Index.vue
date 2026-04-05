@@ -126,7 +126,6 @@ const barOptions   = barThemeOptions;
         </template>
 
         <div class="space-y-6">
-            <!-- KPI row -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <p class="text-sm text-secondary mb-1">{{ t('statistics.thisMonth') }}</p>
@@ -141,7 +140,6 @@ const barOptions   = barThemeOptions;
                 </div>
             </div>
 
-            <!-- Year-end projection -->
             <div class="bg-surface border border-base/60 rounded-xl p-5">
                 <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4">
                     {{ t('statistics.yearProjection', { year: currentYear }) }}
@@ -167,7 +165,6 @@ const barOptions   = barThemeOptions;
                 </div>
             </div>
 
-            <!-- Charts row 1: by category + evolution -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.byCategory') }}</h3>
@@ -184,7 +181,6 @@ const barOptions   = barThemeOptions;
                 </div>
             </div>
 
-            <!-- Charts row 2: savings rate + budget vs actual -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.savingsRate') }}</h3>

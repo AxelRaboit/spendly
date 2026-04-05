@@ -7,8 +7,9 @@ export default {
         statistics: 'Statistiken',
         search: 'Transaktionen',
         goals: 'Ziele',
-        recurring: 'Wiederkehrend',
+        recurring: 'Automatisch',
         import: 'Importieren',
+        plan: 'Tarif',
         profile: 'Profil',
         logout: 'Abmelden',
         lightMode: 'Heller Modus',
@@ -32,6 +33,7 @@ export default {
         description: 'Beschreibung',
         category: 'Kategorie',
         or: 'oder',
+        notNow: 'Nicht jetzt',
     },
 
     auth: {
@@ -142,10 +144,10 @@ export default {
         hint: 'Klick zum Bearbeiten · N zum Hinzufügen · ← → navigieren',
         confirmCopyAppend: 'Zeilen von {month} hinzufügen? Vorhandene Zeilen bleiben erhalten.',
         exportXlsx: 'XLSX exportieren',
-        copyRecurring: 'Wiederkehrende kopieren',
-        confirmCopyRecurring: 'Wiederkehrende Transaktionen in diesen Monat kopieren?',
+        copyRepeat: 'Wiederholungszeilen kopieren',
+        confirmCopyRepeat: 'Zeilen mit „Übernehmen" in diesen Monat kopieren?',
         noPrevItems: 'Keine Einträge im Vormonat.',
-        recurring: 'Wiederkehrend',
+        repeatNextMonth: 'Übernehmen',
         overageAlert:
             'keine Zeilen | 1 Zeile überschreitet das geplante Budget. | {count} Zeilen überschreiten das geplante Budget.',
         overageGood:
@@ -236,7 +238,7 @@ export default {
             delete: 'Zeile löschen',
             confirmDelete: '„{label}" löschen? Diese Aktion ist unwiderruflich.',
             duplicate: 'Zeile duplizieren',
-            toggleRecurring: 'Als wiederkehrend markieren',
+            toggleRepeat: 'Als Übernahme markieren',
         },
     },
 
@@ -317,8 +319,8 @@ export default {
     },
 
     recurring: {
-        title: 'Wiederkehrende Transaktionen',
-        new: 'Neue Wiederkehrende',
+        title: 'Automatische Transaktionen',
+        new: 'Neue automatische',
         fieldDesc: 'Beschreibung',
         fieldAmount: 'Betrag ({symbol})',
         fieldDay: 'Tag des Monats',
@@ -329,11 +331,11 @@ export default {
         active: 'Aktiv',
         inactive: 'Inaktiv',
         dayLabel: 'Am {day}. jeden Monats',
-        none: 'Keine wiederkehrenden Transaktionen.',
-        confirmDelete: 'Diese wiederkehrende Transaktion löschen?',
+        none: 'Keine automatischen Transaktionen.',
+        confirmDelete: 'Diese automatische Transaktion löschen?',
         lastGenerated: 'Zuletzt generiert: {date}',
         never: 'Noch nie generiert',
-        count: '{count} wiederkehrende',
+        count: '{count} automatische',
     },
 
     search: {
@@ -349,6 +351,7 @@ export default {
         noResults: 'Keine Transaktionen gefunden.',
         reset: 'Zurücksetzen',
         tagPlaceholder: 'Nach Tag filtern',
+        freeLimitWarning: 'Der Verlauf ist auf die letzten {days} Tage im Free-Plan beschränkt.',
     },
 
     overview: {
@@ -429,5 +432,84 @@ export default {
         submitting: 'Wird verarbeitet…',
         badge: 'Überweisung',
         confirmDelete: 'Diese Überweisung löschen? Beide Transaktionen werden entfernt.',
+    },
+
+    upgrade: {
+        default: {
+            title: 'Upgrade auf Spendly Pro',
+            message: 'Diese Funktion ist Spendly Pro-Nutzern vorbehalten.',
+        },
+        wallet: {
+            title: 'Geldbörsen-Limit erreicht',
+            message:
+                'Du hast das Limit von {limit} Geldbörse(n) im Free-Plan erreicht. Upgrade auf Pro für unbegrenzte Geldbörsen.',
+        },
+        goal: {
+            title: 'Ziele-Limit erreicht',
+            message:
+                'Du hast das Limit von {limit} Ziel(en) im Free-Plan erreicht. Upgrade auf Pro für unbegrenzte Ziele.',
+        },
+        recurring: {
+            title: 'Limit für automatische Transaktionen erreicht',
+            message:
+                'Du hast das Limit von {limit} automatische(n) Transaktion(en) im Free-Plan erreicht. Upgrade auf Pro für unbegrenzte automatische Transaktionen.',
+        },
+        budget: {
+            title: 'Budgetbearbeitung nur für Pro',
+            message:
+                'Die Bearbeitung von Budgets ist Spendly Pro-Nutzern vorbehalten. Free-Nutzer können Budgets nur im Lesemodus einsehen.',
+        },
+        import: {
+            title: 'Import/Export nur für Pro',
+            message: 'Der Import und Export von Transaktionen ist Spendly Pro-Nutzern vorbehalten.',
+        },
+        callToAction: 'Schalte alle erweiterten Funktionen frei und mache dein Finanzmanagement noch leistungsfähiger!',
+        upgradeToPro: 'Auf Pro upgraden',
+    },
+
+    plan: {
+        title: 'Tarife & Preise',
+        subtitle: 'Einfache, transparente Preise. Jederzeit wechseln.',
+        currentPlan: 'Aktueller Tarif',
+        perMonth: 'Monat',
+        upgradeCta: 'Auf Pro upgraden',
+        stripeSoon: 'Stripe-Zahlung kommt bald — das Upgrade ist derzeit kostenlos',
+        downgradeFree: 'Zu Free wechseln',
+        alreadyPro: 'Du bist auf Pro — genieße alle Funktionen!',
+        disclaimer: 'Preise werden bestätigt, wenn Stripe integriert ist. Jederzeit änderbar.',
+        free: {
+            name: 'Free',
+            price: '0 €',
+            tagline: 'Die grundlegenden Werkzeuge zum Start.',
+        },
+        pro: {
+            name: 'Pro',
+            price: '4,99 €',
+            tagline: 'Volle Leistung für ernsthafte Budgetplanung.',
+        },
+        features: {
+            wallets: '{n} Geldbörse',
+            goals: '{n} Sparziele',
+            recurring: '{n} automatische Transaktionen',
+            history: 'Transaktionsverlauf {n} Tage',
+            walletsUnlimited: 'Unbegrenzte Geldbörsen',
+            goalsUnlimited: 'Unbegrenzte Sparziele',
+            recurringUnlimited: 'Unbegrenzte automatische Transaktionen',
+            historyUnlimited: 'Vollständiger Transaktionsverlauf',
+            budgetBasic: 'Budgetzeilen erstellen und bearbeiten',
+            budgetAdvanced: 'Erweiterte Budget-Tools (duplizieren, übernehmen, kopieren)',
+            importExport: 'Import & Export (XLSX)',
+            statsMonths: 'Statistiken (1 Monat)',
+            statsMonthsPro: 'Statistiken (6 Monate)',
+            andMore: '… und viele weitere kleine Extras!',
+        },
+    },
+    trial: {
+        bannerLink: 'Tarife ansehen',
+        countdown: {
+            days: 'Pro-Test: {days} Tag übrig | Pro-Test: {days} Tage übrig',
+            hours: 'Pro-Test: {hours}h{minutes}min übrig',
+            minutes: 'Pro-Test: {minutes} Minute übrig | Pro-Test: {minutes} Minuten übrig',
+        },
     },
 };

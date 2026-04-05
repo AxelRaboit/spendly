@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
+use App\Enums\PlanType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -43,9 +44,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = collect([
-            ['name' => 'Alice Dupont', 'email' => 'alice@example.com'],
-            ['name' => 'Bob Martin',   'email' => 'bob@example.com'],
-            ['name' => 'Test User',    'email' => 'test@example.com'],
+            ['name' => 'Alice Dupont', 'email' => 'alice@example.com', 'plan' => PlanType::Pro],
+            ['name' => 'Bob Martin',   'email' => 'bob@example.com', 'plan' => PlanType::Free],
+            ['name' => 'Test User',    'email' => 'test@example.com', 'plan' => PlanType::Pro],
         ])->map(fn ($data) => User::factory()->create([
             ...$data,
             'password' => bcrypt('password'),
@@ -55,6 +56,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($users as $user) {
             $categories = $this->createCategories($user);
+            $isPro = $user->plan->value === 'pro';
 
             $wallet = Wallet::create([
                 'user_id'       => $user->id,
@@ -63,28 +65,35 @@ class DatabaseSeeder extends Seeder
                 'is_favorite'   => true,
             ]);
 
-            $livretA = Wallet::create([
-                'user_id'       => $user->id,
-                'name'          => 'Livret A',
-                'start_balance' => 0.00,
-            ]);
+            $wallets = [$wallet];
+            if ($isPro) {
+                $livretA = Wallet::create([
+                    'user_id'       => $user->id,
+                    'name'          => 'Livret A',
+                    'start_balance' => 0.00,
+                ]);
 
-            $assuranceVie = Wallet::create([
-                'user_id'       => $user->id,
-                'name'          => 'Assurance vie',
-                'start_balance' => 0.00,
-            ]);
+                $assuranceVie = Wallet::create([
+                    'user_id'       => $user->id,
+                    'name'          => 'Assurance vie',
+                    'start_balance' => 0.00,
+                ]);
+
+                $wallets = [$wallet, $livretA, $assuranceVie];
+            }
 
             $months = [
-                Carbon::now()->subMonths(2)->startOfMonth(),
-                Carbon::now()->subMonth()->startOfMonth(),
-                Carbon::now()->startOfMonth(),
+                now()->subMonths(2)->startOfMonth(),
+                now()->subMonth()->startOfMonth(),
+                now()->startOfMonth(),
             ];
 
             // Transfers first so seedTransferItem finds them when budgets are created
-            foreach ($months as $month) {
-                $this->createMonthTransfer($user, $wallet, $livretA, $month, 300.00, 'Virement Livret A');
-                $this->createMonthTransfer($user, $wallet, $assuranceVie, $month, 100.00, 'Virement Assurance vie');
+            if ($isPro) {
+                foreach ($months as $month) {
+                    $this->createMonthTransfer($user, $wallet, $wallets[1], $month, 300.00, 'Virement Livret A');
+                    $this->createMonthTransfer($user, $wallet, $wallets[2], $month, 100.00, 'Virement Assurance vie');
+                }
             }
 
             foreach ($months as $month) {
@@ -160,7 +169,7 @@ class DatabaseSeeder extends Seeder
         $tx('Salaire', 2800.00, 27, 'Virement salaire', 'income', ['salaire']);
 
         // Freelance 2 mois sur 3 (pas le mois le plus récent pour varier)
-        if ($month->month !== Carbon::now()->month) {
+        if ($month->month !== now()->month) {
             $tx('Freelance', fake()->randomFloat(2, 280, 520), 15, 'Facture client', 'income', ['freelance']);
         }
 
@@ -243,6 +252,8 @@ class DatabaseSeeder extends Seeder
     /** Crée des objectifs d'épargne pour un user. */
     private function createGoals(User $user, Wallet $wallet, array $categories): void
     {
+        $isPro = $user->plan->value === 'pro';
+
         $goals = [
             [
                 'name'          => 'Voyage au Japon',
@@ -250,7 +261,7 @@ class DatabaseSeeder extends Seeder
                 'category_id'   => null,
                 'target_amount' => 3500.00,
                 'saved_amount'  => 1200.00,
-                'deadline'      => Carbon::now()->addMonths(10)->toDateString(),
+                'deadline'      => now()->addMonths(10)->toDateString(),
                 'color'         => '#6366f1',
             ],
             [
@@ -262,7 +273,10 @@ class DatabaseSeeder extends Seeder
                 'deadline'      => null,
                 'color'         => '#22c55e',
             ],
-            [
+        ];
+
+        if ($isPro) {
+            $goals[] = [
                 'name'          => 'Nouveau vélo',
                 'wallet_id'     => $wallet->id,
                 'category_id'   => null,
@@ -270,17 +284,18 @@ class DatabaseSeeder extends Seeder
                 'saved_amount'  => 800.00,
                 'deadline'      => null,
                 'color'         => '#f59e0b',
-            ],
-            [
+            ];
+
+            $goals[] = [
                 'name'          => 'MacBook Pro',
                 'wallet_id'     => $wallet->id,
                 'category_id'   => null,
                 'target_amount' => 2400.00,
                 'saved_amount'  => 600.00,
-                'deadline'      => Carbon::now()->addMonths(6)->toDateString(),
+                'deadline'      => now()->addMonths(6)->toDateString(),
                 'color'         => '#3b82f6',
-            ],
-        ];
+            ];
+        }
 
         foreach ($goals as $data) {
             Goal::create(['user_id' => $user->id, ...$data]);

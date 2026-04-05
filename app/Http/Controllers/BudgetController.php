@@ -13,6 +13,7 @@ use App\Models\BudgetItem;
 use App\Models\Wallet;
 use App\Services\BudgetService;
 use App\Services\GoalService;
+use App\Services\PlanService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +27,7 @@ class BudgetController extends Controller
     public function __construct(
         private readonly BudgetService $budgetService,
         private readonly GoalService $goalService,
+        private readonly PlanService $planService,
     ) {}
 
     public function show(Request $request, Wallet $wallet): Response
@@ -33,13 +35,15 @@ class BudgetController extends Controller
         $this->authorize('view', $wallet);
 
         $monthParam = $request->query('month');
-        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
 
         $budget = $this->budgetService->getOrCreate($wallet, $month);
         ['sections' => $sections, 'unbudgeted' => $unbudgeted] = $this->budgetService->loadWithActuals($budget);
 
         $prevMonth = $month->copy()->subMonth()->format('Y-m');
         $nextMonth = $month->copy()->addMonth()->format('Y-m');
+
+        $user = $request->user();
 
         return Inertia::render('Budgets/Show', [
             'wallet' => $wallet,
@@ -51,22 +55,23 @@ class BudgetController extends Controller
             ],
             'sections' => $sections,
             'unbudgeted' => $unbudgeted,
-            'categories' => $this->budgetService->userCategories($request->user()),
+            'categories' => $this->budgetService->userCategories($user),
             'prevMonth' => $prevMonth,
             'nextMonth' => $nextMonth,
             'startBalance' => $this->budgetService->computeRollingStartBalance($wallet, $month),
             'flashCategory' => $request->query('flash_category') ? (int) $request->query('flash_category') : null,
             'prevItems' => $this->budgetService->getPreviousMonthItems($wallet, $month),
-            'goals' => $this->goalService->listForWallet($request->user(), $wallet),
+            'goals' => $this->goalService->listForWallet($user, $wallet),
         ]);
     }
 
     public function copyFromPrevious(Request $request, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
+        abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
 
         $monthParam = $request->input('month');
-        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
 
         $budget = $this->budgetService->getOrCreate($wallet, $month);
         $copied = $this->budgetService->copyFromPreviousMonth($budget, $month, $request->input('item_ids', []));
@@ -82,10 +87,17 @@ class BudgetController extends Controller
         $this->authorize('view', $wallet);
 
         $monthParam = $request->input('month');
-        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
 
         $budget = $this->budgetService->getOrCreate($wallet, $month);
-        $this->budgetService->addItem($budget, $request->validated());
+
+        $data = $request->validated();
+
+        if (! $this->planService->canEditBudget($request->user())) {
+            unset($data['repeat_next_month']);
+        }
+
+        $this->budgetService->addItem($budget, $data);
 
         return redirect()->back()->with('success', 'Ligne ajoutée.');
     }
@@ -96,12 +108,18 @@ class BudgetController extends Controller
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
-        $this->budgetService->updateItem($item, $request->validated());
+        $data = $request->validated();
+
+        if (! $this->planService->canEditBudget($request->user())) {
+            unset($data['repeat_next_month']);
+        }
+
+        $this->budgetService->updateItem($item, $data);
 
         return redirect()->back()->with('success', 'Ligne mise à jour.');
     }
 
-    public function destroyItem(Wallet $wallet, BudgetItem $item): RedirectResponse
+    public function destroyItem(Request $request, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
         $this->authorize('view', $wallet);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
@@ -115,15 +133,17 @@ class BudgetController extends Controller
     public function reorderItems(ReorderRequest $request, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
+        abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
 
         $this->budgetService->reorderItems($wallet, $request->validated()['ids']);
 
         return redirect()->back();
     }
 
-    public function duplicateItem(Wallet $wallet, BudgetItem $item): RedirectResponse
+    public function duplicateItem(Request $request, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
         $this->authorize('view', $wallet);
+        abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
@@ -132,18 +152,19 @@ class BudgetController extends Controller
         return redirect()->back()->with('success', 'Ligne dupliquée.');
     }
 
-    public function copyRecurring(Request $request, Wallet $wallet): RedirectResponse
+    public function copyRepeat(Request $request, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
+        abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
 
         $monthParam = $request->input('month');
-        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : Carbon::now();
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
         $budget = $this->budgetService->getOrCreate($wallet, $month);
-        $copied = $this->budgetService->copyRecurringFromPreviousMonth($budget, $month, $request->input('item_ids', []));
+        $copied = $this->budgetService->copyRepeatFromPreviousMonth($budget, $month, $request->input('item_ids', []));
 
         return redirect()->back()->with(
             'success',
-            $copied > 0 ? $copied.' lignes récurrentes copiées.' : 'Aucune ligne récurrente dans le mois précédent.'
+            $copied > 0 ? $copied.' lignes à reconduire copiées.' : 'Aucune ligne à reconduire dans le mois précédent.'
         );
     }
 
@@ -163,7 +184,7 @@ class BudgetController extends Controller
     {
         $this->authorize('view', $wallet);
 
-        $year = (int) $request->query('year', Carbon::now()->year);
+        $year = (int) $request->query('year', now()->year);
 
         return Inertia::render('Budgets/Year', [
             'wallet' => $wallet,

@@ -17,7 +17,7 @@ export function useBudgetItems(walletId, sections, budget, flash) {
         sections
     );
 
-    const { duplicateItem, toggleRecurring } = useItemActions(walletId);
+    const { duplicateItem, toggleRepeat } = useItemActions(walletId);
 
     return {
         editingId,
@@ -43,6 +43,6 @@ export function useBudgetItems(walletId, sections, budget, flash) {
         onDrop,
         onDragEnd,
         duplicateItem,
-        toggleRecurring,
+        toggleRepeat,
     };
 }

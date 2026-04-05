@@ -9,6 +9,7 @@ use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OverviewController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\SearchController;
@@ -34,6 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/locale', [LocaleController::class, 'update'])->name('locale.update');
+
+    Route::get('/plan', [PlanController::class, 'index'])->name('plan.index');
+    Route::post('/plan/upgrade', [PlanController::class, 'upgrade'])->name('plan.upgrade');
+    Route::post('/plan/downgrade', [PlanController::class, 'downgrade'])->name('plan.downgrade');
 
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
     Route::get('/overview', [OverviewController::class, 'index'])->name('overview.index');
@@ -69,7 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/wallets/{wallet}/budget/items/reorder', [BudgetController::class, 'reorderItems'])->name('wallets.budget.items.reorder');
     Route::get('/wallets/{wallet}/budget/items/{item}/transactions', [BudgetController::class, 'itemTransactions'])->name('wallets.budget.items.transactions');
     Route::post('/wallets/{wallet}/budget/items/{item}/duplicate', [BudgetController::class, 'duplicateItem'])->name('wallets.budget.items.duplicate');
-    Route::post('/wallets/{wallet}/budget/copy-recurring', [BudgetController::class, 'copyRecurring'])->name('wallets.budget.copy-recurring');
+    Route::post('/wallets/{wallet}/budget/copy-repeat', [BudgetController::class, 'copyRepeat'])->name('wallets.budget.copy-repeat');
     Route::patch('/wallets/{wallet}/budget/notes', [BudgetController::class, 'updateNotes'])->name('wallets.budget.notes.update');
     Route::get('/wallets/{wallet}/budget/year', [BudgetController::class, 'yearView'])->name('wallets.budget.year');
 });

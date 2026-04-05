@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PlanLimitException;
 use App\Http\Requests\RecurringTransactionRequest;
 use App\Models\RecurringTransaction;
+use App\Services\PlanService;
 use App\Services\RecurringTransactionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,9 +31,15 @@ class RecurringTransactionController extends Controller
 
     public function store(RecurringTransactionRequest $request): RedirectResponse
     {
-        $request->user()->recurringTransactions()->create($request->validated());
+        try {
+            $this->recurringService->create($request->user(), $request->validated());
 
-        return back()->with('success', 'Transaction récurrente créée.');
+            return back()->with('success', 'Transaction récurrente créée.');
+        } catch (PlanLimitException $planLimitException) {
+            return back()
+                ->with('plan_error', $planLimitException->limitKey->value)
+                ->with('plan_error_limit', PlanService::FREE_RECURRING_LIMIT);
+        }
     }
 
     public function update(RecurringTransactionRequest $request, RecurringTransaction $recurringTransaction): RedirectResponse

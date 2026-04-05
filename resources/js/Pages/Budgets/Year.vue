@@ -38,7 +38,6 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
         </template>
 
         <div class="space-y-6">
-            <!-- Year navigation -->
             <div class="flex items-center justify-between">
                 <Link
                     :href="`/wallets/${wallet.id}/budget/year?year=${prevYear}`"
@@ -57,25 +56,12 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                 </Link>
             </div>
 
-            <!-- Annual totals -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
-                    <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome) }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.sections.expenses') }}</p>
-                    <p class="text-lg font-bold text-rose-400 font-mono">{{ fmt(totalExpenses) }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.table.cashFlow') }}</p>
-                    <p class="text-lg font-bold font-mono" :class="totalCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-                        {{ fmt(totalCashFlow, true) }}
-                    </p>
-                </div>
+                <StatCard :label="t('budgets.kpi.income')" value-class="text-emerald-400">{{ fmt(totalIncome) }}</StatCard>
+                <StatCard :label="t('budgets.sections.expenses')" value-class="text-rose-400">{{ fmt(totalExpenses) }}</StatCard>
+                <StatCard :label="t('budgets.table.cashFlow')" :value-class="totalCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ fmt(totalCashFlow, true) }}</StatCard>
             </div>
 
-            <!-- Month grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 <Link
                     v-for="(month, key) in months"

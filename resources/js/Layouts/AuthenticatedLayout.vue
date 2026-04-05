@@ -1,16 +1,45 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import AppLogo from '@/components/ui/AppLogo.vue';
 import AppToast from '@/components/ui/AppToast.vue';
+import UpgradePrompt from '@/components/ui/UpgradePrompt.vue';
 import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
-import { Link } from '@inertiajs/vue3';
+import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const showMobileMenu = ref(false);
 const { message: flashMessage, type: flashType, dismiss: dismissFlash } = useFlash();
 const { theme, toggle: toggleTheme } = useTheme();
+const page = usePage();
+
+// ── Upgrade prompt state ──────────────────────────────────────────────────
+const showUpgradePrompt = ref(false);
+const planErrorKey = ref(null);
+const planErrorLimit = ref(null);
+
+function readPlanError() {
+    const flash = page.props.flash ?? {};
+    if (flash.plan_error) {
+        planErrorKey.value = flash.plan_error;
+        planErrorLimit.value = flash.plan_error_limit ?? null;
+        showUpgradePrompt.value = true;
+    }
+}
+
+readPlanError();
+
+onMounted(() => {
+    const off = router.on('finish', readPlanError);
+    onUnmounted(off);
+});
+
+// ── Plan ──────────────────────────────────────────────────────────────────
+const canExportImport = computed(() => page.props.planLimits?.canExportImport === true);
+const isPro = computed(() => page.props.auth?.plan === 'pro');
+const { isTrialing, label: trialLabel } = useTrialCountdown();
 
 // ── Sidebar collapsed state (persisted) ──────────────────────────────────
 const collapsed = ref(localStorage.getItem('sidebar-collapsed') === 'true');
@@ -73,18 +102,17 @@ const navItems = [
         route: 'import.index',
         match: 'import.*',
         icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />`,
+        pro: true,
     },
 ];
 </script>
 
 <template>
     <div class="min-h-screen bg-bg transition-colors duration-200">
-        <!-- ── Desktop sidebar ─────────────────────────────────────────── -->
         <aside
             class="hidden lg:flex flex-col fixed inset-y-0 left-0 bg-surface border-r border-base z-30 transition-all duration-200"
             :class="collapsed ? 'w-16' : 'w-60'"
         >
-            <!-- Logo + collapse toggle -->
             <div
                 class="flex items-center h-16 border-b border-base shrink-0 transition-all duration-200"
                 :class="collapsed ? 'justify-center px-0' : 'justify-between px-4'"
@@ -108,10 +136,33 @@ const navItems = [
                 </button>
             </div>
 
-            <!-- Nav items -->
             <nav class="flex-1 py-4 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3 overflow-y-auto'">
                 <template v-for="item in navItems" :key="item.key">
+                    <span
+                        v-if="item.pro && !canExportImport"
+                        class="flex items-center rounded-lg text-sm font-medium text-secondary group relative cursor-not-allowed opacity-50"
+                        :class="collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5'"
+                    >
+                        <svg
+                            class="w-5 h-5 shrink-0 text-muted"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            v-html="item.icon"
+                        />
+                        <span v-if="!collapsed" class="truncate flex-1">{{ t('nav.' + item.key) }}</span>
+                        <span v-if="!collapsed" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
+                        <span
+                            v-if="collapsed"
+                            class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg flex items-center gap-1.5"
+                        >
+                            {{ t('nav.' + item.key) }}
+                            <span class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
+                        </span>
+                    </span>
+
                     <Link
+                        v-else
                         :href="route(item.route)"
                         class="flex items-center rounded-lg text-sm font-medium transition-colors group relative"
                         :class="[
@@ -131,7 +182,6 @@ const navItems = [
                         />
                         <span v-if="!collapsed" class="truncate">{{ t('nav.' + item.key) }}</span>
 
-                        <!-- Tooltip when collapsed -->
                         <span
                             v-if="collapsed"
                             class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
@@ -142,9 +192,7 @@ const navItems = [
                 </template>
             </nav>
 
-            <!-- Bottom: collapse toggle (when collapsed) + theme + user -->
             <div class="shrink-0 border-t border-base py-3 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3'">
-                <!-- Expand button (only when collapsed) -->
                 <button
                     v-if="collapsed"
                     class="flex items-center justify-center w-full py-2.5 rounded-lg text-muted hover:text-primary hover:bg-surface-2 transition-colors"
@@ -155,7 +203,6 @@ const navItems = [
                     </svg>
                 </button>
 
-                <!-- Theme toggle -->
                 <button
                     class="flex items-center rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors w-full group relative"
                     :class="collapsed ? 'justify-center py-2.5' : 'gap-3 px-3 py-2.5'"
@@ -188,7 +235,29 @@ const navItems = [
                     </span>
                 </button>
 
-                <!-- Profile -->
+                <Link
+                    :href="route('plan.index')"
+                    class="flex items-center rounded-lg text-sm font-medium transition-colors group relative"
+                    :class="[
+                        collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
+                        route().current('plan.*')
+                            ? 'bg-indigo-600/15 text-indigo-400'
+                            : 'text-secondary hover:text-primary hover:bg-surface-2',
+                    ]"
+                >
+                    <svg class="w-5 h-5 shrink-0 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                    <span v-if="!collapsed" class="truncate flex-1">{{ t('nav.plan') }}</span>
+                    <span v-if="!collapsed && !isPro" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
+                    <span
+                        v-if="collapsed"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                    >
+                        {{ t('nav.plan') }}
+                    </span>
+                </Link>
+
                 <Link
                     :href="route('profile.edit')"
                     class="flex items-center rounded-lg text-sm font-medium transition-colors group relative"
@@ -209,7 +278,6 @@ const navItems = [
                     </span>
                 </Link>
 
-                <!-- Logout -->
                 <Link
                     :href="route('logout')"
                     method="post"
@@ -231,7 +299,6 @@ const navItems = [
             </div>
         </aside>
 
-        <!-- ── Mobile topbar ───────────────────────────────────────────── -->
         <div class="lg:hidden fixed top-0 inset-x-0 h-14 bg-surface border-b border-base z-30 flex items-center justify-between px-4">
             <Link :href="route('dashboard')" class="flex items-center gap-2">
                 <AppLogo :size="28" />
@@ -247,7 +314,6 @@ const navItems = [
             </button>
         </div>
 
-        <!-- ── Mobile drawer ───────────────────────────────────────────── -->
         <Transition
             enter-active-class="transition ease-out duration-200"
             enter-from-class="opacity-0"
@@ -280,26 +346,42 @@ const navItems = [
                         </div>
 
                         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-                            <Link
-                                v-for="item in navItems"
-                                :key="item.key"
-                                :href="route(item.route)"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
-                                :class="route().current(item.match)
-                                    ? 'bg-indigo-600/15 text-indigo-400'
-                                    : 'text-secondary hover:text-primary hover:bg-surface-2'"
-                                v-on:click="showMobileMenu = false"
-                            >
-                                <svg
-                                    class="w-5 h-5 shrink-0"
-                                    :class="route().current(item.match) ? 'text-indigo-400' : 'text-muted'"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    v-html="item.icon"
-                                />
-                                {{ t('nav.' + item.key) }}
-                            </Link>
+                            <template v-for="item in navItems" :key="item.key">
+                                <span
+                                    v-if="item.pro && !canExportImport"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-secondary cursor-not-allowed opacity-50"
+                                >
+                                    <svg
+                                        class="w-5 h-5 shrink-0 text-muted"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        v-html="item.icon"
+                                    />
+                                    <span class="flex-1">{{ t('nav.' + item.key) }}</span>
+                                    <span class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
+                                </span>
+
+                                <Link
+                                    v-else
+                                    :href="route(item.route)"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                    :class="route().current(item.match)
+                                        ? 'bg-indigo-600/15 text-indigo-400'
+                                        : 'text-secondary hover:text-primary hover:bg-surface-2'"
+                                    v-on:click="showMobileMenu = false"
+                                >
+                                    <svg
+                                        class="w-5 h-5 shrink-0"
+                                        :class="route().current(item.match) ? 'text-indigo-400' : 'text-muted'"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        v-html="item.icon"
+                                    />
+                                    {{ t('nav.' + item.key) }}
+                                </Link>
+                            </template>
                         </nav>
 
                         <div class="shrink-0 border-t border-base px-3 py-3 space-y-1">
@@ -332,6 +414,18 @@ const navItems = [
                                 {{ theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode') }}
                             </button>
                             <Link
+                                :href="route('plan.index')"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                :class="route().current('plan.*') ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary hover:bg-surface-2'"
+                                v-on:click="showMobileMenu = false"
+                            >
+                                <svg class="w-5 h-5 text-muted shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                </svg>
+                                <span>{{ t('nav.plan') }}</span>
+                                <span v-if="!isPro" class="text-[10px] font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none ml-auto">Pro</span>
+                            </Link>
+                            <Link
                                 :href="route('profile.edit')"
                                 class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
                                 v-on:click="showMobileMenu = false"
@@ -358,7 +452,6 @@ const navItems = [
             </div>
         </Transition>
 
-        <!-- ── Main content ────────────────────────────────────────────── -->
         <div
             class="transition-all duration-200 pt-14 lg:pt-0"
             :class="collapsed ? 'lg:pl-16' : 'lg:pl-60'"
@@ -369,6 +462,13 @@ const navItems = [
                 </div>
             </header>
 
+            <div v-if="isTrialing" class="bg-indigo-600/10 border-b border-indigo-500/30 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-300">
+                <span>{{ trialLabel }}</span>
+                <Link :href="route('plan.index')" class="underline hover:text-indigo-200 transition-colors font-medium">
+                    {{ t('trial.bannerLink') }}
+                </Link>
+            </div>
+
             <main>
                 <div class="px-4 sm:px-6 lg:px-8 py-8">
                     <slot />
@@ -376,7 +476,6 @@ const navItems = [
             </main>
         </div>
 
-        <!-- ── Global flash toast ── -->
         <Transition
             enter-active-class="transition duration-200 ease-out"
             enter-from-class="opacity-0 translate-y-2"
@@ -393,5 +492,12 @@ const navItems = [
                 v-on:dismiss="dismissFlash"
             />
         </Transition>
+
+        <UpgradePrompt
+            :show="showUpgradePrompt"
+            :limit-key="planErrorKey"
+            :limit-value="planErrorLimit"
+            v-on:close="showUpgradePrompt = false"
+        />
     </div>
 </template>

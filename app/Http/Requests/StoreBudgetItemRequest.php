@@ -24,7 +24,7 @@ class StoreBudgetItemRequest extends FormRequest
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'position' => ['nullable', 'integer', 'min:0'],
             'month' => ['required', 'date_format:Y-m'],
-            'is_recurring' => ['sometimes', 'boolean'],
+            'repeat_next_month' => ['sometimes', 'boolean'],
         ];
     }
 }

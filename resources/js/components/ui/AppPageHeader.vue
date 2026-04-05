@@ -15,7 +15,6 @@ defineProps({
 </script>
 
 <template>
-    <!-- Breadcrumb mode -->
     <nav v-if="crumbs" class="flex items-center gap-2 text-sm">
         <template v-for="(crumb, i) in crumbs" :key="i">
             <span v-if="i > 0" class="text-subtle select-none">/</span>
@@ -30,6 +29,5 @@ defineProps({
         </template>
     </nav>
 
-    <!-- Simple title mode -->
     <h2 v-else class="text-xl font-semibold leading-tight text-primary">{{ title }}</h2>
 </template>

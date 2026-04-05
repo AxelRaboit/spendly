@@ -26,7 +26,6 @@ const styles = computed(() => ({
         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 border text-primary text-sm px-4 py-3 rounded-xl shadow-2xl w-max max-w-[calc(100vw-2rem)]"
         :class="styles.wrap"
     >
-        <!-- colored dot -->
         <span class="w-2 h-2 rounded-full shrink-0" :class="styles.dot" />
         <span>{{ message }}</span>
         <button

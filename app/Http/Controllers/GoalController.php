@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PlanLimitException;
 use App\Http\Requests\GoalDepositRequest;
 use App\Http\Requests\GoalRequest;
 use App\Models\Goal;
 use App\Services\GoalService;
+use App\Services\PlanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,9 +34,15 @@ class GoalController extends Controller
 
     public function store(GoalRequest $request): RedirectResponse
     {
-        $request->user()->goals()->create($request->validated());
+        try {
+            $this->goalService->create($request->user(), $request->validated());
 
-        return back()->with('success', 'Objectif créé.');
+            return back()->with('success', 'Objectif créé.');
+        } catch (PlanLimitException $planLimitException) {
+            return back()
+                ->with('plan_error', $planLimitException->limitKey->value)
+                ->with('plan_error_limit', PlanService::FREE_GOAL_LIMIT);
+        }
     }
 
     public function update(GoalRequest $request, Goal $goal): RedirectResponse

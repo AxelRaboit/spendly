@@ -69,7 +69,6 @@ const topCategoryMax = computed(() => {
         </template>
 
         <div class="space-y-6">
-            <!-- ── Favorite wallets ── -->
             <div v-if="favoriteWallets.length > 0">
                 <h3 class="text-xs font-medium text-muted uppercase tracking-wider mb-3">{{ t('wallets.favoriteWallets') }}</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -160,7 +159,6 @@ const topCategoryMax = computed(() => {
                     </div>
 
                     <template v-if="recentTransactions.length > 0">
-                        <!-- Mobile cards -->
                         <div class="sm:hidden divide-y divide-subtle">
                             <Link v-for="transaction in recentTransactions" :key="transaction.id" :href="`/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`" class="flex items-center justify-between px-4 py-3 gap-3 hover:bg-surface-2/50 transition-colors">
                                 <div class="flex flex-col gap-1 min-w-0">
@@ -174,7 +172,6 @@ const topCategoryMax = computed(() => {
                             </Link>
                         </div>
 
-                        <!-- Desktop table -->
                         <div class="hidden sm:block overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>

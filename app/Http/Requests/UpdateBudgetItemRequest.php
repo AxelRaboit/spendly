@@ -23,7 +23,7 @@ class UpdateBudgetItemRequest extends FormRequest
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'notes' => ['nullable', 'string', 'max:2000'],
             'type' => ['sometimes', Rule::in(BudgetSection::values())],
-            'is_recurring' => ['sometimes', 'boolean'],
+            'repeat_next_month' => ['sometimes', 'boolean'],
         ];
     }
 }

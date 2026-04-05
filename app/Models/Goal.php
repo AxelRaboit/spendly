@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,12 +41,12 @@ class Goal extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function getProgressAttribute(): float
+    protected function progress(): Attribute
     {
-        if ((float) $this->target_amount <= 0) {
-            return 0;
-        }
-
-        return min(100, round((float) $this->saved_amount / (float) $this->target_amount * 100, 1));
+        return Attribute::make(
+            get: fn () => (float) $this->target_amount <= 0
+                ? 0.0
+                : min(100, round((float) $this->saved_amount / (float) $this->target_amount * 100, 1)),
+        );
     }
 }

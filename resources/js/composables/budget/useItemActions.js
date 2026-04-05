@@ -5,7 +5,7 @@ export function useItemActions(walletId) {
         router.post(`/wallets/${walletId.value}/budget/items/${item.id}/duplicate`, {}, { preserveScroll: true });
     }
 
-    function toggleRecurring(item) {
+    function toggleRepeat(item) {
         router.put(
             `/wallets/${walletId.value}/budget/items/${item.id}`,
             {
@@ -13,11 +13,11 @@ export function useItemActions(walletId) {
                 planned_amount: item.planned_amount,
                 category_id: item.category_id,
                 notes: item.notes ?? '',
-                is_recurring: !item.is_recurring,
+                repeat_next_month: !item.repeat_next_month,
             },
             { preserveScroll: true }
         );
     }
 
-    return { duplicateItem, toggleRecurring };
+    return { duplicateItem, toggleRepeat };
 }

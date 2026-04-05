@@ -78,7 +78,6 @@ function submit() {
                 class="relative z-10 w-full max-w-sm bg-surface-2 border border-base rounded-2xl shadow-2xl"
                 v-on:keydown.esc="emit('close')"
             >
-                <!-- Header -->
                 <div class="px-6 pt-6 pb-4 border-b border-base">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
@@ -90,7 +89,6 @@ function submit() {
                         </button>
                     </div>
 
-                    <!-- Progress bar -->
                     <div class="h-2 bg-surface-3 rounded-full overflow-hidden">
                         <div
                             class="h-full rounded-full transition-all duration-500"
@@ -104,7 +102,6 @@ function submit() {
                         />
                     </div>
 
-                    <!-- Légende -->
                     <div class="flex justify-between items-center mt-2 text-xs font-mono">
                         <div class="text-muted">
                             {{ fmt(goal.saved_amount) }}
@@ -123,7 +120,6 @@ function submit() {
                     </div>
                 </div>
 
-                <!-- Form -->
                 <form class="px-6 py-5 space-y-4" v-on:submit.prevent="submit">
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.amount') }}</label>
@@ -156,7 +152,6 @@ function submit() {
                     </div>
                 </form>
 
-                <!-- Footer -->
                 <div class="px-6 pb-6 flex gap-3">
                     <AppButton class="flex-1" :disabled="form.processing || !form.category_id" v-on:click="submit">
                         {{ form.processing ? t('budgets.txPanel.submitting') : t('goals.deposit') }}

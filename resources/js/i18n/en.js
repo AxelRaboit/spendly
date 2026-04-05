@@ -7,8 +7,9 @@ export default {
         statistics: 'Statistics',
         search: 'Transactions',
         goals: 'Goals',
-        recurring: 'Recurring',
+        recurring: 'Automatic',
         import: 'Import',
+        plan: 'Plan',
         profile: 'Profile',
         logout: 'Log out',
         lightMode: 'Light mode',
@@ -32,6 +33,7 @@ export default {
         description: 'Description',
         category: 'Category',
         or: 'or',
+        notNow: 'Not now',
     },
 
     auth: {
@@ -142,10 +144,10 @@ export default {
         hint: 'Click to edit · N to add · ← → to navigate',
         confirmCopyAppend: 'Add rows from {month}? Existing rows will be kept.',
         exportXlsx: 'Export XLSX',
-        copyRecurring: 'Copy recurring',
-        confirmCopyRecurring: 'Copy recurring transactions into this month?',
+        copyRepeat: 'Copy repeat lines',
+        confirmCopyRepeat: 'Copy lines marked "repeat" into this month?',
         noPrevItems: 'No items found in the previous month.',
-        recurring: 'Recurring',
+        repeatNextMonth: 'Repeat',
         overageAlert: 'no lines | 1 line exceeds the planned budget. | {count} lines exceed the planned budget.',
         overageGood: 'no lines | 1 line exceeds the planned target. | {count} lines exceed the planned target.',
         toast: {
@@ -234,7 +236,7 @@ export default {
             delete: 'Delete row',
             confirmDelete: 'Delete "{label}"? This action is irreversible.',
             duplicate: 'Duplicate row',
-            toggleRecurring: 'Toggle recurring',
+            toggleRepeat: 'Mark as repeat',
         },
     },
 
@@ -315,8 +317,8 @@ export default {
     },
 
     recurring: {
-        title: 'Recurring transactions',
-        new: 'New recurring',
+        title: 'Automatic transactions',
+        new: 'New automatic',
         fieldDesc: 'Description',
         fieldAmount: 'Amount ({symbol})',
         fieldDay: 'Day of month',
@@ -327,11 +329,11 @@ export default {
         active: 'Active',
         inactive: 'Inactive',
         dayLabel: 'On the {day} of each month',
-        none: 'No recurring transactions.',
-        confirmDelete: 'Delete this recurring transaction?',
+        none: 'No automatic transactions.',
+        confirmDelete: 'Delete this automatic transaction?',
         lastGenerated: 'Last generated: {date}',
         never: 'Never generated',
-        count: '{count} recurring',
+        count: '{count} automatic',
     },
 
     search: {
@@ -347,6 +349,7 @@ export default {
         noResults: 'No transactions found.',
         reset: 'Reset',
         tagPlaceholder: 'Filter by tag',
+        freeLimitWarning: 'Transaction history is limited to the last {days} days on Free plan.',
     },
 
     overview: {
@@ -427,5 +430,84 @@ export default {
         submitting: 'Processing…',
         badge: 'Transfer',
         confirmDelete: 'Delete this transfer? Both transactions will be removed.',
+    },
+
+    upgrade: {
+        default: {
+            title: 'Upgrade to Spendly Pro',
+            message: 'This feature is reserved for Spendly Pro users.',
+        },
+        wallet: {
+            title: 'Wallet limit reached',
+            message:
+                "You've reached the limit of {limit} wallet(s) on the Free plan. Upgrade to Pro to create unlimited wallets.",
+        },
+        goal: {
+            title: 'Goals limit reached',
+            message:
+                "You've reached the limit of {limit} goal(s) on the Free plan. Upgrade to Pro to create unlimited goals.",
+        },
+        recurring: {
+            title: 'Automatic transactions limit reached',
+            message:
+                "You've reached the limit of {limit} automatic transaction(s) on the Free plan. Upgrade to Pro for unlimited automatic transactions.",
+        },
+        budget: {
+            title: 'Budget editing reserved for Pro',
+            message:
+                'Budget editing is reserved for Spendly Pro users. Free plan users can view budgets in read-only mode.',
+        },
+        import: {
+            title: 'Import/Export reserved for Pro',
+            message: 'Importing and exporting transactions is reserved for Spendly Pro users.',
+        },
+        callToAction: 'Unlock all advanced features and make your financial management even more powerful!',
+        upgradeToPro: 'Upgrade to Pro',
+    },
+
+    plan: {
+        title: 'Plans & Pricing',
+        subtitle: 'Simple, transparent pricing. Upgrade or downgrade at any time.',
+        currentPlan: 'Current plan',
+        perMonth: 'mo',
+        upgradeCta: 'Upgrade to Pro',
+        stripeSoon: 'Stripe payment coming soon — upgrade is free for now',
+        downgradeFree: 'Downgrade to Free',
+        alreadyPro: "You're on Pro — enjoy all features!",
+        disclaimer: 'Prices will be confirmed when Stripe integration is complete. Change your plan anytime.',
+        free: {
+            name: 'Free',
+            price: '$0',
+            tagline: 'Essential tools to get started.',
+        },
+        pro: {
+            name: 'Pro',
+            price: '$4.99',
+            tagline: 'Full power for serious budgeters.',
+        },
+        features: {
+            wallets: '{n} wallet',
+            goals: '{n} savings goals',
+            recurring: '{n} automatic transactions',
+            history: '{n}-day transaction history',
+            walletsUnlimited: 'Unlimited wallets',
+            goalsUnlimited: 'Unlimited savings goals',
+            recurringUnlimited: 'Unlimited automatic transactions',
+            historyUnlimited: 'Full transaction history',
+            budgetBasic: 'Create and edit budget lines',
+            budgetAdvanced: 'Advanced budget tools (duplicate, repeat, copy)',
+            importExport: 'Import & export (XLSX)',
+            statsMonths: 'Statistics (1 month)',
+            statsMonthsPro: 'Statistics (6 months)',
+            andMore: '… and many more small perks!',
+        },
+    },
+    trial: {
+        bannerLink: 'View plans',
+        countdown: {
+            days: 'Pro trial: {days} day left | Pro trial: {days} days left',
+            hours: 'Pro trial: {hours}h{minutes}min left',
+            minutes: 'Pro trial: {minutes} minute left | Pro trial: {minutes} minutes left',
+        },
     },
 };

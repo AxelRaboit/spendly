@@ -52,14 +52,11 @@ function close() {
             <div class="absolute inset-0 bg-black/60" v-on:click="close" />
 
             <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-base shadow-xl">
-                <!-- Header -->
                 <div class="px-6 py-4 border-b border-base">
                     <h3 class="text-base font-semibold text-primary">{{ t('transfers.title') }}</h3>
                 </div>
 
-                <!-- Body -->
                 <div class="px-6 py-5 space-y-4">
-                    <!-- From -->
                     <div>
                         <InputLabel :value="t('transfers.from')" class="mb-1.5" />
                         <SelectInput v-model="form.from_wallet_id" :class="{ 'border-rose-500': form.errors.from_wallet_id }">
@@ -69,7 +66,6 @@ function close() {
                         <InputError v-if="form.errors.from_wallet_id" :message="form.errors.from_wallet_id" class="mt-1" />
                     </div>
 
-                    <!-- To -->
                     <div>
                         <InputLabel :value="t('transfers.to')" class="mb-1.5" />
                         <SelectInput v-model="form.to_wallet_id" :class="{ 'border-rose-500': form.errors.to_wallet_id }">
@@ -79,7 +75,6 @@ function close() {
                         <InputError v-if="form.errors.to_wallet_id" :message="form.errors.to_wallet_id" class="mt-1" />
                     </div>
 
-                    <!-- Amount + Date -->
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <InputLabel :value="t('transfers.amount')" class="mb-1.5" />
@@ -104,7 +99,6 @@ function close() {
                         </div>
                     </div>
 
-                    <!-- Description -->
                     <div>
                         <InputLabel :value="t('transfers.description')" class="mb-1.5" />
                         <TextInput
@@ -115,7 +109,6 @@ function close() {
                     </div>
                 </div>
 
-                <!-- Footer -->
                 <div class="px-6 py-4 border-t border-base flex justify-end gap-3">
                     <AppButton variant="secondary" v-on:click="close">{{ t('common.cancel') }}</AppButton>
                     <AppButton
