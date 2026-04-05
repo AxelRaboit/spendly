@@ -546,6 +546,22 @@ export default {
         expense: 'Ausgabe',
         income: 'Einnahme',
     },
+    scheduled: {
+        title: 'Geplante Transaktionen',
+        new: 'Neue geplante',
+        date: 'Geplantes Datum',
+        none: 'Keine geplanten Transaktionen.',
+        confirmDelete: 'Diese geplante Transaktion löschen?',
+        fieldDesc: 'Beschreibung',
+        fieldAmount: 'Betrag ({symbol})',
+        fieldWallet: 'Geldbörse',
+        fieldCategory: 'Kategorie',
+        fieldType: 'Typ',
+        tab: {
+            recurring: 'Automatisch',
+            scheduled: 'Geplant',
+        },
+    },
     trial: {
         bannerLink: 'Tarife ansehen',
         countdown: {

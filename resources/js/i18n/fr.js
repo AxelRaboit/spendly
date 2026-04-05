@@ -545,6 +545,22 @@ export default {
         expense: 'Dépense',
         income: 'Entrée',
     },
+    scheduled: {
+        title: 'Transactions planifiées',
+        new: 'Nouvelle planifiée',
+        date: 'Date prévue',
+        none: 'Aucune transaction planifiée.',
+        confirmDelete: 'Supprimer cette transaction planifiée ?',
+        fieldDesc: 'Description',
+        fieldAmount: 'Montant ({symbol})',
+        fieldWallet: 'Portefeuille',
+        fieldCategory: 'Catégorie',
+        fieldType: 'Type',
+        tab: {
+            recurring: 'Automatiques',
+            scheduled: 'Planifiées',
+        },
+    },
     trial: {
         bannerLink: 'Voir les formules',
         countdown: {

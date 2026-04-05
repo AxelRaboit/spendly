@@ -46,6 +46,7 @@ export default [
             'vue/component-definition-name-casing': ['error', 'PascalCase'],
             'vue/require-prop-types': 'warn',
             'vue/require-default-prop': 'off',
+            'vue/no-v-html': 'off',
             'vue/attributes-order': 'warn',
         },
     },

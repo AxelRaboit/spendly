@@ -13,6 +13,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command(GenerateRecurringTransactions::class)->dailyAt('06:00');
+Schedule::command(GenerateRecurringTransactions::class)->everyFifteenMinutes();
 Schedule::command(PruneImportFiles::class)->dailyAt('03:00');
 Schedule::command(ExpireTrials::class)->dailyAt('00:05');

@@ -11,9 +11,12 @@ const page = usePage();
 
 const props = defineProps({
     recurring:  Array,
+    scheduled:  { type: Array, default: () => [] },
     wallets:    Array,
     categories: Array,
 });
+
+const activeTab = ref('recurring');
 
 const isPro = computed(() => page.props.auth?.plan === 'pro');
 const recurringLimit = computed(() => page.props.planLimits.recurring);
@@ -98,6 +101,59 @@ function categoryName(id) {
 
 const ordinalDay = (n) => t('recurring.dayLabel', { day: n });
 
+// ── Scheduled transactions ───────────────────────────────────────────────
+const editingScheduled = ref(null);
+const showScheduledForm = ref(false);
+
+const scheduledForm = useForm({
+    description: '',
+    amount: '',
+    type: 'expense',
+    scheduled_date: new Date().toISOString().slice(0, 10),
+    wallet_id: '',
+    category_id: '',
+});
+
+function openCreateScheduled() {
+    editingScheduled.value = null;
+    scheduledForm.reset();
+    scheduledForm.type = 'expense';
+    scheduledForm.scheduled_date = new Date().toISOString().slice(0, 10);
+    if (props.wallets.length) scheduledForm.wallet_id = props.wallets[0].id;
+    if (props.categories.length) scheduledForm.category_id = props.categories[0].id;
+    showScheduledForm.value = true;
+}
+
+function openEditScheduled(item) {
+    editingScheduled.value = item;
+    scheduledForm.description = item.description;
+    scheduledForm.amount = item.amount;
+    scheduledForm.type = item.type;
+    scheduledForm.scheduled_date = item.scheduled_date;
+    scheduledForm.wallet_id = item.wallet_id;
+    scheduledForm.category_id = item.category_id ?? '';
+    showScheduledForm.value = true;
+}
+
+function submitScheduled() {
+    if (editingScheduled.value) {
+        scheduledForm.put(`/scheduled/${editingScheduled.value.id}`, { onSuccess: () => { showScheduledForm.value = false; } });
+    } else {
+        scheduledForm.post('/scheduled', { onSuccess: () => { showScheduledForm.value = false; scheduledForm.reset(); } });
+    }
+}
+
+const scheduledToDelete = ref(null);
+
+function confirmDeleteScheduled(item) {
+    scheduledToDelete.value = item;
+}
+
+function executeDeleteScheduled() {
+    useForm({}).delete(`/scheduled/${scheduledToDelete.value.id}`);
+    scheduledToDelete.value = null;
+}
+
 // ── Group by wallet ───────────────────────────────────────────────────────
 const byWallet = computed(() => {
     const groups = [];
@@ -123,104 +179,223 @@ function toggleGroup(id) {
         </template>
 
         <div class="space-y-4">
-            <div class="flex justify-end">
-                <div class="relative">
-                    <AppButton
-                        :disabled="!canCreateRecurring"
-                        :class="!canCreateRecurring ? 'opacity-60 cursor-not-allowed' : ''"
-                        v-on:click="openCreate"
-                    >
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
-                        {{ t('recurring.new') }}
-                    </AppButton>
-                    <span v-if="!isPro && props.recurring.length >= recurringLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
-                        Pro
-                    </span>
-                </div>
+            <div class="flex items-center gap-1 bg-surface border border-base/60 rounded-lg p-1 w-fit">
+                <button
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                    :class="activeTab === 'recurring' ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary'"
+                    v-on:click="activeTab = 'recurring'"
+                >
+                    {{ t('scheduled.tab.recurring') }}
+                </button>
+                <button
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                    :class="activeTab === 'scheduled' ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary'"
+                    v-on:click="activeTab = 'scheduled'"
+                >
+                    {{ t('scheduled.tab.scheduled') }}
+                    <span v-if="scheduled.length" class="ml-1 text-xs text-muted">({{ scheduled.length }})</span>
+                </button>
             </div>
 
-            <div v-if="recurring.length > 0" class="space-y-4">
-                <div v-for="group in byWallet" :key="group.wallet.id" class="bg-surface border border-base/60 rounded-2xl overflow-hidden">
-                    <button
-                        class="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-2 transition-colors"
-                        v-on:click="toggleGroup(group.wallet.id)"
-                    >
-                        <span class="text-sm font-semibold text-primary">{{ group.wallet.name }}</span>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs text-muted">{{ t('recurring.count', group.items.length, { count: group.items.length }) }}</span>
-                            <svg
-                                class="w-4 h-4 text-muted transition-transform duration-200"
-                                :class="collapsed[group.wallet.id] ? '-rotate-90' : ''"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </button>
-                    <div v-show="!collapsed[group.wallet.id]" class="border-t border-base/60 divide-y divide-base/40">
-                        <div
-                            v-for="item in group.items"
-                            :key="item.id"
-                            class="px-4 py-3.5"
-                            :class="{ 'opacity-60': !item.active }"
+            <div v-if="activeTab === 'recurring'" class="space-y-4">
+                <div class="flex justify-end">
+                    <div class="relative">
+                        <AppButton
+                            :disabled="!canCreateRecurring"
+                            :class="!canCreateRecurring ? 'opacity-60 cursor-not-allowed' : ''"
+                            v-on:click="openCreate"
                         >
-                            <div class="flex items-start gap-3">
-                                <div
-                                    class="mt-0.5 w-2.5 h-2.5 rounded-full shrink-0"
-                                    :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
-                                />
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                            {{ t('recurring.new') }}
+                        </AppButton>
+                        <span v-if="!isPro && props.recurring.length >= recurringLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
+                            Pro
+                        </span>
+                    </div>
+                </div>
 
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex flex-wrap items-center justify-between gap-2">
-                                        <span class="font-semibold text-primary truncate">{{ item.description }}</span>
-                                        <span
-                                            class="text-base font-mono font-semibold"
-                                            :class="item.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                <div v-if="recurring.length > 0" class="space-y-4">
+                    <div v-for="group in byWallet" :key="group.wallet.id" class="bg-surface border border-base/60 rounded-2xl overflow-hidden">
+                        <button
+                            class="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-2 transition-colors"
+                            v-on:click="toggleGroup(group.wallet.id)"
+                        >
+                            <span class="text-sm font-semibold text-primary">{{ group.wallet.name }}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs text-muted">{{ t('recurring.count', group.items.length, { count: group.items.length }) }}</span>
+                                <svg
+                                    class="w-4 h-4 text-muted transition-transform duration-200"
+                                    :class="collapsed[group.wallet.id] ? '-rotate-90' : ''"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div v-show="!collapsed[group.wallet.id]" class="border-t border-base/60 divide-y divide-base/40">
+                            <div
+                                v-for="item in group.items"
+                                :key="item.id"
+                                class="px-4 py-3.5"
+                                :class="{ 'opacity-60': !item.active }"
+                            >
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="mt-0.5 w-2.5 h-2.5 rounded-full shrink-0"
+                                        :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
+                                    />
+
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex flex-wrap items-center justify-between gap-2">
+                                            <span class="font-semibold text-primary truncate">{{ item.description }}</span>
+                                            <span
+                                                class="text-base font-mono font-semibold"
+                                                :class="item.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                            >
+                                                {{ item.type === 'income' ? '+' : '−' }}{{ fmt(item.amount) }}
+                                            </span>
+                                        </div>
+
+                                        <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
+                                            <span>{{ ordinalDay(item.day_of_month) }}</span>
+                                            <span v-if="item.category_id">{{ categoryName(item.category_id) }}</span>
+                                        </div>
+
+                                        <div class="mt-1.5 text-xs text-subtle">
+                                            {{ item.last_generated_at
+                                                ? t('recurring.lastGenerated', { date: fmtDate(item.last_generated_at) })
+                                                : t('recurring.never') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button
+                                            class="text-xs px-2 py-1 rounded-full border transition-colors"
+                                            :class="item.active
+                                                ? 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'
+                                                : 'border-base text-muted hover:border-indigo-500/40 hover:text-indigo-400'"
+                                            v-on:click="toggleActive(item)"
                                         >
-                                            {{ item.type === 'income' ? '+' : '−' }}{{ fmt(item.amount) }}
-                                        </span>
+                                            {{ item.active ? t('recurring.active') : t('recurring.inactive') }}
+                                        </button>
+
+                                        <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEdit(item)">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        </button>
+                                        <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(item)">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        </button>
                                     </div>
-
-                                    <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
-                                        <span>{{ ordinalDay(item.day_of_month) }}</span>
-                                        <span v-if="item.category_id">{{ categoryName(item.category_id) }}</span>
-                                    </div>
-
-                                    <div class="mt-1.5 text-xs text-subtle">
-                                        {{ item.last_generated_at
-                                            ? t('recurring.lastGenerated', { date: fmtDate(item.last_generated_at) })
-                                            : t('recurring.never') }}
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center gap-2 shrink-0">
-                                    <button
-                                        class="text-xs px-2 py-1 rounded-full border transition-colors"
-                                        :class="item.active
-                                            ? 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'
-                                            : 'border-base text-muted hover:border-indigo-500/40 hover:text-indigo-400'"
-                                        v-on:click="toggleActive(item)"
-                                    >
-                                        {{ item.active ? t('recurring.active') : t('recurring.inactive') }}
-                                    </button>
-
-                                    <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEdit(item)">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                    </button>
-                                    <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(item)">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <EmptyState v-else-if="recurring.length === 0" :message="t('recurring.none')" />
             </div>
 
-            <EmptyState v-else-if="recurring.length === 0" :message="t('recurring.none')" />
+            <div v-if="activeTab === 'scheduled'" class="space-y-4">
+                <div class="flex justify-end">
+                    <AppButton v-on:click="openCreateScheduled">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        {{ t('scheduled.new') }}
+                    </AppButton>
+                </div>
+
+                <div v-if="scheduled.length > 0" class="bg-surface border border-base/60 rounded-2xl overflow-hidden divide-y divide-base/40">
+                    <div
+                        v-for="item in scheduled"
+                        :key="item.id"
+                        class="px-4 py-3 flex items-center justify-between gap-3"
+                    >
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span
+                                    class="w-2 h-2 rounded-full shrink-0"
+                                    :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
+                                />
+                                <span class="text-sm text-primary font-medium truncate">{{ item.description || '—' }}</span>
+                                <span class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ item.category?.name ?? '—' }}</span>
+                            </div>
+                            <div class="flex items-center gap-3 mt-1 text-xs text-muted">
+                                <span>{{ fmtDate(item.scheduled_date) }}</span>
+                                <span>{{ item.wallet?.name }}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                            <span class="font-mono font-semibold text-sm" :class="item.type === 'income' ? 'text-emerald-400' : 'text-primary'">
+                                {{ item.type === 'income' ? '+' : '' }}{{ fmt(item.amount) }}
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEditScheduled(item)">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                </button>
+                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDeleteScheduled(item)">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <EmptyState v-else :message="t('scheduled.none')" />
+            </div>
         </div>
+
+        <AppModal :show="showScheduledForm" scrollable v-on:close="showScheduledForm = false">
+            <h3 class="text-base font-semibold text-primary">{{ t('scheduled.new') }}</h3>
+
+            <FormField :label="t('scheduled.fieldDesc')">
+                <input v-model="scheduledForm.description" type="text" class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
+            </FormField>
+
+            <FormField :label="t('scheduled.fieldAmount', { symbol })">
+                <input
+                    v-model="scheduledForm.amount"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    required
+                    class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono text-right"
+                >
+            </FormField>
+
+            <FormField :label="t('scheduled.fieldType')">
+                <TypeToggle v-model="scheduledForm.type" />
+            </FormField>
+
+            <FormField :label="t('scheduled.date')">
+                <input v-model="scheduledForm.scheduled_date" type="date" required class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
+            </FormField>
+
+            <FormField :label="t('scheduled.fieldWallet')">
+                <SelectInput v-model="scheduledForm.wallet_id">
+                    <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
+                </SelectInput>
+            </FormField>
+
+            <FormField :label="t('scheduled.fieldCategory')">
+                <SelectInput v-model="scheduledForm.category_id">
+                    <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
+                </SelectInput>
+            </FormField>
+
+            <template #footer>
+                <AppButton :disabled="scheduledForm.processing" v-on:click="submitScheduled">
+                    {{ editingScheduled ? t('common.update') : t('common.create') }}
+                </AppButton>
+            </template>
+        </AppModal>
+
+        <ConfirmModal
+            :show="scheduledToDelete !== null"
+            :message="t('scheduled.confirmDelete')"
+            v-on:confirm="executeDeleteScheduled"
+            v-on:cancel="scheduledToDelete = null"
+        />
 
         <AppModal :show="showForm" scrollable v-on:close="showForm = false">
             <h3 class="text-base font-semibold text-primary">

@@ -545,6 +545,22 @@ export default {
         expense: 'Gasto',
         income: 'Ingreso',
     },
+    scheduled: {
+        title: 'Transacciones programadas',
+        new: 'Nueva programada',
+        date: 'Fecha prevista',
+        none: 'Sin transacciones programadas.',
+        confirmDelete: '¿Eliminar esta transacción programada?',
+        fieldDesc: 'Descripción',
+        fieldAmount: 'Importe ({symbol})',
+        fieldWallet: 'Cartera',
+        fieldCategory: 'Categoría',
+        fieldType: 'Tipo',
+        tab: {
+            recurring: 'Automáticas',
+            scheduled: 'Programadas',
+        },
+    },
     trial: {
         bannerLink: 'Ver planes',
         countdown: {

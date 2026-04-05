@@ -544,6 +544,22 @@ export default {
         expense: 'Expense',
         income: 'Income',
     },
+    scheduled: {
+        title: 'Scheduled transactions',
+        new: 'New scheduled',
+        date: 'Scheduled date',
+        none: 'No scheduled transactions.',
+        confirmDelete: 'Delete this scheduled transaction?',
+        fieldDesc: 'Description',
+        fieldAmount: 'Amount ({symbol})',
+        fieldWallet: 'Wallet',
+        fieldCategory: 'Category',
+        fieldType: 'Type',
+        tab: {
+            recurring: 'Automatic',
+            scheduled: 'Scheduled',
+        },
+    },
     trial: {
         bannerLink: 'View plans',
         countdown: {

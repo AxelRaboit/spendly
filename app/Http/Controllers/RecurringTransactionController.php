@@ -24,6 +24,7 @@ class RecurringTransactionController extends Controller
 
         return Inertia::render('Recurring/Index', [
             'recurring' => $user->recurringTransactions()->with(['wallet', 'category'])->orderBy('day_of_month')->get(),
+            'scheduled' => $user->scheduledTransactions()->with(['wallet', 'category'])->where('is_generated', false)->orderBy('scheduled_date')->get(),
             'wallets' => $user->wallets()->orderBy('name')->get(['id', 'name']),
             'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
         ]);

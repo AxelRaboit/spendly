@@ -12,6 +12,7 @@ use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecurringTransactionController;
+use App\Http\Controllers\ScheduledTransactionController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TransactionController;
@@ -57,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'update'])->name('recurring.update');
     Route::patch('/recurring/{recurringTransaction}/toggle', [RecurringTransactionController::class, 'toggle'])->name('recurring.toggle');
     Route::delete('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'destroy'])->name('recurring.destroy');
+    Route::post('/scheduled', [ScheduledTransactionController::class, 'store'])->name('scheduled.store');
+    Route::put('/scheduled/{scheduledTransaction}', [ScheduledTransactionController::class, 'update'])->name('scheduled.update');
+    Route::delete('/scheduled/{scheduledTransaction}', [ScheduledTransactionController::class, 'destroy'])->name('scheduled.destroy');
     Route::post('/categories/quick', [CategoryController::class, 'storeQuick'])->name('categories.storeQuick');
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class)->only(['store', 'update', 'destroy']);

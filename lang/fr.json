@@ -113,6 +113,9 @@
     "flash.goal.deleted": "Objectif supprimé.",
     "flash.transfer.created": "Virement effectué.",
     "flash.transfer.deleted": "Virement supprimé.",
+    "flash.scheduled.created": "Transaction planifiée créée.",
+    "flash.scheduled.updated": "Transaction planifiée mise à jour.",
+    "flash.scheduled.deleted": "Transaction planifiée supprimée.",
     "flash.import.created": ":created transaction(s) importée(s).",
     "flash.import.created_with_errors": ":created transaction(s) importée(s), :errors ignorée(s).",
     "budgets.errors.categoryUsed": "Cette catégorie est déjà utilisée dans ce budget."

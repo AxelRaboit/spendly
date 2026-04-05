@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(RecurringTransaction::class);
     }
+
+    public function scheduledTransactions(): HasMany
+    {
+        return $this->hasMany(ScheduledTransaction::class);
+    }
 }
