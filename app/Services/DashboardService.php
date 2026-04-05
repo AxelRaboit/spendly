@@ -62,4 +62,13 @@ class DashboardService
             ->orderBy('name')
             ->get();
     }
+
+    public function recentTransactions(User $user, int $limit = 5): Collection
+    {
+        return $user->transactions()
+            ->with('category', 'wallet')
+            ->latest('date')
+            ->limit($limit)
+            ->get();
+    }
 }

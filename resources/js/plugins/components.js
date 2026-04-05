@@ -1,4 +1,5 @@
 import AppButton from '@/components/ui/AppButton.vue';
+import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -15,6 +16,7 @@ import SelectInput from '@/components/form/SelectInput.vue';
 export default {
     install(app) {
         app.component('AppButton', AppButton);
+        app.component('AppPageHeader', AppPageHeader);
         app.component('TextInput', TextInput);
         app.component('SelectInput', SelectInput);
         app.component('DateInput', DateInput);

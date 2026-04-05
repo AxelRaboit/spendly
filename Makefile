@@ -32,6 +32,9 @@ migrate: ## Run pending migrations
 migrate-fresh: ## Drop all tables and re-run all migrations
 	$(ARTISAN) migrate:fresh
 
+fixtures: ## Drop all tables, re-run migrations and seed
+	$(ARTISAN) migrate:fresh --seed
+
 # === Tests ===
 test: ## Run all PHPUnit tests
 	$(ARTISAN) test

@@ -3,15 +3,11 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-defineProps({
-    show: {
-        type: Boolean,
-        default: false,
-    },
-    message: {
-        type: String,
-        default: '',
-    },
+const props = defineProps({
+    show:         { type: Boolean, default: false },
+    message:      { type: String,  default: '' },
+    confirmLabel: { type: String,  default: null },
+    confirmVariant: { type: String, default: 'danger' },
 });
 
 defineEmits(['confirm', 'cancel']);
@@ -53,8 +49,8 @@ defineEmits(['confirm', 'cancel']);
                     <AppButton variant="secondary" v-on:click="$emit('cancel')">
                         {{ t('common.cancel') }}
                     </AppButton>
-                    <AppButton variant="danger" v-on:click="$emit('confirm')">
-                        {{ t('common.delete') }}
+                    <AppButton :variant="confirmVariant" v-on:click="$emit('confirm')">
+                        {{ confirmLabel ?? t('common.delete') }}
                     </AppButton>
                 </div>
             </div>

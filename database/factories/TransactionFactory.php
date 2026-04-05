@@ -18,11 +18,13 @@ class TransactionFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'wallet_id' => null,
             'category_id' => Category::factory(),
-            'type' => 'expense',
+            'type' => $this->faker->randomElement(['expense', 'income']),
             'amount' => $this->faker->randomFloat(2, 1, 500),
             'description' => $this->faker->optional(0.7)->sentence(3),
             'date' => $this->faker->dateTimeBetween('-6 months', 'now')->format('Y-m-d'),
+            'tags' => null,
         ];
     }
 }

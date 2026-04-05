@@ -18,54 +18,45 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-primary leading-tight">{{ t('categories.title') }}</h2>
+            <AppPageHeader :title="t('categories.title')" />
         </template>
 
-        <div class="bg-surface overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-primary">
-                <div class="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
-                    <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="w-full sm:max-w-xs" />
-                    <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 text-center sm:ml-auto">
-                        {{ t('categories.createBtn') }}
-                    </Link>
-                </div>
+        <div class="space-y-4">
+            <!-- Toolbar -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="w-full sm:max-w-xs" />
+                <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 text-center sm:ml-auto transition">
+                    {{ t('categories.createBtn') }}
+                </Link>
+            </div>
 
-                <!-- Mobile cards -->
-                <div class="sm:hidden divide-y divide-base">
-                    <div v-for="category in categories.data" :key="category.id" class="flex items-center justify-between px-1 py-3 gap-3">
-                        <span class="text-sm text-primary truncate">{{ category.name }}</span>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <EditButton :href="`/categories/${category.id}/edit`" />
-                            <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />
-                        </div>
+            <!-- Cards grid -->
+            <div v-if="categories.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div
+                    v-for="category in categories.data"
+                    :key="category.id"
+                    class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+                >
+                    <!-- Decorative circles -->
+                    <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
+                    <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
+
+                    <!-- Card body -->
+                    <div class="pb-3 border-b border-base/40">
+                        <p class="text-base font-semibold text-primary truncate">{{ category.name }}</p>
+                    </div>
+
+                    <!-- Card footer -->
+                    <div class="flex items-center justify-end pt-3 gap-2">
+                        <EditButton :href="`/categories/${category.id}/edit`" />
+                        <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />
                     </div>
                 </div>
-
-                <!-- Desktop table -->
-                <div class="hidden sm:block overflow-x-auto">
-                    <table class="min-w-full table-auto">
-                        <thead>
-                            <tr class="border-b border-base">
-                                <th class="text-left py-2">{{ t('categories.colName') }}</th>
-                                <th class="text-right py-2">{{ t('categories.colActions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="category in categories.data" :key="category.id" class="border-b border-base hover:bg-surface-2">
-                                <td class="py-2">{{ category.name }}</td>
-                                <td class="py-2 space-x-2 text-right">
-                                    <EditButton :href="`/categories/${category.id}/edit`" />
-                                    <DeleteButton v-on:click="confirmDelete(`/categories/${category.id}`)" />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <EmptyState v-if="categories.data.length === 0" :message="t('categories.none')" />
-
-                <AppPagination :meta="categories" />
             </div>
+
+            <EmptyState v-else :message="t('categories.none')" />
+
+            <AppPagination :meta="categories" />
         </div>
 
         <ConfirmModal

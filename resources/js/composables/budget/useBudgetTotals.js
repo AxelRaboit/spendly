@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-export function useBudgetTotals(sections, startBalance, budget = null) {
+export function useBudgetTotals(sections, startBalance, budget = null, unbudgeted = null) {
     const totals = computed(() => {
         const result = {};
         for (const [key, items] of Object.entries(sections.value)) {
@@ -12,13 +12,16 @@ export function useBudgetTotals(sections, startBalance, budget = null) {
         return result;
     });
 
-    const totalIncome = computed(() => totals.value.income ?? { planned: 0, actual: 0 });
+    const totalIncome = computed(() => ({
+        planned: totals.value.income?.planned ?? 0,
+        actual: (totals.value.income?.actual ?? 0) + (unbudgeted?.value?.income ?? 0),
+    }));
 
     const totalExpenses = computed(() => {
         const keys = ['savings', 'bills', 'expenses', 'debt'];
         return {
             planned: keys.reduce((s, k) => s + (totals.value[k]?.planned ?? 0), 0),
-            actual: keys.reduce((s, k) => s + (totals.value[k]?.actual ?? 0), 0),
+            actual: keys.reduce((s, k) => s + (totals.value[k]?.actual ?? 0), 0) + (unbudgeted?.value?.expenses ?? 0),
         };
     });
 

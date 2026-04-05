@@ -1,38 +1,4 @@
-const XLSX_COLORS = {
-    income: { bg: 'FF065F46', fg: 'FF6EE7B7' },
-    savings: { bg: 'FF0C4A6E', fg: 'FF7DD3FC' },
-    bills: { bg: 'FF78350F', fg: 'FFFDE68A' },
-    expenses: { bg: 'FF881337', fg: 'FFFECDD3' },
-    debt: { bg: 'FF4C1D95', fg: 'FFE9D5FF' },
-    header: { bg: 'FF1F2937', fg: 'FFF9FAFB' },
-};
-
-function xStyle(opts) {
-    const s = {};
-    if (opts.bg) s.fill = { patternType: 'solid', fgColor: { rgb: opts.bg } };
-    if (opts.color) s.font = { ...(s.font ?? {}), color: { rgb: opts.color } };
-    if (opts.bold) s.font = { ...(s.font ?? {}), bold: true };
-    if (opts.sz) s.font = { ...(s.font ?? {}), sz: opts.sz };
-    if (opts.numFmt) s.numFmt = opts.numFmt;
-    s.alignment = { horizontal: opts.align ?? 'left', vertical: 'center' };
-    return s;
-}
-
-function diffColor(val, positiveIsGood) {
-    if (val === 0) return 'FF9CA3AF';
-    const good = positiveIsGood ? val > 0 : val < 0;
-    return good ? 'FF059669' : 'FFE11D48';
-}
-
-function applyStyles(ws, rowStylesArr) {
-    rowStylesArr.forEach((rowStyles, ri) => {
-        rowStyles.forEach((style, ci) => {
-            const addr = String.fromCharCode(65 + ci) + (ri + 1);
-            if (!ws[addr]) ws[addr] = { t: 'z', v: '' };
-            ws[addr].s = style;
-        });
-    });
-}
+import { applyStyles, diffColor, XLSX_COLORS, xStyle } from './excelStyles.js';
 
 export function useBudgetExport(sections, totals, sectionMeta, budget, t) {
     async function exportXlsx() {
@@ -48,7 +14,6 @@ export function useBudgetExport(sections, totals, sectionMeta, budget, t) {
         const cAct = t('budgets.table.actual');
         const cDiff = t('budgets.table.diff');
 
-        // ── Feuille Budget ────────────────────────────────────────────────────
         const aoa = [[cLabel, cCat, cPlan, cAct, cDiff]];
         const styles = [
             Array(COLS).fill(
@@ -94,7 +59,6 @@ export function useBudgetExport(sections, totals, sectionMeta, budget, t) {
         applyStyles(ws, styles);
         utils.book_append_sheet(wb, ws, 'Budget');
 
-        // ── Feuille Résumé ────────────────────────────────────────────────────
         const saoa = [[t('budgets.table.label'), cPlan, cAct, cDiff]];
         const sstyles = [
             Array(4).fill(

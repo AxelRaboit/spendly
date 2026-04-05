@@ -1,5 +1,6 @@
-import { computed, ref, nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { useSectionCategoryFilter } from './useSectionCategoryFilter.js';
 
 export function useTransactionPanel(walletId, budget, sections, flash, categories) {
     const txPanel = ref(false);
@@ -12,15 +13,15 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         amount: '',
         description: '',
         date: new Date().toISOString().slice(0, 10),
+        tags: [],
     });
 
-    // Categories filtered by selected budget section
-    const txFilteredCategories = computed(() => {
-        if (!txSection.value || !categories) return categories?.value ?? [];
-        const sectionItems = sections.value[txSection.value] ?? [];
-        const validIds = new Set(sectionItems.map((i) => i.category_id).filter(Boolean));
-        return (categories.value ?? []).filter((c) => validIds.has(c.id));
-    });
+    const { txFilteredCategories, onTxSectionChange } = useSectionCategoryFilter(
+        txSection,
+        sections,
+        categories,
+        txForm
+    );
 
     function openTxPanel(
         categoryId = null,
@@ -36,26 +37,13 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txForm.category_id = categoryId;
         txForm.amount = '';
         txForm.description = '';
+        txForm.tags = [];
         const today = new Date().toISOString().slice(0, 10);
         txForm.date = budget.value.month === today.slice(0, 7) ? today : budget.value.month + '-01';
         txPrefillLabel.value = label;
         txSection.value = section;
         txPanel.value = true;
         nextTick(() => document.getElementById('tx-amount')?.focus());
-    }
-
-    function onTxSectionChange(newSection) {
-        txSection.value = newSection;
-        if (newSection === 'income') {
-            txForm.type = 'income';
-        } else if (newSection !== null) {
-            txForm.type = 'expense';
-        }
-        if (newSection && txForm.category_id) {
-            const sectionItems = sections.value[newSection] ?? [];
-            const validIds = new Set(sectionItems.map((i) => i.category_id).filter(Boolean));
-            if (!validIds.has(txForm.category_id)) txForm.category_id = null;
-        }
     }
 
     function closeTxPanel() {

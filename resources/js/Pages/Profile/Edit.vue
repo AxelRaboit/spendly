@@ -19,7 +19,7 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-primary">{{ t('profile.title') }}</h2>
+            <AppPageHeader :title="t('profile.title')" />
         </template>
 
         <div class="mx-auto max-w-2xl space-y-6">

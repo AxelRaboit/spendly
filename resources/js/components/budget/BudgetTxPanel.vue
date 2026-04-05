@@ -1,12 +1,37 @@
 <script setup>
 /* eslint-disable vue/no-mutating-props */
+import AppButton from '@/components/ui/AppButton.vue';
 import DateInput from '@/components/form/DateInput.vue';
+import SelectInput from '@/components/form/SelectInput.vue';
 import TypeToggle from '@/components/form/TypeToggle.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 
 const { t }      = useI18n();
 const { symbol } = useCurrency();
+
+const tagInput = ref('');
+
+function addTag(form) {
+    const tag = tagInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+    if (!tag || form.tags.includes(tag) || form.tags.length >= 10) return;
+    form.tags = [...form.tags, tag];
+    tagInput.value = '';
+}
+
+function removeTag(form, tag) {
+    form.tags = form.tags.filter(t => t !== tag);
+}
+
+function onTagKeydown(e, form) {
+    if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addTag(form);
+    } else if (e.key === 'Backspace' && !tagInput.value && form.tags.length) {
+        form.tags = form.tags.slice(0, -1);
+    }
+}
 
 defineProps({
     open:               { type: Boolean,  required: true },
@@ -96,14 +121,10 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                     <!-- Category -->
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
-                        <select
-                            v-model="txForm.category_id"
-                            required
-                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
-                        >
-                            <option :value="null" disabled>{{ t('budgets.txPanel.pickCategory') }}</option>
+                        <SelectInput v-model="txForm.category_id">
+                            <option :value="null" disabled>— {{ t('budgets.txPanel.pickCategory') }} —</option>
                             <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                        </select>
+                        </SelectInput>
                         <p v-if="txForm.errors.category_id" class="text-rose-400 text-xs mt-1">{{ txForm.errors.category_id }}</p>
                         <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
                     </div>
@@ -128,25 +149,45 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
                             class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
                         >
                     </div>
+
+                    <!-- Tags -->
+                    <div>
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
+                            {{ t('budgets.txPanel.tagsLabel') }}
+                            <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
+                        </label>
+                        <div class="flex flex-wrap gap-1.5 p-2 bg-surface-2 border border-base rounded-lg focus-within:border-indigo-500 min-h-[2.75rem]">
+                            <span
+                                v-for="tag in txForm.tags"
+                                :key="tag"
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-900/60 text-indigo-300"
+                            >
+                                #{{ tag }}
+                                <button type="button" class="hover:text-white transition-colors" v-on:click="removeTag(txForm, tag)">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </span>
+                            <input
+                                v-model="tagInput"
+                                type="text"
+                                :placeholder="txForm.tags.length === 0 ? t('budgets.txPanel.tagsPlaceholder') : ''"
+                                class="flex-1 min-w-[80px] bg-transparent text-primary text-sm focus:outline-none placeholder:text-subtle"
+                                v-on:keydown="onTagKeydown($event, txForm)"
+                                v-on:blur="addTag(txForm)"
+                            >
+                        </div>
+                        <p class="mt-1 text-xs text-subtle">{{ t('budgets.txPanel.tagsHint') }}</p>
+                    </div>
                 </form>
 
                 <!-- Footer -->
                 <div class="px-6 py-4 border-t border-base flex gap-3">
-                    <button
-                        type="button"
-                        :disabled="txForm.processing"
-                        class="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors"
-                        v-on:click="emit('submit')"
-                    >
+                    <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="emit('submit')">
                         {{ txForm.processing ? t('budgets.txPanel.submitting') : t('budgets.txPanel.submit') }}
-                    </button>
-                    <button
-                        type="button"
-                        class="px-4 py-2.5 text-secondary hover:text-primary border border-base rounded-lg transition-colors"
-                        v-on:click="emit('close')"
-                    >
+                    </AppButton>
+                    <AppButton class="flex-1" variant="secondary" v-on:click="emit('close')">
                         {{ t('budgets.txPanel.cancel') }}
-                    </button>
+                    </AppButton>
                 </div>
             </div>
         </div>

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\Currency;
+use App\Enums\Locale;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,8 +23,8 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
-            'currency' => ['required', 'string', Rule::in(['EUR', 'USD', 'GBP', 'CHF', 'CAD', 'JPY', 'KRW', 'TWD', 'CNY'])],
-            'locale' => ['sometimes', 'string', Rule::in(['fr', 'en', 'es', 'de'])],
+            'currency' => ['required', 'string', Rule::in(Currency::values())],
+            'locale' => ['sometimes', 'string', Rule::in(Locale::values())],
         ];
     }
 }

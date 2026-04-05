@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\BudgetSection;
+use App\Enums\SystemCategoryKey;
+use App\Enums\TransactionType;
 use App\Models\Budget;
 use App\Models\BudgetItem;
 use App\Models\Category;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,20 +20,64 @@ use Illuminate\Support\Facades\DB;
 
 class BudgetService
 {
+    /** Returns user categories excluding system ones, ordered by name. */
+    public function userCategories(User $user): Collection
+    {
+        return Category::query()
+            ->where('user_id', $user->id)
+            ->where('is_system', false)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
     /**
      * Get or create a budget for a wallet and month.
      */
     public function getOrCreate(Wallet $wallet, Carbon $month): Budget
     {
-        return Budget::firstOrCreate(
+        $budget = Budget::firstOrCreate(
             [
                 'wallet_id' => $wallet->id,
-                'month' => $month->startOfMonth()->toDateString(),
+                'month' => $month->copy()->startOfMonth()->toDateString(),
             ],
             [
                 'user_id' => $wallet->user_id,
             ]
         );
+
+        if ($budget->wasRecentlyCreated) {
+            $this->seedTransferItem($budget, $wallet, $month);
+        }
+
+        return $budget;
+    }
+
+    /**
+     * Auto-create transfer budget items for wallets that have transfer transactions.
+     * - Income side  → "Virement reçu"   (BudgetSection::Income)
+     * - Expense side → "Virement effectué" (BudgetSection::Savings)
+     * Planned amount is taken from the previous month's actuals.
+     */
+    private function seedTransferItem(Budget $budget, Wallet $wallet, Carbon $month): void
+    {
+        // Income side — single shared category
+        $this->seedTransferItemForCategory(
+            $budget, $wallet, $month,
+            Category::where('user_id', $wallet->user_id)
+                ->where('system_key', SystemCategoryKey::TransferIncome->value)
+                ->first(),
+            BudgetSection::Income,
+        );
+
+        // Expense side — one category per destination wallet
+        $expenseCategories = Category::where('user_id', $wallet->user_id)
+            ->where('system_key', 'LIKE', 'transfer_expense_%')
+            ->whereHas('transactions', fn ($q) => $q->where('wallet_id', $wallet->id))
+            ->get();
+
+        foreach ($expenseCategories as $category) {
+            $this->seedTransferItemForCategory($budget, $wallet, $month, $category, BudgetSection::Savings);
+        }
     }
 
     /**
@@ -49,6 +97,36 @@ class BudgetService
             'category_id' => $data['category_id'] ?? null,
             'position' => $position + 1,
             'is_recurring' => (bool) ($data['is_recurring'] ?? false),
+        ]);
+    }
+
+    private function seedTransferItemForCategory(Budget $budget, Wallet $wallet, Carbon $month, ?Category $category, BudgetSection $section): void
+    {
+        if (! $category instanceof Category) {
+            return;
+        }
+
+        $hasTransfers = Transaction::where('wallet_id', $wallet->id)
+            ->where('category_id', $category->id)
+            ->exists();
+
+        if (! $hasTransfers) {
+            return;
+        }
+
+        $prevMonthActual = (float) Transaction::where('wallet_id', $wallet->id)
+            ->where('category_id', $category->id)
+            ->whereYear('date', $month->copy()->subMonth()->year)
+            ->whereMonth('date', $month->copy()->subMonth()->month)
+            ->sum('amount');
+
+        BudgetItem::create([
+            'budget_id' => $budget->id,
+            'type' => $section->value,
+            'label' => $category->name,
+            'planned_amount' => $prevMonthActual,
+            'category_id' => $category->id,
+            'position' => 0,
         ]);
     }
 
@@ -73,7 +151,7 @@ class BudgetService
      * Copy all items from the previous month's budget into the current one.
      * Returns the number of items copied, or 0 if no previous budget exists.
      */
-    public function copyFromPreviousMonth(Budget $current, Carbon $currentMonth): int
+    public function copyFromPreviousMonth(Budget $current, Carbon $currentMonth, array $itemIds = []): int
     {
         $previousMonth = $currentMonth->copy()->subMonth();
 
@@ -85,7 +163,12 @@ class BudgetService
             return 0;
         }
 
-        $items = BudgetItem::where('budget_id', $previous->id)->get();
+        $query = BudgetItem::where('budget_id', $previous->id);
+        if ($itemIds !== []) {
+            $query->whereIn('id', $itemIds);
+        }
+
+        $items = $query->get();
 
         if ($items->isEmpty()) {
             return 0;
@@ -114,7 +197,7 @@ class BudgetService
      * Copy only recurring items from the previous month's budget into the current one.
      * Returns the number of items copied, or 0 if no previous budget exists.
      */
-    public function copyRecurringFromPreviousMonth(Budget $current, Carbon $currentMonth): int
+    public function copyRecurringFromPreviousMonth(Budget $current, Carbon $currentMonth, array $itemIds = []): int
     {
         $previousMonth = $currentMonth->copy()->subMonth();
 
@@ -126,9 +209,12 @@ class BudgetService
             return 0;
         }
 
-        $items = BudgetItem::where('budget_id', $previous->id)
-            ->where('is_recurring', true)
-            ->get();
+        $query = BudgetItem::where('budget_id', $previous->id)->where('is_recurring', true);
+        if ($itemIds !== []) {
+            $query->whereIn('id', $itemIds);
+        }
+
+        $items = $query->get();
 
         if ($items->isEmpty()) {
             return 0;
@@ -151,6 +237,39 @@ class BudgetService
         BudgetItem::insert($rows);
 
         return count($rows);
+    }
+
+    /**
+     * Return items from the previous month's budget for display in the copy modal.
+     */
+    public function getPreviousMonthItems(Wallet $wallet, Carbon $currentMonth): array
+    {
+        $previousMonth = $currentMonth->copy()->subMonth();
+
+        $previous = Budget::where('wallet_id', $wallet->id)
+            ->where('month', $previousMonth->startOfMonth()->toDateString())
+            ->first();
+
+        if (! $previous) {
+            return [];
+        }
+
+        /** @var Collection<int, BudgetItem> $items */
+        $items = BudgetItem::where('budget_id', $previous->id)
+            ->with('category')
+            ->orderBy('position')
+            ->get();
+
+        return $items->map(fn (BudgetItem $item) => [
+            'id' => $item->id,
+            'type' => $item->type,
+            'label' => $item->label,
+            'planned_amount' => $item->planned_amount,
+            'is_recurring' => $item->is_recurring,
+            'category' => $item->category instanceof Category
+                ? ['name' => $item->category->name]
+                : null,
+        ])->all();
     }
 
     /**
@@ -181,9 +300,10 @@ class BudgetService
     {
         $startOfMonth = $month->copy()->startOfMonth()->toDateString();
 
+        $incomeValue = TransactionType::Income->value;
         $netFlow = DB::selectOne("
             SELECT COALESCE(SUM(
-                CASE WHEN type = 'income' THEN amount ELSE -amount END
+                CASE WHEN type = '{$incomeValue}' THEN amount ELSE -amount END
             ), 0) AS net
             FROM transactions
             WHERE wallet_id = ?
@@ -218,7 +338,7 @@ class BudgetService
             return [];
         }
 
-        $month = Carbon::createFromFormat('Y-m-d', $item->budget()->value('month'));
+        $month = Carbon::parse($item->budget()->value('month'));
 
         return Transaction::where('wallet_id', $wallet->id)
             ->where('category_id', $item->category_id)
@@ -254,16 +374,21 @@ class BudgetService
                 ->first();
 
             if ($budget) {
-                $sections = $this->loadWithActuals($budget);
-                $incomePlanned = array_sum(array_column($sections['income'], 'planned_amount'));
-                $incomeActual = array_sum(array_column($sections['income'], 'actual_amount'));
+                $result = $this->loadWithActuals($budget);
+                $sections = $result['sections'];
+                $unbudgeted = $result['unbudgeted'];
+
+                $incomePlanned = array_sum(array_column($sections[BudgetSection::Income->value], 'planned_amount'));
+                $incomeActual = array_sum(array_column($sections[BudgetSection::Income->value], 'actual_amount')) + $unbudgeted['income'];
                 $expPlanned = 0;
                 $expActual = 0;
 
-                foreach (['savings', 'bills', 'expenses', 'debt'] as $type) {
-                    $expPlanned += array_sum(array_column($sections[$type], 'planned_amount'));
-                    $expActual += array_sum(array_column($sections[$type], 'actual_amount'));
+                foreach ([BudgetSection::Savings, BudgetSection::Bills, BudgetSection::Expenses, BudgetSection::Debt] as $type) {
+                    $expPlanned += array_sum(array_column($sections[$type->value], 'planned_amount'));
+                    $expActual += array_sum(array_column($sections[$type->value], 'actual_amount'));
                 }
+
+                $expActual += $unbudgeted['expenses'];
 
                 $months[$key] = [
                     'has_budget' => true,
@@ -287,7 +412,9 @@ class BudgetService
 
     /**
      * Load a budget with all its items enriched with actual amounts.
-     * Actuals are fetched in a single query grouped by category.
+     * Also computes unbudgeted amounts (transactions not covered by any budget item).
+     *
+     * @return array{sections: array<string, array<int, array<string, mixed>>>, unbudgeted: array{income: float, expenses: float}}
      */
     public function loadWithActuals(Budget $budget): array
     {
@@ -306,12 +433,11 @@ class BudgetService
             ->orderBy('position')
             ->get();
 
-        $sections = ['income', 'savings', 'bills', 'expenses', 'debt'];
-        $result = [];
+        $sections = [];
 
-        foreach ($sections as $section) {
-            $result[$section] = $allItems
-                ->where('type', $section)
+        foreach (BudgetSection::cases() as $section) {
+            $sections[$section->value] = $allItems
+                ->where('type', $section->value)
                 ->values()
                 ->map(fn (BudgetItem $item) => [
                     'id' => $item->id,
@@ -323,13 +449,40 @@ class BudgetService
                     'notes' => $item->notes,
                     'is_recurring' => (bool) $item->is_recurring,
                     'category' => $item->category instanceof Category
-                        ? ['id' => $item->category->id, 'name' => $item->category->name]
+                        ? ['id' => $item->category->id, 'name' => $item->category->name, 'is_system' => (bool) $item->category->is_system]
                         : null,
                     'position' => $item->position,
                 ])
                 ->all();
         }
 
-        return $result;
+        // Transactions not covered by any budget item category
+        $budgetedCategoryIds = $allItems->whereNotNull('category_id')->pluck('category_id');
+
+        $unbudgetedQuery = DB::table('transactions')
+            ->where('wallet_id', $budget->wallet_id)
+            ->whereYear('date', $budget->month->year)
+            ->whereMonth('date', $budget->month->month);
+
+        if ($budgetedCategoryIds->isNotEmpty()) {
+            $unbudgetedQuery->where(fn ($q) => $q
+                ->whereNull('category_id')
+                ->orWhereNotIn('category_id', $budgetedCategoryIds)
+            );
+        }
+
+        $unbudgetedRows = $unbudgetedQuery
+            ->selectRaw('type, SUM(amount) as total')
+            ->groupBy('type')
+            ->get()
+            ->keyBy('type');
+
+        return [
+            'sections' => $sections,
+            'unbudgeted' => [
+                'income' => (float) ($unbudgetedRows->get(TransactionType::Income->value)->total ?? 0),
+                'expenses' => (float) ($unbudgetedRows->get(TransactionType::Expense->value)->total ?? 0),
+            ],
+        ];
     }
 }

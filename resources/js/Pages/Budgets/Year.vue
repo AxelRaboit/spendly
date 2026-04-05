@@ -28,13 +28,13 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-center gap-3 text-sm">
-                <Link href="/wallets" class="text-secondary hover:text-primary transition-colors">{{ t('nav.wallets') }}</Link>
-                <span class="text-subtle">/</span>
-                <span class="text-primary font-medium">{{ wallet.name }}</span>
-                <span class="text-subtle">/</span>
-                <span class="text-secondary">{{ t('budgets.year.title') }}</span>
-            </div>
+            <AppPageHeader
+                :crumbs="[
+                    { label: t('nav.wallets'), href: '/wallets' },
+                    { label: wallet.name, href: `/wallets/${wallet.id}/budget` },
+                    { label: t('budgets.year.title') },
+                ]"
+            />
         </template>
 
         <div class="space-y-6">
@@ -58,7 +58,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
             </div>
 
             <!-- Annual totals -->
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.income') }}</p>
                     <p class="text-lg font-bold text-emerald-400 font-mono">{{ fmt(totalIncome) }}</p>

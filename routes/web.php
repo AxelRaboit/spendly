@@ -5,11 +5,17 @@ declare(strict_types=1);
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoalController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecurringTransactionController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WalletTransferController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,8 +36,27 @@ Route::middleware('auth')->group(function () {
     Route::patch('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+    Route::get('/overview', [OverviewController::class, 'index'])->name('overview.index');
+    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+    Route::get('/import', [ImportController::class, 'index'])->name('import.index');
+    Route::get('/import/template', [ImportController::class, 'template'])->name('import.template');
+    Route::post('/import/preview', [ImportController::class, 'preview'])->name('import.preview');
+    Route::post('/import/process', [ImportController::class, 'process'])->name('import.process');
+    Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');
+    Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+    Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
+    Route::post('/goals/{goal}/deposit', [GoalController::class, 'deposit'])->name('goals.deposit');
+    Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
+    Route::get('/recurring', [RecurringTransactionController::class, 'index'])->name('recurring.index');
+    Route::post('/recurring', [RecurringTransactionController::class, 'store'])->name('recurring.store');
+    Route::put('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'update'])->name('recurring.update');
+    Route::patch('/recurring/{recurringTransaction}/toggle', [RecurringTransactionController::class, 'toggle'])->name('recurring.toggle');
+    Route::delete('/recurring/{recurringTransaction}', [RecurringTransactionController::class, 'destroy'])->name('recurring.destroy');
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class)->only(['store', 'destroy']);
+    Route::post('/transfers', [WalletTransferController::class, 'store'])->name('transfers.store');
+    Route::delete('/transfers/{transferId}', [WalletTransferController::class, 'destroy'])->name('transfers.destroy');
+    Route::patch('/wallets/reorder', [WalletController::class, 'reorder'])->name('wallets.reorder');
     Route::resource('wallets', WalletController::class);
     Route::post('/wallets/{wallet}/favorite', [WalletController::class, 'toggleFavorite'])->name('wallets.favorite');
 

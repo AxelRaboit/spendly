@@ -19,7 +19,7 @@ class DashboardController extends Controller
             'spentThisMonth' => round($dashboardService->spentThisMonth($user), 2),
             'totalWallets' => $user->wallets()->count(),
             'favoriteWallets' => $dashboardService->favoriteWallets($user),
-            'recentTransactions' => $user->transactions()->with('category')->latest('date')->limit(5)->get(),
+            'recentTransactions' => $dashboardService->recentTransactions($user),
             'sparkline' => $dashboardService->sparkline($user),
             'topCategories' => $dashboardService->topCategories($user),
             'dailyAverage' => round($dashboardService->dailyAverage($user), 2),

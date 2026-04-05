@@ -1,9 +1,16 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-defineProps({
+const props = defineProps({
     meta: { type: Object, required: true },
 });
+
+const { t } = useI18n();
+
+const prevLink = computed(() => props.meta.links?.find(l => l.label.includes('&laquo;') || l.label === '«') ?? null);
+const nextLink = computed(() => props.meta.links?.find(l => l.label.includes('&raquo;') || l.label === '»') ?? null);
 
 function decodeLabel(html) {
     const el = document.createElement('textarea');
@@ -13,12 +20,38 @@ function decodeLabel(html) {
 </script>
 
 <template>
-    <div v-if="meta.last_page > 1" class="flex items-center justify-between mt-6">
-        <p class="text-sm text-secondary">
-            {{ meta.from }}–{{ meta.to }} sur {{ meta.total }} résultats
+    <div v-if="meta.last_page > 1" class="mt-6 space-y-3">
+        <!-- Result count -->
+        <p class="text-sm text-secondary text-center sm:text-left">
+            {{ t('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
         </p>
 
-        <div class="flex gap-1">
+        <!-- Mobile: prev / next only -->
+        <div class="flex gap-2 sm:hidden">
+            <component
+                :is="prevLink?.url ? Link : 'span'"
+                :href="prevLink?.url ?? undefined"
+                preserve-scroll
+                preserve-state
+                class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium transition"
+                :class="prevLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
+            >
+                ← {{ t('pagination.previous') }}
+            </component>
+            <component
+                :is="nextLink?.url ? Link : 'span'"
+                :href="nextLink?.url ?? undefined"
+                preserve-scroll
+                preserve-state
+                class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium transition"
+                :class="nextLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
+            >
+                {{ t('pagination.next') }} →
+            </component>
+        </div>
+
+        <!-- Desktop: full page links -->
+        <div class="hidden sm:flex gap-1">
             <template v-for="link in meta.links" :key="link.label">
                 <Link
                     v-if="link.url"

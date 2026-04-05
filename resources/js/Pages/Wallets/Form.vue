@@ -21,21 +21,19 @@ const { form, submit } = useWalletForm(props.wallet ?? undefined);
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-primary leading-tight">
-                {{ isEdit ? t('wallets.editTitle') : t('wallets.createTitle') }}
-            </h2>
+            <AppPageHeader :title="isEdit ? t('wallets.editTitle') : t('wallets.createTitle')" />
         </template>
 
-        <div class="bg-surface overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-primary">
-                <form v-on:submit.prevent="submit">
-                    <div class="mb-4">
+        <div class="max-w-lg">
+            <div class="bg-surface border border-base/60 rounded-2xl p-6 shadow-sm space-y-4">
+                <form class="space-y-4" v-on:submit.prevent="submit">
+                    <div>
                         <InputLabel :value="t('wallets.fieldName')" />
                         <TextInput v-model="form.name" type="text" :placeholder="t('wallets.placeholder')" />
                         <InputError :message="form.errors.name" />
                     </div>
 
-                    <div class="mb-6">
+                    <div>
                         <InputLabel :value="t('wallets.fieldBalance', { symbol })" />
                         <TextInput
                             v-model="form.start_balance"
@@ -47,7 +45,7 @@ const { form, submit } = useWalletForm(props.wallet ?? undefined);
                         <InputError :message="form.errors.start_balance" />
                     </div>
 
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 pt-2">
                         <AppButton type="submit">{{ isEdit ? t('common.update') : t('common.create') }}</AppButton>
                         <Link href="/wallets">
                             <AppButton variant="secondary">{{ t('common.cancel') }}</AppButton>

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'user_id'])]
+#[Fillable(['name', 'user_id', 'is_system', 'system_key'])]
 class Category extends Model
 {
     use Filterable;

@@ -4,13 +4,37 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\TransactionType;
 use App\Models\User;
 use App\Models\Wallet;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class WalletService
 {
+    public function getWalletsWithBalances(User $user): Collection
+    {
+        return Wallet::query()
+            ->where('user_id', $user->id)
+            ->orderBy('position')
+            ->orderBy('name')
+            ->withSum(['transactions as income_sum' => fn ($q) => $q->where('type', TransactionType::Income)], 'amount')
+            ->withSum(['transactions as expense_sum' => fn ($q) => $q->where('type', TransactionType::Expense)], 'amount')
+            ->get()
+            ->map(fn ($w) => array_merge($w->toArray(), [
+                'current_balance' => round(
+                    (float) $w->start_balance + (float) ($w->income_sum ?? 0) - (float) ($w->expense_sum ?? 0),
+                    2
+                ),
+            ]));
+    }
+
+    public function toggleFavorite(Wallet $wallet): void
+    {
+        $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
+    }
+
     public function create(User $user, array $data): Wallet
     {
         try {
@@ -43,6 +67,16 @@ class WalletService
         } catch (Exception $exception) {
             Log::error('Failed to update wallet', ['wallet_id' => $wallet->id, 'error' => $exception->getMessage()]);
             throw $exception;
+        }
+    }
+
+    /** @param array<int, int> $ids */
+    public function reorder(User $user, array $ids): void
+    {
+        foreach ($ids as $position => $id) {
+            Wallet::where('id', (int) $id)
+                ->where('user_id', $user->id)
+                ->update(['position' => $position]);
         }
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReorderRequest;
 use App\Http\Requests\StoreWalletRequest;
 use App\Http\Requests\UpdateWalletRequest;
 use App\Models\Wallet;
@@ -15,15 +16,12 @@ use Inertia\Response;
 
 class WalletController extends Controller
 {
+    public function __construct(private readonly WalletService $walletService) {}
+
     public function index(Request $request): Response
     {
-        $wallets = Wallet::query()
-            ->where('user_id', $request->user()->id)
-            ->orderBy('name')
-            ->get();
-
         return Inertia::render('Wallets/Index', [
-            'wallets' => $wallets,
+            'wallets' => $this->walletService->getWalletsWithBalances($request->user()),
         ]);
     }
 
@@ -32,9 +30,9 @@ class WalletController extends Controller
         return Inertia::render('Wallets/Form');
     }
 
-    public function store(StoreWalletRequest $request, WalletService $walletService): RedirectResponse
+    public function store(StoreWalletRequest $request): RedirectResponse
     {
-        $wallet = $walletService->create($request->user(), $request->validated());
+        $wallet = $this->walletService->create($request->user(), $request->validated());
 
         return redirect()->route('wallets.budget.show', $wallet)->with('success', 'Portefeuille créé avec succès.');
     }
@@ -55,26 +53,33 @@ class WalletController extends Controller
         ]);
     }
 
-    public function update(UpdateWalletRequest $request, Wallet $wallet, WalletService $walletService): RedirectResponse
+    public function update(UpdateWalletRequest $request, Wallet $wallet): RedirectResponse
     {
         $this->authorize('update', $wallet);
-        $walletService->update($wallet, $request->validated());
+        $this->walletService->update($wallet, $request->validated());
 
         return redirect()->route('wallets.index')->with('success', 'Portefeuille mis à jour.');
     }
 
-    public function toggleFavorite(Wallet $wallet, Request $request): RedirectResponse
+    public function toggleFavorite(Wallet $wallet): RedirectResponse
     {
         $this->authorize('update', $wallet);
-        $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
+        $this->walletService->toggleFavorite($wallet);
 
         return back();
     }
 
-    public function destroy(Wallet $wallet, WalletService $walletService): RedirectResponse
+    public function reorder(ReorderRequest $request): RedirectResponse
+    {
+        $this->walletService->reorder($request->user(), $request->validated()['ids']);
+
+        return back();
+    }
+
+    public function destroy(Wallet $wallet): RedirectResponse
     {
         $this->authorize('delete', $wallet);
-        $walletService->delete($wallet);
+        $this->walletService->delete($wallet);
 
         return redirect()->route('wallets.index')->with('success', 'Portefeuille supprimé.');
     }

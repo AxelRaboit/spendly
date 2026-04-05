@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'start_balance', 'is_favorite'])]
+#[Fillable(['user_id', 'name', 'start_balance', 'is_favorite', 'position'])]
 class Wallet extends Model
 {
     use Filterable;

@@ -1,20 +1,63 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import TransferModal from '@/components/wallet/TransferModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
 
-defineProps({
+const props = defineProps({
     wallets: Array,
 });
 
 const { t } = useI18n();
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
 const { fmt } = useCurrency();
+const showTransfer = ref(false);
 
 function toggleFavorite(wallet) {
     router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
+}
+
+// ── Drag-and-drop reorder ─────────────────────────────────────────────────
+const localWallets = ref([...props.wallets]);
+const draggingId = ref(null);
+const dragOverId = ref(null);
+
+function onDragStart(event, wallet) {
+    draggingId.value = wallet.id;
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragEnd() {
+    draggingId.value = null;
+    dragOverId.value = null;
+}
+
+function onDragOver(event, wallet) {
+    event.preventDefault();
+    if (wallet.id !== draggingId.value) {
+        dragOverId.value = wallet.id;
+    }
+}
+
+function onDrop(event, targetWallet) {
+    event.preventDefault();
+    const fromId = draggingId.value;
+    if (!fromId || fromId === targetWallet.id) return;
+
+    const list = [...localWallets.value];
+    const fromIndex = list.findIndex((w) => w.id === fromId);
+    const toIndex = list.findIndex((w) => w.id === targetWallet.id);
+    const [moved] = list.splice(fromIndex, 1);
+    list.splice(toIndex, 0, moved);
+    localWallets.value = list;
+
+    draggingId.value = null;
+    dragOverId.value = null;
+
+    router.patch(route('wallets.reorder'), { ids: list.map((w) => w.id) }, { preserveScroll: true });
 }
 </script>
 
@@ -23,41 +66,70 @@ function toggleFavorite(wallet) {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-primary leading-tight">{{ t('wallets.title') }}</h2>
+            <AppPageHeader :title="t('wallets.title')" />
         </template>
 
         <div class="space-y-4">
-            <div class="flex justify-end">
+            <div class="flex justify-end gap-2">
+                <AppButton variant="secondary" v-on:click="showTransfer = true">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    {{ t('transfers.new') }}
+                </AppButton>
                 <Link href="/wallets/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">
                     {{ t('wallets.createBtn') }}
                 </Link>
             </div>
 
-            <div v-if="wallets.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-if="localWallets.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
-                    v-for="wallet in wallets"
+                    v-for="wallet in localWallets"
                     :key="wallet.id"
-                    class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+                    class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none"
+                    :class="{
+                        'opacity-50 scale-95': draggingId === wallet.id,
+                        'ring-2 ring-indigo-500/50 border-indigo-500/50': dragOverId === wallet.id,
+                    }"
+                    draggable="true"
+                    v-on:dragstart="onDragStart($event, wallet)"
+                    v-on:dragend="onDragEnd"
+                    v-on:dragover="onDragOver($event, wallet)"
+                    v-on:drop="onDrop($event, wallet)"
                 >
                     <!-- Decorative circles -->
                     <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
                     <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
+
+                    <!-- Drag handle hint -->
+                    <div class="absolute top-3 right-3 text-muted/40 pointer-events-none">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" />
+                            <circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" />
+                            <circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" />
+                        </svg>
+                    </div>
 
                     <!-- Card body -->
                     <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
                         <Link
                             :href="`/wallets/${wallet.id}/budget`"
                             class="text-base font-semibold text-primary hover:text-indigo-400 transition-colors"
+                            v-on:dragstart.prevent
                         >
                             {{ wallet.name }}
                         </Link>
                         <div>
                             <p class="text-xs text-muted uppercase tracking-wide mb-0.5">{{ t('wallets.colBalance') }}</p>
-                            <p class="text-2xl font-bold font-mono text-primary">{{ fmt(wallet.start_balance) }}</p>
+                            <p class="text-2xl font-bold font-mono" :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'">
+                                {{ fmt(wallet.current_balance) }}
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
                         </div>
                         <Link
                             :href="`/wallets/${wallet.id}/budget`"
                             class="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                            v-on:dragstart.prevent
                         >
                             {{ t('wallets.viewBudget') }}
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,6 +166,12 @@ function toggleFavorite(wallet) {
             :message="message"
             v-on:confirm="onConfirm"
             v-on:cancel="onCancel"
+        />
+
+        <TransferModal
+            :show="showTransfer"
+            :wallets="localWallets"
+            v-on:close="showTransfer = false"
         />
     </AuthenticatedLayout>
 </template>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\HttpStatus;
 use App\Filters\CategoryFilter;
 use App\Http\Requests\DestroyCategoryRequest;
 use App\Http\Requests\StoreCategoryRequest;
@@ -21,6 +22,7 @@ class CategoryController extends Controller
     {
         $categories = Category::query()
             ->where('user_id', $request->user()->id)
+            ->where('is_system', false)
             ->filter($filter)
             ->paginate(10)
             ->withQueryString();
@@ -63,6 +65,8 @@ class CategoryController extends Controller
 
     public function update(UpdateCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
     {
+        abort_if($category->is_system, HttpStatus::Forbidden->value);
+
         $categoryService->update($category, $request->validated()['name']);
 
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
@@ -70,6 +74,8 @@ class CategoryController extends Controller
 
     public function destroy(DestroyCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
     {
+        abort_if($category->is_system, HttpStatus::Forbidden->value);
+
         $categoryService->delete($category);
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');

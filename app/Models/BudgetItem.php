@@ -14,11 +14,13 @@ class BudgetItem extends Model
 {
     use HasFactory;
 
+    /** @return BelongsTo<Budget, $this> */
     public function budget(): BelongsTo
     {
         return $this->belongsTo(Budget::class);
     }
 
+    /** @return BelongsTo<Category, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

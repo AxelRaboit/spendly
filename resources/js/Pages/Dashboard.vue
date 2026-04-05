@@ -65,7 +65,7 @@ const topCategoryMax = computed(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-primary">{{ t('dashboard.title') }}</h2>
+            <AppPageHeader :title="t('dashboard.title')" />
         </template>
 
         <div class="space-y-6">
@@ -162,7 +162,7 @@ const topCategoryMax = computed(() => {
                     <template v-if="recentTransactions.length > 0">
                         <!-- Mobile cards -->
                         <div class="sm:hidden divide-y divide-subtle">
-                            <div v-for="transaction in recentTransactions" :key="transaction.id" class="flex items-center justify-between px-4 py-3 gap-3">
+                            <Link v-for="transaction in recentTransactions" :key="transaction.id" :href="`/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`" class="flex items-center justify-between px-4 py-3 gap-3 hover:bg-surface-2/50 transition-colors">
                                 <div class="flex flex-col gap-1 min-w-0">
                                     <span class="text-sm text-primary font-medium truncate">{{ transaction.description ?? '—' }}</span>
                                     <div class="flex items-center gap-2">
@@ -171,7 +171,7 @@ const topCategoryMax = computed(() => {
                                     </div>
                                 </div>
                                 <span class="text-sm font-semibold text-primary shrink-0 font-mono">{{ fmt(transaction.amount) }}</span>
-                            </div>
+                            </Link>
                         </div>
 
                         <!-- Desktop table -->
@@ -186,7 +186,7 @@ const topCategoryMax = computed(() => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-subtle">
-                                    <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition">
+                                    <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition cursor-pointer" v-on:click="$inertia.visit(`/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`)">
                                         <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
                                         <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
                                         <td class="px-6 py-4">

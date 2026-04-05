@@ -1,14 +1,19 @@
 <script setup>
+import { getCurrentInstance } from 'vue';
+
 defineProps({
     size: { type: Number, default: 40 },
 });
+
+const uid = getCurrentInstance().uid;
+const gradientId = `spendly-bg-${uid}`;
 </script>
 
 <template>
     <svg :width="size" :height="size" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <linearGradient
-                id="spendly-bg"
+                :id="gradientId"
                 x1="0%"
                 y1="0%"
                 x2="100%"
@@ -18,7 +23,7 @@ defineProps({
                 <stop offset="100%" style="stop-color:#4f46e5" />
             </linearGradient>
         </defs>
-        <rect width="64" height="64" rx="14" fill="url(#spendly-bg)" />
+        <rect width="64" height="64" rx="14" :fill="`url(#${gradientId})`" />
         <text
             x="32"
             y="45"

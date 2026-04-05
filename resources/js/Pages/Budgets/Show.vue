@@ -2,17 +2,21 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppToast from '@/components/ui/AppToast.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
+import CopyBudgetModal from '@/components/ui/CopyBudgetModal.vue';
 import NoteTooltip from '@/components/ui/NoteTooltip.vue';
 import DonutChart from '@/components/ui/DonutChart.vue';
 import BudgetGauge from '@/components/ui/BudgetGauge.vue';
 import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import BudgetDetailPanel from '@/components/budget/BudgetDetailPanel.vue';
+import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
 import { useBudgetTotals }   from '@/composables/budget/useBudgetTotals';
 import { useBudgetItems }    from '@/composables/budget/useBudgetItems';
-import { useBudgetActions }  from '@/composables/budget/useBudgetActions';
+import { useCopyPrevious }   from '@/composables/budget/useCopyPrevious';
+import { useCopyRecurring }  from '@/composables/budget/useCopyRecurring';
 import { useBudgetExport }   from '@/composables/budget/useBudgetExport';
 import { useBudgetNotes }    from '@/composables/budget/useBudgetNotes';
 import { useSectionMeta }    from '@/composables/budget/useSectionMeta';
+import { useDonutSegments }  from '@/composables/budget/useDonutSegments';
 import { useSectionCollapse } from '@/composables/budget/useSectionCollapse';
 import { useRowFlash }       from '@/composables/budget/useRowFlash';
 import { useFmtMonth }       from '@/composables/core/useFmtMonth';
@@ -20,41 +24,49 @@ import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { computed, onMounted, onUnmounted, ref, toRef } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // ─── i18n / currency ─────────────────────────────────────────────────────────
-const { t }        = useI18n();
+const { t, locale } = useI18n();
 const { fmt } = useCurrency();
 const { fmtMonth } = useFmtMonth();
+const fmtDate = (d) => d ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d)) : '';
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 const props = defineProps({
-    wallet:       Object,
-    budget:       Object,
-    sections:     Object,
-    categories:   Array,
-    prevMonth:    String,
-    nextMonth:    String,
-    startBalance: Number,
+    wallet:        Object,
+    budget:        Object,
+    sections:      Object,
+    unbudgeted:    { type: Object, default: () => ({ income: 0, expenses: 0 }) },
+    categories:    Array,
+    prevMonth:     String,
+    nextMonth:     String,
+    startBalance:  Number,
+    flashCategory: { type: Number, default: null },
+    prevItems:     { type: Array,  default: () => [] },
+    goals:         { type: Array,  default: () => [] },
 });
 
 // ─── Reactive prop refs ───────────────────────────────────────────────────────
 const walletId     = computed(() => props.wallet.id);
 const budget       = toRef(props, 'budget');
 const sections     = toRef(props, 'sections');
+const unbudgeted   = toRef(props, 'unbudgeted');
 const startBalance = toRef(props, 'startBalance');
 const prevMonth    = toRef(props, 'prevMonth');
 const categories   = computed(() => props.categories);
 
 // ─── Section meta + donut ─────────────────────────────────────────────────────
-const { SECTION_META, makeDonutSegments } = useSectionMeta();
+const { SECTION_META } = useSectionMeta();
 
 // ─── Totals / KPIs ───────────────────────────────────────────────────────────
 const { totals, totalIncome, totalExpenses, cashFlow, leftToSpend, savingsRate, isCurrentMonth, projectedExpenses } =
-    useBudgetTotals(sections, startBalance, budget);
+    useBudgetTotals(sections, startBalance, budget, unbudgeted);
 
-const donutSegments = makeDonutSegments(totals);
+const hasUnbudgeted = computed(() => (unbudgeted.value?.income ?? 0) > 0 || (unbudgeted.value?.expenses ?? 0) > 0);
+
+const donutSegments = useDonutSegments(totals, SECTION_META);
 
 // ─── Row flash ────────────────────────────────────────────────────────────────
 const { flash } = useRowFlash();
@@ -80,9 +92,13 @@ const { open: txDetailOpen, loading: txDetailLoading, transactions: txDetailList
 const { collapsedSections, toggleSection } =
     useSectionCollapse(walletId, computed(() => props.budget.month));
 
-// ─── Budget actions (copy) ────────────────────────────────────────────────────
-const { isBudgetEmpty, copyFromPrevious, copyRecurring } =
-    useBudgetActions(walletId, budget, sections, prevMonth, fmtMonth, t);
+const isBudgetEmpty = computed(() => Object.values(sections.value).every((arr) => arr.length === 0));
+
+const { showModal: showCopyPreviousModal, modalMessage: copyPreviousModalMessage, open: copyFromPrevious, confirm: confirmCopyPrevious, cancel: cancelCopyPrevious } =
+    useCopyPrevious(walletId, budget, isBudgetEmpty, prevMonth, fmtMonth, t);
+
+const { showModal: showCopyRecurringModal, open: copyRecurring, confirm: confirmCopyRecurring, cancel: cancelCopyRecurring } =
+    useCopyRecurring(walletId, budget);
 
 // ─── Budget notes ─────────────────────────────────────────────────────────────
 const { budgetNotesOpen, budgetNotesText, saveBudgetNotes } =
@@ -90,6 +106,36 @@ const { budgetNotesOpen, budgetNotesText, saveBudgetNotes } =
 
 // ─── Export XLSX ─────────────────────────────────────────────────────────────
 const { exportXlsx } = useBudgetExport(sections, totals, SECTION_META, budget, t);
+
+// ─── Overage count ───────────────────────────────────────────────────────────
+const overageCount = computed(() =>
+    Object.entries(props.sections)
+        .flatMap(([stype, items]) =>
+            SECTION_META.value[stype]?.positiveIsGood
+                ? []
+                : items.filter((i) => i.planned_amount > 0 && i.actual_amount > i.planned_amount)
+        )
+        .length
+);
+
+const overageGoodCount = computed(() =>
+    Object.entries(props.sections)
+        .flatMap(([stype, items]) =>
+            SECTION_META.value[stype]?.positiveIsGood
+                ? items.filter((i) => i.planned_amount > 0 && i.actual_amount > i.planned_amount)
+                : []
+        )
+        .length
+);
+
+// ─── Goal deposit modal ───────────────────────────────────────────────────────
+const depositGoal = ref(null);
+
+const savingsCategories = computed(() => {
+    const savingsItems = sections.value.savings ?? [];
+    const ids = new Set(savingsItems.map(i => i.category_id).filter(Boolean));
+    return props.categories.filter(c => ids.has(c.id));
+});
 
 // ─── Mobile row context menu ──────────────────────────────────────────────────
 const mobileMenuOpenId = ref(null);
@@ -132,9 +178,22 @@ function onGlobalKeydown(e) {
     if (e.key === 'ArrowRight') router.visit(`/wallets/${props.wallet.id}/budget?month=${props.nextMonth}`);
     if (e.key === 'n' || e.key === 'N') startAddingItem(Object.keys(props.sections)[0] ?? 'income');
 }
-onMounted(() => {
+onMounted(async () => {
     document.addEventListener('keydown', onGlobalKeydown);
     document.addEventListener('click', closeMobileMenu);
+
+    // Flash row when coming from dashboard
+    if (props.flashCategory) {
+        for (const items of Object.values(props.sections)) {
+            const match = items.find(i => i.category_id === props.flashCategory);
+            if (match) {
+                await nextTick();
+                document.querySelector(`tr[data-row-id="${match.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                flash(match.id, 'indigo');
+                break;
+            }
+        }
+    }
 });
 onUnmounted(() => {
     document.removeEventListener('keydown', onGlobalKeydown);
@@ -147,11 +206,12 @@ onUnmounted(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-center gap-3 text-sm">
-                <Link href="/wallets" class="text-secondary hover:text-primary transition-colors">{{ t('nav.wallets') }}</Link>
-                <span class="text-subtle">/</span>
-                <span class="text-primary font-medium">{{ wallet.name }}</span>
-            </div>
+            <AppPageHeader
+                :crumbs="[
+                    { label: t('nav.wallets'), href: '/wallets' },
+                    { label: wallet.name },
+                ]"
+            />
         </template>
 
         <!-- ── Month navigation ── -->
@@ -192,7 +252,7 @@ onUnmounted(() => {
             </div>
 
             <!-- ── KPI cards ── -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.startBalance') }}</p>
                     <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
@@ -203,6 +263,11 @@ onUnmounted(() => {
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.expenses') }}</p>
+                    <p class="text-lg font-bold text-rose-400 font-mono">{{ fmt(totalExpenses.actual) }}</p>
+                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                </div>
+                <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.cashFlow') }}</p>
                     <p class="text-lg font-bold font-mono" :class="cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
                         {{ fmt(cashFlow.actual, true) }}
@@ -210,18 +275,33 @@ onUnmounted(() => {
                     <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.leftToSpend') }}</p>
-                    <p class="text-lg font-bold font-mono" :class="leftToSpend.actual >= 0 ? 'text-emerald-400' : 'text-rose-400'">
-                        {{ fmt(leftToSpend.actual) }}
-                    </p>
-                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('budgets.kpi.savingsRate') }}</p>
                     <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                         {{ savingsRate !== null ? savingsRate + '%' : '—' }}
                     </p>
                     <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+                </div>
+            </div>
+
+            <!-- ── Overage alerts ── -->
+            <div v-if="!isBudgetEmpty && (overageCount > 0 || overageGoodCount > 0)" class="flex flex-col gap-2">
+                <div
+                    v-if="overageCount > 0"
+                    class="flex items-center gap-3 bg-rose-500/10 border border-rose-500/30 rounded-lg px-4 py-3"
+                >
+                    <svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    </svg>
+                    <p class="text-sm text-rose-300">{{ t('budgets.overageAlert', overageCount, { count: overageCount }) }}</p>
+                </div>
+                <div
+                    v-if="overageGoodCount > 0"
+                    class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3"
+                >
+                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-sm text-emerald-300">{{ t('budgets.overageGood', overageGoodCount, { count: overageGoodCount }) }}</p>
                 </div>
             </div>
 
@@ -236,9 +316,12 @@ onUnmounted(() => {
                     <p class="text-xs text-muted uppercase tracking-wide">{{ t('budgets.kpi.leftToSpend') }}</p>
                     <div>
                         <div class="flex items-end justify-between mb-2">
-                            <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
-                                {{ fmt(leftToSpend.actual) }}
-                            </span>
+                            <div>
+                                <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                    {{ fmt(leftToSpend.actual) }}
+                                </span>
+                                <span class="text-xs text-muted font-mono ml-1.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</span>
+                            </div>
                             <span class="text-sm text-muted font-mono">
                                 {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
                             </span>
@@ -319,6 +402,62 @@ onUnmounted(() => {
                         v-on:blur="saveBudgetNotes"
                         v-on:keydown.esc="saveBudgetNotes"
                     />
+                </div>
+            </div>
+
+            <!-- ── Savings goals ── -->
+            <div v-if="goals.length > 0">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide">{{ t('goals.title') }}</h3>
+                    <Link href="/goals" class="text-xs text-muted hover:text-secondary transition-colors">{{ t('common.seeAll') }} →</Link>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    <div
+                        v-for="goal in goals"
+                        :key="`goal-card-${goal.id}`"
+                        class="bg-surface-2 border border-base rounded-xl p-4 flex flex-col gap-3"
+                    >
+                        <!-- Header -->
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: goal.color }" />
+                                <span class="text-sm font-medium text-primary truncate">{{ goal.name }}</span>
+                            </div>
+                            <button
+                                v-if="!goal.category_id"
+                                class="shrink-0 text-muted hover:text-emerald-400 transition-colors"
+                                :title="t('goals.deposit')"
+                                v-on:click="depositGoal = goal"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                            </button>
+                            <span v-else class="shrink-0 text-xs text-indigo-400">↻</span>
+                        </div>
+
+                        <!-- Progress bar -->
+                        <div>
+                            <div class="h-2 bg-surface-3 rounded-full overflow-hidden">
+                                <div
+                                    class="h-full rounded-full transition-all duration-500"
+                                    :style="{ width: Math.min(goal.progress, 100) + '%', backgroundColor: goal.color }"
+                                />
+                            </div>
+                            <div class="flex justify-between items-center mt-1.5">
+                                <span class="text-xs text-muted font-mono">{{ fmt(goal.saved_amount) }}</span>
+                                <span class="text-xs font-semibold" :style="{ color: goal.color }">
+                                    {{ goal.progress >= 100 ? t('goals.completed') : goal.progress + '%' }}
+                                </span>
+                                <span class="text-xs text-muted font-mono">{{ fmt(goal.target_amount) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="text-xs text-muted">
+                            <span v-if="goal.category_id" class="text-indigo-400">{{ t('goals.autoSync', { category: goal.category?.name }) }}</span>
+                            <span v-else-if="goal.deadline">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
+                            <span v-else class="invisible">—</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -430,7 +569,9 @@ onUnmounted(() => {
                                     v-else
                                     class="px-4 py-3 flex flex-col gap-1.5"
                                     :class="[
-                                        item.planned_amount > 0 && item.actual_amount > item.planned_amount ? 'border-l-2 border-l-rose-500/60' : '',
+                                        item.planned_amount > 0 && item.actual_amount > item.planned_amount
+                                            ? SECTION_META[type]?.positiveIsGood ? 'border-l-2 border-l-emerald-500/60' : 'border-l-2 border-l-rose-500/60'
+                                            : '',
                                         deletingItem && deletingItem.id === item.id ? 'opacity-40' : '',
                                     ]"
                                 >
@@ -445,7 +586,7 @@ onUnmounted(() => {
                                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                                             </span>
                                         </div>
-                                        <div class="flex items-center gap-2 shrink-0">
+                                        <div v-if="!item.category?.is_system" class="flex items-center gap-2 shrink-0">
                                             <button
                                                 class="text-muted hover:text-indigo-400 transition-colors"
                                                 v-on:click="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
@@ -491,7 +632,7 @@ onUnmounted(() => {
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-between text-xs">
-                                        <span v-if="item.category" class="inline-flex items-center bg-surface-2 text-secondary rounded px-2 py-0.5 border border-base">
+                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center rounded px-2 py-0.5 border text-xs">
                                             {{ item.category.name }}
                                         </span>
                                         <span v-else class="text-subtle">—</span>
@@ -569,6 +710,24 @@ onUnmounted(() => {
                             </div>
                         </template>
                     </template>
+
+                    <!-- ── Mobile unbudgeted row ── -->
+                    <div v-if="hasUnbudgeted" class="border-t-2 border-amber-500/30 bg-amber-500/5 px-4 py-3 space-y-1">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+                            <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                            <div v-if="unbudgeted.income > 0">
+                                <p class="text-muted">{{ t('budgets.sections.income') }}</p>
+                                <p class="font-semibold text-emerald-400">+{{ fmt(unbudgeted.income) }}</p>
+                            </div>
+                            <div v-if="unbudgeted.expenses > 0">
+                                <p class="text-muted">{{ t('budgets.kpi.expenses') }}</p>
+                                <p class="font-semibold text-rose-400">-{{ fmt(unbudgeted.expenses) }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ── Desktop table view ────────────────────────────────────── -->
@@ -712,13 +871,15 @@ onUnmounted(() => {
                                         draggable="true"
                                         class="border-b border-subtle/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
                                         :class="[
-                                            item.planned_amount > 0 && item.actual_amount > item.planned_amount ? 'border-l-2 border-l-rose-500/60' : '',
+                                            item.planned_amount > 0 && item.actual_amount > item.planned_amount
+                                                ? SECTION_META[type]?.positiveIsGood ? 'border-l-2 border-l-emerald-500/60' : 'border-l-2 border-l-rose-500/60'
+                                                : '',
                                             deletingItem && deletingItem.id === item.id ? 'opacity-40 pointer-events-none' : '',
                                             draggingId === item.id ? 'opacity-50' : '',
                                             dragOverId === item.id ? 'bg-indigo-500/10' : '',
                                         ]"
                                         :data-row-id="item.id"
-                                        v-on:click="startEditingItem(item)"
+                                        v-on:click="!item.category?.is_system && startEditingItem(item)"
                                         v-on:dragstart="onDragStart($event, item)"
                                         v-on:dragend="onDragEnd"
                                         v-on:dragover="onDragOver($event, item)"
@@ -745,7 +906,7 @@ onUnmounted(() => {
                                             </div>
                                         </td>
                                         <td class="px-4 py-2.5">
-                                            <span v-if="item.category" class="inline-flex items-center text-xs bg-surface-2 text-secondary rounded px-2 py-0.5 border border-base">
+                                            <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center text-xs rounded px-2 py-0.5 border">
                                                 {{ item.category.name }}
                                             </span>
                                             <span v-else class="text-subtle">—</span>
@@ -756,7 +917,7 @@ onUnmounted(() => {
                                                 <div
                                                     v-show="progress(item.planned_amount, item.actual_amount) > 0"
                                                     class="h-full rounded-full transition-all duration-300"
-                                                    :class="item.actual_amount > item.planned_amount ? 'bg-rose-400' : SECTION_META[type]?.barColor"
+                                                    :class="item.actual_amount > item.planned_amount ? (SECTION_META[type]?.positiveIsGood ? 'bg-emerald-400' : 'bg-rose-400') : SECTION_META[type]?.barColor"
                                                     :style="{ width: progress(item.planned_amount, item.actual_amount) + '%' }"
                                                 />
                                             </div>
@@ -782,7 +943,7 @@ onUnmounted(() => {
                                             {{ fmt(item.actual_amount - item.planned_amount, true) }}
                                         </td>
                                         <td class="px-3 py-2.5">
-                                            <div class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div v-if="!item.category?.is_system" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <!-- Add a transaction for this row -->
                                                 <button
                                                     class="text-muted hover:text-indigo-400 transition-colors"
@@ -881,6 +1042,23 @@ onUnmounted(() => {
                             </template><!-- end v-if !collapsedSections -->
                         </template>
 
+                        <!-- ── Unbudgeted row ── -->
+                        <tr v-if="hasUnbudgeted" class="border-t border-amber-500/30 bg-amber-500/5">
+                            <td class="px-4 py-2.5" colspan="2">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+                                    <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-2.5 text-right font-mono text-xs text-muted">—</td>
+                            <td class="px-4 py-2.5 text-right font-mono text-xs">
+                                <span v-if="unbudgeted.income > 0" class="text-emerald-400">+{{ fmt(unbudgeted.income) }}</span>
+                                <span v-if="unbudgeted.income > 0 && unbudgeted.expenses > 0" class="text-muted mx-1">/</span>
+                                <span v-if="unbudgeted.expenses > 0" class="text-rose-400">-{{ fmt(unbudgeted.expenses) }}</span>
+                            </td>
+                            <td colspan="2" />
+                        </tr>
+
                         <!-- ── Cash flow summary ── -->
                         <tr class="border-t-2 border-strong bg-surface-2/30">
                             <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.cashFlow') }}</td>
@@ -917,6 +1095,13 @@ onUnmounted(() => {
             </div>
         </div>
 
+        <!-- ── Goal deposit modal ── -->
+        <GoalDepositModal
+            :goal="depositGoal"
+            v-on:close="depositGoal = null"
+            v-on:success="depositGoal = null"
+        />
+
         <!-- ── Transaction slide-over ── -->
         <BudgetTxPanel
             :open="txPanel"
@@ -937,6 +1122,26 @@ onUnmounted(() => {
             :loading="txDetailLoading"
             :transactions="txDetailList"
             v-on:close="closeTxDetail"
+        />
+
+        <!-- ── Copy from previous modal ── -->
+        <CopyBudgetModal
+            :show="showCopyPreviousModal"
+            :items="prevItems"
+            :title="t('budgets.copyFromPrevious', { month: fmtMonth(prevMonth) })"
+            :message="copyPreviousModalMessage"
+            v-on:confirm="confirmCopyPrevious"
+            v-on:cancel="cancelCopyPrevious"
+        />
+
+        <!-- ── Copy recurring modal ── -->
+        <CopyBudgetModal
+            :show="showCopyRecurringModal"
+            :items="prevItems.filter(i => i.is_recurring)"
+            :title="t('budgets.copyRecurring')"
+            :message="t('budgets.confirmCopyRecurring')"
+            v-on:confirm="confirmCopyRecurring"
+            v-on:cancel="cancelCopyRecurring"
         />
 
         <!-- ── Delete confirm modal ── -->

@@ -20,6 +20,9 @@ class StatisticsController extends Controller
             'byMonth' => $statisticsService->byMonth($user),
             'currentMonth' => $statisticsService->currentMonth($user),
             'previousMonth' => $statisticsService->previousMonth($user),
+            'savingsHistory' => $statisticsService->savingsRateHistory($user),
+            'budgetVsActual' => $statisticsService->budgetVsActual($user),
+            'yearProjection' => $statisticsService->yearEndProjection($user),
         ]);
     }
 }

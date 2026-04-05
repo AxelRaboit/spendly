@@ -37,7 +37,7 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
-                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-[480px] bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <!-- Header -->

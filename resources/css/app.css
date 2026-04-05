@@ -84,3 +84,23 @@
 .v3dp__input_wrapper input::placeholder {
     color: rgb(var(--color-text-muted));
 }
+
+.v3dp__input_wrapper button svg {
+    color: rgb(var(--color-text-secondary));
+    fill: rgb(var(--color-text-secondary));
+}
+
+/* ── Native date input icon (calendar) ───────────────────────────────────── */
+.dark input[type="date"] {
+    color-scheme: dark;
+}
+
+/* ── Browser autofill override ───────────────────────────────────────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px rgb(var(--color-surface-2)) inset !important;
+    -webkit-text-fill-color: rgb(var(--color-text-primary)) !important;
+    caret-color: rgb(var(--color-text-primary));
+    transition: background-color 5000s ease-in-out 0s;
+}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\BudgetSection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,9 +20,9 @@ class UpdateBudgetItemRequest extends FormRequest
         return [
             'label' => ['required', 'string', 'max:255'],
             'planned_amount' => ['required', 'numeric', 'min:0'],
-            'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
+            'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('user_id', $this->user()->id)],
             'notes' => ['nullable', 'string', 'max:2000'],
-            'type' => ['sometimes', Rule::in(['income', 'savings', 'bills', 'expenses', 'debt'])],
+            'type' => ['sometimes', Rule::in(BudgetSection::values())],
             'is_recurring' => ['sometimes', 'boolean'],
         ];
     }

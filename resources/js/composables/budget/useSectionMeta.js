@@ -1,13 +1,6 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-export const SECTION_COLORS = {
-    income: '#34d399',
-    savings: '#38bdf8',
-    bills: '#fbbf24',
-    expenses: '#fb7185',
-    debt: '#c084fc',
-};
+import { SECTION_COLORS } from './sectionColors.js';
 
 export function useSectionMeta() {
     const { t } = useI18n();
@@ -60,17 +53,5 @@ export function useSectionMeta() {
         },
     }));
 
-    function makeDonutSegments(totals) {
-        return computed(() =>
-            Object.entries(totals.value)
-                .filter(([, sec]) => sec.actual > 0)
-                .map(([key, sec]) => ({
-                    label: SECTION_META.value[key]?.label ?? key,
-                    value: sec.actual,
-                    color: SECTION_COLORS[key],
-                }))
-        );
-    }
-
-    return { SECTION_META, SECTION_COLORS, makeDonutSegments };
+    return { SECTION_META };
 }
