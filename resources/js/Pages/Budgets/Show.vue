@@ -828,8 +828,7 @@ onUnmounted(() => {
                     <AppButton
                         v-if="!isBudgetEmpty"
                         size="sm"
-                        variant="secondary"
-                        class="!text-rose-400 hover:!bg-rose-500/10"
+                        variant="danger-outline"
                         v-on:click="clearAll"
                     >
                         {{ t('budgets.clearAll') }}
@@ -877,9 +876,15 @@ onUnmounted(() => {
                                             v-on:keydown.enter.prevent="createCategory"
                                             v-on:keydown.escape="cancelCreateCategory"
                                         />
-                                        <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                        <AppButton
+                                            variant="icon"
+                                            size="none"
+                                            class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:click="createCategory"
+                                        >
                                             <Check class="w-4 h-4" />
-                                        </button>
+                                        </AppButton>
                                         <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
                                             <X class="w-4 h-4" />
                                         </button>
@@ -1082,9 +1087,15 @@ onUnmounted(() => {
                                         v-on:keydown.enter.prevent="createCategory"
                                         v-on:keydown.escape="cancelCreateCategory"
                                     />
-                                    <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                    <AppButton
+                                        variant="icon"
+                                        size="none"
+                                        class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                        :disabled="creatingCategoryLoading"
+                                        v-on:click="createCategory"
+                                    >
                                         <Check class="w-4 h-4" />
-                                    </button>
+                                    </AppButton>
                                     <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
                                         <X class="w-4 h-4" />
                                     </button>
@@ -1248,9 +1259,15 @@ onUnmounted(() => {
                                                         v-on:keydown.enter.prevent="createCategory"
                                                         v-on:keydown.escape="cancelCreateCategory"
                                                     />
-                                                    <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                                    <AppButton
+                                                        variant="icon"
+                                                        size="none"
+                                                        class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                                        :disabled="creatingCategoryLoading"
+                                                        v-on:click="createCategory"
+                                                    >
                                                         <Check class="w-3.5 h-3.5" />
-                                                    </button>
+                                                    </AppButton>
                                                     <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
                                                         <X class="w-3.5 h-3.5" />
                                                     </button>
@@ -1490,9 +1507,15 @@ onUnmounted(() => {
                                                 v-on:keydown.enter.prevent="createCategory"
                                                 v-on:keydown.escape="cancelCreateCategory"
                                             />
-                                            <button class="text-emerald-400 hover:text-emerald-300 shrink-0" :disabled="creatingCategoryLoading" v-on:click="createCategory">
+                                            <AppButton
+                                                variant="icon"
+                                                size="none"
+                                                class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                                :disabled="creatingCategoryLoading"
+                                                v-on:click="createCategory"
+                                            >
                                                 <Check class="w-3.5 h-3.5" />
-                                            </button>
+                                            </AppButton>
                                             <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
                                                 <X class="w-3.5 h-3.5" />
                                             </button>

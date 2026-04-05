@@ -108,14 +108,16 @@ function downgrade() {
                     </ul>
 
                     <div class="mt-6">
-                        <button
+                        <AppButton
                             v-if="isPro"
+                            variant="link"
+                            size="none"
                             :disabled="downgradeForm.processing"
-                            class="text-sm text-muted hover:text-secondary underline transition-colors disabled:opacity-50"
+                            class="text-sm"
                             v-on:click="downgrade"
                         >
                             {{ t('plan.downgradeFree') }}
-                        </button>
+                        </AppButton>
                         <div v-else class="h-9" />
                     </div>
                 </div>
