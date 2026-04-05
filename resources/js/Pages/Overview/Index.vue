@@ -1,4 +1,5 @@
 <script setup>
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { useCurrency } from '@/composables/core/useCurrency';
@@ -77,15 +78,15 @@ function cashFlowClass(val) {
                             </div>
                             <div class="grid grid-cols-3 gap-2 text-center">
                                 <div>
-                                    <p class="text-xs text-muted">{{ t('overview.income') }}</p>
+                                    <AppTooltip :text="t('overview.incomeTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.income') }}</p></AppTooltip>
                                     <p class="text-sm font-mono font-semibold text-emerald-400">{{ fmt(wallet.income) }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-muted">{{ t('overview.expenses') }}</p>
+                                    <AppTooltip :text="t('overview.expensesTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.expenses') }}</p></AppTooltip>
                                     <p class="text-sm font-mono font-semibold text-rose-400">{{ fmt(wallet.expenses) }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-muted">{{ t('overview.cashFlow') }}</p>
+                                    <AppTooltip :text="t('overview.cashFlowTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.cashFlow') }}</p></AppTooltip>
                                     <p class="text-sm font-mono font-semibold" :class="cashFlowClass(wallet.cash_flow)">{{ fmt(wallet.cash_flow, true) }}</p>
                                 </div>
                             </div>
@@ -97,9 +98,9 @@ function cashFlowClass(val) {
                             <thead>
                                 <tr class="bg-surface-2/50 border-b border-base/40">
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.income') }}</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.expenses') }}</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.cashFlow') }}</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.incomeTip')"><span class="cursor-help">{{ t('overview.income') }}</span></AppTooltip></th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.expensesTip')"><span class="cursor-help">{{ t('overview.expenses') }}</span></AppTooltip></th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.cashFlowTip')"><span class="cursor-help">{{ t('overview.cashFlow') }}</span></AppTooltip></th>
                                     <th class="px-4 py-3" />
                                 </tr>
                             </thead>

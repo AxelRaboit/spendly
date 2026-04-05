@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
@@ -225,7 +226,7 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span v-if="tx.transfer_id" class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300">{{ t('transfers.badge') }}</span>
+                                <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
                                 <span v-else class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
                                 <span class="text-xs text-muted">{{ tx.wallet?.name }}</span>
                                 <span class="text-xs text-muted">{{ fmtDay(tx.date) }}</span>
@@ -261,7 +262,7 @@ const hasFilters = () => Object.values(form).some(v => v !== '');
                                     <td class="px-4 py-3 text-sm text-secondary whitespace-nowrap">{{ fmtDay(tx.date) }}</td>
                                     <td class="px-4 py-3 text-sm text-primary">{{ tx.description ?? '—' }}</td>
                                     <td class="px-4 py-3">
-                                        <span v-if="tx.transfer_id" class="rounded-full bg-sky-900/60 px-2.5 py-0.5 text-xs font-medium text-sky-300">{{ t('transfers.badge') }}</span>
+                                        <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2.5 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
                                         <span v-else class="rounded-full bg-indigo-900/60 px-2.5 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
                                     </td>
                                     <td class="px-4 py-3 text-sm text-secondary">{{ tx.wallet?.name }}</td>

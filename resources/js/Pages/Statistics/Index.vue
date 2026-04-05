@@ -1,4 +1,5 @@
 <script setup>
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import '@/plugins/chartjs';
@@ -128,37 +129,41 @@ const barOptions   = barThemeOptions;
         <div class="space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <p class="text-sm text-secondary mb-1">{{ t('statistics.thisMonth') }}</p>
+                    <AppTooltip :text="t('statistics.thisMonthTip')"><p class="text-sm text-secondary mb-1 cursor-help">{{ t('statistics.thisMonth') }}</p></AppTooltip>
                     <p class="text-3xl font-bold text-primary font-mono">{{ fmt(currentMonth) }}</p>
-                    <p v-if="evolution !== null" class="text-sm mt-1" :class="evolution > 0 ? 'text-rose-400' : 'text-emerald-400'">
-                        {{ t('statistics.vsLast', { sign: evolution > 0 ? '+' : '', pct: evolution.toFixed(1) }) }}
-                    </p>
+                    <AppTooltip v-if="evolution !== null" :text="t('statistics.vsLastTip')">
+                        <p class="text-sm mt-1 cursor-help" :class="evolution > 0 ? 'text-rose-400' : 'text-emerald-400'">
+                            {{ t('statistics.vsLast', { sign: evolution > 0 ? '+' : '', pct: evolution.toFixed(1) }) }}
+                        </p>
+                    </AppTooltip>
                 </div>
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <p class="text-sm text-secondary mb-1">{{ t('statistics.lastMonth') }}</p>
+                    <AppTooltip :text="t('statistics.lastMonthTip')"><p class="text-sm text-secondary mb-1 cursor-help">{{ t('statistics.lastMonth') }}</p></AppTooltip>
                     <p class="text-3xl font-bold text-primary font-mono">{{ fmt(previousMonth) }}</p>
                 </div>
             </div>
 
             <div class="bg-surface border border-base/60 rounded-xl p-5">
-                <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4">
-                    {{ t('statistics.yearProjection', { year: currentYear }) }}
-                </h3>
+                <AppTooltip :text="t('statistics.yearProjectionTip')">
+                    <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4 cursor-help">
+                        {{ t('statistics.yearProjection', { year: currentYear }) }}
+                    </h3>
+                </AppTooltip>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
-                        <p class="text-xs text-muted mb-1">{{ t('statistics.spentSoFar') }}</p>
+                        <AppTooltip :text="t('statistics.spentSoFarTip')"><p class="text-xs text-muted mb-1 cursor-help">{{ t('statistics.spentSoFar') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono text-primary">{{ fmt(yearProjection.spent_so_far) }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-muted mb-1">{{ t('statistics.avgPerMonth') }}</p>
+                        <AppTooltip :text="t('statistics.avgPerMonthTip')"><p class="text-xs text-muted mb-1 cursor-help">{{ t('statistics.avgPerMonth') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono text-primary">{{ fmt(yearProjection.avg_per_month) }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-muted mb-1">{{ t('statistics.projectedTotal') }}</p>
+                        <AppTooltip :text="t('statistics.projectedTotalTip')"><p class="text-xs text-muted mb-1 cursor-help">{{ t('statistics.projectedTotal') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono text-rose-400">{{ fmt(yearProjection.projected) }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-muted mb-1">{{ t('statistics.monthsLeft', { n: yearProjection.months_left }) }}</p>
+                        <AppTooltip :text="t('statistics.monthsLeftTip')"><p class="text-xs text-muted mb-1 cursor-help">{{ t('statistics.monthsLeft', { n: yearProjection.months_left }) }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono text-secondary">{{ fmt(yearProjection.remaining) }}</p>
                         <p class="text-xs text-muted">restants estimés</p>
                     </div>
@@ -167,14 +172,14 @@ const barOptions   = barThemeOptions;
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.byCategory') }}</h3>
+                    <AppTooltip :text="t('statistics.byCategoryTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.byCategory') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <Doughnut :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.evolution') }}</h3>
+                    <AppTooltip :text="t('statistics.evolutionTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.evolution') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <Bar :data="barData" :options="barOptions" />
                     </div>
@@ -183,14 +188,14 @@ const barOptions   = barThemeOptions;
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.savingsRate') }}</h3>
+                    <AppTooltip :text="t('statistics.savingsRateTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.savingsRate') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <Line :data="savingsLineData" :options="savingsLineOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
-                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('statistics.budgetVsActual') }}</h3>
+                    <AppTooltip :text="t('statistics.budgetVsActualTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.budgetVsActual') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <Bar :data="budgetBarData" :options="barOptions" />
                     </div>
