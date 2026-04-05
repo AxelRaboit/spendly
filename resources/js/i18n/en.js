@@ -126,6 +126,9 @@ export default {
         removeFavorite: 'Remove from favorites',
         favoriteWallets: 'Quick access',
         noFavorites: 'No favorites yet. Star a wallet from the Wallets page.',
+        quickChecking: 'Checking account',
+        quickSavings: 'Savings account',
+        quickHint: 'Click to create quickly',
     },
 
     categories: {

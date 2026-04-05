@@ -126,6 +126,9 @@ export default {
         removeFavorite: 'Quitar de favoritos',
         favoriteWallets: 'Acceso rápido',
         noFavorites: 'Sin favoritos. Marca una cartera desde la página de Carteras.',
+        quickChecking: 'Cuenta corriente',
+        quickSavings: 'Cuenta de ahorro',
+        quickHint: 'Haz clic para crear rápidamente',
     },
 
     categories: {

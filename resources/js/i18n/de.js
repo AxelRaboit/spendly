@@ -126,6 +126,9 @@ export default {
         removeFavorite: 'Aus Favoriten entfernen',
         favoriteWallets: 'Schnellzugriff',
         noFavorites: 'Noch keine Favoriten. Markiere eine Geldbörse auf der Geldbörsen-Seite.',
+        quickChecking: 'Girokonto',
+        quickSavings: 'Sparkonto',
+        quickHint: 'Klicken, um schnell zu erstellen',
     },
 
     categories: {

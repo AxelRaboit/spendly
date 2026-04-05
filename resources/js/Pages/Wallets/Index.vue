@@ -1,8 +1,9 @@
 <script setup>
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
 import TransferModal from '@/components/wallet/TransferModal.vue';
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useCurrency } from '@/composables/core/useCurrency';
@@ -64,6 +65,19 @@ function onDrop(event, targetWallet) {
     dragOverId.value = null;
 
     router.patch(route('wallets.reorder'), { ids: list.map((w) => w.id) }, { preserveScroll: true });
+}
+
+// ── Quick-create placeholder ─────────────────────────────────────────────
+const quickSuggestions = [
+    { name: t('wallets.quickChecking'), key: 'checking' },
+    { name: t('wallets.quickSavings'), key: 'savings' },
+];
+
+const quickForm = useForm({ name: '', start_balance: 0 });
+
+function quickCreate(name) {
+    quickForm.name = name;
+    quickForm.post('/wallets');
 }
 </script>
 
@@ -172,7 +186,15 @@ function onDrop(event, targetWallet) {
                 </div>
             </div>
 
-            <EmptyState v-else :message="t('wallets.none')" />
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <QuickCreateCard
+                    v-for="suggestion in quickSuggestions"
+                    :key="suggestion.key"
+                    :name="suggestion.name"
+                    :disabled="quickForm.processing"
+                    v-on:create="quickCreate"
+                />
+            </div>
         </div>
 
         <ConfirmModal

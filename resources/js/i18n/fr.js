@@ -126,6 +126,9 @@ export default {
         removeFavorite: 'Retirer des favoris',
         favoriteWallets: 'Accès rapide',
         noFavorites: 'Aucun favori. Étoilez un portefeuille depuis la page Portefeuilles.',
+        quickChecking: 'Compte courant',
+        quickSavings: 'Livret A',
+        quickHint: 'Cliquez pour créer rapidement',
     },
 
     categories: {
