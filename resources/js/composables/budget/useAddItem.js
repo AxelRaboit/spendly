@@ -3,7 +3,16 @@ import { useForm } from '@inertiajs/vue3';
 
 export function useAddItem(walletId, sections, budget, flash) {
     const addingType = ref(null);
-    const addForm = useForm({ type: '', label: '', planned_amount: '', category_id: null, month: '' });
+    const addForm = useForm({
+        type: '',
+        label: '',
+        planned_amount: '',
+        category_id: null,
+        month: '',
+        target_type: null,
+        target_amount: '',
+        target_deadline: '',
+    });
     const addFormSubmitted = ref(false);
 
     function startAdding(type, { cancelEditing }) {
@@ -15,6 +24,9 @@ export function useAddItem(walletId, sections, budget, flash) {
         addForm.label = '';
         addForm.planned_amount = '';
         addForm.category_id = null;
+        addForm.target_type = null;
+        addForm.target_amount = '';
+        addForm.target_deadline = '';
         nextTick(() => document.getElementById(`add-label-${type}`)?.focus());
     }
 

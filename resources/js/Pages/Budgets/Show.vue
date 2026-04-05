@@ -794,6 +794,26 @@ onUnmounted(() => {
                                         rows="2"
                                         class="mt-2 w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
                                     />
+                                    <BudgetSelect v-model="editForm.target_type">
+                                        <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
+                                        <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                        <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                        <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                    </BudgetSelect>
+                                    <BudgetInput
+                                        v-if="editForm.target_type"
+                                        v-model="editForm.target_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0.01"
+                                        variant="mono"
+                                        :placeholder="t('budgets.target.amount')"
+                                    />
+                                    <BudgetInput
+                                        v-if="editForm.target_type === 'by_date'"
+                                        v-model="editForm.target_deadline"
+                                        type="date"
+                                    />
                                     <div class="flex items-center justify-between">
                                         <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
                                             <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
@@ -828,6 +848,15 @@ onUnmounted(() => {
                                                 class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5"
                                             >
                                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                            </span>
+                                            <span
+                                                v-if="item.target_type"
+                                                class="inline-flex items-center text-xs border rounded px-1 py-0.5"
+                                                :class="item.target_type === 'spending'
+                                                    ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
+                                                    : 'text-amber-400 border-amber-500/30'"
+                                            >
+                                                {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
                                             </span>
                                         </div>
                                         <div v-if="!item.category?.is_system" class="flex items-center gap-2 shrink-0">
@@ -963,6 +992,26 @@ onUnmounted(() => {
                                     v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
                                 />
                                 <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
+                                <BudgetSelect v-model="addForm.target_type">
+                                    <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
+                                    <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                    <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                    <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                </BudgetSelect>
+                                <BudgetInput
+                                    v-if="addForm.target_type"
+                                    v-model="addForm.target_amount"
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    variant="mono"
+                                    :placeholder="t('budgets.target.amount')"
+                                />
+                                <BudgetInput
+                                    v-if="addForm.target_type === 'by_date'"
+                                    v-model="addForm.target_deadline"
+                                    type="date"
+                                />
                                 <div class="flex justify-end gap-3">
                                     <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
@@ -1138,11 +1187,33 @@ onUnmounted(() => {
                                                     class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
                                                     v-on:keydown="onNotesKeydown($event, item)"
                                                 />
-                                                <div class="flex items-center gap-2">
+                                                <div class="flex items-center gap-2 flex-wrap">
                                                     <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
                                                     <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
                                                         <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
                                                     </BudgetSelect>
+                                                    <label class="text-xs text-muted ml-2">{{ t('budgets.target.label') }}</label>
+                                                    <BudgetSelect v-model="editForm.target_type" class="w-auto text-xs">
+                                                        <option :value="null">{{ t('budgets.target.none') }}</option>
+                                                        <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                                        <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                                        <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                                    </BudgetSelect>
+                                                    <BudgetInput
+                                                        v-if="editForm.target_type"
+                                                        v-model="editForm.target_amount"
+                                                        type="number"
+                                                        step="0.01"
+                                                        min="0.01"
+                                                        variant="mono"
+                                                        class="w-28"
+                                                        :placeholder="t('budgets.target.amount')"
+                                                    />
+                                                    <BudgetInput
+                                                        v-if="editForm.target_type === 'by_date'"
+                                                        v-model="editForm.target_deadline"
+                                                        type="date"
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>
@@ -1184,6 +1255,16 @@ onUnmounted(() => {
                                                     :title="t('budgets.repeatNextMonth')"
                                                 >
                                                     <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                                </span>
+                                                <span
+                                                    v-if="item.target_type"
+                                                    class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none"
+                                                    :class="item.target_type === 'spending'
+                                                        ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
+                                                        : 'text-amber-400 border-amber-500/30'"
+                                                    :title="t('budgets.target.' + (item.target_type === 'spending' ? (item.actual_amount <= (item.target_amount ?? 0) ? 'onTrack' : 'overBudget') : 'label'))"
+                                                >
+                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
                                                 </span>
                                             </div>
                                         </td>
@@ -1334,6 +1415,33 @@ onUnmounted(() => {
                                             <button class="text-rose-400 hover:text-rose-300 transition-colors" :title="t('budgets.addRow.cancel')" v-on:click="cancelAdding">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
+                                    <td colspan="6" class="pl-8 pr-3 py-2">
+                                        <div class="flex items-center gap-3">
+                                            <BudgetSelect v-model="addForm.target_type" class="w-auto">
+                                                <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
+                                                <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                                <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                                <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                            </BudgetSelect>
+                                            <BudgetInput
+                                                v-if="addForm.target_type"
+                                                v-model="addForm.target_amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0.01"
+                                                variant="mono"
+                                                class="w-32"
+                                                :placeholder="t('budgets.target.amount')"
+                                            />
+                                            <BudgetInput
+                                                v-if="addForm.target_type === 'by_date'"
+                                                v-model="addForm.target_deadline"
+                                                type="date"
+                                            />
                                         </div>
                                     </td>
                                 </tr>

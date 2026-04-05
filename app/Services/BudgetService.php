@@ -160,6 +160,9 @@ class BudgetService
             'category_id' => $data['category_id'] ?? null,
             'position' => $position + 1,
             'repeat_next_month' => (bool) ($data['repeat_next_month'] ?? false),
+            'target_type' => $data['target_type'] ?? null,
+            'target_amount' => $data['target_amount'] ?? null,
+            'target_deadline' => $data['target_deadline'] ?? null,
         ]);
     }
 
@@ -213,6 +216,9 @@ class BudgetService
             'notes' => $data['notes'] ?? null,
             'repeat_next_month' => isset($data['repeat_next_month']) ? (bool) $data['repeat_next_month'] : $item->repeat_next_month,
             'type' => $data['type'] ?? $item->type,
+            'target_type' => array_key_exists('target_type', $data) ? $data['target_type'] : $item->target_type,
+            'target_amount' => array_key_exists('target_amount', $data) ? $data['target_amount'] : $item->target_amount,
+            'target_deadline' => array_key_exists('target_deadline', $data) ? $data['target_deadline'] : $item->target_deadline,
         ]);
 
         return $item;
@@ -261,6 +267,9 @@ class BudgetService
                 'position' => $item->position,
                 'notes' => $item->notes,
                 'repeat_next_month' => $item->repeat_next_month,
+                'target_type' => $item->target_type,
+                'target_amount' => $item->target_amount,
+                'target_deadline' => $item->target_deadline,
                 'created_at' => $now,
                 'updated_at' => $now,
             ])->all();
@@ -317,6 +326,9 @@ class BudgetService
                 'position' => $item->position,
                 'notes' => $item->notes,
                 'repeat_next_month' => $item->repeat_next_month,
+                'target_type' => $item->target_type,
+                'target_amount' => $item->target_amount,
+                'target_deadline' => $item->target_deadline,
                 'created_at' => $now,
                 'updated_at' => $now,
             ])->all();
@@ -549,6 +561,9 @@ class BudgetService
                         'category_id' => $item->category_id,
                         'notes' => $item->notes,
                         'repeat_next_month' => (bool) $item->repeat_next_month,
+                        'target_type' => $item->target_type,
+                        'target_amount' => $item->target_amount ? (float) $item->target_amount : null,
+                        'target_deadline' => $item->target_deadline?->format('Y-m-d'),
                         'category' => $item->category instanceof Category
                             ? ['id' => $item->category->id, 'name' => $item->category->name, 'is_system' => (bool) $item->category->is_system]
                             : null,

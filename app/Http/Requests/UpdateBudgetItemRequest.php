@@ -24,6 +24,9 @@ class UpdateBudgetItemRequest extends FormRequest
             'notes' => ['nullable', 'string', 'max:2000'],
             'type' => ['sometimes', Rule::in(BudgetSection::values())],
             'repeat_next_month' => ['sometimes', 'boolean'],
+            'target_type' => ['nullable', Rule::in(['spending', 'saving', 'by_date'])],
+            'target_amount' => ['nullable', 'numeric', 'min:0.01'],
+            'target_deadline' => ['nullable', 'date'],
         ];
     }
 }

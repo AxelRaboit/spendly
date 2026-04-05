@@ -25,6 +25,9 @@ class StoreBudgetItemRequest extends FormRequest
             'position' => ['nullable', 'integer', 'min:0'],
             'month' => ['required', 'date_format:Y-m'],
             'repeat_next_month' => ['sometimes', 'boolean'],
+            'target_type' => ['nullable', Rule::in(['spending', 'saving', 'by_date'])],
+            'target_amount' => ['nullable', 'numeric', 'min:0.01'],
+            'target_deadline' => ['nullable', 'date'],
         ];
     }
 }

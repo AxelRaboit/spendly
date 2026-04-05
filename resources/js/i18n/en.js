@@ -138,6 +138,18 @@ export default {
     budgets: {
         carriedOver: 'Carried over',
         available: 'Available',
+        target: {
+            label: 'Target',
+            none: 'None',
+            spending: 'Spending limit',
+            saving: 'Monthly saving',
+            byDate: 'Amount by date',
+            amount: 'Target amount',
+            deadline: 'Deadline',
+            monthlyNeeded: '{amount}/month needed',
+            onTrack: 'On track',
+            overBudget: 'Over budget',
+        },
         newTransaction: 'New transaction',
         copyFromPrevious: 'Copy from {month}',
         confirmCopy: 'Copy all rows from the previous month?',

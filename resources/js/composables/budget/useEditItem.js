@@ -3,7 +3,16 @@ import { useForm } from '@inertiajs/vue3';
 
 export function useEditItem(walletId, flash) {
     const editingId = ref(null);
-    const editForm = useForm({ label: '', planned_amount: '', category_id: null, notes: '', type: '' });
+    const editForm = useForm({
+        label: '',
+        planned_amount: '',
+        category_id: null,
+        notes: '',
+        type: '',
+        target_type: null,
+        target_amount: '',
+        target_deadline: '',
+    });
 
     function startEditing(item, { cancelAdding }) {
         cancelAdding();
@@ -13,6 +22,9 @@ export function useEditItem(walletId, flash) {
         editForm.category_id = item.category_id;
         editForm.notes = item.notes ?? '';
         editForm.type = item.type;
+        editForm.target_type = item.target_type ?? null;
+        editForm.target_amount = item.target_amount ?? '';
+        editForm.target_deadline = item.target_deadline ?? '';
         nextTick(() => document.getElementById(`edit-label-${item.id}`)?.focus());
     }
 
