@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable vue/no-mutating-props */
-import { X, Sparkles } from 'lucide-vue-next';
+import { X, Sparkles, Plus, Split } from 'lucide-vue-next';
 import AppButton from '@/components/ui/AppButton.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import DateInput from '@/components/form/DateInput.vue';
@@ -9,10 +9,10 @@ import TypeToggle from '@/components/form/TypeToggle.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { evalMath } from '@/utils/evalMath';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-const { t }      = useI18n();
-const { symbol } = useCurrency();
+const { t }       = useI18n();
+const { symbol, fmt } = useCurrency();
 
 const tagInput = ref('');
 
@@ -46,9 +46,39 @@ defineProps({
     sectionMeta:         { type: Object,   required: true },
     filteredCategories:  { type: Array,    default: () => [] },
     suggestedCategoryId: { type: Number,   default: null },
+    isPro:               { type: Boolean,  default: false },
 });
 
-const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-change']);
+const emit = defineEmits(['close', 'submit', 'submit-split', 'section-change', 'category-manual-change']);
+
+// ── Split mode ───────────────────────────────────────────────────────────
+const splitMode = ref(false);
+const splits = ref([
+    { category_id: null, amount: '' },
+    { category_id: null, amount: '' },
+]);
+
+function addSplitRow() {
+    splits.value.push({ category_id: null, amount: '' });
+}
+
+function removeSplitRow(index) {
+    if (splits.value.length > 2) splits.value.splice(index, 1);
+}
+
+const splitTotal = computed(() =>
+    splits.value.reduce((sum, s) => sum + (parseFloat(s.amount) || 0), 0)
+);
+
+function toggleSplit() {
+    splitMode.value = !splitMode.value;
+    if (splitMode.value) {
+        splits.value = [
+            { category_id: null, amount: '' },
+            { category_id: null, amount: '' },
+        ];
+    }
+}
 </script>
 
 <template>
@@ -103,8 +133,20 @@ const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-
                     </div>
 
                     <div>
-                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.amount') }}</label>
-                        <div class="relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-xs text-secondary uppercase tracking-wide">{{ t('budgets.txPanel.amount') }}</label>
+                            <button
+                                v-if="!editing && isPro"
+                                type="button"
+                                class="flex items-center gap-1 text-xs transition-colors"
+                                :class="splitMode ? 'text-indigo-400' : 'text-muted hover:text-indigo-400'"
+                                v-on:click="toggleSplit"
+                            >
+                                <Split class="w-3 h-3" />
+                                {{ t('budgets.txPanel.split') }}
+                            </button>
+                        </div>
+                        <div v-if="!splitMode" class="relative">
                             <input
                                 id="tx-amount"
                                 v-model="txForm.amount"
@@ -117,11 +159,12 @@ const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-
                             >
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-xl font-bold">{{ symbol }}</span>
                         </div>
-                        <p v-if="txForm.errors.amount" class="text-rose-400 text-xs mt-1">{{ txForm.errors.amount }}</p>
-                        <FormHint>{{ t('budgets.txPanel.mathHint') }}</FormHint>
+                        <p v-if="!splitMode && txForm.errors.amount" class="text-rose-400 text-xs mt-1">{{ txForm.errors.amount }}</p>
+                        <FormHint v-if="!splitMode">{{ t('budgets.txPanel.mathHint') }}</FormHint>
                     </div>
 
-                    <div>
+                    <!-- Normal category (non-split) -->
+                    <div v-if="!splitMode">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
                         <SelectInput v-model="txForm.category_id" v-on:change="emit('category-manual-change')">
                             <option :value="null" disabled>— {{ t('budgets.txPanel.pickCategory') }} —</option>
@@ -134,6 +177,49 @@ const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-
                         <p v-if="txForm.errors.category_id" class="text-rose-400 text-xs mt-1">{{ txForm.errors.category_id }}</p>
                         <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
                         <FormHint>{{ t('budgets.txPanel.categoryHint') }}</FormHint>
+                    </div>
+
+                    <!-- Split rows -->
+                    <div v-if="splitMode" class="space-y-3">
+                        <label class="block text-xs text-secondary uppercase tracking-wide">{{ t('budgets.txPanel.splitLines') }}</label>
+                        <div
+                            v-for="(split, idx) in splits"
+                            :key="idx"
+                            class="flex items-center gap-2"
+                        >
+                            <SelectInput v-model="split.category_id" class="flex-1">
+                                <option :value="null" disabled>— {{ t('budgets.txPanel.pickCategory') }} —</option>
+                                <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                            </SelectInput>
+                            <div class="relative w-28">
+                                <input
+                                    v-model="split.amount"
+                                    type="text"
+                                    inputmode="decimal"
+                                    placeholder="0,00"
+                                    class="w-full bg-surface-2 text-primary font-mono rounded-lg px-3 py-2.5 pr-7 border border-base focus:border-indigo-500 focus:outline-none text-right text-sm"
+                                    v-on:blur="() => { const r = evalMath(String(split.amount)); if (r !== null) split.amount = r; }"
+                                >
+                                <span class="absolute right-2 top-1/2 -translate-y-1/2 text-muted text-xs">{{ symbol }}</span>
+                            </div>
+                            <button
+                                v-if="splits.length > 2"
+                                type="button"
+                                class="text-muted hover:text-rose-400 transition-colors shrink-0"
+                                v-on:click="removeSplitRow(idx)"
+                            >
+                                <X class="w-4 h-4" />
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button type="button" class="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors" v-on:click="addSplitRow">
+                                <Plus class="w-3 h-3" />
+                                {{ t('budgets.txPanel.addSplitLine') }}
+                            </button>
+                            <span class="text-xs font-mono" :class="splitTotal > 0 ? 'text-primary' : 'text-muted'">
+                                {{ t('budgets.txPanel.splitTotal') }} {{ fmt(splitTotal) }}
+                            </span>
+                        </div>
                     </div>
 
                     <div>
@@ -187,7 +273,7 @@ const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-
                 </form>
 
                 <div class="px-6 py-4 border-t border-base flex gap-3">
-                    <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="emit('submit')">
+                    <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="splitMode ? emit('submit-split', splits) : emit('submit')">
                         {{ txForm.processing ? t('budgets.txPanel.submitting') : (editing ? t('budgets.txPanel.submitEdit') : t('budgets.txPanel.submit')) }}
                     </AppButton>
                     <AppButton class="flex-1" variant="secondary" v-on:click="emit('close')">

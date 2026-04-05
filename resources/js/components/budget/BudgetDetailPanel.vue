@@ -63,11 +63,14 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                             class="group flex items-center justify-between py-3 border-b border-subtle last:border-0"
                         >
                             <div class="min-w-0">
-                                <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
+                                    <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-1.5 py-0.5 text-[10px] font-medium text-amber-300 shrink-0">{{ t('search.splitBadge') }}</span>
+                                </div>
                                 <p class="text-xs text-muted mt-0.5">{{ fmtDay(tx.date) }}</p>
                             </div>
                             <div class="flex items-center gap-2 ml-4 shrink-0">
-                                <div v-if="!tx.transfer_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div v-if="!tx.transfer_id && !tx.split_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <AppTooltip :text="t('budgets.detailPanel.edit')">
                                         <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="emit('edit', tx)">
                                             <Pencil class="w-3.5 h-3.5" />

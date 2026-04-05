@@ -19,6 +19,8 @@ class PlanService
 
     public const FREE_TRANSACTION_HISTORY_DAYS = 90;
 
+    public const PRO_PRICE = 9.99;
+
     public function isPro(User $user): bool
     {
         /** @var PlanType $plan */

@@ -217,6 +217,10 @@ export default {
             descHint: 'Texto libre para identificar la transacción',
             tagsHint: 'Enter o coma para confirmar · Retroceso para eliminar',
             mathHint: 'Consejo: puedes escribir cálculos (ej: 1200+350)',
+            split: 'Dividir',
+            splitLines: 'Desglose',
+            addSplitLine: 'Añadir línea',
+            splitTotal: 'Total:',
             submit: 'Guardar',
             submitEdit: 'Actualizar',
             submitting: 'Guardando…',
@@ -466,6 +470,7 @@ export default {
         editTip: 'Editar esta transacción',
         deleteTip: 'Eliminar esta transacción',
         transferTip: 'Transferencia entre dos carteras — no editable.',
+        splitBadge: 'Split',
     },
 
     overview: {
@@ -603,7 +608,6 @@ export default {
         },
         pro: {
             name: 'Pro',
-            price: '$4.99',
             tagline: 'Todo el poder para una gestión seria.',
         },
         features: {
@@ -618,6 +622,7 @@ export default {
             budgetBasic: 'Crear y editar líneas presupuestarias',
             budgetAdvanced: 'Herramientas avanzadas (duplicar, reconducir, copiar)',
             importExport: 'Importar y exportar (XLSX)',
+            splitTransactions: 'Transacciones divididas',
             statsMonths: 'Estadísticas (1 mes)',
             statsMonthsPro: 'Estadísticas (6 meses)',
             andMore: '… ¡y muchas más funcionalidades extra!',

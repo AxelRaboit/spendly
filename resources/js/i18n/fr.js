@@ -216,6 +216,10 @@ export default {
             descHint: 'Détail libre pour vous aider à identifier la transaction',
             tagsHint: 'Entrée ou virgule pour valider · Retour pour supprimer',
             mathHint: 'Astuce : vous pouvez saisir des calculs (ex : 1200+350)',
+            split: 'Diviser',
+            splitLines: 'Répartition',
+            addSplitLine: 'Ajouter une ligne',
+            splitTotal: 'Total :',
             submit: 'Enregistrer',
             submitEdit: 'Modifier',
             submitting: 'Enregistrement…',
@@ -465,6 +469,7 @@ export default {
         editTip: 'Modifier cette transaction',
         deleteTip: 'Supprimer cette transaction',
         transferTip: 'Virement entre deux portefeuilles — non modifiable.',
+        splitBadge: 'Split',
     },
 
     overview: {
@@ -603,7 +608,6 @@ export default {
         },
         pro: {
             name: 'Pro',
-            price: '4,99 €',
             tagline: 'Toute la puissance pour une gestion sérieuse.',
         },
         features: {
@@ -618,6 +622,7 @@ export default {
             budgetBasic: 'Création/édition de lignes budgétaires',
             budgetAdvanced: 'Outils budget avancés (dupliquer, reconduire, copier)',
             importExport: 'Import & export (XLSX)',
+            splitTransactions: 'Transactions divisées',
             statsMonths: 'Statistiques (1 mois)',
             statsMonthsPro: 'Statistiques (6 mois)',
             andMore: '… et plein de petites fonctionnalités en plus !',

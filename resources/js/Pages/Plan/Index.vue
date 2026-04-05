@@ -7,8 +7,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
+import { useCurrency } from '@/composables/core/useCurrency';
 
 const { t } = useI18n();
+const { fmt } = useCurrency();
 const page = usePage();
 
 const isPro = computed(() => page.props.auth?.plan === 'pro');
@@ -95,6 +97,10 @@ function downgrade() {
                             <X class="w-4 h-4 shrink-0 text-muted" />
                             <span class="text-muted line-through">{{ t('plan.features.importExport') }}</span>
                         </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <X class="w-4 h-4 shrink-0 text-muted" />
+                            <span class="text-muted line-through">{{ t('plan.features.splitTransactions') }}</span>
+                        </li>
                     </ul>
 
                     <div class="mt-6">
@@ -128,7 +134,7 @@ function downgrade() {
                     <h2 class="text-xl font-bold text-primary">{{ t('plan.pro.name') }}</h2>
 
                     <p class="text-3xl font-extrabold text-primary mt-2">
-                        {{ t('plan.pro.price') }}
+                        {{ fmt(limits.proPrice) }}
                         <span class="text-base font-normal text-muted">/{{ t('plan.perMonth') }}</span>
                     </p>
 
@@ -166,6 +172,10 @@ function downgrade() {
                         <li class="flex items-center gap-2.5 text-sm">
                             <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.importExport') }}</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
+                            <span class="text-secondary">{{ t('plan.features.splitTransactions') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
                             <Sparkles class="w-4 h-4 shrink-0 text-indigo-400" />

@@ -7,6 +7,7 @@ const props = defineProps({
     action:   { type: String, default: null },
     duration: { type: Number, default: 5000 },
     type:     { type: String, default: 'success' }, // success | error | warning | info
+    offset:   { type: Number, default: 0 }, // vertical offset in rem for stacking
 });
 const emit = defineEmits(['action', 'dismiss']);
 
@@ -24,8 +25,9 @@ const styles = computed(() => ({
 
 <template>
     <div
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 border text-primary text-sm px-4 py-3 rounded-xl shadow-2xl w-max max-w-[calc(100vw-2rem)]"
+        class="fixed left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 border text-primary text-sm px-4 py-3 rounded-xl shadow-2xl w-max max-w-[calc(100vw-2rem)]"
         :class="styles.wrap"
+        :style="{ bottom: `${1.5 + offset}rem` }"
     >
         <span class="w-2 h-2 rounded-full shrink-0" :class="styles.dot" />
         <span>{{ message }}</span>

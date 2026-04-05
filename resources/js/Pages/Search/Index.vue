@@ -169,7 +169,7 @@ function submitEdit() {
                             <div class="flex items-center justify-between gap-3">
                                 <span class="text-sm text-primary font-medium truncate">{{ tx.description ?? '—' }}</span>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <template v-if="!tx.transfer_id">
+                                    <template v-if="!tx.transfer_id && !tx.split_id">
                                         <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
                                             <Pencil class="w-3.5 h-3.5" />
                                         </button>
@@ -188,6 +188,7 @@ function submitEdit() {
                             <div class="flex items-center gap-2 flex-wrap">
                                 <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
                                 <span v-else class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
+                                <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-2 py-0.5 text-xs font-medium text-amber-300">{{ t('search.splitBadge') }}</span>
                                 <span class="text-xs text-muted">{{ tx.wallet?.name }}</span>
                                 <span class="text-xs text-muted">{{ fmtDay(tx.date) }}</span>
                             </div>

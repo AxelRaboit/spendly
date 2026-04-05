@@ -1,5 +1,5 @@
 import { computed, nextTick, ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { useSectionCategoryFilter } from './useSectionCategoryFilter.js';
 import { useAutoCategory } from '@/composables/forms/useAutoCategory.js';
 
@@ -102,6 +102,24 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         });
     }
 
+    function submitSplit(splits) {
+        router.post(
+            '/transactions/split',
+            {
+                wallet_id: txForm.wallet_id,
+                type: txForm.type,
+                description: txForm.description,
+                date: txForm.date,
+                tags: txForm.tags,
+                splits: splits.map((s) => ({ category_id: s.category_id, amount: parseFloat(s.amount) || 0 })),
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => closeTxPanel(),
+            }
+        );
+    }
+
     return {
         txPanel,
         txPrefillLabel,
@@ -115,6 +133,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         openEditTx,
         closeTxPanel,
         submitTx,
+        submitSplit,
         onTxSectionChange,
     };
 }

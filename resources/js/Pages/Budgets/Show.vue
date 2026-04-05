@@ -170,7 +170,7 @@ const {
 } = useBudgetItems(walletId, sections, budget, flash);
 
 // ─── Transaction panel ───────────────────────────────────────────────────────
-const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editingTx, suggestedCategoryId, markCategoryManual, openTxPanel, openEditTx, closeTxPanel, submitTx, onTxSectionChange } =
+const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editingTx, suggestedCategoryId, markCategoryManual, openTxPanel, openEditTx, closeTxPanel, submitTx, submitSplit, onTxSectionChange } =
     useTransactionPanel(walletId, budget, sections, flash, localCategories);
 
 // ─── Item transactions panel ─────────────────────────────────────────────────
@@ -1643,8 +1643,10 @@ onUnmounted(() => {
             :section-meta="SECTION_META"
             :filtered-categories="txFilteredCategories"
             :suggested-category-id="suggestedCategoryId"
+            :is-pro="isPro"
             v-on:close="closeTxPanel"
             v-on:submit="submitTx"
+            v-on:submit-split="submitSplit"
             v-on:section-change="onTxSectionChange"
             v-on:category-manual-change="markCategoryManual"
         />
@@ -1711,6 +1713,7 @@ onUnmounted(() => {
                 :message="t('budgets.toast.deleted', { label: deletingItem.label })"
                 :action="t('budgets.toast.undo')"
                 :duration="5000"
+                :offset="3.5"
                 v-on:action="undoDelete"
                 v-on:dismiss="undoDelete"
             />
@@ -1719,6 +1722,7 @@ onUnmounted(() => {
                 :message="overageToast"
                 type="warning"
                 :duration="4000"
+                :offset="3.5"
                 v-on:dismiss="overageToast = null"
             />
         </Transition>

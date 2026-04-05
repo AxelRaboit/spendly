@@ -218,6 +218,10 @@ export default {
             descHint: 'Freitext zur Identifikation der Transaktion',
             tagsHint: 'Enter oder Komma zum Bestätigen · Rücktaste zum Entfernen',
             mathHint: 'Tipp: Sie können Berechnungen eingeben (z.B. 1200+350)',
+            split: 'Aufteilen',
+            splitLines: 'Aufteilung',
+            addSplitLine: 'Zeile hinzufügen',
+            splitTotal: 'Gesamt:',
             submit: 'Speichern',
             submitEdit: 'Aktualisieren',
             submitting: 'Speichern…',
@@ -467,6 +471,7 @@ export default {
         editTip: 'Diese Transaktion bearbeiten',
         deleteTip: 'Diese Transaktion löschen',
         transferTip: 'Überweisung zwischen zwei Geldbörsen — nicht bearbeitbar.',
+        splitBadge: 'Split',
     },
 
     overview: {
@@ -604,7 +609,6 @@ export default {
         },
         pro: {
             name: 'Pro',
-            price: '4,99 €',
             tagline: 'Volle Leistung für ernsthafte Budgetplanung.',
         },
         features: {
@@ -619,6 +623,7 @@ export default {
             budgetBasic: 'Budgetzeilen erstellen und bearbeiten',
             budgetAdvanced: 'Erweiterte Budget-Tools (duplizieren, übernehmen, kopieren)',
             importExport: 'Import & Export (XLSX)',
+            splitTransactions: 'Aufgeteilte Transaktionen',
             statsMonths: 'Statistiken (1 Monat)',
             statsMonthsPro: 'Statistiken (6 Monate)',
             andMore: '… und viele weitere kleine Extras!',

@@ -503,7 +503,7 @@ class BudgetService
             ->whereMonth('date', $month->month)
             ->orderByDesc('date')
             ->orderByDesc('id')
-            ->get(['id', 'date', 'description', 'amount', 'type', 'category_id', 'wallet_id', 'tags', 'transfer_id'])
+            ->get(['id', 'date', 'description', 'amount', 'type', 'category_id', 'wallet_id', 'tags', 'transfer_id', 'split_id'])
             ->map(fn (Transaction $tx) => [
                 'id' => $tx->id,
                 'date' => $tx->date,
@@ -514,6 +514,7 @@ class BudgetService
                 'wallet_id' => $tx->wallet_id,
                 'tags' => $tx->tags ?? [],
                 'transfer_id' => $tx->transfer_id,
+                'split_id' => $tx->split_id,
             ])
             ->all();
     }

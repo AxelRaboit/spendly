@@ -216,6 +216,10 @@ export default {
             descHint: 'Free text to help you identify the transaction',
             tagsHint: 'Enter or comma to confirm · Backspace to remove',
             mathHint: 'Tip: you can type calculations (e.g. 1200+350)',
+            split: 'Split',
+            splitLines: 'Breakdown',
+            addSplitLine: 'Add a line',
+            splitTotal: 'Total:',
             submit: 'Save',
             submitEdit: 'Update',
             submitting: 'Saving…',
@@ -465,6 +469,7 @@ export default {
         editTip: 'Edit this transaction',
         deleteTip: 'Delete this transaction',
         transferTip: 'Transfer between two wallets — not editable.',
+        splitBadge: 'Split',
     },
 
     overview: {
@@ -602,7 +607,6 @@ export default {
         },
         pro: {
             name: 'Pro',
-            price: '$4.99',
             tagline: 'Full power for serious budgeters.',
         },
         features: {
@@ -617,6 +621,7 @@ export default {
             budgetBasic: 'Create and edit budget lines',
             budgetAdvanced: 'Advanced budget tools (duplicate, repeat, copy)',
             importExport: 'Import & export (XLSX)',
+            splitTransactions: 'Split transactions',
             statsMonths: 'Statistics (1 month)',
             statsMonthsPro: 'Statistics (6 months)',
             andMore: '… and many more small perks!',
