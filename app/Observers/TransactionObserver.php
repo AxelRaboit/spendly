@@ -11,16 +11,16 @@ class TransactionObserver
 {
     public function saved(Transaction $transaction): void
     {
-        $this->syncGoal($transaction->user_id, $transaction->category_id);
+        $this->syncGoal((int) $transaction->user_id, $transaction->category_id ? (int) $transaction->category_id : null);
 
         if ($transaction->wasChanged('category_id') && $transaction->getOriginal('category_id')) {
-            $this->syncGoal($transaction->user_id, $transaction->getOriginal('category_id'));
+            $this->syncGoal((int) $transaction->user_id, (int) $transaction->getOriginal('category_id'));
         }
     }
 
     public function deleted(Transaction $transaction): void
     {
-        $this->syncGoal($transaction->user_id, $transaction->category_id);
+        $this->syncGoal((int) $transaction->user_id, $transaction->category_id ? (int) $transaction->category_id : null);
     }
 
     private function syncGoal(int $userId, ?int $categoryId): void

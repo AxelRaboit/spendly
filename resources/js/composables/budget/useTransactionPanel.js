@@ -16,6 +16,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         description: '',
         date: new Date().toISOString().slice(0, 10),
         tags: [],
+        attachment: null,
     });
 
     const { txFilteredCategories, onTxSectionChange } = useSectionCategoryFilter(

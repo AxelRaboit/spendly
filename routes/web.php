@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class)->only(['store', 'update', 'destroy']);
     Route::post('/transactions/split', [TransactionController::class, 'storeSplit'])->name('transactions.split.store');
+    Route::get('/transactions/{transaction}/attachment', [TransactionController::class, 'attachment'])->name('transactions.attachment');
     Route::delete('/transactions/split/{splitId}', [TransactionController::class, 'destroySplit'])->name('transactions.split.destroy');
     Route::post('/transfers', [WalletTransferController::class, 'store'])->name('transfers.store');
     Route::delete('/transfers/{transferId}', [WalletTransferController::class, 'destroy'])->name('transfers.destroy');

@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable vue/no-mutating-props */
-import { X, Sparkles, Plus, Split } from 'lucide-vue-next';
+import { X, Sparkles, Plus, Split, Paperclip, Trash2 } from 'lucide-vue-next';
 import AppButton from '@/components/ui/AppButton.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import DateInput from '@/components/form/DateInput.vue';
@@ -269,6 +269,26 @@ function toggleSplit() {
                             >
                         </div>
                         <FormHint>{{ t('budgets.txPanel.tagsHint') }}</FormHint>
+                    </div>
+
+                    <div v-if="isPro">
+                        <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
+                            {{ t('budgets.txPanel.attachment') }}
+                            <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
+                        </label>
+                        <div v-if="txForm.attachment" class="flex items-center gap-2 bg-surface-2 border border-base rounded-lg px-3 py-2">
+                            <Paperclip class="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                            <span class="text-sm text-primary truncate flex-1">{{ txForm.attachment.name }}</span>
+                            <button type="button" class="text-muted hover:text-rose-400 transition-colors" v-on:click="txForm.attachment = null">
+                                <Trash2 class="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+                        <label v-else class="flex items-center gap-2 bg-surface-2 border border-dashed border-base rounded-lg px-3 py-2.5 cursor-pointer hover:border-indigo-500/50 transition-colors">
+                            <Paperclip class="w-3.5 h-3.5 text-muted" />
+                            <span class="text-sm text-muted">{{ t('budgets.txPanel.attachmentHint') }}</span>
+                            <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" v-on:change="txForm.attachment = $event.target.files[0]">
+                        </label>
+                        <p v-if="txForm.errors.attachment" class="text-rose-400 text-xs mt-1">{{ txForm.errors.attachment }}</p>
                     </div>
                 </form>
 

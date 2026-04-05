@@ -1,8 +1,8 @@
 <script setup>
-import { X, Pencil, Trash2 } from 'lucide-vue-next';
+import { X, Pencil, Trash2, Paperclip } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
@@ -24,6 +24,9 @@ const props = defineProps({
 const emit = defineEmits(['close', 'edit', 'delete']);
 
 const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount, 0));
+
+const previewUrl = ref(null);
+
 </script>
 
 <template>
@@ -67,7 +70,12 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
                                     <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
                                     <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-1.5 py-0.5 text-[10px] font-medium text-amber-300 shrink-0">{{ t('search.splitBadge') }}</span>
                                 </div>
-                                <p class="text-xs text-muted mt-0.5">{{ fmtDay(tx.date) }}</p>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <p class="text-xs text-muted">{{ fmtDay(tx.date) }}</p>
+                                    <button v-if="tx.attachment_url" class="text-indigo-400 hover:text-indigo-300 transition-colors" v-on:click="previewUrl = tx.attachment_url">
+                                        <Paperclip class="w-3 h-3" />
+                                    </button>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 ml-4 shrink-0">
                                 <div v-if="!tx.transfer_id && !tx.split_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -101,4 +109,28 @@ const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount,
             </div>
         </div>
     </Transition>
+
+    <Teleport to="body">
+        <Transition
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition ease-in duration-150"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="previewUrl" class="fixed inset-0 z-[70] flex items-center justify-center" v-on:click.self="previewUrl = null">
+                <div class="absolute inset-0 bg-black/70" />
+                <div class="relative z-10 max-w-3xl max-h-[85vh] rounded-xl overflow-hidden shadow-2xl">
+                    <button
+                        class="absolute top-3 right-3 z-20 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors"
+                        v-on:click="previewUrl = null"
+                    >
+                        <X class="w-5 h-5" />
+                    </button>
+                    <img :src="previewUrl" alt="Receipt" class="max-w-full max-h-[85vh] object-contain">
+                </div>
+            </div>
+        </Transition>
+    </Teleport>
 </template>

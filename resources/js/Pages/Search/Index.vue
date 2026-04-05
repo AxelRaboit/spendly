@@ -1,5 +1,5 @@
 <script setup>
-import { Search, AlertTriangle, Pencil, Trash2 } from 'lucide-vue-next';
+import { Search, AlertTriangle, Pencil, Trash2, Paperclip } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
@@ -189,6 +189,7 @@ function submitEdit() {
                                 <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
                                 <span v-else class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
                                 <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-2 py-0.5 text-xs font-medium text-amber-300">{{ t('search.splitBadge') }}</span>
+                                <a v-if="tx.attachment_url" :href="tx.attachment_url" target="_blank" class="text-indigo-400 hover:text-indigo-300 transition-colors"><Paperclip class="w-3 h-3" /></a>
                                 <span class="text-xs text-muted">{{ tx.wallet?.name }}</span>
                                 <span class="text-xs text-muted">{{ fmtDay(tx.date) }}</span>
                             </div>

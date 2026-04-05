@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\TransactionType;
+use App\Services\AttachmentService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,6 +27,8 @@ class UpdateTransactionRequest extends FormRequest
             'date' => ['required', 'date'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:50'],
+            'attachment' => AttachmentService::validationRules(),
+            'remove_attachment' => ['nullable', 'boolean'],
         ];
     }
 }
