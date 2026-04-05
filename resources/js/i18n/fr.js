@@ -2,6 +2,7 @@ export default {
     nav: {
         dashboard: 'Tableau de bord',
         categories: 'Catégories',
+        rules: 'Auto-catégorisation',
         wallets: 'Portefeuilles',
         overview: 'Vue globale',
         statistics: 'Statistiques',
@@ -209,6 +210,7 @@ export default {
             tagsPlaceholder: 'voyage, courses…',
             typeHint: 'Automatique si une section est sélectionnée',
             categoryHint: 'Lie cette transaction à une ligne de budget',
+            autoSuggested: 'Catégorie suggérée automatiquement',
             dateHint: 'Date effective de la transaction',
             descHint: 'Détail libre pour vous aider à identifier la transaction',
             tagsHint: 'Entrée ou virgule pour valider · Retour pour supprimer',
@@ -375,6 +377,16 @@ export default {
             labelPlaceholder: 'Libellé…',
             amountPlaceholder: '0.00',
         },
+    },
+
+    rules: {
+        title: 'Auto-catégorisation',
+        subtitle: 'Les règles sont apprises automatiquement quand vous catégorisez vos transactions.',
+        pattern: 'Description',
+        category: 'Catégorie',
+        hits: 'Utilisations',
+        none: 'Aucune règle. Elles seront créées automatiquement en catégorisant vos transactions.',
+        confirmDelete: 'Supprimer cette règle ?',
     },
 
     goals: {

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\FileExtension;
 use App\Enums\HttpStatus;
 use App\Http\Requests\ProcessImportRequest;
 use App\Http\Requests\UploadImportFileRequest;
 use App\Models\Wallet;
+use App\Services\CategorizationRuleService;
 use App\Services\ImportService;
 use App\Services\PlanService;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +27,7 @@ class ImportController extends Controller
     public function __construct(
         private readonly ImportService $importService,
         private readonly PlanService $planService,
+        private readonly CategorizationRuleService $ruleService,
     ) {}
 
     public function index(Request $request): Response
@@ -51,7 +54,7 @@ class ImportController extends Controller
 
         return response($content, 200, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="spendly-import-template.xlsx"',
+            'Content-Disposition' => sprintf('attachment; filename="spendly-import-template.%s"', FileExtension::Xlsx->value),
         ]);
     }
 
@@ -61,12 +64,16 @@ class ImportController extends Controller
 
         $path = $request->file('file')->storeAs(
             'csv-imports',
-            uniqid('import_', true).'.xlsx',
+            sprintf('%s.%s', uniqid('import_', true), FileExtension::Xlsx->value),
             'local'
         );
 
         try {
-            return response()->json($this->importService->preview($path));
+            $preview = $this->importService->preview($path);
+            $descriptions = array_filter(array_column($preview['rows'], 'description'));
+            $preview['suggestions'] = $this->ruleService->suggestBulk($request->user(), $descriptions);
+
+            return response()->json($preview);
         } catch (RuntimeException $runtimeException) {
             // Delete the uploaded file and return the validation error
             Storage::delete($path);

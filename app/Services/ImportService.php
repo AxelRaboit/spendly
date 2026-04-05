@@ -21,6 +21,8 @@ use Throwable;
 
 class ImportService
 {
+    public function __construct(private readonly CategorizationRuleService $categorizationService) {}
+
     // ── Template ──────────────────────────────────────────────────────────────
 
     public function generateTemplate(): Spreadsheet
@@ -236,6 +238,10 @@ class ImportService
                     'date' => $date,
                     'tags' => $tags,
                 ]);
+
+                if ($rawDesc !== '' && ! empty($row['category_id'])) {
+                    $this->categorizationService->learn($user, $rawDesc, (int) $row['category_id']);
+                }
 
                 $months[] = substr($date, 0, 7); // YYYY-MM
                 $created++;

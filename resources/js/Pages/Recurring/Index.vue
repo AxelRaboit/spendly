@@ -3,9 +3,11 @@ import { Plus, ChevronDown, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import TabBadge from '@/components/ui/TabBadge.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useRecurringForm } from '@/composables/recurring/useRecurringForm';
+import { useScheduledForm } from '@/composables/recurring/useScheduledForm';
 import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
@@ -25,67 +27,11 @@ const isPro = computed(() => page.props.auth?.plan === 'pro');
 const recurringLimit = computed(() => page.props.planLimits.recurring);
 const canCreateRecurring = computed(() => isPro.value || props.recurring.length < recurringLimit.value);
 
-// ── Form (create/edit) ────────────────────────────────────────────────────
-const editingItem = ref(null);
-const showForm    = ref(false);
+const { editingItem, showForm, form, openCreate, openEdit, submit, itemToDelete, confirmDelete, executeDelete, toggleActive } =
+    useRecurringForm(props.wallets, props.categories);
 
-const form = useForm({
-    description:  '',
-    amount:       '',
-    type:         'expense',
-    day_of_month: 1,
-    wallet_id:    '',
-    category_id:  '',
-    active:       true,
-});
-
-function openCreate() {
-    editingItem.value = null;
-    form.reset();
-    form.type   = 'expense';
-    form.active = true;
-    form.day_of_month = 1;
-    if (props.wallets.length)    form.wallet_id    = props.wallets[0].id;
-    if (props.categories.length) form.category_id  = props.categories[0].id;
-    showForm.value = true;
-}
-
-function openEdit(item) {
-    editingItem.value   = item;
-    form.description    = item.description;
-    form.amount         = item.amount;
-    form.type           = item.type;
-    form.day_of_month   = item.day_of_month;
-    form.wallet_id      = item.wallet_id;
-    form.category_id    = item.category_id ?? '';
-    form.active         = item.active;
-    showForm.value      = true;
-}
-
-function submit() {
-    if (editingItem.value) {
-        form.put(`/recurring/${editingItem.value.id}`, { onSuccess: () => { showForm.value = false; } });
-    } else {
-        form.post('/recurring', { onSuccess: () => { showForm.value = false; form.reset(); } });
-    }
-}
-
-// ── Delete ────────────────────────────────────────────────────────────────
-const itemToDelete = ref(null);
-
-function confirmDelete(item) {
-    itemToDelete.value = item;
-}
-
-function executeDelete() {
-    useForm({}).delete(`/recurring/${itemToDelete.value.id}`);
-    itemToDelete.value = null;
-}
-
-// ── Toggle active ─────────────────────────────────────────────────────────
-function toggleActive(item) {
-    useForm({}).patch(`/recurring/${item.id}/toggle`, { preserveScroll: true });
-}
+const { editingScheduled, showScheduledForm, scheduledForm, openCreateScheduled, openEditScheduled, submitScheduled, scheduledToDelete, confirmDeleteScheduled, executeDeleteScheduled } =
+    useScheduledForm(props.wallets, props.categories);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function fmtDate(d) {
@@ -103,59 +49,6 @@ function categoryName(id) {
 }
 
 const ordinalDay = (n) => t('recurring.dayLabel', { day: n });
-
-// ── Scheduled transactions ───────────────────────────────────────────────
-const editingScheduled = ref(null);
-const showScheduledForm = ref(false);
-
-const scheduledForm = useForm({
-    description: '',
-    amount: '',
-    type: 'expense',
-    scheduled_date: new Date().toISOString().slice(0, 10),
-    wallet_id: '',
-    category_id: '',
-});
-
-function openCreateScheduled() {
-    editingScheduled.value = null;
-    scheduledForm.reset();
-    scheduledForm.type = 'expense';
-    scheduledForm.scheduled_date = new Date().toISOString().slice(0, 10);
-    if (props.wallets.length) scheduledForm.wallet_id = props.wallets[0].id;
-    if (props.categories.length) scheduledForm.category_id = props.categories[0].id;
-    showScheduledForm.value = true;
-}
-
-function openEditScheduled(item) {
-    editingScheduled.value = item;
-    scheduledForm.description = item.description;
-    scheduledForm.amount = item.amount;
-    scheduledForm.type = item.type;
-    scheduledForm.scheduled_date = item.scheduled_date;
-    scheduledForm.wallet_id = item.wallet_id;
-    scheduledForm.category_id = item.category_id ?? '';
-    showScheduledForm.value = true;
-}
-
-function submitScheduled() {
-    if (editingScheduled.value) {
-        scheduledForm.put(`/scheduled/${editingScheduled.value.id}`, { onSuccess: () => { showScheduledForm.value = false; } });
-    } else {
-        scheduledForm.post('/scheduled', { onSuccess: () => { showScheduledForm.value = false; scheduledForm.reset(); } });
-    }
-}
-
-const scheduledToDelete = ref(null);
-
-function confirmDeleteScheduled(item) {
-    scheduledToDelete.value = item;
-}
-
-function executeDeleteScheduled() {
-    useForm({}).delete(`/scheduled/${scheduledToDelete.value.id}`);
-    scheduledToDelete.value = null;
-}
 
 // ── Group by wallet ───────────────────────────────────────────────────────
 const byWallet = computed(() => {

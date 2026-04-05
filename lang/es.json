@@ -93,6 +93,8 @@
     "flash.budget.item_added": "Fila añadida.",
     "flash.budget.items_added": ":count filas añadidas.",
     "flash.budget.cleared": ":count filas eliminadas.",
+    "flash.rule.updated": "Regla actualizada.",
+    "flash.rule.deleted": "Regla eliminada.",
     "flash.budget.item_updated": "Fila actualizada.",
     "flash.budget.item_deleted": "Fila eliminada.",
     "flash.budget.item_duplicated": "Fila duplicada.",

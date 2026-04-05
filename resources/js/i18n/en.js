@@ -2,6 +2,7 @@ export default {
     nav: {
         dashboard: 'Dashboard',
         categories: 'Categories',
+        rules: 'Auto-categorization',
         wallets: 'Wallets',
         overview: 'Overview',
         statistics: 'Statistics',
@@ -209,6 +210,7 @@ export default {
             tagsPlaceholder: 'travel, groceries…',
             typeHint: 'Automatic when a section is selected',
             categoryHint: 'Links this transaction to a budget line',
+            autoSuggested: 'Auto-suggested category',
             dateHint: 'Effective date of the transaction',
             descHint: 'Free text to help you identify the transaction',
             tagsHint: 'Enter or comma to confirm · Backspace to remove',
@@ -375,6 +377,16 @@ export default {
             labelPlaceholder: 'Label…',
             amountPlaceholder: '0.00',
         },
+    },
+
+    rules: {
+        title: 'Auto-categorization',
+        subtitle: 'Rules are learned automatically when you categorize your transactions.',
+        pattern: 'Description',
+        category: 'Category',
+        hits: 'Usage',
+        none: 'No rules yet. They will be created automatically as you categorize transactions.',
+        confirmDelete: 'Delete this rule?',
     },
 
     goals: {

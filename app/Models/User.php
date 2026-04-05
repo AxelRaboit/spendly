@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(Goal::class);
     }
 
+    public function categorizationRules(): HasMany
+    {
+        return $this->hasMany(CategorizationRule::class);
+    }
+
     public function recurringTransactions(): HasMany
     {
         return $this->hasMany(RecurringTransaction::class);

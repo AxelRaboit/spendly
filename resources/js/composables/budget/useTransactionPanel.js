@@ -1,6 +1,7 @@
-import { nextTick, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useSectionCategoryFilter } from './useSectionCategoryFilter.js';
+import { useAutoCategory } from '@/composables/forms/useAutoCategory.js';
 
 export function useTransactionPanel(walletId, budget, sections, flash, categories) {
     const txPanel = ref(false);
@@ -24,6 +25,15 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txForm
     );
 
+    const descriptionRef = computed(() => txForm.description);
+    const {
+        suggestedCategoryId,
+        markManual: markCategoryManual,
+        reset: resetAutoCategory,
+    } = useAutoCategory(descriptionRef, (categoryId) => {
+        txForm.category_id = categoryId;
+    });
+
     function openTxPanel(
         categoryId = null,
         label = '',
@@ -43,6 +53,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txForm.date = budget.value.month === today.slice(0, 7) ? today : budget.value.month + '-01';
         txPrefillLabel.value = label;
         txSection.value = section;
+        resetAutoCategory();
         txPanel.value = true;
         nextTick(() => document.getElementById('tx-amount')?.focus());
     }
@@ -67,6 +78,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txSection.value = null;
         editingTx.value = null;
         txForm.reset();
+        resetAutoCategory();
     }
 
     function submitTx() {
@@ -97,6 +109,8 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txSection,
         txFilteredCategories,
         editingTx,
+        suggestedCategoryId,
+        markCategoryManual,
         openTxPanel,
         openEditTx,
         closeTxPanel,

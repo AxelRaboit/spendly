@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BudgetPresetController;
+use App\Http\Controllers\CategorizationRuleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoalController;
@@ -68,6 +69,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/scheduled', [ScheduledTransactionController::class, 'store'])->name('scheduled.store');
     Route::put('/scheduled/{scheduledTransaction}', [ScheduledTransactionController::class, 'update'])->name('scheduled.update');
     Route::delete('/scheduled/{scheduledTransaction}', [ScheduledTransactionController::class, 'destroy'])->name('scheduled.destroy');
+    Route::get('/categorization-rules', [CategorizationRuleController::class, 'index'])->name('categorization-rules.index');
+    Route::get('/categorization-rules/suggest', [CategorizationRuleController::class, 'suggest'])->name('categorization-rules.suggest');
+    Route::post('/categorization-rules/suggest-bulk', [CategorizationRuleController::class, 'suggestBulk'])->name('categorization-rules.suggest-bulk');
+    Route::put('/categorization-rules/{categorizationRule}', [CategorizationRuleController::class, 'update'])->name('categorization-rules.update');
+    Route::delete('/categorization-rules/{categorizationRule}', [CategorizationRuleController::class, 'destroy'])->name('categorization-rules.destroy');
+
     Route::post('/categories/quick', [CategoryController::class, 'storeQuick'])->name('categories.storeQuick');
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class)->only(['store', 'update', 'destroy']);

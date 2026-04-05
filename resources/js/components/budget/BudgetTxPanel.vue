@@ -1,6 +1,6 @@
 <script setup>
 /* eslint-disable vue/no-mutating-props */
-import { X } from 'lucide-vue-next';
+import { X, Sparkles } from 'lucide-vue-next';
 import AppButton from '@/components/ui/AppButton.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import DateInput from '@/components/form/DateInput.vue';
@@ -37,17 +37,18 @@ function onTagKeydown(e, form) {
 }
 
 defineProps({
-    open:               { type: Boolean,  required: true },
-    editing:            { type: Boolean,  default: false },
-    showSectionFilter:  { type: Boolean,  default: true },
-    prefillLabel:       { type: String,   default: '' },
-    txSection:          { type: String,   default: null },
-    txForm:             { type: Object,   required: true },
-    sectionMeta:        { type: Object,   required: true },
-    filteredCategories: { type: Array,    default: () => [] },
+    open:                { type: Boolean,  required: true },
+    editing:             { type: Boolean,  default: false },
+    showSectionFilter:   { type: Boolean,  default: true },
+    prefillLabel:        { type: String,   default: '' },
+    txSection:           { type: String,   default: null },
+    txForm:              { type: Object,   required: true },
+    sectionMeta:         { type: Object,   required: true },
+    filteredCategories:  { type: Array,    default: () => [] },
+    suggestedCategoryId: { type: Number,   default: null },
 });
 
-const emit = defineEmits(['close', 'submit', 'section-change']);
+const emit = defineEmits(['close', 'submit', 'section-change', 'category-manual-change']);
 </script>
 
 <template>
@@ -122,10 +123,14 @@ const emit = defineEmits(['close', 'submit', 'section-change']);
 
                     <div>
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
-                        <SelectInput v-model="txForm.category_id">
+                        <SelectInput v-model="txForm.category_id" v-on:change="emit('category-manual-change')">
                             <option :value="null" disabled>— {{ t('budgets.txPanel.pickCategory') }} —</option>
                             <option v-for="cat in filteredCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                         </SelectInput>
+                        <p v-if="suggestedCategoryId && txForm.category_id === suggestedCategoryId" class="flex items-center gap-1 text-indigo-400 text-xs mt-1">
+                            <Sparkles class="w-3 h-3" />
+                            {{ t('budgets.txPanel.autoSuggested') }}
+                        </p>
                         <p v-if="txForm.errors.category_id" class="text-rose-400 text-xs mt-1">{{ txForm.errors.category_id }}</p>
                         <p v-if="txSection && filteredCategories.length === 0" class="text-subtle text-xs mt-1">{{ t('budgets.txPanel.noSectionCategories') }}</p>
                         <FormHint>{{ t('budgets.txPanel.categoryHint') }}</FormHint>

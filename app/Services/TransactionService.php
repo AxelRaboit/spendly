@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
+    public function __construct(private readonly CategorizationRuleService $categorizationService) {}
+
     public function create(User $user, array $data): Transaction
     {
         if (isset($data['description'])) {
@@ -27,6 +29,10 @@ class TransactionService
             'transaction_id' => $transaction->id,
         ]);
 
+        if (($data['description'] ?? null) && ($data['category_id'] ?? null)) {
+            $this->categorizationService->learn($user, $data['description'], (int) $data['category_id']);
+        }
+
         return $transaction;
     }
 
@@ -41,6 +47,13 @@ class TransactionService
         Log::info('Transaction updated', [
             'transaction_id' => $transaction->id,
         ]);
+
+        $description = $data['description'] ?? $transaction->description;
+        $categoryId = $data['category_id'] ?? $transaction->category_id;
+
+        if ($description && $categoryId && $transaction->user instanceof User) {
+            $this->categorizationService->learn($transaction->user, $description, (int) $categoryId);
+        }
 
         return $transaction;
     }

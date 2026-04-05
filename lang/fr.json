@@ -93,6 +93,8 @@
     "flash.budget.item_added": "Ligne ajoutée.",
     "flash.budget.items_added": ":count lignes ajoutées.",
     "flash.budget.cleared": ":count lignes supprimées.",
+    "flash.rule.updated": "Règle mise à jour.",
+    "flash.rule.deleted": "Règle supprimée.",
     "flash.budget.item_updated": "Ligne mise à jour.",
     "flash.budget.item_deleted": "Ligne supprimée.",
     "flash.budget.item_duplicated": "Ligne dupliquée.",

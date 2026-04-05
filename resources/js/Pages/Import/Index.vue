@@ -4,10 +4,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
-import { Head, router } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import axios from 'axios';
+import { useImportUpload } from '@/composables/import/useImportUpload';
+import { useImportRows } from '@/composables/import/useImportRows';
 
 const { t } = useI18n();
 
@@ -16,104 +16,14 @@ const props = defineProps({
     categories: Array,
 });
 
-// ── Wizard state ─────────────────────────────────────────────────────────────
-const step = ref(1); // 1=file, 2=edit+confirm
+const { step, file, isDragging, uploadError, uploading, walletId, selectedWalletName, onFileInput, onDrop, uploadAndPreview: doUpload } =
+    useImportUpload(props.wallets, t);
 
-// ── Step 1 ────────────────────────────────────────────────────────────────────
-const file        = ref(null);
-const isDragging  = ref(false);
-const uploadError = ref('');
-const uploading   = ref(false);
-const walletId    = ref(props.wallets[0]?.id ?? '');
+const { rows, bulkCategory, processing, allCategorized, loadRows, applyBulkCategory, addRow, removeRow, submitImport } =
+    useImportRows(walletId);
 
-const selectedWalletName = computed(() =>
-    props.wallets.find(w => w.id == walletId.value)?.name ?? ''
-);
-
-function onFileInput(e) {
-    const f = e.target.files?.[0];
-    if (f) selectFile(f);
-}
-
-function onDrop(e) {
-    isDragging.value = false;
-    const f = e.dataTransfer.files?.[0];
-    if (f) selectFile(f);
-}
-
-function selectFile(f) {
-    if (!f.name.match(/\.xlsx$/i)) {
-        uploadError.value = t('import.errorFile');
-        return;
-    }
-    file.value = f;
-    uploadError.value = '';
-}
-
-async function uploadAndPreview() {
-    if (!file.value) { uploadError.value = t('import.errorFile'); return; }
-    uploading.value = true;
-    uploadError.value = '';
-
-    const fd = new FormData();
-    fd.append('file', file.value);
-
-    try {
-        const res = await axios.post('/import/preview', fd, {
-            headers: { 'Content-Type': 'multipart/form-data', 'X-Requested-With': 'XMLHttpRequest' },
-        });
-        rows.value = res.data.rows.map((r, i) => ({
-            ...r,
-            _id:         i,
-            category_id: bulkCategory.value || '',
-        }));
-        step.value = 2;
-    } catch (err) {
-        uploadError.value = err.response?.data?.message ?? t('import.errorParse');
-    } finally {
-        uploading.value = false;
-    }
-}
-
-// ── Step 2 : editable rows ────────────────────────────────────────────────────
-const rows         = ref([]);
-const bulkCategory = ref('');
-
-let nextId = 10000;
-
-function applyBulkCategory(catId) {
-    rows.value.forEach(r => { r.category_id = catId; });
-}
-
-function addRow() {
-    rows.value.push({
-        _id:         nextId++,
-        date:        '',
-        amount:      '',
-        type:        'expense',
-        description: '',
-        tags:        '',
-        category_id: bulkCategory.value || '',
-    });
-}
-
-function removeRow(id) {
-    rows.value = rows.value.filter(r => r._id !== id);
-}
-
-const allCategorized = computed(() => rows.value.length > 0 && rows.value.every(r => r.category_id));
-
-// ── Submit ────────────────────────────────────────────────────────────────────
-const processing = ref(false);
-
-function submitImport() {
-    processing.value = true;
-    router.post('/import/process', {
-        rows:      rows.value.map(({ _id, ...r }) => r),
-        wallet_id: walletId.value,
-    }, {
-        onFinish: () => { processing.value = false; },
-    });
+function uploadAndPreview() {
+    doUpload(bulkCategory.value, loadRows);
 }
 </script>
 

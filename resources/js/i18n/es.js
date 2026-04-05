@@ -2,6 +2,7 @@ export default {
     nav: {
         dashboard: 'Panel',
         categories: 'Categorías',
+        rules: 'Auto-categorización',
         wallets: 'Carteras',
         overview: 'Vista global',
         statistics: 'Estadísticas',
@@ -210,6 +211,7 @@ export default {
             tagsPlaceholder: 'viaje, compras…',
             typeHint: 'Automático si una sección está seleccionada',
             categoryHint: 'Vincula esta transacción a una línea de presupuesto',
+            autoSuggested: 'Categoría sugerida automáticamente',
             dateHint: 'Fecha efectiva de la transacción',
             descHint: 'Texto libre para identificar la transacción',
             tagsHint: 'Enter o coma para confirmar · Retroceso para eliminar',
@@ -376,6 +378,16 @@ export default {
             labelPlaceholder: 'Etiqueta…',
             amountPlaceholder: '0,00',
         },
+    },
+
+    rules: {
+        title: 'Auto-categorización',
+        subtitle: 'Las reglas se aprenden automáticamente al categorizar tus transacciones.',
+        pattern: 'Descripción',
+        category: 'Categoría',
+        hits: 'Usos',
+        none: 'Sin reglas. Se crearán automáticamente al categorizar transacciones.',
+        confirmDelete: '¿Eliminar esta regla?',
     },
 
     goals: {

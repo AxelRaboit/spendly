@@ -170,7 +170,7 @@ const {
 } = useBudgetItems(walletId, sections, budget, flash);
 
 // ─── Transaction panel ───────────────────────────────────────────────────────
-const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editingTx, openTxPanel, openEditTx, closeTxPanel, submitTx, onTxSectionChange } =
+const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editingTx, suggestedCategoryId, markCategoryManual, openTxPanel, openEditTx, closeTxPanel, submitTx, onTxSectionChange } =
     useTransactionPanel(walletId, budget, sections, flash, localCategories);
 
 // ─── Item transactions panel ─────────────────────────────────────────────────
@@ -1631,9 +1631,11 @@ onUnmounted(() => {
             :tx-form="txForm"
             :section-meta="SECTION_META"
             :filtered-categories="txFilteredCategories"
+            :suggested-category-id="suggestedCategoryId"
             v-on:close="closeTxPanel"
             v-on:submit="submitTx"
             v-on:section-change="onTxSectionChange"
+            v-on:category-manual-change="markCategoryManual"
         />
 
         <BudgetDetailPanel

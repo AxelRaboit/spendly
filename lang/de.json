@@ -93,6 +93,8 @@
     "flash.budget.item_added": "Zeile hinzugefügt.",
     "flash.budget.items_added": ":count Zeilen hinzugefügt.",
     "flash.budget.cleared": ":count Zeilen gelöscht.",
+    "flash.rule.updated": "Regel aktualisiert.",
+    "flash.rule.deleted": "Regel gelöscht.",
     "flash.budget.item_updated": "Zeile aktualisiert.",
     "flash.budget.item_deleted": "Zeile gelöscht.",
     "flash.budget.item_duplicated": "Zeile dupliziert.",

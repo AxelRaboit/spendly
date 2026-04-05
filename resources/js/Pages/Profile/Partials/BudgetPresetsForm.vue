@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useDragDrop } from '@/composables/ui/useDragDrop';
 import { Check, X, GripVertical, Pencil, Trash2, Plus } from 'lucide-vue-next';
 
 const { t } = useI18n();
@@ -33,43 +34,10 @@ const editType = ref('');
 const editAmount = ref(0);
 
 // ── Drag-and-drop reorder ────────────────────────────────────────────────
-const draggingId = ref(null);
-const dragOverId = ref(null);
-
-function onDragStart(event, item) {
-    draggingId.value = item.id;
-    event.dataTransfer.effectAllowed = 'move';
-}
-
-function onDragEnd() {
-    draggingId.value = null;
-    dragOverId.value = null;
-}
-
-function onDragOver(event, item) {
-    event.preventDefault();
-    if (item.id !== draggingId.value) {
-        dragOverId.value = item.id;
-    }
-}
-
-function onDrop(event, targetItem) {
-    event.preventDefault();
-    const fromId = draggingId.value;
-    if (!fromId || fromId === targetItem.id) return;
-
-    const list = [...items.value];
-    const fromIndex = list.findIndex(i => i.id === fromId);
-    const toIndex = list.findIndex(i => i.id === targetItem.id);
-    const [moved] = list.splice(fromIndex, 1);
-    list.splice(toIndex, 0, moved);
-    items.value = list;
-
-    draggingId.value = null;
-    dragOverId.value = null;
-
-    window.axios.patch('/budget-presets/reorder', { ids: list.map(i => i.id) });
-}
+const { draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop } = useDragDrop(
+    items,
+    (ids) => window.axios.patch('/budget-presets/reorder', { ids }),
+);
 
 // ── CRUD ─────────────────────────────────────────────────────────────────
 async function addPreset() {

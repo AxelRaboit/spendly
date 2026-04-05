@@ -16,6 +16,7 @@ import {
     BadgeCheck,
     Repeat,
     Tag,
+    Wand2,
     TrendingUp,
     Upload,
     ChevronsLeft,
@@ -110,6 +111,12 @@ const navItems = [
         route: 'categories.index',
         match: 'categories.*',
         icon: Tag,
+    },
+    {
+        key: 'rules',
+        route: 'categorization-rules.index',
+        match: 'categorization-rules.*',
+        icon: Wand2,
     },
     {
         key: 'statistics',

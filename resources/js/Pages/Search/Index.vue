@@ -8,8 +8,9 @@ import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useSearchFilters } from '@/composables/search/useSearchFilters';
 import { useSectionMeta } from '@/composables/budget/useSectionMeta';
 import { useI18n } from 'vue-i18n';
 
@@ -25,41 +26,11 @@ const props = defineProps({
     freeLimitDays: { type: Number, default: 90 },
 });
 
-const form = reactive({
-    q:           props.filters.q           ?? '',
-    category_id: props.filters.category_id ?? '',
-    wallet_id:   props.filters.wallet_id   ?? '',
-    type:        props.filters.type        ?? '',
-    date_from:   props.filters.date_from   ?? '',
-    date_to:     props.filters.date_to     ?? '',
-    tag:         props.filters.tag         ?? '',
-});
-
-let timeout = null;
-function search() {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-        router.get('/search', clean(form), { preserveState: true, preserveScroll: true, replace: true });
-    }, 300);
-}
-
-function reset() {
-    Object.assign(form, { q: '', category_id: '', wallet_id: '', type: '', date_from: '', date_to: '', tag: '' });
-    router.get('/search', {}, { replace: true });
-}
-
-function clean(obj) {
-    return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== ''));
-}
+const { filters: form, search, reset, filterByTag, hasFilters } = useSearchFilters(props.filters);
 
 function fmtDay(date) {
     if (!date) return '';
     return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
-}
-
-function filterByTag(tag) {
-    form.tag = tag;
-    search();
 }
 
 const pendingDeleteTx = ref(null);
@@ -118,7 +89,6 @@ function submitEdit() {
     });
 }
 
-const hasFilters = () => Object.values(form).some(v => v !== '');
 </script>
 
 <template>

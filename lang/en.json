@@ -93,6 +93,8 @@
     "flash.budget.item_added": "Row added.",
     "flash.budget.items_added": ":count rows added.",
     "flash.budget.cleared": ":count rows cleared.",
+    "flash.rule.updated": "Rule updated.",
+    "flash.rule.deleted": "Rule deleted.",
     "flash.budget.item_updated": "Row updated.",
     "flash.budget.item_deleted": "Row deleted.",
     "flash.budget.item_duplicated": "Row duplicated.",

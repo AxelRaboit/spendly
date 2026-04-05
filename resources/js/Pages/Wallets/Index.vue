@@ -7,6 +7,7 @@ import TransferModal from '@/components/wallet/TransferModal.vue';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
+import { useDragDrop } from '@/composables/ui/useDragDrop';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useI18n } from 'vue-i18n';
 
@@ -30,43 +31,10 @@ function toggleFavorite(wallet) {
 
 // ── Drag-and-drop reorder ─────────────────────────────────────────────────
 const localWallets = ref([...props.wallets]);
-const draggingId = ref(null);
-const dragOverId = ref(null);
-
-function onDragStart(event, wallet) {
-    draggingId.value = wallet.id;
-    event.dataTransfer.effectAllowed = 'move';
-}
-
-function onDragEnd() {
-    draggingId.value = null;
-    dragOverId.value = null;
-}
-
-function onDragOver(event, wallet) {
-    event.preventDefault();
-    if (wallet.id !== draggingId.value) {
-        dragOverId.value = wallet.id;
-    }
-}
-
-function onDrop(event, targetWallet) {
-    event.preventDefault();
-    const fromId = draggingId.value;
-    if (!fromId || fromId === targetWallet.id) return;
-
-    const list = [...localWallets.value];
-    const fromIndex = list.findIndex((w) => w.id === fromId);
-    const toIndex = list.findIndex((w) => w.id === targetWallet.id);
-    const [moved] = list.splice(fromIndex, 1);
-    list.splice(toIndex, 0, moved);
-    localWallets.value = list;
-
-    draggingId.value = null;
-    dragOverId.value = null;
-
-    router.patch(route('wallets.reorder'), { ids: list.map((w) => w.id) }, { preserveScroll: true });
-}
+const { draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop } = useDragDrop(
+    localWallets,
+    (ids) => router.patch(route('wallets.reorder'), { ids }, { preserveScroll: true }),
+);
 
 // ── Quick-create placeholder ─────────────────────────────────────────────
 const quickSuggestions = [

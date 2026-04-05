@@ -3,9 +3,10 @@ import { Plus, Pencil, Trash2, Zap } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useGoalForm } from '@/composables/goals/useGoalForm';
 import { useI18n } from 'vue-i18n';
 
 const { t, locale } = useI18n();
@@ -18,65 +19,12 @@ const isPro = computed(() => page.props.auth?.plan === 'pro');
 const goalLimit = computed(() => page.props.planLimits.goal);
 const canCreateGoal = computed(() => isPro.value || props.goals.length < goalLimit.value);
 
-// ── Form (create/edit) ───────────────────────────────────��────────────────
-const editingGoal = ref(null);
-const showForm    = ref(false);
-
 const COLORS = ['#6366f1', '#8b5cf6', '#34d399', '#f59e0b', '#f43f5e', '#38bdf8', '#a3e635'];
 
-const form = useForm({
-    wallet_id:    null,
-    category_id:  null,
-    name:         '',
-    target_amount: '',
-    saved_amount:  '',
-    deadline:     '',
-    color:        '#6366f1',
-});
+const { editingGoal, showForm, form, openCreate, openEdit, submit, goalToDelete, confirmDelete, executeDelete } = useGoalForm();
 
-function openCreate() {
-    editingGoal.value = null;
-    form.reset();
-    form.color = '#6366f1';
-    showForm.value = true;
-}
-
-function openEdit(goal) {
-    editingGoal.value  = goal;
-    form.wallet_id    = goal.wallet_id ?? null;
-    form.category_id  = goal.category_id ?? null;
-    form.name          = goal.name;
-    form.target_amount = goal.target_amount;
-    form.saved_amount  = goal.saved_amount;
-    form.deadline      = goal.deadline ?? '';
-    form.color         = goal.color;
-    showForm.value     = true;
-}
-
-function submit() {
-    if (editingGoal.value) {
-        form.put(`/goals/${editingGoal.value.id}`, { onSuccess: () => { showForm.value = false; } });
-    } else {
-        form.post('/goals', { onSuccess: () => { showForm.value = false; form.reset(); } });
-    }
-}
-
-// ── Deposit ───────────────────────────────────────────────────────────────
 const depositGoal = ref(null);
 
-// ── Delete ───────────────────────────────────────────────────────────���────
-const goalToDelete = ref(null);
-
-function confirmDelete(goal) {
-    goalToDelete.value = goal;
-}
-
-function executeDelete() {
-    useForm({}).delete(`/goals/${goalToDelete.value.id}`);
-    goalToDelete.value = null;
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────
 function fmtDate(d) {
     if (!d) return '';
     return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));

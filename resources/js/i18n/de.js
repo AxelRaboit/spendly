@@ -2,6 +2,7 @@ export default {
     nav: {
         dashboard: 'Dashboard',
         categories: 'Kategorien',
+        rules: 'Auto-Kategorisierung',
         wallets: 'Geldbörsen',
         overview: 'Übersicht',
         statistics: 'Statistiken',
@@ -211,6 +212,7 @@ export default {
             tagsPlaceholder: 'reise, einkauf…',
             typeHint: 'Automatisch bei gewähltem Bereich',
             categoryHint: 'Verknüpft diese Transaktion mit einer Budgetzeile',
+            autoSuggested: 'Automatisch vorgeschlagene Kategorie',
             dateHint: 'Datum der Transaktion',
             descHint: 'Freitext zur Identifikation der Transaktion',
             tagsHint: 'Enter oder Komma zum Bestätigen · Rücktaste zum Entfernen',
@@ -377,6 +379,16 @@ export default {
             labelPlaceholder: 'Bezeichnung…',
             amountPlaceholder: '0,00',
         },
+    },
+
+    rules: {
+        title: 'Auto-Kategorisierung',
+        subtitle: 'Regeln werden automatisch gelernt, wenn Sie Ihre Transaktionen kategorisieren.',
+        pattern: 'Beschreibung',
+        category: 'Kategorie',
+        hits: 'Nutzung',
+        none: 'Noch keine Regeln. Sie werden automatisch beim Kategorisieren von Transaktionen erstellt.',
+        confirmDelete: 'Diese Regel löschen?',
     },
 
     goals: {
