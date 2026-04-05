@@ -6,10 +6,17 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
         for (const [key, items] of Object.entries(sections.value)) {
             result[key] = {
                 planned: items.reduce((s, i) => s + i.planned_amount, 0),
+                carried: items.reduce((s, i) => s + (i.carried_over ?? 0), 0),
                 actual: items.reduce((s, i) => s + i.actual_amount, 0),
+                available: items.reduce((s, i) => s + (i.available ?? 0), 0),
             };
         }
         return result;
+    });
+
+    const totalCarriedOver = computed(() => {
+        const keys = ['income', 'savings', 'bills', 'expenses', 'debt'];
+        return keys.reduce((s, k) => s + (totals.value[k]?.carried ?? 0), 0);
     });
 
     const totalIncome = computed(() => ({
@@ -31,8 +38,8 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
     }));
 
     const leftToSpend = computed(() => ({
-        planned: startBalance.value + cashFlow.value.planned,
-        actual: startBalance.value + cashFlow.value.actual,
+        planned: startBalance.value + cashFlow.value.planned + totalCarriedOver.value,
+        actual: startBalance.value + cashFlow.value.actual + totalCarriedOver.value,
     }));
 
     const savingsRate = computed(() => {
@@ -56,6 +63,7 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
 
     return {
         totals,
+        totalCarriedOver,
         totalIncome,
         totalExpenses,
         cashFlow,

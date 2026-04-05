@@ -39,6 +39,7 @@ class BudgetController extends Controller
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
 
         $budget = $this->budgetService->getOrCreate($wallet, $month);
+        $this->budgetService->computeCarryOver($budget, $month);
         ['sections' => $sections, 'unbudgeted' => $unbudgeted] = $this->budgetService->loadWithActuals($budget);
 
         $prevMonth = $month->copy()->subMonth()->format('Y-m');

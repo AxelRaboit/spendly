@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['budget_id', 'type', 'label', 'planned_amount', 'category_id', 'position', 'notes', 'repeat_next_month'])]
+#[Fillable(['budget_id', 'type', 'label', 'planned_amount', 'carried_over', 'category_id', 'position', 'notes', 'repeat_next_month'])]
 class BudgetItem extends Model
 {
     use HasFactory;

@@ -136,6 +136,8 @@ export default {
     },
 
     budgets: {
+        carriedOver: 'Übertrag',
+        available: 'Verfügbar',
         newTransaction: 'Neue Transaktion',
         copyFromPrevious: 'Von {month} kopieren',
         confirmCopy: 'Alle Zeilen des Vormonats kopieren?',

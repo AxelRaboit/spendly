@@ -136,6 +136,8 @@ export default {
     },
 
     budgets: {
+        carriedOver: 'Carried over',
+        available: 'Available',
         newTransaction: 'New transaction',
         copyFromPrevious: 'Copy from {month}',
         confirmCopy: 'Copy all rows from the previous month?',

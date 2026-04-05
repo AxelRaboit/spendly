@@ -147,7 +147,7 @@ function trackCarousel(el, index) {
 const { SECTION_META } = useSectionMeta();
 
 // ─── Totals / KPIs ───────────────────────────────────────────────────────────
-const { totals, totalIncome, totalExpenses, cashFlow, leftToSpend, savingsRate, isCurrentMonth, projectedExpenses } =
+const { totals, totalCarriedOver, totalIncome, totalExpenses, cashFlow, leftToSpend, savingsRate, isCurrentMonth, projectedExpenses } =
     useBudgetTotals(sections, startBalance, budget, unbudgeted);
 
 const hasUnbudgeted = computed(() => (unbudgeted.value?.income ?? 0) > 0 || (unbudgeted.value?.expenses ?? 0) > 0);
@@ -882,7 +882,12 @@ onUnmounted(() => {
                                         </span>
                                         <span v-else class="text-subtle">—</span>
                                         <div class="flex items-center gap-2 font-mono">
-                                            <span class="text-muted">{{ fmt(item.planned_amount) }}</span>
+                                            <span class="text-muted">
+                                                {{ fmt(item.planned_amount) }}
+                                                <span v-if="item.carried_over !== 0" class="text-xs" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                    {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
+                                                </span>
+                                            </span>
                                             <button
                                                 v-if="item.category_id && item.actual_amount > 0"
                                                 :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
@@ -1189,7 +1194,12 @@ onUnmounted(() => {
                                             <span v-else class="text-subtle">—</span>
                                         </td>
                                         <td class="px-4 py-2.5 text-right text-secondary font-mono">
-                                            <div>{{ fmt(item.planned_amount) }}</div>
+                                            <div>
+                                                {{ fmt(item.planned_amount) }}
+                                                <span v-if="item.carried_over !== 0" class="text-xs ml-1" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                    {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
+                                                </span>
+                                            </div>
                                             <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-surface-3 rounded-full">
                                                 <div
                                                     v-show="progress(item.planned_amount, item.actual_amount) > 0"

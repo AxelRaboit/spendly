@@ -83,6 +83,62 @@ class BudgetService
     }
 
     /**
+     * Compute and persist the carried-over amount for each budget item
+     * based on the previous month's surplus/deficit per category.
+     */
+    public function computeCarryOver(Budget $budget, Carbon $month): void
+    {
+        $previousMonth = $month->copy()->subMonth();
+
+        $previous = Budget::where('wallet_id', $budget->wallet_id)
+            ->where('month', $previousMonth->startOfMonth()->toDateString())
+            ->first();
+
+        $currentItems = BudgetItem::where('budget_id', $budget->id)
+            ->whereNotNull('category_id')
+            ->get();
+
+        if (! $previous || $currentItems->isEmpty()) {
+            if ($currentItems->isNotEmpty()) {
+                BudgetItem::where('budget_id', $budget->id)->update(['carried_over' => 0]);
+            }
+
+            return;
+        }
+
+        $prevItems = BudgetItem::where('budget_id', $previous->id)
+            ->whereNotNull('category_id')
+            ->get()
+            ->keyBy('category_id');
+
+        $prevActuals = DB::table('transactions')
+            ->where('wallet_id', $budget->wallet_id)
+            ->whereYear('date', $previousMonth->year)
+            ->whereMonth('date', $previousMonth->month)
+            ->whereNotNull('category_id')
+            ->groupBy('category_id')
+            ->selectRaw('category_id, SUM(amount) as total')
+            ->pluck('total', 'category_id');
+
+        foreach ($currentItems as $item) {
+            $prevItem = $prevItems->get($item->category_id);
+
+            if (! $prevItem) {
+                $item->update(['carried_over' => 0]);
+
+                continue;
+            }
+
+            $prevPlanned = (float) $prevItem->planned_amount;
+            $prevCarried = (float) $prevItem->carried_over;
+            $prevActual = (float) ($prevActuals->get($item->category_id) ?? 0);
+
+            $carryOver = round($prevPlanned + $prevCarried - $prevActual, 2);
+            $item->update(['carried_over' => $carryOver]);
+        }
+    }
+
+    /**
      * Add an item to a budget.
      */
     public function addItem(Budget $budget, array $data): BudgetItem
@@ -478,20 +534,27 @@ class BudgetService
             $sections[$section->value] = $allItems
                 ->where('type', $section->value)
                 ->values()
-                ->map(fn (BudgetItem $item) => [
-                    'id' => $item->id,
-                    'type' => $item->type,
-                    'label' => $item->label,
-                    'planned_amount' => (float) $item->planned_amount,
-                    'actual_amount' => $item->category_id ? (float) ($actuals->get($item->category_id) ?? 0) : 0.0,
-                    'category_id' => $item->category_id,
-                    'notes' => $item->notes,
-                    'repeat_next_month' => (bool) $item->repeat_next_month,
-                    'category' => $item->category instanceof Category
-                        ? ['id' => $item->category->id, 'name' => $item->category->name, 'is_system' => (bool) $item->category->is_system]
-                        : null,
-                    'position' => $item->position,
-                ])
+                ->map(function (BudgetItem $item) use ($actuals) {
+                    $actualAmount = $item->category_id ? (float) ($actuals->get($item->category_id) ?? 0) : 0.0;
+                    $carriedOver = (float) $item->carried_over;
+
+                    return [
+                        'id' => $item->id,
+                        'type' => $item->type,
+                        'label' => $item->label,
+                        'planned_amount' => (float) $item->planned_amount,
+                        'carried_over' => $carriedOver,
+                        'actual_amount' => $actualAmount,
+                        'available' => (float) $item->planned_amount + $carriedOver - $actualAmount,
+                        'category_id' => $item->category_id,
+                        'notes' => $item->notes,
+                        'repeat_next_month' => (bool) $item->repeat_next_month,
+                        'category' => $item->category instanceof Category
+                            ? ['id' => $item->category->id, 'name' => $item->category->name, 'is_system' => (bool) $item->category->is_system]
+                            : null,
+                        'position' => $item->position,
+                    ];
+                })
                 ->all();
         }
 
