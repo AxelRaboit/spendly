@@ -25,6 +25,8 @@ class StatisticsController extends Controller
             'savingsHistory' => $statisticsService->savingsRateHistory($user, $monthLimit),
             'budgetVsActual' => $statisticsService->budgetVsActual($user),
             'yearProjection' => $statisticsService->yearEndProjection($user, $monthLimit),
+            'categoryTrends' => $statisticsService->byCategoryPerMonth($user, $monthLimit),
+            'monthLimit' => $monthLimit,
         ]);
     }
 }

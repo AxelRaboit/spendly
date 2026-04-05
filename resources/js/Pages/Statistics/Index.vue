@@ -3,7 +3,7 @@ import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import '@/plugins/chartjs';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Bar, Doughnut, Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -25,6 +25,8 @@ const props = defineProps({
     savingsHistory: Array,
     budgetVsActual: Array,
     yearProjection: Object,
+    categoryTrends: Object,
+    monthLimit:     Number,
 });
 
 const { fmt, currency } = useCurrency();
@@ -116,6 +118,54 @@ const budgetBarData = computed(() => ({
 
 const chartOptions = baseOptions;
 const barOptions   = barThemeOptions;
+
+// ── Category trends ──────────────────────────────────────────────────────
+const selectedCategoryIds = ref(
+    props.categoryTrends.categories.slice(0, 5).map(c => c.id)
+);
+
+function toggleCategory(id) {
+    const idx = selectedCategoryIds.value.indexOf(id);
+    if (idx >= 0) selectedCategoryIds.value.splice(idx, 1);
+    else selectedCategoryIds.value.push(id);
+}
+
+const trendLineData = computed(() => ({
+    labels: props.categoryTrends.months.map(m => fmtMonth(m)),
+    datasets: props.categoryTrends.categories
+        .filter(c => selectedCategoryIds.value.includes(c.id))
+        .map(c => {
+            const colorIdx = props.categoryTrends.categories.findIndex(o => o.id === c.id);
+            const color = categoryColors[colorIdx % categoryColors.length];
+            return {
+                label: c.name,
+                data: c.data,
+                borderColor: color,
+                backgroundColor: color + '1A',
+                borderWidth: 2,
+                pointRadius: 3,
+                tension: 0.3,
+                fill: false,
+            };
+        }),
+}));
+
+const trendLineOptions = computed(() => ({
+    ...barThemeOptions.value,
+    scales: {
+        x: { ticks: { color: textColor.value }, grid: { color: gridColor.value } },
+        y: { ticks: { color: textColor.value }, grid: { color: gridColor.value } },
+    },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+        ...barThemeOptions.value.plugins,
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.raw)}` },
+        },
+    },
+}));
 </script>
 
 <template>
@@ -200,6 +250,37 @@ const barOptions   = barThemeOptions;
                         <Bar :data="budgetBarData" :options="barOptions" />
                     </div>
                 </div>
+            </div>
+            <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <AppTooltip :text="t('statistics.categoryTrendsTip')">
+                    <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4 cursor-help">
+                        {{ t('statistics.categoryTrends') }}
+                    </h3>
+                </AppTooltip>
+
+                <p v-if="monthLimit <= 1" class="text-sm text-muted mb-4">{{ t('statistics.trendUpgradeHint') }}</p>
+
+                <div v-if="categoryTrends.categories.length > 0" class="space-y-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            v-for="cat in categoryTrends.categories"
+                            :key="cat.id"
+                            class="text-xs px-3 py-1 rounded-full border transition-colors"
+                            :class="selectedCategoryIds.includes(cat.id)
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-transparent text-secondary border-base hover:border-indigo-400'"
+                            v-on:click="toggleCategory(cat.id)"
+                        >
+                            {{ cat.name }}
+                        </button>
+                    </div>
+
+                    <div class="h-64 sm:h-80">
+                        <Line :data="trendLineData" :options="trendLineOptions" />
+                    </div>
+                </div>
+
+                <EmptyState v-else :message="t('statistics.noTrends')" icon="chart" />
             </div>
         </div>
     </AuthenticatedLayout>

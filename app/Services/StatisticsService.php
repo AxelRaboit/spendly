@@ -48,6 +48,49 @@ class StatisticsService
             ->all();
     }
 
+    /**
+     * Spending per category per month for the last N months.
+     *
+     * @return array{months: string[], categories: array<int, array{id: int, name: string, data: float[]}>}
+     */
+    public function byCategoryPerMonth(User $user, int $monthLimit = 6): array
+    {
+        $monthsBack = $monthLimit - 1;
+        $startDate = now()->subMonths($monthsBack)->startOfMonth();
+
+        $months = collect(range($monthsBack, 0))
+            ->map(fn (int $i) => now()->subMonths($i)->format('Y-m'))
+            ->all();
+
+        $raw = $user->transactions()
+            ->whereNull('transfer_id')
+            ->where('type', TransactionType::Expense)
+            ->where('date', '>=', $startDate)
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->selectRaw("categories.id as cat_id, categories.name as cat_name, TO_CHAR(date, 'YYYY-MM') as month, SUM(transactions.amount) as total")
+            ->groupBy('cat_id', 'cat_name', 'month')
+            ->get();
+
+        $categories = $raw->groupBy('cat_id')
+            ->map(function (Collection $rows, int|string $catId) use ($months): array {
+                $monthTotals = $rows->pluck('total', 'month');
+
+                /** @var object{cat_name: string} $first */
+                $first = $rows->first();
+
+                return [
+                    'id' => (int) $catId,
+                    'name' => $first->cat_name,
+                    'data' => array_map(fn (string $m) => (float) ($monthTotals[$m] ?? 0), $months),
+                ];
+            })
+            ->sortByDesc(fn (array $c): float => (float) array_sum($c['data']))
+            ->values()
+            ->all();
+
+        return ['months' => $months, 'categories' => $categories];
+    }
+
     public function currentMonth(User $user): float
     {
         return (float) $user->transactions()
