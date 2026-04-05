@@ -52,6 +52,14 @@ class GoalService
         return $goal;
     }
 
+    public function update(Goal $goal, array $data): Goal
+    {
+        $data['name'] = Text::normalize($data['name']);
+        $goal->update($data);
+
+        return $goal;
+    }
+
     /**
      * Deposit an amount toward a goal.
      * Creates a real expense transaction on the linked wallet (if any),

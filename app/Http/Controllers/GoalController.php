@@ -10,7 +10,6 @@ use App\Http\Requests\GoalRequest;
 use App\Models\Goal;
 use App\Services\GoalService;
 use App\Services\PlanService;
-use App\Support\Text;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,9 +48,7 @@ class GoalController extends Controller
     public function update(GoalRequest $request, Goal $goal): RedirectResponse
     {
         $this->authorize('update', $goal);
-        $data = $request->validated();
-        $data['name'] = Text::normalize($data['name']);
-        $goal->update($data);
+        $this->goalService->update($goal, $request->validated());
 
         return back()->with('success', __('flash.goal.updated'));
     }

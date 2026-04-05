@@ -166,6 +166,60 @@ class BudgetService
         ]);
     }
 
+    /**
+     * Quick-start a budget with suggested items, creating categories as needed.
+     *
+     * @param  array<int, array{label: string, type: string, planned_amount?: float}>  $suggestions
+     */
+    public function quickStart(Budget $budget, User $user, array $suggestions): int
+    {
+        $count = 0;
+
+        foreach ($suggestions as $suggestion) {
+            $label = Text::normalize($suggestion['label']);
+            $type = $suggestion['type'];
+
+            $category = Category::firstOrCreate(
+                ['user_id' => $user->id, 'name' => $label],
+                ['is_system' => false],
+            );
+
+            if (BudgetItem::where('budget_id', $budget->id)->where('category_id', $category->id)->exists()) {
+                continue;
+            }
+
+            $position = BudgetItem::where('budget_id', $budget->id)
+                ->where('type', $type)
+                ->max('position') ?? -1;
+
+            BudgetItem::create([
+                'budget_id' => $budget->id,
+                'type' => $type,
+                'label' => $label,
+                'planned_amount' => $suggestion['planned_amount'] ?? 0,
+                'category_id' => $category->id,
+                'position' => $position + 1,
+            ]);
+
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Remove all non-system budget items for a given budget.
+     */
+    public function clearItems(Budget $budget): int
+    {
+        return BudgetItem::where('budget_id', $budget->id)
+            ->where(fn ($q) => $q
+                ->whereNull('category_id')
+                ->orWhereHas('category', fn ($c) => $c->where('is_system', false))
+            )
+            ->delete();
+    }
+
     private function seedTransferItemForCategory(Budget $budget, Wallet $wallet, Carbon $month, ?Category $category, BudgetSection $section): void
     {
         if (! $category instanceof Category) {

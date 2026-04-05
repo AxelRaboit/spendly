@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\BudgetPresetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoalController;
@@ -36,6 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/locale', [LocaleController::class, 'update'])->name('locale.update');
+
+    Route::get('/budget-presets', [BudgetPresetController::class, 'index'])->name('budget-presets.index');
+    Route::post('/budget-presets', [BudgetPresetController::class, 'store'])->name('budget-presets.store');
+    Route::put('/budget-presets/{budgetPreset}', [BudgetPresetController::class, 'update'])->name('budget-presets.update');
+    Route::delete('/budget-presets/{budgetPreset}', [BudgetPresetController::class, 'destroy'])->name('budget-presets.destroy');
+    Route::patch('/budget-presets/reorder', [BudgetPresetController::class, 'reorder'])->name('budget-presets.reorder');
 
     Route::get('/plan', [PlanController::class, 'index'])->name('plan.index');
     Route::post('/plan/upgrade', [PlanController::class, 'upgrade'])->name('plan.upgrade');
@@ -80,6 +87,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/wallets/{wallet}/budget/items/{item}/transactions', [BudgetController::class, 'itemTransactions'])->name('wallets.budget.items.transactions');
     Route::post('/wallets/{wallet}/budget/items/{item}/duplicate', [BudgetController::class, 'duplicateItem'])->name('wallets.budget.items.duplicate');
     Route::post('/wallets/{wallet}/budget/copy-repeat', [BudgetController::class, 'copyRepeat'])->name('wallets.budget.copy-repeat');
+    Route::post('/wallets/{wallet}/budget/quick-start', [BudgetController::class, 'quickStart'])->name('wallets.budget.quick-start');
+    Route::delete('/wallets/{wallet}/budget/clear', [BudgetController::class, 'clearItems'])->name('wallets.budget.clear');
     Route::patch('/wallets/{wallet}/budget/notes', [BudgetController::class, 'updateNotes'])->name('wallets.budget.notes.update');
     Route::get('/wallets/{wallet}/budget/year', [BudgetController::class, 'yearView'])->name('wallets.budget.year');
 });

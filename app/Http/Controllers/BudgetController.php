@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Http\Requests\QuickStartBudgetRequest;
 use App\Http\Requests\ReorderRequest;
 use App\Http\Requests\StoreBudgetItemRequest;
 use App\Http\Requests\UpdateBudgetItemRequest;
 use App\Http\Requests\UpdateBudgetNotesRequest;
 use App\Models\BudgetItem;
 use App\Models\Wallet;
+use App\Services\BudgetPresetService;
 use App\Services\BudgetService;
 use App\Services\GoalService;
 use App\Services\PlanService;
@@ -27,6 +29,7 @@ class BudgetController extends Controller
 {
     public function __construct(
         private readonly BudgetService $budgetService,
+        private readonly BudgetPresetService $presetService,
         private readonly GoalService $goalService,
         private readonly PlanService $planService,
     ) {}
@@ -64,6 +67,7 @@ class BudgetController extends Controller
             'flashCategory' => $request->query('flash_category') ? (int) $request->query('flash_category') : null,
             'prevItems' => $this->budgetService->getPreviousMonthItems($wallet, $month),
             'goals' => $this->goalService->listForWallet($user, $wallet),
+            'budgetPresets' => $this->presetService->list($user),
         ]);
     }
 
@@ -188,6 +192,38 @@ class BudgetController extends Controller
         $budget->update(['notes' => $validated['notes']]);
 
         return redirect()->back();
+    }
+
+    public function quickStart(QuickStartBudgetRequest $request, Wallet $wallet): RedirectResponse
+    {
+        $this->authorize('view', $wallet);
+
+        $validated = $request->validated();
+        $month = Carbon::createFromFormat('Y-m', $validated['month']);
+        $budget = $this->budgetService->getOrCreate($wallet, $month);
+
+        $count = $this->budgetService->quickStart($budget, $request->user(), $validated['suggestions']);
+
+        return redirect()->back()->with(
+            'success',
+            $count === 1 ? __('flash.budget.item_added') : __('flash.budget.items_added', ['count' => $count])
+        );
+    }
+
+    public function clearItems(Request $request, Wallet $wallet): RedirectResponse
+    {
+        $this->authorize('view', $wallet);
+
+        $validated = $request->validate([
+            'month' => ['required', 'date_format:Y-m'],
+        ]);
+
+        $month = Carbon::createFromFormat('Y-m', $validated['month']);
+        $budget = $this->budgetService->getOrCreate($wallet, $month);
+
+        $count = $this->budgetService->clearItems($budget);
+
+        return redirect()->back()->with('success', __('flash.budget.cleared', ['count' => $count]));
     }
 
     public function yearView(Request $request, Wallet $wallet): Response

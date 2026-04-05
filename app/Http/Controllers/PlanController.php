@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\PlanType;
+use App\Services\PlanService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,6 +12,8 @@ use Inertia\Response;
 
 class PlanController extends Controller
 {
+    public function __construct(private readonly PlanService $planService) {}
+
     public function index(Request $request): Response
     {
         return Inertia::render('Plan/Index');
@@ -19,20 +21,14 @@ class PlanController extends Controller
 
     public function upgrade(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        $user->plan = PlanType::Pro;
-        $user->trial_ends_at = null;
-        $user->save();
+        $this->planService->upgrade($request->user());
 
         return redirect()->route('plan.index')->with('success', __('flash.plan.upgraded'));
     }
 
     public function downgrade(Request $request): RedirectResponse
     {
-        $user = $request->user();
-        $user->plan = PlanType::Free;
-        $user->trial_ends_at = null;
-        $user->save();
+        $this->planService->downgrade($request->user());
 
         return redirect()->route('plan.index')->with('success', __('flash.plan.downgraded'));
     }

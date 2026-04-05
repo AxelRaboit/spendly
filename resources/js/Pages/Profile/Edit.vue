@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import BudgetPresetsForm from './Partials/BudgetPresetsForm.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
@@ -11,6 +12,7 @@ const { t } = useI18n();
 defineProps({
     mustVerifyEmail: { type: Boolean },
     status:          { type: String },
+    budgetPresets:   { type: Array, default: () => [] },
 });
 </script>
 
@@ -25,6 +27,10 @@ defineProps({
         <div class="mx-auto max-w-2xl space-y-6">
             <FormSection>
                 <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
+            </FormSection>
+
+            <FormSection>
+                <BudgetPresetsForm :presets="budgetPresets" />
             </FormSection>
 
             <FormSection>

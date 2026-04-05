@@ -87,4 +87,14 @@ class PlanService
     {
         return $user->trial_ends_at !== null && $user->trial_ends_at->isFuture();
     }
+
+    public function upgrade(User $user): void
+    {
+        $user->update(['plan' => PlanType::Pro, 'trial_ends_at' => null]);
+    }
+
+    public function downgrade(User $user): void
+    {
+        $user->update(['plan' => PlanType::Free, 'trial_ends_at' => null]);
+    }
 }

@@ -91,6 +91,8 @@
     "flash.recurring.updated": "Transacción automática actualizada.",
     "flash.recurring.deleted": "Transacción automática eliminada.",
     "flash.budget.item_added": "Fila añadida.",
+    "flash.budget.items_added": ":count filas añadidas.",
+    "flash.budget.cleared": ":count filas eliminadas.",
     "flash.budget.item_updated": "Fila actualizada.",
     "flash.budget.item_deleted": "Fila eliminada.",
     "flash.budget.item_duplicated": "Fila duplicada.",

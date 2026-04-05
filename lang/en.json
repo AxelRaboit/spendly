@@ -91,6 +91,8 @@
     "flash.recurring.updated": "Automatic transaction updated.",
     "flash.recurring.deleted": "Automatic transaction deleted.",
     "flash.budget.item_added": "Row added.",
+    "flash.budget.items_added": ":count rows added.",
+    "flash.budget.cleared": ":count rows cleared.",
     "flash.budget.item_updated": "Row updated.",
     "flash.budget.item_deleted": "Row deleted.",
     "flash.budget.item_duplicated": "Row duplicated.",

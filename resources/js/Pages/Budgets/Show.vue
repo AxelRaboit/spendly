@@ -28,7 +28,7 @@ import { useFmtMonth }       from '@/composables/core/useFmtMonth';
 import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -53,6 +53,7 @@ const props = defineProps({
     flashCategory: { type: Number, default: null },
     prevItems:     { type: Array,  default: () => [] },
     goals:         { type: Array,  default: () => [] },
+    budgetPresets: { type: Array,  default: () => [] },
 });
 
 // ─── Reactive prop refs ───────────────────────────────────────────────────────
@@ -298,6 +299,50 @@ function onNotesKeydown(e, item) {
         e.preventDefault();
         document.getElementById(`edit-label-${item.id}`)?.focus();
     }
+}
+
+// ─── Quick-start suggestions ─────────────────────────────────────────────────
+const allPresets = props.budgetPresets.map(p => ({ label: p.label, type: p.type, planned_amount: p.planned_amount }));
+
+const existingLabels = computed(() => {
+    const labels = new Set();
+    Object.values(sections.value).forEach(items => {
+        items.forEach(item => labels.add(item.label.toLowerCase()));
+    });
+    return labels;
+});
+
+const quickStartSuggestions = computed(() =>
+    allPresets.filter(p => !existingLabels.value.has(p.label.toLowerCase()))
+);
+
+const quickStartForm = useForm({ month: '', suggestions: [] });
+
+function quickStart(suggestion) {
+    quickStartForm.month = budget.value.month;
+    quickStartForm.suggestions = [suggestion];
+    quickStartForm.post(`/wallets/${walletId.value}/budget/quick-start`, { preserveScroll: true });
+}
+
+function quickStartAll() {
+    quickStartForm.month = budget.value.month;
+    quickStartForm.suggestions = quickStartSuggestions.value;
+    quickStartForm.post(`/wallets/${walletId.value}/budget/quick-start`, { preserveScroll: true });
+}
+
+// ─── Clear all ───────────────────────────────────────────────────────────────
+const showClearModal = ref(false);
+
+function clearAll() {
+    showClearModal.value = true;
+}
+
+function confirmClear() {
+    router.delete(`/wallets/${walletId.value}/budget/clear`, {
+        data: { month: budget.value.month },
+        preserveScroll: true,
+        onSuccess: () => { showClearModal.value = false; },
+    });
 }
 
 // ─── Keyboard navigation ──────────────────────────────────────────────────────
@@ -623,6 +668,49 @@ onUnmounted(() => {
                 </button>
             </div>
 
+            <div v-if="quickStartSuggestions.length > 0" class="space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-sm text-secondary">{{ t('budgets.quickStart.label') }}</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                            :disabled="quickStartForm.processing"
+                            v-on:click="quickStartAll"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                            {{ t('budgets.quickStart.addAll') }}
+                        </button>
+                        <Link
+                            href="/profile"
+                            class="inline-flex items-center gap-2 text-sm text-muted hover:text-indigo-400 font-medium px-4 py-2 transition-colors"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            {{ t('budgets.quickStart.customize') }}
+                        </Link>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <button
+                        v-for="suggestion in quickStartSuggestions"
+                        :key="suggestion.label"
+                        class="border-2 border-dashed border-base/60 rounded-xl px-4 py-3 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 group"
+                        :disabled="quickStartForm.processing"
+                        v-on:click="quickStart(suggestion)"
+                    >
+                        <span class="text-sm font-medium text-muted group-hover:text-indigo-400 transition-colors">
+                            {{ suggestion.label }}
+                        </span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs px-1.5 py-0.5 rounded-full" :class="[SECTION_META[suggestion.type]?.bg, SECTION_META[suggestion.type]?.color]">
+                                {{ SECTION_META[suggestion.type]?.label }}
+                            </span>
+                            <span v-if="suggestion.planned_amount" class="text-xs text-muted font-mono">{{ fmt(suggestion.planned_amount) }}</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
             <div class="bg-surface border border-base/60 rounded-lg relative">
                 <button
                     class="flex items-center justify-between w-full px-4 py-3 text-xs transition-colors text-muted hover:text-secondary cursor-pointer"
@@ -734,6 +822,15 @@ onUnmounted(() => {
                         v-on:click="isPro && exportXlsx()"
                     >
                         {{ t('budgets.exportXlsx') }}
+                    </AppButton>
+                    <AppButton
+                        v-if="!isBudgetEmpty"
+                        size="sm"
+                        variant="secondary"
+                        class="!text-rose-400 hover:!bg-rose-500/10"
+                        v-on:click="clearAll"
+                    >
+                        {{ t('budgets.clearAll') }}
                     </AppButton>
                     <span v-if="!isPro" class="text-xs font-semibold bg-amber-500 text-white px-2 py-1 rounded self-center">Pro</span>
                 </div>
@@ -1602,6 +1699,13 @@ onUnmounted(() => {
             :message="t('budgets.detailPanel.confirmDelete')"
             v-on:confirm="confirmDeleteTx"
             v-on:cancel="cancelDeleteTx"
+        />
+
+        <ConfirmModal
+            :show="showClearModal"
+            :message="t('budgets.confirmClear')"
+            v-on:confirm="confirmClear"
+            v-on:cancel="showClearModal = false"
         />
 
         <Transition

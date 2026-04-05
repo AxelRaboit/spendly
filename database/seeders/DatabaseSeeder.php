@@ -9,6 +9,7 @@ use App\Models\Budget;
 use App\Models\BudgetItem;
 use App\Models\Category;
 use App\Models\Goal;
+use App\Models\BudgetPreset;
 use App\Models\RecurringTransaction;
 use App\Models\ScheduledTransaction;
 use App\Models\Transaction;
@@ -105,6 +106,7 @@ class DatabaseSeeder extends Seeder
             $this->createGoals($user, $wallet, $categories);
             $this->createRecurringTransactions($user, $wallet, $categories);
             $this->createScheduledTransactions($user, $wallet, $categories);
+            $this->createBudgetPresets($user);
         }
     }
 
@@ -309,6 +311,34 @@ class DatabaseSeeder extends Seeder
                 'day_of_month' => $data['day_of_month'],
                 'type'         => $data['type'],
                 'active'       => $data['active'],
+            ]);
+        }
+    }
+
+    private function createBudgetPresets(User $user): void
+    {
+        $presets = [
+            ['type' => 'income',   'label' => 'Salaire',           'planned_amount' => 2800.00],
+            ['type' => 'income',   'label' => 'Freelance',         'planned_amount' => 400.00],
+            ['type' => 'savings',  'label' => 'Épargne vacances',  'planned_amount' => 200.00],
+            ['type' => 'bills',    'label' => 'Loyer',             'planned_amount' => 850.00],
+            ['type' => 'bills',    'label' => 'Électricité / Gaz', 'planned_amount' => 80.00],
+            ['type' => 'bills',    'label' => 'Internet',          'planned_amount' => 35.00],
+            ['type' => 'bills',    'label' => 'Téléphone',         'planned_amount' => 20.00],
+            ['type' => 'bills',    'label' => 'Assurance',         'planned_amount' => 60.00],
+            ['type' => 'expenses', 'label' => 'Courses',           'planned_amount' => 400.00],
+            ['type' => 'expenses', 'label' => 'Transport',         'planned_amount' => 80.00],
+            ['type' => 'expenses', 'label' => 'Restaurants',       'planned_amount' => 150.00],
+            ['type' => 'expenses', 'label' => 'Loisirs',           'planned_amount' => 100.00],
+            ['type' => 'expenses', 'label' => 'Santé',             'planned_amount' => 50.00],
+            ['type' => 'debt',     'label' => 'Remboursement prêt','planned_amount' => 250.00],
+        ];
+
+        foreach ($presets as $position => $preset) {
+            BudgetPreset::create([
+                'user_id' => $user->id,
+                'position' => $position,
+                ...$preset,
             ]);
         }
     }
