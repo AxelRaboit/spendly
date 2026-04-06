@@ -13,7 +13,7 @@ jobs:
       matrix:
         laravel-version: [ 13 ]
         php-version: [ 8.4 ]
-        node-version: [ 25 ]
+        node-version: [ 24 ]
         pnpm-version: [ 10 ]
     env:
       extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_pgsql, dom, filter, json, gd, zip, tokenizer
