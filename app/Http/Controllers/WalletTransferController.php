@@ -11,16 +11,16 @@ use Illuminate\Http\Request;
 
 class WalletTransferController extends Controller
 {
-    public function store(StoreTransferRequest $request, WalletTransferService $service): RedirectResponse
+    public function store(StoreTransferRequest $storeTransferRequest, WalletTransferService $walletTransferService): RedirectResponse
     {
-        $service->create($request->user(), $request->validated());
+        $walletTransferService->create($storeTransferRequest->user(), $storeTransferRequest->validated());
 
         return back()->with('success', __('flash.transfer.created'));
     }
 
-    public function destroy(Request $request, string $transferId, WalletTransferService $service): RedirectResponse
+    public function destroy(Request $request, string $transferId, WalletTransferService $walletTransferService): RedirectResponse
     {
-        $service->deleteByTransferId($transferId, $request->user());
+        $walletTransferService->deleteByTransferId($transferId, $request->user());
 
         return back()->with('success', __('flash.transfer.deleted'));
     }

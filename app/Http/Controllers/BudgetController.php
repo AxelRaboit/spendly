@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Http\Requests\ClearBudgetItemsRequest;
 use App\Http\Requests\QuickStartBudgetRequest;
 use App\Http\Requests\ReorderRequest;
 use App\Http\Requests\StoreBudgetItemRequest;
@@ -51,7 +52,10 @@ class BudgetController extends Controller
         $user = $request->user();
 
         return Inertia::render('Budgets/Show', [
-            'wallet' => $wallet,
+            'wallet' => array_merge($wallet->toArray(), [
+                'is_shared' => $wallet->isShared(),
+                'user_role' => $wallet->roleFor($user)?->value,
+            ]),
             'budget' => [
                 'id' => $budget->id,
                 'month' => $budget->month->format('Y-m'),
@@ -60,7 +64,7 @@ class BudgetController extends Controller
             ],
             'sections' => $sections,
             'unbudgeted' => $unbudgeted,
-            'categories' => $this->budgetService->userCategories($user),
+            'categories' => $this->budgetService->userCategories($user, $wallet),
             'prevMonth' => $prevMonth,
             'nextMonth' => $nextMonth,
             'startBalance' => $this->budgetService->computeRollingStartBalance($wallet, $month),
@@ -88,18 +92,18 @@ class BudgetController extends Controller
         );
     }
 
-    public function storeItem(StoreBudgetItemRequest $request, Wallet $wallet): RedirectResponse
+    public function storeItem(StoreBudgetItemRequest $storeBudgetItemRequest, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
 
-        $monthParam = $request->input('month');
+        $monthParam = $storeBudgetItemRequest->input('month');
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
 
         $budget = $this->budgetService->getOrCreate($wallet, $month);
 
-        $data = $request->validated();
+        $data = $storeBudgetItemRequest->validated();
 
-        if (! $this->planService->canEditBudget($request->user())) {
+        if (! $this->planService->canEditBudget($storeBudgetItemRequest->user())) {
             unset($data['repeat_next_month']);
         }
 
@@ -112,15 +116,15 @@ class BudgetController extends Controller
         return redirect()->back()->with('success', __('flash.budget.item_added'));
     }
 
-    public function updateItem(UpdateBudgetItemRequest $request, Wallet $wallet, BudgetItem $item): RedirectResponse
+    public function updateItem(UpdateBudgetItemRequest $updateBudgetItemRequest, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
         $this->authorize('view', $wallet);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
-        $data = $request->validated();
+        $data = $updateBudgetItemRequest->validated();
 
-        if (! $this->planService->canEditBudget($request->user())) {
+        if (! $this->planService->canEditBudget($updateBudgetItemRequest->user())) {
             unset($data['repeat_next_month']);
         }
 
@@ -139,17 +143,17 @@ class BudgetController extends Controller
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
-        $item->delete();
+        $this->budgetService->deleteItem($item);
 
         return redirect()->back()->with('success', __('flash.budget.item_deleted'));
     }
 
-    public function reorderItems(ReorderRequest $request, Wallet $wallet): RedirectResponse
+    public function reorderItems(ReorderRequest $reorderRequest, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
-        abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
+        abort_if(! $this->planService->canEditBudget($reorderRequest->user()), HttpStatus::Forbidden->value);
 
-        $this->budgetService->reorderItems($wallet, $request->validated()['ids']);
+        $this->budgetService->reorderItems($wallet, $reorderRequest->validated()['ids']);
 
         return redirect()->back();
     }
@@ -182,27 +186,27 @@ class BudgetController extends Controller
         );
     }
 
-    public function updateNotes(UpdateBudgetNotesRequest $request, Wallet $wallet): RedirectResponse
+    public function updateNotes(UpdateBudgetNotesRequest $updateBudgetNotesRequest, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
 
-        $validated = $request->validated();
+        $validated = $updateBudgetNotesRequest->validated();
         $month = Carbon::createFromFormat('Y-m', $validated['month']);
         $budget = $this->budgetService->getOrCreate($wallet, $month);
-        $budget->update(['notes' => $validated['notes']]);
+        $this->budgetService->updateNotes($budget, $validated['notes']);
 
         return redirect()->back();
     }
 
-    public function quickStart(QuickStartBudgetRequest $request, Wallet $wallet): RedirectResponse
+    public function quickStart(QuickStartBudgetRequest $quickStartBudgetRequest, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
 
-        $validated = $request->validated();
+        $validated = $quickStartBudgetRequest->validated();
         $month = Carbon::createFromFormat('Y-m', $validated['month']);
         $budget = $this->budgetService->getOrCreate($wallet, $month);
 
-        $count = $this->budgetService->quickStart($budget, $request->user(), $validated['suggestions']);
+        $count = $this->budgetService->quickStart($budget, $quickStartBudgetRequest->user(), $validated['suggestions'], $wallet);
 
         return redirect()->back()->with(
             'success',
@@ -210,13 +214,11 @@ class BudgetController extends Controller
         );
     }
 
-    public function clearItems(Request $request, Wallet $wallet): RedirectResponse
+    public function clearItems(ClearBudgetItemsRequest $clearBudgetItemsRequest, Wallet $wallet): RedirectResponse
     {
         $this->authorize('view', $wallet);
 
-        $validated = $request->validate([
-            'month' => ['required', 'date_format:Y-m'],
-        ]);
+        $validated = $clearBudgetItemsRequest->validated();
 
         $month = Carbon::createFromFormat('Y-m', $validated['month']);
         $budget = $this->budgetService->getOrCreate($wallet, $month);

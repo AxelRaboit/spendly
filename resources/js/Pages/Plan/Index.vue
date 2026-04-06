@@ -8,12 +8,13 @@ import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 
 const { t } = useI18n();
 const { fmt } = useCurrency();
 const page = usePage();
 
-const isPro = computed(() => page.props.auth?.plan === 'pro');
+const { isPro } = usePlanLimits();
 const { isTrialing, label: trialLabel } = useTrialCountdown();
 const limits = computed(() => page.props.planLimits);
 
@@ -105,6 +106,10 @@ function downgrade() {
                             <X class="w-4 h-4 shrink-0 text-muted" />
                             <span class="text-muted line-through">{{ t('plan.features.attachments') }}</span>
                         </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <X class="w-4 h-4 shrink-0 text-muted" />
+                            <span class="text-muted line-through">{{ t('plan.features.sharedWallets') }}</span>
+                        </li>
                     </ul>
 
                     <div class="mt-6">
@@ -186,6 +191,10 @@ function downgrade() {
                         <li class="flex items-center gap-2.5 text-sm">
                             <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.attachments') }}</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
+                            <span class="text-secondary">{{ t('plan.features.sharedWallets') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
                             <Sparkles class="w-4 h-4 shrink-0 text-indigo-400" />

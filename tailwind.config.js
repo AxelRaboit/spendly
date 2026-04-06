@@ -17,6 +17,14 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
 
+            fontSize: {
+                '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
+            },
+
+            spacing: {
+                120: '30rem',
+            },
+
             // ── Semantic color tokens (driven by CSS variables) ──────────────
             // Usage: bg-bg, bg-surface, bg-surface-2, bg-surface-2/50, etc.
             colors: {

@@ -4,54 +4,41 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\PlanType;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\WalletInvitation;
+use App\Services\UserService;
+use App\Services\WalletInvitationService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly WalletInvitationService $invitationService,
+    ) {}
+
     public function create(): Response
     {
         return Inertia::render('Auth/Register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'plan' => PlanType::Pro,
-            'trial_ends_at' => now()->addDays(30),
-        ]);
+        $user = $this->userService->register($request->validated());
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        $pendingInvitation = $this->invitationService->findFirstPendingForEmail($user->email);
+
+        return $pendingInvitation instanceof WalletInvitation
+            ? redirect()->route('wallet-invitations.show', $pendingInvitation->token)
+            : redirect(route('dashboard', absolute: false));
     }
 }

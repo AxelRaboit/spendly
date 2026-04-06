@@ -23,17 +23,17 @@ class RecurringTransactionController extends Controller
         $user = $request->user();
 
         return Inertia::render('Recurring/Index', [
-            'recurring' => $user->recurringTransactions()->with(['wallet', 'category'])->orderBy('day_of_month')->get(),
-            'scheduled' => $user->scheduledTransactions()->with(['wallet', 'category'])->where('is_generated', false)->orderBy('scheduled_date')->get(),
-            'wallets' => $user->wallets()->orderBy('name')->get(['id', 'name']),
-            'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
+            'recurring' => $this->recurringService->list($user),
+            'scheduled' => $this->recurringService->listScheduled($user),
+            'wallets' => $user->walletOptions(),
+            'categories' => $user->categoryOptions(),
         ]);
     }
 
-    public function store(RecurringTransactionRequest $request): RedirectResponse
+    public function store(RecurringTransactionRequest $recurringTransactionRequest): RedirectResponse
     {
         try {
-            $this->recurringService->create($request->user(), $request->validated());
+            $this->recurringService->create($recurringTransactionRequest->user(), $recurringTransactionRequest->validated());
 
             return back()->with('success', __('flash.recurring.created'));
         } catch (PlanLimitException $planLimitException) {
@@ -43,10 +43,10 @@ class RecurringTransactionController extends Controller
         }
     }
 
-    public function update(RecurringTransactionRequest $request, RecurringTransaction $recurringTransaction): RedirectResponse
+    public function update(RecurringTransactionRequest $recurringTransactionRequest, RecurringTransaction $recurringTransaction): RedirectResponse
     {
         $this->authorize('update', $recurringTransaction);
-        $recurringTransaction->update($request->validated());
+        $this->recurringService->update($recurringTransaction, $recurringTransactionRequest->validated());
 
         return back()->with('success', __('flash.recurring.updated'));
     }
@@ -62,7 +62,7 @@ class RecurringTransactionController extends Controller
     public function destroy(RecurringTransaction $recurringTransaction): RedirectResponse
     {
         $this->authorize('delete', $recurringTransaction);
-        $recurringTransaction->delete();
+        $this->recurringService->delete($recurringTransaction);
 
         return back()->with('success', __('flash.recurring.deleted'));
     }

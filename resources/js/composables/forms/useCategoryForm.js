@@ -3,6 +3,7 @@ import { useForm } from '@inertiajs/vue3';
 export function useCategoryForm(category = null) {
     const form = useForm({
         name: category?.name ?? '',
+        wallet_id: category?.wallet_id ?? '',
     });
 
     const submit = () => {

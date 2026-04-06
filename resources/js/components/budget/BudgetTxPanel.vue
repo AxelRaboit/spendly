@@ -263,7 +263,7 @@ function toggleSplit() {
                                 v-model="tagInput"
                                 type="text"
                                 :placeholder="txForm.tags.length === 0 ? t('budgets.txPanel.tagsPlaceholder') : ''"
-                                class="flex-1 min-w-[80px] bg-transparent text-primary text-sm focus:outline-none placeholder:text-subtle"
+                                class="flex-1 min-w-20 bg-transparent text-primary text-sm focus:outline-none placeholder:text-subtle"
                                 v-on:keydown="onTagKeydown($event, txForm)"
                                 v-on:blur="addTag(txForm)"
                             >

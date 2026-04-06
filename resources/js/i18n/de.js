@@ -19,6 +19,7 @@ export default {
 
     common: {
         save: 'Speichern',
+        loading: 'Laden…',
         saved: 'Gespeichert.',
         cancel: 'Abbrechen',
         create: 'Erstellen',
@@ -37,6 +38,7 @@ export default {
         tags: 'Tags',
         or: 'oder',
         notNow: 'Nicht jetzt',
+        error: 'Ein Fehler ist aufgetreten.',
     },
 
     auth: {
@@ -56,6 +58,7 @@ export default {
             password: 'Passwort',
             passwordConfirm: 'Passwort bestätigen',
             alreadyAccount: 'Bereits registriert?',
+            emailMismatch: 'Die Einladung wurde an {email} gesendet. Verwenden Sie diese Adresse, um sie anzunehmen.',
             submit: 'Registrieren',
         },
         forgotPassword: {
@@ -143,6 +146,9 @@ export default {
         colName: 'Name',
         colActions: 'Aktionen',
         none: 'Noch keine Kategorien.',
+        allWallets: 'Alle Geldbörsen',
+        fieldWallet: 'Geldbörse',
+        pickWallet: 'Geldbörse wählen',
         confirmDelete: 'Möchtest du diese Kategorie wirklich löschen?',
         editTip: 'Diese Kategorie bearbeiten',
         deleteTip: 'Diese Kategorie löschen',
@@ -402,6 +408,38 @@ export default {
         confirmDelete: 'Diese Regel löschen?',
     },
 
+    sharing: {
+        members: 'Mitglieder',
+        owner: 'Eigentümer',
+        editor: 'Bearbeiter',
+        viewer: 'Betrachter',
+        invite: 'Mitglied einladen',
+        pending: 'Ausstehende Einladungen',
+        resend: 'Einladung erneut senden',
+        inviteSent: 'Einladung gesendet!',
+        inviteResent: 'Einladung erneut gesendet!',
+        transferOwnership: 'Eigentum übertragen',
+        confirmTransfer: 'Eigentum an {name} übertragen? Sie werden zum Bearbeiter.',
+        confirmRemove: '{name} aus der Geldbörse entfernen?',
+        removeMember: 'Mitglied entfernen',
+        revokeInvitation: 'Einladung widerrufen',
+        emailPlaceholder: 'E-Mail-Adresse…',
+    },
+
+    invitation: {
+        title: 'Einladung zur Geldbörse',
+        description: '{name} hat Sie eingeladen, der Geldbörse „{wallet}" beizutreten.',
+        accept: 'Annehmen',
+        decline: 'Ablehnen',
+        authHint: 'Melden Sie sich an oder erstellen Sie ein Konto mit {email}, um diese Einladung anzunehmen.',
+        login: 'Anmelden',
+        register: 'Konto erstellen',
+        role: {
+            editor: 'Bearbeiter',
+            viewer: 'Betrachter',
+        },
+    },
+
     goals: {
         title: 'Sparziele',
         newGoal: 'Neues Ziel',
@@ -627,6 +665,7 @@ export default {
             importExport: 'Import & Export (XLSX)',
             splitTransactions: 'Aufgeteilte Transaktionen',
             attachments: 'Anhänge (Kassenbons)',
+            sharedWallets: 'Geteilte Geldbörsen',
             statsMonths: 'Statistiken (1 Monat)',
             statsMonthsPro: 'Statistiken (6 Monate)',
             andMore: '… und viele weitere kleine Extras!',

@@ -12,10 +12,12 @@ import { ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useSearchFilters } from '@/composables/search/useSearchFilters';
 import { useSectionMeta } from '@/composables/budget/useSectionMeta';
+import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { fmt } = useCurrency();
+const { fmtDay } = useFmtDate();
 
 const props = defineProps({
     transactions: Object,
@@ -27,11 +29,6 @@ const props = defineProps({
 });
 
 const { filters: form, search, reset, filterByTag, hasFilters } = useSearchFilters(props.filters);
-
-function fmtDay(date) {
-    if (!date) return '';
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
-}
 
 const pendingDeleteTx = ref(null);
 

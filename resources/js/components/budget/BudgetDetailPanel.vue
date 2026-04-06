@@ -2,17 +2,13 @@
 import { X, Pencil, Trash2, Paperclip } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useFmtDate } from '@/composables/core/useFmtDate';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { fmt } = useCurrency();
-
-function fmtDay(date) {
-    if (!date) return '';
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', timeZone: 'UTC' })
-        .format(new Date(date));
-}
+const { fmtDay } = useFmtDate();
 
 const props = defineProps({
     open:         { type: Boolean, required: true },
@@ -42,7 +38,7 @@ const previewUrl = ref(null);
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
-                class="relative ml-auto w-[480px] bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-120 bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
@@ -68,7 +64,7 @@ const previewUrl = ref(null);
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
                                     <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
-                                    <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-1.5 py-0.5 text-[10px] font-medium text-amber-300 shrink-0">{{ t('search.splitBadge') }}</span>
+                                    <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-1.5 py-0.5 text-2xs font-medium text-amber-300 shrink-0">{{ t('search.splitBadge') }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     <p class="text-xs text-muted">{{ fmtDay(tx.date) }}</p>

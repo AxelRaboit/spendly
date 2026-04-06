@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -17,7 +18,10 @@ class SearchService
      */
     public function search(User $user, array $filters): array
     {
-        $query = $user->transactions()
+        $accessibleWalletIds = $user->accessibleWallets()->pluck('id');
+
+        $query = Transaction::query()
+            ->whereIn('wallet_id', $accessibleWalletIds)
             ->with(['category', 'wallet'])
             ->latest('date');
 

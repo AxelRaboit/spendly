@@ -21,9 +21,57 @@ update: ## Update all dependencies
 	$(COMPOSER) update --working-dir=tools/phpstan
 	$(COMPOSER) update --working-dir=tools/rector
 
+# === Docker ===
+docker-up: ## Start all Docker containers (mailer)
+	@echo "Starting all Docker containers..."
+	@if command -v docker-compose >/dev/null 2>&1 || command -v docker >/dev/null 2>&1; then \
+		if command -v docker-compose >/dev/null 2>&1; then \
+			docker-compose up -d && echo "✓ All Docker containers started" || echo "⚠ Failed to start Docker containers"; \
+		else \
+			docker compose up -d && echo "✓ All Docker containers started" || echo "⚠ Failed to start Docker containers"; \
+		fi \
+	else \
+		echo "⚠ Docker not available, please install Docker Desktop"; \
+	fi
+
+docker-down: ## Stop all Docker containers
+	@echo "Stopping all Docker containers..."
+	@if command -v docker-compose >/dev/null 2>&1 || command -v docker >/dev/null 2>&1; then \
+		if command -v docker-compose >/dev/null 2>&1; then \
+			docker-compose down && echo "✓ All Docker containers stopped" || echo "⚠ Failed to stop Docker containers"; \
+		else \
+			docker compose down && echo "✓ All Docker containers stopped" || echo "⚠ Failed to stop Docker containers"; \
+		fi \
+	else \
+		echo "⚠ Docker not available"; \
+	fi
+
 # === Development ===
 dev: ## Start all dev servers (artisan + vite)
 	$(COMPOSER) run dev
+
+start: ## Start mailcatcher + dev servers
+	@echo "Starting mailcatcher (if available)..."
+	@if command -v docker-compose >/dev/null 2>&1 || command -v docker >/dev/null 2>&1; then \
+		if command -v docker-compose >/dev/null 2>&1; then \
+			docker-compose up -d mailer 2>/dev/null && echo "✓ Mailcatcher started" || echo "⚠ Mailcatcher not available"; \
+		else \
+			docker compose up -d mailer 2>/dev/null && echo "✓ Mailcatcher started" || echo "⚠ Mailcatcher not available"; \
+		fi \
+	else \
+		echo "⚠ Docker not available, skipping mailcatcher"; \
+	fi
+	$(COMPOSER) run dev
+
+stop: ## Stop mailcatcher
+	@if command -v docker-compose >/dev/null 2>&1 || command -v docker >/dev/null 2>&1; then \
+		if command -v docker-compose >/dev/null 2>&1; then \
+			docker-compose stop mailer 2>/dev/null || true; \
+		else \
+			docker compose stop mailer 2>/dev/null || true; \
+		fi \
+	fi
+	@echo "✓ Mailcatcher stopped"
 
 # === Database ===
 migrate: ## Run pending migrations

@@ -19,6 +19,7 @@ export default {
 
     common: {
         save: 'Enregistrer',
+        loading: 'Chargement…',
         saved: 'Enregistré.',
         cancel: 'Annuler',
         create: 'Créer',
@@ -37,6 +38,7 @@ export default {
         tags: 'Tags',
         or: 'ou',
         notNow: 'Pas maintenant',
+        error: 'Une erreur est survenue.',
     },
 
     auth: {
@@ -56,6 +58,7 @@ export default {
             password: 'Mot de passe',
             passwordConfirm: 'Confirmer le mot de passe',
             alreadyAccount: 'Déjà inscrit ?',
+            emailMismatch: "L'invitation a été envoyée à {email}. Utilisez cette adresse pour pouvoir l'accepter.",
             submit: "S'inscrire",
         },
         forgotPassword: {
@@ -143,6 +146,9 @@ export default {
         colName: 'Nom',
         colActions: 'Actions',
         none: "Aucune catégorie pour l'instant.",
+        allWallets: 'Tous les portefeuilles',
+        fieldWallet: 'Portefeuille',
+        pickWallet: 'Choisir un portefeuille',
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
         editTip: 'Modifier cette catégorie',
         deleteTip: 'Supprimer cette catégorie',
@@ -400,6 +406,38 @@ export default {
         confirmDelete: 'Supprimer cette règle ?',
     },
 
+    sharing: {
+        members: 'Membres',
+        owner: 'Propriétaire',
+        editor: 'Éditeur',
+        viewer: 'Lecteur',
+        invite: 'Inviter un membre',
+        pending: 'Invitations en attente',
+        resend: "Renvoyer l'invitation",
+        inviteSent: 'Invitation envoyée !',
+        inviteResent: 'Invitation renvoyée !',
+        transferOwnership: 'Céder la propriété',
+        confirmTransfer: 'Céder la propriété à {name} ? Vous deviendrez éditeur.',
+        confirmRemove: 'Retirer {name} du portefeuille ?',
+        removeMember: 'Retirer le membre',
+        revokeInvitation: "Annuler l'invitation",
+        emailPlaceholder: 'Adresse e-mail…',
+    },
+
+    invitation: {
+        title: 'Invitation à un portefeuille',
+        description: '{name} vous invite à rejoindre le portefeuille « {wallet} ».',
+        accept: 'Accepter',
+        decline: 'Refuser',
+        authHint: "Connectez-vous ou créez un compte avec l'adresse {email} pour accepter cette invitation.",
+        login: 'Se connecter',
+        register: 'Créer un compte',
+        role: {
+            editor: 'Éditeur',
+            viewer: 'Lecteur',
+        },
+    },
+
     goals: {
         title: "Objectifs d'épargne",
         newGoal: 'Nouvel objectif',
@@ -626,6 +664,7 @@ export default {
             importExport: 'Import & export (XLSX)',
             splitTransactions: 'Transactions divisées',
             attachments: 'Pièces jointes (tickets)',
+            sharedWallets: 'Portefeuilles partagés',
             statsMonths: 'Statistiques (1 mois)',
             statsMonthsPro: 'Statistiques (6 mois)',
             andMore: '… et plein de petites fonctionnalités en plus !',

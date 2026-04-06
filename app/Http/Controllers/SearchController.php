@@ -23,8 +23,8 @@ class SearchController extends Controller
 
         return Inertia::render('Search/Index', [
             'transactions' => $result['transactions'],
-            'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
-            'wallets' => $user->wallets()->orderBy('name')->get(['id', 'name']),
+            'categories' => $user->categoryOptions(),
+            'wallets' => $user->walletOptions(),
             'filters' => $filters,
             'isFreeLimited' => $result['isFreeLimited'],
             'freeLimitDays' => PlanService::FREE_TRANSACTION_HISTORY_DAYS,

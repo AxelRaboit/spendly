@@ -17,7 +17,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard', [
             'spentThisMonth' => round($dashboardService->spentThisMonth($user), 2),
-            'totalWallets' => $user->wallets()->count(),
+            'totalWallets' => $dashboardService->totalWallets($user),
             'favoriteWallets' => $dashboardService->favoriteWallets($user),
             'recentTransactions' => $dashboardService->recentTransactions($user),
             'sparkline' => $dashboardService->sparkline($user),

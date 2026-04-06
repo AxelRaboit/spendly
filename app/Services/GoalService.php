@@ -87,4 +87,9 @@ class GoalService
             $goal->increment('saved_amount', $data['amount']);
         }
     }
+
+    public function delete(Goal $goal): void
+    {
+        $goal->delete();
+    }
 }

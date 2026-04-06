@@ -9,9 +9,9 @@ use Illuminate\Http\RedirectResponse;
 
 class LocaleController extends Controller
 {
-    public function update(UpdateLocaleRequest $request): RedirectResponse
+    public function update(UpdateLocaleRequest $updateLocaleRequest): RedirectResponse
     {
-        $request->user()->update(['locale' => $request->validated()['locale']]);
+        $updateLocaleRequest->user()->update(['locale' => $updateLocaleRequest->validated()['locale']]);
 
         return back();
     }

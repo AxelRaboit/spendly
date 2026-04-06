@@ -22,11 +22,10 @@ use InvalidArgumentException;
 
 class BudgetService
 {
-    /** Returns user categories excluding system ones, ordered by name. */
-    public function userCategories(User $user): Collection
+    /** Returns non-system categories for the given wallet. */
+    public function userCategories(User $user, Wallet $wallet): Collection
     {
-        return Category::query()
-            ->where('user_id', $user->id)
+        return Category::where('wallet_id', $wallet->id)
             ->where('is_system', false)
             ->orderBy('name')
             ->get(['id', 'name']);
@@ -65,14 +64,14 @@ class BudgetService
         // Income side — single shared category
         $this->seedTransferItemForCategory(
             $budget, $wallet, $month,
-            Category::where('user_id', $wallet->user_id)
+            Category::where('wallet_id', $wallet->id)
                 ->where('system_key', SystemCategoryKey::TransferIncome->value)
                 ->first(),
             BudgetSection::Income,
         );
 
         // Expense side — one category per destination wallet
-        $expenseCategories = Category::where('user_id', $wallet->user_id)
+        $expenseCategories = Category::where('wallet_id', $wallet->id)
             ->where('system_key', 'LIKE', 'transfer_expense_%')
             ->whereHas('transactions', fn ($q) => $q->where('wallet_id', $wallet->id))
             ->get();
@@ -171,7 +170,7 @@ class BudgetService
      *
      * @param  array<int, array{label: string, type: string, planned_amount?: float}>  $suggestions
      */
-    public function quickStart(Budget $budget, User $user, array $suggestions): int
+    public function quickStart(Budget $budget, User $user, array $suggestions, Wallet $wallet): int
     {
         $count = 0;
 
@@ -180,8 +179,8 @@ class BudgetService
             $type = $suggestion['type'];
 
             $category = Category::firstOrCreate(
-                ['user_id' => $user->id, 'name' => $label],
-                ['is_system' => false],
+                ['wallet_id' => $wallet->id, 'name' => $label],
+                ['user_id' => $user->id, 'is_system' => false],
             );
 
             if (BudgetItem::where('budget_id', $budget->id)->where('category_id', $category->id)->exists()) {
@@ -427,6 +426,16 @@ class BudgetService
                 ? ['name' => $item->category->name]
                 : null,
         ])->all();
+    }
+
+    public function deleteItem(BudgetItem $item): void
+    {
+        $item->delete();
+    }
+
+    public function updateNotes(Budget $budget, ?string $notes): void
+    {
+        $budget->update(['notes' => $notes]);
     }
 
     /**

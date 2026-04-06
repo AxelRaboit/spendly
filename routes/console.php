@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Console\Commands\ExpireTrials;
 use App\Console\Commands\GenerateRecurringTransactions;
+use App\Console\Commands\PruneExpiredInvitations;
 use App\Console\Commands\PruneImportFiles;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -16,3 +17,4 @@ Artisan::command('inspire', function () {
 Schedule::command(GenerateRecurringTransactions::class)->everyFifteenMinutes();
 Schedule::command(PruneImportFiles::class)->dailyAt('03:00');
 Schedule::command(ExpireTrials::class)->dailyAt('00:05');
+Schedule::command(PruneExpiredInvitations::class)->dailyAt('04:00');

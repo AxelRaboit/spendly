@@ -1,16 +1,22 @@
 <script setup>
+import { Wallet } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
 
-defineProps({
+const props = defineProps({
     categories: Object,
+    wallets: Array,
     filters: Object,
 });
 
 const { t } = useI18n();
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('categories.confirmDelete'));
+
+function filterByWallet(walletId) {
+    router.get('/categories', { wallet_id: walletId || undefined, search: props.filters.search || undefined }, { preserveState: true, replace: true });
+}
 </script>
 
 <template>
@@ -24,6 +30,14 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
         <div class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
                 <SearchInput :model-value="filters.search" :placeholder="t('categories.searchPlaceholder')" class="w-full sm:max-w-xs" />
+                <SelectInput
+                    :model-value="filters.wallet_id || ''"
+                    class="w-full sm:max-w-52"
+                    v-on:change="filterByWallet($event.target.value)"
+                >
+                    <option value="">{{ t('categories.allWallets') }}</option>
+                    <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
+                </SelectInput>
                 <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 text-center sm:ml-auto transition">
                     {{ t('categories.createBtn') }}
                 </Link>
@@ -40,6 +54,10 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
                     <div class="pb-3 border-b border-base/40">
                         <p class="text-base font-semibold text-primary truncate">{{ category.name }}</p>
+                        <p v-if="category.wallet" class="flex items-center gap-1 text-xs text-muted mt-1">
+                            <Wallet class="w-3 h-3" />
+                            {{ category.wallet.name }}
+                        </p>
                     </div>
 
                     <div class="flex items-center justify-end pt-3 gap-2">

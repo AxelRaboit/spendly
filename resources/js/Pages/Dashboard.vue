@@ -8,16 +8,11 @@ import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
+import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
-
-function fmtDay(date) {
-    if (!date) return '';
-    const d = new Date(date);
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'long', timeZone: 'UTC' })
-        .format(d);
-}
+const { t } = useI18n();
+const { fmtDayLong: fmtDay } = useFmtDate();
 
 const props = defineProps({
     spentThisMonth: Number,

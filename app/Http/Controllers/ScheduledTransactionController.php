@@ -4,25 +4,29 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\HttpStatus;
 use App\Http\Requests\ScheduledTransactionRequest;
 use App\Models\ScheduledTransaction;
+use App\Services\ScheduledTransactionService;
 use Illuminate\Http\RedirectResponse;
 
 class ScheduledTransactionController extends Controller
 {
-    public function store(ScheduledTransactionRequest $request): RedirectResponse
+    public function __construct(private readonly ScheduledTransactionService $scheduledService) {}
+
+    public function store(ScheduledTransactionRequest $scheduledTransactionRequest): RedirectResponse
     {
-        $request->user()->scheduledTransactions()->create($request->validated());
+        $this->scheduledService->create($scheduledTransactionRequest->user(), $scheduledTransactionRequest->validated());
 
         return back()->with('success', __('flash.scheduled.created'));
     }
 
-    public function update(ScheduledTransactionRequest $request, ScheduledTransaction $scheduledTransaction): RedirectResponse
+    public function update(ScheduledTransactionRequest $scheduledTransactionRequest, ScheduledTransaction $scheduledTransaction): RedirectResponse
     {
         $this->authorize('update', $scheduledTransaction);
-        abort_if($scheduledTransaction->is_generated, 403);
+        abort_if($scheduledTransaction->is_generated, HttpStatus::Forbidden->value);
 
-        $scheduledTransaction->update($request->validated());
+        $this->scheduledService->update($scheduledTransaction, $scheduledTransactionRequest->validated());
 
         return back()->with('success', __('flash.scheduled.updated'));
     }
@@ -31,7 +35,7 @@ class ScheduledTransactionController extends Controller
     {
         $this->authorize('delete', $scheduledTransaction);
 
-        $scheduledTransaction->delete();
+        $this->scheduledService->delete($scheduledTransaction);
 
         return back()->with('success', __('flash.scheduled.deleted'));
     }

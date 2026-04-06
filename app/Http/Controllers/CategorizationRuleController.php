@@ -23,7 +23,7 @@ class CategorizationRuleController extends Controller
 
         return Inertia::render('CategorizationRules/Index', [
             'rules' => $this->ruleService->listPaginated($user),
-            'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
+            'categories' => $user->categoryOptions(),
         ]);
     }
 
@@ -41,11 +41,11 @@ class CategorizationRuleController extends Controller
         );
     }
 
-    public function update(UpdateCategorizationRuleRequest $request, CategorizationRule $categorizationRule): RedirectResponse
+    public function update(UpdateCategorizationRuleRequest $updateCategorizationRuleRequest, CategorizationRule $categorizationRule): RedirectResponse
     {
         $this->authorize('update', $categorizationRule);
 
-        $this->ruleService->updateCategory($categorizationRule, $request->validated()['category_id']);
+        $this->ruleService->updateCategory($categorizationRule, $updateCategorizationRuleRequest->validated()['category_id']);
 
         return back()->with('success', __('flash.rule.updated'));
     }

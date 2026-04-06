@@ -1,29 +1,36 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
 import TransferModal from '@/components/wallet/TransferModal.vue';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import WalletMembersModal from '@/components/wallet/WalletMembersModal.vue';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useDragDrop } from '@/composables/ui/useDragDrop';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     wallets: Array,
 });
 
-const page = usePage();
 const { t } = useI18n();
+const { isPro, canCreate, limit } = usePlanLimits();
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
 const { fmt } = useCurrency();
 const showTransfer = ref(false);
+const showMembers = ref(false);
+const membersWallet = ref(null);
 
-const isPro = computed(() => page.props.auth?.plan === 'pro');
-const walletLimit = computed(() => page.props.planLimits.wallet);
-const canCreateWallet = computed(() => isPro.value || props.wallets.length < walletLimit.value);
+function openMembers(wallet) {
+    membersWallet.value = wallet;
+    showMembers.value = true;
+}
+
+const canCreateWallet = computed(() => canCreate('wallet', props.wallets.length));
 
 function toggleFavorite(wallet) {
     router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
@@ -74,7 +81,7 @@ function quickCreate(name) {
                     >
                         {{ t('wallets.createBtn') }}
                     </Link>
-                    <span v-if="!isPro && props.wallets.length >= walletLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
+                    <span v-if="!isPro && props.wallets.length >= limit('wallet')" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
                         Pro
                     </span>
                 </div>
@@ -103,13 +110,19 @@ function quickCreate(name) {
                     </div>
 
                     <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
-                        <Link
-                            :href="`/wallets/${wallet.id}/budget`"
-                            class="text-base font-semibold text-primary hover:text-indigo-400 transition-colors"
-                            v-on:dragstart.prevent
-                        >
-                            {{ wallet.name }}
-                        </Link>
+                        <div class="flex items-center gap-2">
+                            <Link
+                                :href="`/wallets/${wallet.id}/budget`"
+                                class="text-base font-semibold text-primary hover:text-indigo-400 transition-colors"
+                                v-on:dragstart.prevent
+                            >
+                                {{ wallet.name }}
+                            </Link>
+                            <span v-if="wallet.is_shared" class="flex items-center gap-1 rounded-full bg-indigo-900/40 px-2 py-0.5 text-2xs font-medium text-indigo-300">
+                                <Users class="w-2.5 h-2.5" />
+                                {{ t(`sharing.${wallet.user_role}`) }}
+                            </span>
+                        </div>
                         <div>
                             <p class="text-xs text-muted uppercase tracking-wide mb-0.5">{{ t('wallets.colBalance') }}</p>
                             <p class="text-2xl font-bold font-mono" :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'">
@@ -138,8 +151,13 @@ function quickCreate(name) {
                             </button>
                         </AppTooltip>
                         <div class="flex items-center gap-2">
-                            <EditButton :href="`/wallets/${wallet.id}/edit`" />
-                            <DeleteButton v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
+                            <AppTooltip v-if="isPro || wallet.is_shared" :text="t('sharing.members')">
+                                <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="openMembers(wallet)">
+                                    <Users class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
+                            <EditButton v-if="wallet.user_role === 'owner'" :href="`/wallets/${wallet.id}/edit`" />
+                            <DeleteButton v-if="wallet.user_role === 'owner'" v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
                         </div>
                     </div>
                 </div>
@@ -167,6 +185,16 @@ function quickCreate(name) {
             :show="showTransfer"
             :wallets="localWallets"
             v-on:close="showTransfer = false"
+        />
+
+        <WalletMembersModal
+            v-if="membersWallet"
+            :key="membersWallet.id"
+            :show="showMembers"
+            :wallet-id="membersWallet.id"
+            :is-owner="membersWallet.user_role === 'owner'"
+            :is-pro="isPro"
+            v-on:close="showMembers = false"
         />
     </AuthenticatedLayout>
 </template>

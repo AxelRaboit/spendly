@@ -19,6 +19,7 @@ export default {
 
     common: {
         save: 'Guardar',
+        loading: 'Cargando…',
         saved: 'Guardado.',
         cancel: 'Cancelar',
         create: 'Crear',
@@ -37,6 +38,7 @@ export default {
         tags: 'Etiquetas',
         or: 'o',
         notNow: 'Ahora no',
+        error: 'Se produjo un error.',
     },
 
     auth: {
@@ -56,6 +58,7 @@ export default {
             password: 'Contraseña',
             passwordConfirm: 'Confirmar contraseña',
             alreadyAccount: '¿Ya tienes cuenta?',
+            emailMismatch: 'La invitación fue enviada a {email}. Usa esta dirección para aceptarla.',
             submit: 'Registrarse',
         },
         forgotPassword: {
@@ -143,6 +146,9 @@ export default {
         colName: 'Nombre',
         colActions: 'Acciones',
         none: 'Aún no hay categorías.',
+        allWallets: 'Todas las carteras',
+        fieldWallet: 'Cartera',
+        pickWallet: 'Elegir cartera',
         confirmDelete: '¿Seguro que quieres eliminar esta categoría?',
         editTip: 'Editar esta categoría',
         deleteTip: 'Eliminar esta categoría',
@@ -401,6 +407,38 @@ export default {
         confirmDelete: '¿Eliminar esta regla?',
     },
 
+    sharing: {
+        members: 'Miembros',
+        owner: 'Propietario',
+        editor: 'Editor',
+        viewer: 'Lector',
+        invite: 'Invitar un miembro',
+        pending: 'Invitaciones pendientes',
+        resend: 'Reenviar invitación',
+        inviteSent: '¡Invitación enviada!',
+        inviteResent: '¡Invitación reenviada!',
+        transferOwnership: 'Transferir propiedad',
+        confirmTransfer: '¿Transferir propiedad a {name}? Pasarás a ser editor.',
+        confirmRemove: '¿Eliminar a {name} de la cartera?',
+        removeMember: 'Eliminar miembro',
+        revokeInvitation: 'Revocar invitación',
+        emailPlaceholder: 'Dirección de correo…',
+    },
+
+    invitation: {
+        title: 'Invitación a una cartera',
+        description: '{name} te invitó a unirte a la cartera "{wallet}".',
+        accept: 'Aceptar',
+        decline: 'Rechazar',
+        authHint: 'Inicia sesión o crea una cuenta con {email} para aceptar esta invitación.',
+        login: 'Iniciar sesión',
+        register: 'Crear cuenta',
+        role: {
+            editor: 'Editor',
+            viewer: 'Lector',
+        },
+    },
+
     goals: {
         title: 'Objetivos de ahorro',
         newGoal: 'Nuevo objetivo',
@@ -626,6 +664,7 @@ export default {
             importExport: 'Importar y exportar (XLSX)',
             splitTransactions: 'Transacciones divididas',
             attachments: 'Adjuntos (recibos)',
+            sharedWallets: 'Carteras compartidas',
             statsMonths: 'Estadísticas (1 mes)',
             statsMonthsPro: 'Estadísticas (6 meses)',
             andMore: '… ¡y muchas más funcionalidades extra!',

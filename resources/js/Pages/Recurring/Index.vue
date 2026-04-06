@@ -3,16 +3,18 @@ import { Plus, ChevronDown, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import TabBadge from '@/components/ui/TabBadge.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useRecurringForm } from '@/composables/recurring/useRecurringForm';
 import { useScheduledForm } from '@/composables/recurring/useScheduledForm';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { fmt, symbol } = useCurrency();
-const page = usePage();
+const { isPro, canCreate, limit } = usePlanLimits();
 
 const props = defineProps({
     recurring:  Array,
@@ -23,9 +25,7 @@ const props = defineProps({
 
 const activeTab = ref('recurring');
 
-const isPro = computed(() => page.props.auth?.plan === 'pro');
-const recurringLimit = computed(() => page.props.planLimits.recurring);
-const canCreateRecurring = computed(() => isPro.value || props.recurring.length < recurringLimit.value);
+const canCreateRecurring = computed(() => canCreate('recurring', props.recurring.length));
 
 const { editingItem, showForm, form, openCreate, openEdit, submit, itemToDelete, confirmDelete, executeDelete, toggleActive } =
     useRecurringForm(props.wallets, props.categories);
@@ -34,10 +34,8 @@ const { editingScheduled, showScheduledForm, scheduledForm, openCreateScheduled,
     useScheduledForm(props.wallets, props.categories);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-function fmtDate(d) {
-    if (!d) return t('recurring.never');
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));
-}
+const { fmtDate: fmtDateBase } = useFmtDate();
+function fmtDate(d) { return d ? fmtDateBase(d) : t('recurring.never'); }
 
 function walletName(id) {
     return props.wallets.find(w => w.id === id)?.name ?? '—';
@@ -105,7 +103,7 @@ function toggleGroup(id) {
                             <Plus class="w-4 h-4 mr-1.5" />
                             {{ t('recurring.new') }}
                         </AppButton>
-                        <span v-if="!isPro && props.recurring.length >= recurringLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
+                        <span v-if="!isPro && props.recurring.length >= limit('recurring')" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
                             Pro
                         </span>
                     </div>

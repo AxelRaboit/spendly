@@ -37,8 +37,8 @@ class ImportController extends Controller
         $user = $request->user();
 
         return Inertia::render('Import/Index', [
-            'wallets' => $user->wallets()->orderBy('name')->get(['id', 'name']),
-            'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
+            'wallets' => $user->walletOptions(),
+            'categories' => $user->categoryOptions(),
         ]);
     }
 
@@ -58,11 +58,11 @@ class ImportController extends Controller
         ]);
     }
 
-    public function preview(UploadImportFileRequest $request): JsonResponse
+    public function preview(UploadImportFileRequest $uploadImportFileRequest): JsonResponse
     {
-        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+        abort_if(! $this->planService->canExportImport($uploadImportFileRequest->user()), HttpStatus::Forbidden->value);
 
-        $path = $request->file('file')->storeAs(
+        $path = $uploadImportFileRequest->file('file')->storeAs(
             'xlsx-imports',
             sprintf('%s.%s', uniqid('import_', true), FileExtension::Xlsx->value),
             'local'
@@ -71,7 +71,7 @@ class ImportController extends Controller
         try {
             $preview = $this->importService->preview($path);
             $descriptions = array_filter(array_column($preview['rows'], 'description'));
-            $preview['suggestions'] = $this->ruleService->suggestBulk($request->user(), $descriptions);
+            $preview['suggestions'] = $this->ruleService->suggestBulk($uploadImportFileRequest->user(), $descriptions);
 
             return response()->json($preview);
         } catch (RuntimeException $runtimeException) {
@@ -82,14 +82,14 @@ class ImportController extends Controller
         }
     }
 
-    public function process(ProcessImportRequest $request): RedirectResponse
+    public function process(ProcessImportRequest $processImportRequest): RedirectResponse
     {
-        abort_if(! $this->planService->canExportImport($request->user()), HttpStatus::Forbidden->value);
+        abort_if(! $this->planService->canExportImport($processImportRequest->user()), HttpStatus::Forbidden->value);
 
-        $data = $request->validated();
-        $user = $request->user();
+        $data = $processImportRequest->validated();
+        $user = $processImportRequest->user();
         /** @var Wallet $wallet */
-        $wallet = $user->wallets()->findOrFail($data['wallet_id']);
+        $wallet = $user->accessibleWallets()->findOrFail($data['wallet_id']);
 
         ['created' => $created, 'errors' => $errors, 'month' => $month] = $this->importService->process($data, $user, $wallet);
 

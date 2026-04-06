@@ -6,6 +6,7 @@ import UpgradePrompt from '@/components/ui/UpgradePrompt.vue';
 import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import {
@@ -59,7 +60,7 @@ onMounted(() => {
 
 // ── Plan ──────────────────────────────────────────────────────────────────
 const canExportImport = computed(() => page.props.planLimits?.canExportImport === true);
-const isPro = computed(() => page.props.auth?.plan === 'pro');
+const { isPro } = usePlanLimits();
 const { isTrialing, label: trialLabel } = useTrialCountdown();
 
 // ── Sidebar collapsed state (persisted) ──────────────────────────────────

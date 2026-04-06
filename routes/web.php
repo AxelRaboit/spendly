@@ -19,6 +19,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WalletInvitationController;
+use App\Http\Controllers\WalletMemberController;
 use App\Http\Controllers\WalletTransferController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -87,6 +89,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('wallets', WalletController::class);
     Route::post('/wallets/{wallet}/favorite', [WalletController::class, 'toggleFavorite'])->name('wallets.favorite');
 
+    // Wallet members & invitations (scoped bindings ensure {member}/{invitation} belong to {wallet})
+    Route::get('/wallets/{wallet}/members', [WalletMemberController::class, 'index'])->name('wallets.members.index');
+    Route::patch('/wallets/{wallet}/members/{member}', [WalletMemberController::class, 'update'])->name('wallets.members.update')->scopeBindings();
+    Route::post('/wallets/{wallet}/members/{member}/transfer-ownership', [WalletMemberController::class, 'transferOwnership'])->name('wallets.members.transfer-ownership')->scopeBindings();
+    Route::delete('/wallets/{wallet}/members/{member}', [WalletMemberController::class, 'destroy'])->name('wallets.members.destroy')->scopeBindings();
+    Route::post('/wallets/{wallet}/invitations', [WalletInvitationController::class, 'store'])->name('wallets.invitations.store');
+    Route::post('/wallets/{wallet}/invitations/{invitation}/resend', [WalletInvitationController::class, 'resend'])->name('wallets.invitations.resend')->scopeBindings();
+    Route::delete('/wallets/{wallet}/invitations/{invitation}', [WalletInvitationController::class, 'destroy'])->name('wallets.invitations.destroy')->scopeBindings();
+    Route::post('/wallet-invitations/{token}/accept', [WalletInvitationController::class, 'accept'])->name('wallet-invitations.accept');
+
     // Budget routes (nested under wallet)
     Route::get('/wallets/{wallet}/budget', [BudgetController::class, 'show'])->name('wallets.budget.show');
     Route::post('/wallets/{wallet}/budget/copy-previous', [BudgetController::class, 'copyFromPrevious'])->name('wallets.budget.copy-previous');
@@ -102,5 +114,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/wallets/{wallet}/budget/notes', [BudgetController::class, 'updateNotes'])->name('wallets.budget.notes.update');
     Route::get('/wallets/{wallet}/budget/year', [BudgetController::class, 'yearView'])->name('wallets.budget.year');
 });
+
+// Invitation show (accessible without auth so non-users can see the invite page)
+Route::get('/wallet-invitations/{token}', [WalletInvitationController::class, 'show'])->name('wallet-invitations.show');
+
+// Decline requires auth to prevent unauthorized decline of someone else's invitation
+Route::post('/wallet-invitations/{token}/decline', [WalletInvitationController::class, 'decline'])
+    ->middleware('auth')
+    ->name('wallet-invitations.decline');
 
 require __DIR__.'/auth.php';

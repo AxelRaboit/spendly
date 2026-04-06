@@ -27,15 +27,15 @@ class GoalController extends Controller
 
         return Inertia::render('Goals/Index', [
             'goals' => $this->goalService->list($user),
-            'wallets' => $user->wallets()->orderBy('name')->get(['id', 'name']),
-            'categories' => $user->categories()->orderBy('name')->get(['id', 'name']),
+            'wallets' => $user->walletOptions(),
+            'categories' => $user->categoryOptions(),
         ]);
     }
 
-    public function store(GoalRequest $request): RedirectResponse
+    public function store(GoalRequest $goalRequest): RedirectResponse
     {
         try {
-            $this->goalService->create($request->user(), $request->validated());
+            $this->goalService->create($goalRequest->user(), $goalRequest->validated());
 
             return back()->with('success', __('flash.goal.created'));
         } catch (PlanLimitException $planLimitException) {
@@ -45,19 +45,19 @@ class GoalController extends Controller
         }
     }
 
-    public function update(GoalRequest $request, Goal $goal): RedirectResponse
+    public function update(GoalRequest $goalRequest, Goal $goal): RedirectResponse
     {
         $this->authorize('update', $goal);
-        $this->goalService->update($goal, $request->validated());
+        $this->goalService->update($goal, $goalRequest->validated());
 
         return back()->with('success', __('flash.goal.updated'));
     }
 
-    public function deposit(GoalDepositRequest $request, Goal $goal): RedirectResponse
+    public function deposit(GoalDepositRequest $goalDepositRequest, Goal $goal): RedirectResponse
     {
         $this->authorize('update', $goal);
 
-        $this->goalService->deposit($request->user(), $goal, $request->validated());
+        $this->goalService->deposit($goalDepositRequest->user(), $goal, $goalDepositRequest->validated());
 
         return back()->with('success', __('flash.goal.deposit'));
     }
@@ -65,7 +65,7 @@ class GoalController extends Controller
     public function destroy(Goal $goal): RedirectResponse
     {
         $this->authorize('delete', $goal);
-        $goal->delete();
+        $this->goalService->delete($goal);
 
         return back()->with('success', __('flash.goal.deleted'));
     }

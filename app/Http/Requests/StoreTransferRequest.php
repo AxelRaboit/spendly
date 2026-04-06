@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\WalletMember;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,16 +17,20 @@ class StoreTransferRequest extends FormRequest
 
     public function rules(): array
     {
+        $accessibleWalletIds = WalletMember::where('user_id', $this->user()->id)
+            ->pluck('wallet_id')
+            ->all();
+
         return [
             'from_wallet_id' => [
                 'required',
                 'integer',
-                Rule::exists('wallets', 'id')->where('user_id', $this->user()->id),
+                Rule::in($accessibleWalletIds),
             ],
             'to_wallet_id' => [
                 'required',
                 'integer',
-                Rule::exists('wallets', 'id')->where('user_id', $this->user()->id),
+                Rule::in($accessibleWalletIds),
                 Rule::notIn([$this->input('from_wallet_id')]),
             ],
             'amount' => ['required', 'numeric', 'min:0.01'],

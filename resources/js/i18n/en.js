@@ -19,6 +19,7 @@ export default {
 
     common: {
         save: 'Save',
+        loading: 'Loading…',
         saved: 'Saved.',
         cancel: 'Cancel',
         create: 'Create',
@@ -37,6 +38,7 @@ export default {
         tags: 'Tags',
         or: 'or',
         notNow: 'Not now',
+        error: 'An error occurred.',
     },
 
     auth: {
@@ -56,6 +58,7 @@ export default {
             password: 'Password',
             passwordConfirm: 'Confirm Password',
             alreadyAccount: 'Already registered?',
+            emailMismatch: 'The invitation was sent to {email}. Use this address to accept it.',
             submit: 'Register',
         },
         forgotPassword: {
@@ -143,6 +146,9 @@ export default {
         colName: 'Name',
         colActions: 'Actions',
         none: 'No categories yet.',
+        allWallets: 'All wallets',
+        fieldWallet: 'Wallet',
+        pickWallet: 'Choose a wallet',
         confirmDelete: 'Are you sure you want to delete this category?',
         editTip: 'Edit this category',
         deleteTip: 'Delete this category',
@@ -400,6 +406,38 @@ export default {
         confirmDelete: 'Delete this rule?',
     },
 
+    sharing: {
+        members: 'Members',
+        owner: 'Owner',
+        editor: 'Editor',
+        viewer: 'Viewer',
+        invite: 'Invite a member',
+        pending: 'Pending invitations',
+        resend: 'Resend invitation',
+        inviteSent: 'Invitation sent!',
+        inviteResent: 'Invitation resent!',
+        transferOwnership: 'Transfer ownership',
+        confirmTransfer: 'Transfer ownership to {name}? You will become an editor.',
+        confirmRemove: 'Remove {name} from the wallet?',
+        removeMember: 'Remove member',
+        revokeInvitation: 'Revoke invitation',
+        emailPlaceholder: 'Email address…',
+    },
+
+    invitation: {
+        title: 'Wallet invitation',
+        description: '{name} invited you to join the wallet "{wallet}".',
+        accept: 'Accept',
+        decline: 'Decline',
+        authHint: 'Log in or create an account with {email} to accept this invitation.',
+        login: 'Log in',
+        register: 'Create account',
+        role: {
+            editor: 'Editor',
+            viewer: 'Viewer',
+        },
+    },
+
     goals: {
         title: 'Savings goals',
         newGoal: 'New goal',
@@ -625,6 +663,7 @@ export default {
             importExport: 'Import & export (XLSX)',
             splitTransactions: 'Split transactions',
             attachments: 'Attachments (receipts)',
+            sharedWallets: 'Shared wallets',
             statsMonths: 'Statistics (1 month)',
             statsMonthsPro: 'Statistics (6 months)',
             andMore: '… and many more small perks!',

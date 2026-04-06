@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'user_id', 'is_system', 'system_key'])]
+#[Fillable(['name', 'user_id', 'wallet_id', 'is_system', 'system_key'])]
 class Category extends Model
 {
     use Filterable;
@@ -20,6 +20,11 @@ class Category extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function wallet(): BelongsTo
+    {
+        return $this->belongsTo(Wallet::class);
     }
 
     public function transactions(): HasMany

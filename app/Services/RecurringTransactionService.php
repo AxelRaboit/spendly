@@ -9,6 +9,7 @@ use App\Exceptions\PlanLimitException;
 use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 
 class RecurringTransactionService
@@ -16,6 +17,16 @@ class RecurringTransactionService
     public function __construct(
         private readonly PlanService $planService,
     ) {}
+
+    public function list(User $user): Collection
+    {
+        return $user->recurringTransactions()->with(['wallet', 'category'])->orderBy('day_of_month')->get();
+    }
+
+    public function listScheduled(User $user): Collection
+    {
+        return $user->scheduledTransactions()->with(['wallet', 'category'])->where('is_generated', false)->orderBy('scheduled_date')->get();
+    }
 
     public function create(User $user, array $data): RecurringTransaction
     {
@@ -37,6 +48,16 @@ class RecurringTransactionService
         if ($newActive) {
             $this->generateIfDue($recurring);
         }
+    }
+
+    public function update(RecurringTransaction $recurring, array $data): void
+    {
+        $recurring->update($data);
+    }
+
+    public function delete(RecurringTransaction $recurring): void
+    {
+        $recurring->delete();
     }
 
     public function generateIfDue(RecurringTransaction $rule): void

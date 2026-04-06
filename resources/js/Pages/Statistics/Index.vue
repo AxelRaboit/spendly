@@ -7,15 +7,12 @@ import { computed, ref } from 'vue';
 import { Bar, Doughnut, Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
+import { useFmtMonth } from '@/composables/core/useFmtMonth';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
-
-function fmtMonth(yyyyMm) {
-    const [year, month] = yyyyMm.split('-');
-    return new Intl.DateTimeFormat(locale.value, { month: 'short', year: 'numeric' })
-        .format(new Date(Number(year), Number(month) - 1, 1));
-}
+const { t } = useI18n();
+const { fmtMonth: fmtMonthBase } = useFmtMonth();
+function fmtMonth(yyyyMm) { return fmtMonthBase(yyyyMm, { month: 'short', year: 'numeric' }); }
 
 const props = defineProps({
     byCategory:     Array,

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\WalletInvitation;
 use App\Services\PlanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Inertia\Inertia;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -52,6 +54,9 @@ class HandleInertiaRequests extends Middleware
                 'canExportImport' => $user !== null && app(PlanService::class)->canExportImport($user),
                 'proPrice' => PlanService::PRO_PRICE,
             ],
+            'pendingInvitations' => $user !== null
+                ? Inertia::lazy(fn () => WalletInvitation::where('email', $user->email)->pending()->count())
+                : 0,
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),

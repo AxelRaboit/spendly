@@ -19,34 +19,34 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TransactionController extends Controller
 {
-    public function store(StoreTransactionRequest $request, TransactionService $transactionService, AttachmentService $attachmentService, PlanService $planService): RedirectResponse
+    public function store(StoreTransactionRequest $storeTransactionRequest, TransactionService $transactionService, AttachmentService $attachmentService, PlanService $planService): RedirectResponse
     {
-        $data = $request->safe()->except('attachment');
-        $transaction = $transactionService->create($request->user(), $data);
+        $data = $storeTransactionRequest->safe()->except('attachment');
+        $transaction = $transactionService->create($storeTransactionRequest->user(), $data);
 
-        if ($request->hasFile('attachment') && $planService->isPro($request->user())) {
-            $attachmentService->store($request->file('attachment'), $transaction);
+        if ($storeTransactionRequest->hasFile('attachment') && $planService->isPro($storeTransactionRequest->user())) {
+            $attachmentService->store($storeTransactionRequest->file('attachment'), $transaction);
         }
 
         return back()->with('success', __('flash.transaction.created'));
     }
 
-    public function update(UpdateTransactionRequest $request, Transaction $transaction, TransactionService $transactionService, AttachmentService $attachmentService, PlanService $planService): RedirectResponse
+    public function update(UpdateTransactionRequest $updateTransactionRequest, Transaction $transaction, TransactionService $transactionService, AttachmentService $attachmentService, PlanService $planService): RedirectResponse
     {
-        $data = $request->safe()->except(['attachment', 'remove_attachment']);
+        $data = $updateTransactionRequest->safe()->except(['attachment', 'remove_attachment']);
         $transactionService->update($transaction, $data);
 
-        if ($request->boolean('remove_attachment')) {
+        if ($updateTransactionRequest->boolean('remove_attachment')) {
             $attachmentService->delete($transaction);
-        } elseif ($request->hasFile('attachment') && $planService->isPro($request->user())) {
+        } elseif ($updateTransactionRequest->hasFile('attachment') && $planService->isPro($updateTransactionRequest->user())) {
             $attachmentService->delete($transaction);
-            $attachmentService->store($request->file('attachment'), $transaction);
+            $attachmentService->store($updateTransactionRequest->file('attachment'), $transaction);
         }
 
         return back()->with('success', __('flash.transaction.updated'));
     }
 
-    public function destroy(DestroyTransactionRequest $request, Transaction $transaction, TransactionService $transactionService, AttachmentService $attachmentService): RedirectResponse
+    public function destroy(DestroyTransactionRequest $destroyTransactionRequest, Transaction $transaction, TransactionService $transactionService, AttachmentService $attachmentService): RedirectResponse
     {
         $attachmentService->delete($transaction);
         $transactionService->delete($transaction);
@@ -54,15 +54,15 @@ class TransactionController extends Controller
         return back()->with('success', __('flash.transaction.deleted'));
     }
 
-    public function storeSplit(StoreSplitTransactionRequest $request, TransactionService $transactionService, PlanService $planService): RedirectResponse
+    public function storeSplit(StoreSplitTransactionRequest $storeSplitTransactionRequest, TransactionService $transactionService, PlanService $planService): RedirectResponse
     {
-        abort_if(! $planService->isPro($request->user()), HttpStatus::Forbidden->value);
+        abort_if(! $planService->isPro($storeSplitTransactionRequest->user()), HttpStatus::Forbidden->value);
 
-        $data = $request->validated();
+        $data = $storeSplitTransactionRequest->validated();
         $splits = $data['splits'];
         unset($data['splits']);
 
-        $transactionService->createSplit($request->user(), $data, $splits);
+        $transactionService->createSplit($storeSplitTransactionRequest->user(), $data, $splits);
 
         return back()->with('success', __('flash.transaction.created'));
     }
@@ -76,7 +76,7 @@ class TransactionController extends Controller
 
     public function attachment(Request $request, Transaction $transaction, AttachmentService $attachmentService): BinaryFileResponse
     {
-        abort_if($transaction->user_id !== $request->user()->id, HttpStatus::Forbidden->value);
+        $this->authorize('view', $transaction);
         abort_if(! $attachmentService->exists($transaction->attachment_path), HttpStatus::NotFound->value);
 
         return response()->file($attachmentService->path($transaction->attachment_path));

@@ -19,36 +19,37 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request, CategoryFilter $filter): Response
+    public function index(Request $request, CategoryFilter $filter, CategoryService $categoryService): Response
     {
-        $categories = Category::query()
-            ->where('user_id', $request->user()->id)
-            ->where('is_system', false)
-            ->filter($filter)
-            ->paginate(10)
-            ->withQueryString();
+        $user = $request->user();
 
         return Inertia::render('Categories/Index', [
-            'categories' => $categories,
-            'filters' => $request->only('search'),
+            'categories' => $categoryService->list($user, $filter, $request->input('wallet_id')),
+            'wallets' => $user->walletOptions(),
+            'filters' => $request->only('search', 'wallet_id'),
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Categories/Form');
+        return Inertia::render('Categories/Form', [
+            'wallets' => $request->user()->walletOptions(),
+        ]);
     }
 
-    public function store(StoreCategoryRequest $request, CategoryService $categoryService): RedirectResponse
+    public function store(StoreCategoryRequest $storeCategoryRequest, CategoryService $categoryService): RedirectResponse
     {
-        $categoryService->create($request->user(), $request->validated()['name']);
+        $data = $storeCategoryRequest->validated();
+        $categoryService->create($storeCategoryRequest->user(), $data['name'], (int) $data['wallet_id']);
 
         return redirect()->route('categories.index')->with('success', __('flash.category.created'));
     }
 
-    public function storeQuick(StoreCategoryRequest $request, CategoryService $categoryService): JsonResponse
+    public function storeQuick(StoreCategoryRequest $storeCategoryRequest, CategoryService $categoryService): JsonResponse
     {
-        $category = $categoryService->create($request->user(), $request->validated()['name']);
+        $data = $storeCategoryRequest->validated();
+
+        $category = $categoryService->create($storeCategoryRequest->user(), $data['name'], (int) $data['wallet_id']);
 
         return response()->json(['id' => $category->id, 'name' => $category->name], HttpStatus::Created->value);
     }
@@ -68,19 +69,20 @@ class CategoryController extends Controller
 
         return Inertia::render('Categories/Form', [
             'category' => $category,
+            'wallets' => $request->user()->walletOptions(),
         ]);
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
+    public function update(UpdateCategoryRequest $updateCategoryRequest, Category $category, CategoryService $categoryService): RedirectResponse
     {
         abort_if($category->is_system, HttpStatus::Forbidden->value);
 
-        $categoryService->update($category, $request->validated()['name']);
+        $categoryService->update($category, $updateCategoryRequest->validated()['name']);
 
         return redirect()->route('categories.index')->with('success', __('flash.category.updated'));
     }
 
-    public function destroy(DestroyCategoryRequest $request, Category $category, CategoryService $categoryService): RedirectResponse
+    public function destroy(DestroyCategoryRequest $destroyCategoryRequest, Category $category, CategoryService $categoryService): RedirectResponse
     {
         abort_if($category->is_system, HttpStatus::Forbidden->value);
 

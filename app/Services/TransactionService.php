@@ -100,8 +100,10 @@ class TransactionService
 
     public function deleteSplit(string $splitId, User $user): int
     {
+        $accessibleWalletIds = $user->accessibleWallets()->pluck('id');
+
         $count = Transaction::where('split_id', $splitId)
-            ->where('user_id', $user->id)
+            ->whereIn('wallet_id', $accessibleWalletIds)
             ->delete();
 
         Log::info('Split transaction deleted', [

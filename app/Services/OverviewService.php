@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\TransactionType;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -20,7 +21,7 @@ class OverviewService
         [$start, $end] = $this->monthBounds($month);
 
         /** @var \Illuminate\Database\Eloquent\Collection<int, Wallet> $wallets */
-        $wallets = $user->wallets()->orderBy('name')->get();
+        $wallets = $user->accessibleWallets()->orderBy('name')->get();
 
         return $wallets->map(function (Wallet $wallet) use ($start, $end) {
             $income = (float) $wallet->transactions()
@@ -52,12 +53,14 @@ class OverviewService
     {
         [$start, $end] = $this->monthBounds($month);
 
-        $income = (float) $user->transactions()
+        $query = Transaction::whereIn('wallet_id', $user->accessibleWallets()->select('id'));
+
+        $income = (float) (clone $query)
             ->where('type', TransactionType::Income)
             ->whereBetween('date', [$start, $end])
             ->sum('amount');
 
-        $expenses = (float) $user->transactions()
+        $expenses = (float) (clone $query)
             ->where('type', TransactionType::Expense)
             ->whereBetween('date', [$start, $end])
             ->sum('amount');

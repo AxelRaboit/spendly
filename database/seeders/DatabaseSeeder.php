@@ -14,7 +14,9 @@ use App\Models\RecurringTransaction;
 use App\Models\ScheduledTransaction;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Enums\WalletRole;
 use App\Models\Wallet;
+use App\Models\WalletMember;
 use App\Services\BudgetService;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -56,29 +58,15 @@ class DatabaseSeeder extends Seeder
         $budgetService = app(BudgetService::class);
 
         foreach ($users as $user) {
-            $categories = $this->createCategories($user);
             $isPro = $user->plan->value === 'pro';
 
-            $wallet = Wallet::create([
-                'user_id'       => $user->id,
-                'name'          => 'Compte courant',
-                'start_balance' => 2500.00,
-                'is_favorite'   => true,
-            ]);
+            $wallet = $this->createWallet($user, 'Compte courant', 2500.00, true);
+            $categories = $this->createCategories($user, $wallet);
 
             $wallets = [$wallet];
             if ($isPro) {
-                $livretA = Wallet::create([
-                    'user_id'       => $user->id,
-                    'name'          => 'Livret A',
-                    'start_balance' => 0.00,
-                ]);
-
-                $assuranceVie = Wallet::create([
-                    'user_id'       => $user->id,
-                    'name'          => 'Assurance vie',
-                    'start_balance' => 0.00,
-                ]);
+                $livretA = $this->createWallet($user, 'Livret A', 0.00);
+                $assuranceVie = $this->createWallet($user, 'Assurance vie', 0.00);
 
                 $wallets = [$wallet, $livretA, $assuranceVie];
             }
@@ -110,7 +98,25 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createCategories(User $user): array
+    private function createWallet(User $user, string $name, float $startBalance, bool $isFavorite = false): Wallet
+    {
+        $wallet = Wallet::create([
+            'user_id' => $user->id,
+            'name' => $name,
+            'start_balance' => $startBalance,
+            'is_favorite' => $isFavorite,
+        ]);
+
+        WalletMember::create([
+            'wallet_id' => $wallet->id,
+            'user_id' => $user->id,
+            'role' => WalletRole::Owner,
+        ]);
+
+        return $wallet;
+    }
+
+    private function createCategories(User $user, Wallet $wallet): array
     {
         $names = [
             'Salaire', 'Freelance', 'Épargne',
@@ -121,7 +127,7 @@ class DatabaseSeeder extends Seeder
 
         $map = [];
         foreach ($names as $name) {
-            $map[$name] = Category::create(['user_id' => $user->id, 'name' => $name]);
+            $map[$name] = Category::create(['user_id' => $user->id, 'wallet_id' => $wallet->id, 'name' => $name]);
         }
 
         return $map;

@@ -3,32 +3,28 @@ import { Plus, Pencil, Trash2, Zap } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
+import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useGoalForm } from '@/composables/goals/useGoalForm';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useI18n } from 'vue-i18n';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { fmt, symbol } = useCurrency();
-const page = usePage();
+const { fmtDate } = useFmtDate();
+const { isPro, canCreate, limit } = usePlanLimits();
 
 const props = defineProps({ goals: Array, wallets: Array, categories: Array });
 
-const isPro = computed(() => page.props.auth?.plan === 'pro');
-const goalLimit = computed(() => page.props.planLimits.goal);
-const canCreateGoal = computed(() => isPro.value || props.goals.length < goalLimit.value);
+const canCreateGoal = computed(() => canCreate('goal', props.goals.length));
 
 const COLORS = ['#6366f1', '#8b5cf6', '#34d399', '#f59e0b', '#f43f5e', '#38bdf8', '#a3e635'];
 
 const { editingGoal, showForm, form, openCreate, openEdit, submit, goalToDelete, confirmDelete, executeDelete } = useGoalForm();
 
 const depositGoal = ref(null);
-
-function fmtDate(d) {
-    if (!d) return '';
-    return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d));
-}
 </script>
 
 <template>
@@ -50,7 +46,7 @@ function fmtDate(d) {
                         <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('goals.newGoal') }}
                     </AppButton>
-                    <span v-if="!isPro && props.goals.length >= goalLimit" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
+                    <span v-if="!isPro && props.goals.length >= limit('goal')" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
                         Pro
                     </span>
                 </div>

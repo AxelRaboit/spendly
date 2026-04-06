@@ -24,22 +24,23 @@ import { useSectionMeta }    from '@/composables/budget/useSectionMeta';
 import { useDonutSegments }  from '@/composables/budget/useDonutSegments';
 import { useSectionCollapse } from '@/composables/budget/useSectionCollapse';
 import { useRowFlash }       from '@/composables/budget/useRowFlash';
+import { useFmtDate }        from '@/composables/core/useFmtDate';
 import { useFmtMonth }       from '@/composables/core/useFmtMonth';
 import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // ─── i18n / currency ─────────────────────────────────────────────────────────
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { fmt } = useCurrency();
 const { fmtMonth } = useFmtMonth();
-const fmtDate = (d) => d ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(d)) : '';
-const page = usePage();
-const isPro = computed(() => page.props.auth?.plan === 'pro');
+const { fmtDate } = useFmtDate();
+const { isPro } = usePlanLimits();
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 const props = defineProps({
@@ -107,7 +108,7 @@ async function createCategory() {
     if (!name || creatingCategoryLoading.value) return;
     creatingCategoryLoading.value = true;
     try {
-        const { data: cat } = await window.axios.post('/categories/quick', { name });
+        const { data: cat } = await window.axios.post('/categories/quick', { name, wallet_id: props.wallet.id });
         localCategories.value = [...localCategories.value, cat].sort((a, b) => a.name.localeCompare(b.name));
         if (categoryTargetForm.value) {
             categoryTargetForm.value.category_id = cat.id;
@@ -724,7 +725,7 @@ onUnmounted(() => {
                     <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
                         <FileText class="w-3.5 h-3.5" />
                         {{ t('budgets.notes.label') }}
-                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-[120px] sm:max-w-xs">{{ budgetNotesText }}</span>
+                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-30 sm:max-w-xs">{{ budgetNotesText }}</span>
                     </span>
                     <div class="flex items-center gap-2">
                         <ChevronDown
@@ -1203,7 +1204,7 @@ onUnmounted(() => {
                                             {{ SECTION_META[type].label }}
                                         </span>
                                         <template v-if="!collapsedSections[type]">
-                                            <div class="flex-1 max-w-[120px] h-1.5 bg-surface-3 rounded-full">
+                                            <div class="flex-1 max-w-30 h-1.5 bg-surface-3 rounded-full">
                                                 <div
                                                     v-show="progress(totals[type]?.planned, totals[type]?.actual) > 0"
                                                     class="h-full rounded-full transition-all duration-300"

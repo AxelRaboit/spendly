@@ -180,7 +180,7 @@ function uploadAndPreview() {
                                         <input
                                             v-model="row.description"
                                             type="text"
-                                            class="w-full min-w-[120px] bg-transparent text-primary focus:bg-surface-2 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
+                                            class="w-full min-w-30 bg-transparent text-primary focus:bg-surface-2 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
                                         >
                                     </td>
                                     <td class="px-2 py-1.5">
