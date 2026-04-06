@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
@@ -85,6 +85,7 @@ function quickCreate(name) {
                         href="/wallets/create"
                         class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition inline-flex items-center gap-2"
                     >
+                        <Plus class="w-4 h-4" />
                         {{ t('wallets.createBtn') }}
                     </Link>
                 </div>

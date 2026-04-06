@@ -34,12 +34,12 @@ const previewUrl = ref(null);
         leave-from-class="translate-x-0 opacity-100"
         leave-to-class="translate-x-full opacity-0"
     >
-        <div v-if="open" class="fixed inset-y-0 right-0 z-50 flex">
+        <div v-if="open" class="fixed inset-y-0 right-0 z-50 flex w-full sm:w-auto">
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
                 data-tour="detail-panel"
-                class="relative ml-auto w-120 bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">

@@ -79,6 +79,23 @@ export function useTour() {
         }
     }
 
+    // ── Shared driver config base ──
+    function baseDriverConfig() {
+        return {
+            animate: true,
+            stagePadding: 12,
+            stageRadius: 12,
+            disableActiveInteraction: true,
+            overlayClickBehavior: () => {},
+            scrollIntoViewOptions: { behavior: 'auto', block: 'center', inline: 'nearest' },
+            onHighlightStarted: (element) => {
+                if (element) {
+                    element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'nearest' });
+                }
+            },
+        };
+    }
+
     // ── Page 0: wallets.index — intro step, then seed + navigate ──
     function runPage0() {
         setTimeout(() => {
@@ -96,11 +113,7 @@ export function useTour() {
                 : { popover: { title: t('tour.stepWelcome.title'), description: t('tour.stepWelcome.desc') } };
 
             const driverObj = driver({
-                animate: true,
-                stagePadding: 12,
-                stageRadius: 12,
-                disableActiveInteraction: true,
-                overlayClickBehavior: () => {},
+                ...baseDriverConfig(),
                 showProgress: false,
                 showButtons: ['next', 'close'],
                 nextBtnText: t('tour.next'),
@@ -175,11 +188,7 @@ export function useTour() {
             applyGlobalProgress(steps, page);
 
             const driverObj = driver({
-                animate: true,
-                stagePadding: 12,
-                stageRadius: 12,
-                disableActiveInteraction: true,
-                overlayClickBehavior: () => {},
+                ...baseDriverConfig(),
                 showProgress: true,
                 showButtons: ['next', 'previous', 'close'],
                 nextBtnText: t('tour.next'),
@@ -256,11 +265,7 @@ export function useTour() {
             ];
             applyGlobalProgress(steps, 3);
             const driverObj = driver({
-                animate: true,
-                stagePadding: 12,
-                stageRadius: 12,
-                disableActiveInteraction: true,
-                overlayClickBehavior: () => {},
+                ...baseDriverConfig(),
                 showProgress: true,
                 showButtons: ['next', 'close'],
                 nextBtnText: t('tour.finish'),
@@ -290,6 +295,20 @@ export function useTour() {
                 await axios.delete(route('tour.cleanup'));
             } catch {}
         }
+    }
+
+    // ── Mobile helpers ──
+    function isMobile() {
+        return window.innerWidth < 768;
+    }
+
+    // Returns the first visible element matching selector (skips display:none elements)
+    function getVisibleEl(selector) {
+        const els = document.querySelectorAll(selector);
+        for (const el of els) {
+            if (el.offsetParent !== null) return el;
+        }
+        return document.querySelector(selector) ?? undefined;
     }
 
     // ── Helpers ──
@@ -426,8 +445,9 @@ export function useTour() {
 
     // ── Step definitions: previous month (comprehensive) ──
     function buildPrevMonthSteps() {
-        const firstRow = document.querySelector('[data-tour-item]');
+        const firstRow = getVisibleEl('[data-tour-item]');
         const firstItemId = firstRow?.getAttribute('data-tour-item');
+        const panelSide = isMobile() ? 'bottom' : 'left';
 
         return [
             // 1. Month navigation (top, natural starting point)
@@ -478,7 +498,7 @@ export function useTour() {
             },
             // 4. Income section (full)
             {
-                element: '[data-tour-section="income"]',
+                element: getVisibleEl('[data-tour-section="income"]'),
                 popover: {
                     title: t('tour.section.income.title'),
                     description: t('tour.section.income.desc'),
@@ -490,7 +510,7 @@ export function useTour() {
             ...(firstItemId
                 ? [
                       {
-                          element: `[data-tour-item="${firstItemId}"]`,
+                          element: firstRow,
                           popover: {
                               title: t('tour.stepRow.title'),
                               description: t('tour.stepRow.desc'),
@@ -504,11 +524,11 @@ export function useTour() {
             ...(firstItemId
                 ? [
                       {
-                          element: `[data-tour-actions="${firstItemId}"]`,
+                          element: getVisibleEl(`[data-tour-actions="${firstItemId}"]`),
                           popover: {
                               title: t('tour.stepRowActions.title'),
                               description: t('tour.stepRowActions.desc'),
-                              side: 'left',
+                              side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                               onPopoverRender: () => showActions(firstItemId),
                               onDeselected: () => hideActions(firstItemId),
@@ -518,15 +538,15 @@ export function useTour() {
                 : []),
             // 7. Actual amount — show it's clickable
             ...(() => {
-                const actualCell = document.querySelector('[data-tour-actual]');
+                const actualCell = getVisibleEl('[data-tour-actual]');
                 return actualCell
                     ? [
                           {
-                              element: `[data-tour-actual="${actualCell.getAttribute('data-tour-actual')}"]`,
+                              element: actualCell,
                               popover: {
                                   title: t('tour.stepActualAmount.title'),
                                   description: t('tour.stepActualAmount.desc'),
-                                  side: 'left',
+                                  side: isMobile() ? 'bottom' : 'left',
                                   align: 'center',
                               },
                           },
@@ -543,7 +563,7 @@ export function useTour() {
                 popover: {
                     title: t('tour.stepDetailPanel.title'),
                     description: t('tour.stepDetailPanel.desc'),
-                    side: 'left',
+                    side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
                         liftDetailPanel();
@@ -556,7 +576,7 @@ export function useTour() {
             },
             // 8. Add a line button
             {
-                element: '[data-tour-add-line="income"]',
+                element: getVisibleEl('[data-tour-add-line="income"]'),
                 popover: {
                     title: t('tour.stepAddLine.title'),
                     description: t('tour.stepAddLine.desc'),
@@ -619,9 +639,9 @@ export function useTour() {
             },
             // 8-11. Remaining sections (continue scrolling down)
             ...['savings', 'bills', 'expenses', 'debt']
-                .filter((s) => !!document.querySelector(`[data-tour-section="${s}"]`))
+                .filter((s) => !!getVisibleEl(`[data-tour-section="${s}"]`))
                 .map((s) => ({
-                    element: `[data-tour-section="${s}"]`,
+                    element: getVisibleEl(`[data-tour-section="${s}"]`),
                     popover: {
                         title: t(`tour.section.${s}.title`),
                         description: t(`tour.section.${s}.desc`),
@@ -650,7 +670,7 @@ export function useTour() {
                 popover: {
                     title: t('tour.stepTxPanel.title'),
                     description: t('tour.stepTxPanel.desc'),
-                    side: 'left',
+                    side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
                         liftTxPanel();
@@ -672,7 +692,7 @@ export function useTour() {
                 popover: {
                     title: t(`tour.txField.${key.replace('tx-', '')}.title`),
                     description: t(`tour.txField.${key.replace('tx-', '')}.desc`),
-                    side: 'left',
+                    side: panelSide,
                     align: 'start',
                     onPopoverRender: () => showPanelOverlay(`[data-tour="${key}"]`),
                 },
@@ -682,17 +702,17 @@ export function useTour() {
 
     // ── Step definitions: current month ──
     function buildCurrentMonthSteps() {
-        const carriedOverCell = document.querySelector('[data-tour-carried-over]');
+        const carriedOverCell = getVisibleEl('[data-tour-carried-over]');
 
         return [
             ...(carriedOverCell
                 ? [
                       {
-                          element: `[data-tour-carried-over="${carriedOverCell.getAttribute('data-tour-carried-over')}"]`,
+                          element: carriedOverCell,
                           popover: {
                               title: t('tour.stepCarryOver.title'),
                               description: t('tour.stepCarryOver.desc'),
-                              side: 'left',
+                              side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                           },
                       },
