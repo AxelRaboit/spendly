@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Maintain back dependencies for Composer
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    ignore:
+      - dependency-name: "laravel/*"
+        update-types: ["version-update:semver-major"]
+
+  # Maintain front dependencies for NPM
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 50
+    ignore:
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+
+  # Maintain Github actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 25
