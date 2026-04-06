@@ -49,7 +49,7 @@ class PlanService
             return true;
         }
 
-        return $user->wallets()->count() < self::FREE_WALLET_LIMIT;
+        return $user->wallets()->where('is_demo', false)->count() < self::FREE_WALLET_LIMIT;
     }
 
     public function canCreateGoal(User $user): bool

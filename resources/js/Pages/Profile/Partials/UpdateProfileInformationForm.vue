@@ -2,7 +2,6 @@
 import { CURRENCIES } from '@/composables/core/useCurrency';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { useLocale, SUPPORTED_LOCALES } from '@/composables/core/useLocale.js';
 
 defineProps({
     mustVerifyEmail: { type: Boolean },
@@ -10,7 +9,6 @@ defineProps({
 });
 
 const { t } = useI18n();
-const { locale, setLocale } = useLocale();
 
 const user = usePage().props.auth.user;
 
@@ -87,17 +85,5 @@ const form = useForm({
                 </Transition>
             </div>
         </form>
-
-        <div class="mt-6">
-            <label for="locale" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldLocale') }}</label>
-            <select
-                id="locale"
-                :value="locale"
-                class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
-                v-on:change="setLocale($event.target.value)"
-            >
-                <option v-for="loc in SUPPORTED_LOCALES" :key="loc.code" :value="loc.code">{{ t(`locales.${loc.code}`) }}</option>
-            </select>
-        </div>
     </section>
 </template>

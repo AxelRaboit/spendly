@@ -53,8 +53,8 @@ function deleteUser() {
 
     <AppModal :show="confirmingDeletion" v-on:close="closeModal">
         <div class="flex items-center gap-4 mb-4">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-900/40">
-                <AlertTriangle class="h-5 w-5 text-rose-400" />
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-badge-danger-bg">
+                <AlertTriangle class="h-5 w-5 text-badge-danger-text" />
             </div>
             <div>
                 <h3 class="text-base font-semibold text-primary">{{ t('profile.delete.modalTitle') }}</h3>

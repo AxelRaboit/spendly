@@ -2,11 +2,12 @@
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import PlanSelectionModal from '@/components/ui/PlanSelectionModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ChevronRight, Star } from 'lucide-vue-next';
+import { ChevronRight, Star, Map } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
 import '@/plugins/chartjs';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useTour } from '@/composables/ui/useTour';
 import { Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -17,7 +18,17 @@ const { t } = useI18n();
 const { fmtDayLong: fmtDay } = useFmtDate();
 const page = usePage();
 
-const showPlanModal = ref(page.props.flash?.show_plan_modal === true);
+const wasShowingPlanModal = page.props.flash?.show_plan_modal === true;
+const showPlanModal = ref(wasShowingPlanModal);
+const { startTour, isActive: tourIsActive, isCompleted: tourIsCompleted } = useTour();
+const showTourBanner = computed(() => !showPlanModal.value && tourIsActive() && !tourIsCompleted());
+
+// Start tour automatically when the post-registration modal is closed
+if (wasShowingPlanModal) {
+    watch(showPlanModal, (val) => {
+        if (!val) startTour();
+    }, { once: true });
+}
 
 const props = defineProps({
     spentThisMonth: Number,
@@ -71,6 +82,19 @@ const topCategoryMax = computed(() => {
         </template>
 
         <div class="space-y-6">
+            <div v-if="showTourBanner" class="rounded-lg bg-indigo-600/10 border border-indigo-500/30 px-4 py-3 flex items-center justify-between gap-3 text-sm text-indigo-300">
+                <div class="flex items-center gap-2">
+                    <Map class="w-4 h-4 shrink-0" />
+                    <span>{{ t('tour.resumeBanner') }}</span>
+                </div>
+                <button
+                    class="text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors shrink-0"
+                    v-on:click="startTour"
+                >
+                    {{ t('tour.resumeBtn') }}
+                </button>
+            </div>
+
             <div v-if="favoriteWallets.length > 0">
                 <h3 class="text-xs font-medium text-muted uppercase tracking-wider mb-3">{{ t('wallets.favoriteWallets') }}</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -162,7 +186,7 @@ const topCategoryMax = computed(() => {
                                 <div class="flex flex-col gap-1 min-w-0">
                                     <span class="text-sm text-primary font-medium truncate">{{ transaction.description ?? '—' }}</span>
                                     <div class="flex items-center gap-2">
-                                        <span class="rounded-full bg-indigo-900 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ transaction.category.name }}</span>
+                                        <span class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ transaction.category.name }}</span>
                                         <span class="text-xs text-muted">{{ fmtDay(transaction.date) }}</span>
                                     </div>
                                 </div>
@@ -185,7 +209,7 @@ const topCategoryMax = computed(() => {
                                         <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
                                         <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
                                         <td class="px-6 py-4">
-                                            <span class="rounded-full bg-indigo-900 px-3 py-1 text-xs font-medium text-indigo-300">
+                                            <span class="rounded-full bg-badge-primary-bg px-3 py-1 text-xs font-medium text-badge-primary-text">
                                                 {{ transaction.category.name }}
                                             </span>
                                         </td>

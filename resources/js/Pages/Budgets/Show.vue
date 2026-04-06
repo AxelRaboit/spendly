@@ -31,6 +31,7 @@ import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
+import { useTour } from '@/composables/ui/useTour';
 import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -41,6 +42,8 @@ const { fmt } = useCurrency();
 const { fmtMonth } = useFmtMonth();
 const { fmtDate } = useFmtDate();
 const { isPro } = usePlanLimits();
+const { initForPage, tourActive } = useTour();
+const showProFeatures = computed(() => isPro.value || tourActive.value);
 
 // ─── Props ───────────────────────────────────────────────────────────────────
 const props = defineProps({
@@ -370,6 +373,22 @@ onMounted(async () => {
     document.addEventListener('keydown', onGlobalKeydown);
     document.addEventListener('click', closeMobileMenu);
 
+    initForPage('budgets.show', {
+        expandKpi: () => { showMoreKpi.value = true; },
+        openTxPanel: () => { openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding }); },
+        closeTxPanel: () => { closeTxPanel(); },
+        openAddLine: () => { startAddingItem('income'); },
+        cancelAdding: () => { cancelAdding(); },
+        openDetailPanel: () => {
+            // Find first item with actual_amount > 0 and a category
+            for (const items of Object.values(props.sections)) {
+                const item = items.find(i => i.category_id && i.actual_amount > 0);
+                if (item) { openTxDetail(item); return; }
+            }
+        },
+        closeDetailPanel: () => { closeTxDetail(); },
+    });
+
     // Flash row when coming from dashboard
     if (props.flashCategory) {
         for (const items of Object.values(props.sections)) {
@@ -406,13 +425,14 @@ onUnmounted(() => {
             <div class="flex justify-end">
                 <button
                     class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                    data-tour="new-transaction"
                     v-on:click="openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding })"
                 >
                     <Plus class="w-4 h-4 shrink-0" />
                     {{ t('budgets.newTransaction') }}
                 </button>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between" data-tour="month-nav">
                 <Link
                     :href="`/wallets/${wallet.id}/budget?month=${prevMonth}`"
                     class="flex items-center gap-1 text-secondary hover:text-primary transition-colors text-sm capitalize"
@@ -438,148 +458,201 @@ onUnmounted(() => {
                 </Link>
             </div>
 
-            <div class="hidden md:grid grid-cols-3 gap-3">
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
-                    <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
-                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
-                    <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
-                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
-                </div>
-                <div class="bg-surface border border-base/60 rounded-lg p-4">
-                    <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
-                    <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
-                    <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
-                </div>
-            </div>
-
-            <div class="md:hidden">
-                <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+            <div class="space-y-3" data-tour="kpi-section">
+                <div class="hidden md:grid grid-cols-3 gap-3" data-tour="budget-kpi">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                    <div class="bg-surface border border-base/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
                 </div>
-                <div class="flex justify-center gap-1.5 mt-2">
-                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[0] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
-                </div>
-            </div>
 
-            <div v-if="!isBudgetEmpty && (overageCount > 0 || overageGoodCount > 0)" class="flex flex-col gap-2">
-                <div
-                    v-if="overageCount > 0"
-                    class="flex items-center gap-3 bg-rose-500/10 border border-rose-500/30 rounded-lg px-4 py-3"
-                >
-                    <AlertTriangle class="w-4 h-4 text-rose-400 shrink-0" />
-                    <p class="text-sm text-rose-300">{{ t('budgets.overageAlert', overageCount, { count: overageCount }) }}</p>
-                </div>
-                <div
-                    v-if="overageGoodCount > 0"
-                    class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3"
-                >
-                    <CheckCircle class="w-4 h-4 text-emerald-400 shrink-0" />
-                    <p class="text-sm text-emerald-300">{{ t('budgets.overageGood', overageGoodCount, { count: overageGoodCount }) }}</p>
-                </div>
-            </div>
-
-            <div v-if="showMoreKpi" class="space-y-3">
-                <div class="hidden md:grid grid-cols-3 gap-3">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
-                        <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
-                        <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
-                            {{ fmt(cashFlow.actual, true) }}
-                        </p>
-                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
-                        <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
-                            {{ savingsRate !== null ? savingsRate + '%' : '—' }}
-                        </p>
-                        <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
-                    </div>
-                </div>
-
-                <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
-                        <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
-                        <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
-                            {{ fmt(cashFlow.actual, true) }}
-                        </p>
-                        <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
-                        <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
-                            {{ savingsRate !== null ? savingsRate + '%' : '—' }}
-                        </p>
-                        <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
-                    </div>
-                </div>
-                <div class="md:hidden flex justify-center gap-1.5 mt-2">
-                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[1] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
-                </div>
-
-                <div class="hidden md:grid grid-cols-3 gap-3">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
-                        <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
-                        <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                        <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
-                        <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
-                        <div>
-                            <div class="flex items-end justify-between mb-2">
-                                <div>
-                                    <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
-                                        {{ fmt(leftToSpend.actual) }}
-                                    </span>
-                                    <span class="text-xs text-muted font-mono ml-1.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</span>
-                                </div>
-                                <span class="text-sm text-muted font-mono">
-                                    {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
-                                </span>
-                            </div>
-                            <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
-                                <div
-                                    v-show="totalIncome.actual > 0"
-                                    class="h-full rounded-full transition-all duration-500"
-                                    :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
-                                    :style="{
-                                        width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%',
-                                    }"
-                                />
-                            </div>
-                            <div class="flex justify-between text-xs text-muted mt-1.5">
-                                <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
-                                <span>{{ fmt(totalIncome.actual) }}</span>
-                            </div>
+                <div class="md:hidden">
+                    <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
+                            <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
+                            <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
+                            <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
                         </div>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
-                        <div>
+                    <div class="flex justify-center gap-1.5 mt-2">
+                        <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[0] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
+                    </div>
+                </div>
+
+                <div v-if="!isBudgetEmpty && (overageCount > 0 || overageGoodCount > 0)" class="flex flex-col gap-2">
+                    <div
+                        v-if="overageCount > 0"
+                        class="flex items-center gap-3 bg-rose-500/10 border border-rose-500/30 rounded-lg px-4 py-3"
+                    >
+                        <AlertTriangle class="w-4 h-4 text-rose-400 shrink-0" />
+                        <p class="text-sm text-rose-300">{{ t('budgets.overageAlert', overageCount, { count: overageCount }) }}</p>
+                    </div>
+                    <div
+                        v-if="overageGoodCount > 0"
+                        class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3"
+                    >
+                        <CheckCircle class="w-4 h-4 text-emerald-400 shrink-0" />
+                        <p class="text-sm text-emerald-300">{{ t('budgets.overageGood', overageGoodCount, { count: overageGoodCount }) }}</p>
+                    </div>
+                </div>
+
+                <div v-if="showMoreKpi" class="space-y-3">
+                    <div class="hidden md:grid grid-cols-3 gap-3">
+                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                            <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
+                            <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                            <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
+                                {{ fmt(cashFlow.actual, true) }}
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                            <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
+                                {{ savingsRate !== null ? savingsRate + '%' : '—' }}
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+                        </div>
+                    </div>
+
+                    <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
+                            <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
+                                {{ fmt(cashFlow.actual, true) }}
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
+                            <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
+                                {{ savingsRate !== null ? savingsRate + '%' : '—' }}
+                            </p>
+                            <p class="text-xs text-muted mt-0.5">{{ t('budgets.kpi.income') }} {{ fmt(totalIncome.actual) }}</p>
+                        </div>
+                    </div>
+                    <div class="md:hidden flex justify-center gap-1.5 mt-2">
+                        <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[1] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
+                    </div>
+
+                    <div class="hidden md:grid grid-cols-3 gap-3">
+                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                            <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
+                            <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
+                            <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
+                            <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
+                            <div>
+                                <div class="flex items-end justify-between mb-2">
+                                    <div>
+                                        <span class="text-2xl font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                            {{ fmt(leftToSpend.actual) }}
+                                        </span>
+                                        <span class="text-xs text-muted font-mono ml-1.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</span>
+                                    </div>
+                                    <span class="text-sm text-muted font-mono">
+                                        {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
+                                    </span>
+                                </div>
+                                <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
+                                    <div
+                                        v-show="totalIncome.actual > 0"
+                                        class="h-full rounded-full transition-all duration-500"
+                                        :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
+                                        :style="{
+                                            width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%',
+                                        }"
+                                    />
+                                </div>
+                                <div class="flex justify-between text-xs text-muted mt-1.5">
+                                    <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
+                                    <span>{{ fmt(totalIncome.actual) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
+                            <div>
+                                <AppTooltip :text="t('budgets.kpi.projectionTip')">
+                                    <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
+                                        {{ t('budgets.kpi.projection') }}
+                                        <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
+                                    </p>
+                                </AppTooltip>
+                                <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
+                                    {{ fmt(projectedExpenses) }}
+                                </p>
+                                <p v-else class="text-lg font-bold text-muted font-mono">—</p>
+                                <p v-if="projectedExpenses !== null" class="text-xs text-muted mt-0.5">
+                                    vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
+                                </p>
+                            </div>
+                            <p v-if="projectedExpenses !== null" class="text-xs text-subtle mt-2">
+                                {{ t('budgets.projectionBased', { days: new Date().getDate() }) }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
+                            <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
+                            <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                            <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
+                            <div class="mt-3">
+                                <div class="flex items-end justify-between mb-2">
+                                    <span class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
+                                        {{ fmt(leftToSpend.actual) }}
+                                    </span>
+                                    <span class="text-sm text-muted font-mono">
+                                        {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
+                                    </span>
+                                </div>
+                                <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
+                                    <div
+                                        v-show="totalIncome.actual > 0"
+                                        class="h-full rounded-full transition-all duration-500"
+                                        :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
+                                        :style="{ width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%' }"
+                                    />
+                                </div>
+                                <div class="flex justify-between text-xs text-muted mt-1.5">
+                                    <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
+                                    <span>{{ fmt(totalIncome.actual) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.projectionTip')">
                                 <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
                                     {{ t('budgets.kpi.projection') }}
@@ -594,74 +667,24 @@ onUnmounted(() => {
                                 vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
                             </p>
                         </div>
-                        <p v-if="projectedExpenses !== null" class="text-xs text-subtle mt-2">
-                            {{ t('budgets.projectionBased', { days: new Date().getDate() }) }}
-                        </p>
+                    </div>
+                    <div class="md:hidden flex justify-center gap-1.5 mt-2">
+                        <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[2] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
                     </div>
                 </div>
 
-                <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
-                        <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
-                        <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
-                        <div class="mt-3">
-                            <div class="flex items-end justify-between mb-2">
-                                <span class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">
-                                    {{ fmt(leftToSpend.actual) }}
-                                </span>
-                                <span class="text-sm text-muted font-mono">
-                                    {{ totalIncome.actual > 0 ? Math.min(100, Math.round((totalExpenses.actual / totalIncome.actual) * 100)) : 0 }}%
-                                </span>
-                            </div>
-                            <div class="h-3 bg-surface-3 rounded-full overflow-hidden">
-                                <div
-                                    v-show="totalIncome.actual > 0"
-                                    class="h-full rounded-full transition-all duration-500"
-                                    :class="totalExpenses.actual > totalIncome.actual ? 'bg-rose-400' : 'bg-emerald-400'"
-                                    :style="{ width: totalIncome.actual > 0 ? Math.min(100, (totalExpenses.actual / totalIncome.actual) * 100) + '%' : '0%' }"
-                                />
-                            </div>
-                            <div class="flex justify-between text-xs text-muted mt-1.5">
-                                <span>{{ fmt(totalExpenses.actual) }} {{ t('budgets.kpi.spent') }}</span>
-                                <span>{{ fmt(totalIncome.actual) }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
-                        <AppTooltip :text="t('budgets.kpi.projectionTip')">
-                            <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
-                                {{ t('budgets.kpi.projection') }}
-                                <span v-if="!isCurrentMonth" class="normal-case text-subtle ml-1">{{ t('budgets.projectionPast') }}</span>
-                            </p>
-                        </AppTooltip>
-                        <p v-if="projectedExpenses !== null" class="text-lg font-bold font-mono" :class="projectedExpenses > totalExpenses.planned ? 'text-rose-400' : 'text-emerald-400'">
-                            {{ fmt(projectedExpenses) }}
-                        </p>
-                        <p v-else class="text-lg font-bold text-muted font-mono">—</p>
-                        <p v-if="projectedExpenses !== null" class="text-xs text-muted mt-0.5">
-                            vs {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}
-                        </p>
-                    </div>
-                </div>
-                <div class="md:hidden flex justify-center gap-1.5 mt-2">
-                    <span v-for="i in 3" :key="i" class="w-1.5 h-1.5 rounded-full" :class="kpiSlides[2] === i - 1 ? 'bg-indigo-400' : 'bg-surface-3'" />
-                </div>
+                <button
+                    class="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                    data-tour="kpi-toggle"
+                    v-on:click="toggleMoreKpi"
+                >
+                    <ChevronDown
+                        class="w-3 h-3 transition-transform duration-200"
+                        :class="showMoreKpi ? '' : '-rotate-90'"
+                    />
+                    {{ showMoreKpi ? t('budgets.kpi.showLess') : t('budgets.kpi.showMore') }}
+                </button>
             </div>
-
-            <button
-                class="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-                v-on:click="toggleMoreKpi"
-            >
-                <ChevronDown
-                    class="w-3 h-3 transition-transform duration-200"
-                    :class="showMoreKpi ? '' : '-rotate-90'"
-                />
-                {{ showMoreKpi ? t('budgets.kpi.showLess') : t('budgets.kpi.showMore') }}
-            </button>
 
             <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-base rounded-lg p-8 text-center">
                 <p class="text-secondary mb-4">{{ t('budgets.emptyBudget') }}</p>
@@ -717,7 +740,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-lg relative">
+            <div class="bg-surface border border-base/60 rounded-lg relative" data-tour="budget-notes">
                 <button
                     class="flex items-center justify-between w-full px-4 py-3 text-xs transition-colors text-muted hover:text-secondary cursor-pointer"
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
@@ -795,34 +818,30 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 -mb-1">
-                <p class="hidden sm:block text-xs text-subtle">{{ isPro ? t('budgets.hint') : '' }}</p>
+            <div v-if="showProFeatures || !isBudgetEmpty" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 -mb-1">
+                <p class="hidden sm:block text-xs text-subtle">{{ showProFeatures ? t('budgets.hint') : '' }}</p>
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <AppButton
-                        v-if="!isBudgetEmpty"
+                        v-if="showProFeatures && !isBudgetEmpty"
                         size="sm"
                         variant="secondary"
-                        :disabled="!isPro"
-                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
-                        v-on:click="isPro && copyFromPrevious()"
+                        v-on:click="copyFromPrevious()"
                     >
                         {{ t('budgets.copyFromPrevious', { month: fmtMonth(prevMonth) }) }}
                     </AppButton>
                     <AppButton
+                        v-if="showProFeatures"
                         size="sm"
                         variant="secondary"
-                        :disabled="!isPro"
-                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
-                        v-on:click="isPro && copyRepeat()"
+                        v-on:click="copyRepeat()"
                     >
                         {{ t('budgets.copyRepeat') }}
                     </AppButton>
                     <AppButton
+                        v-if="showProFeatures"
                         size="sm"
                         variant="secondary"
-                        :disabled="!isPro"
-                        :class="!isPro ? 'opacity-50 cursor-not-allowed' : ''"
-                        v-on:click="isPro && exportXlsx()"
+                        v-on:click="exportXlsx()"
                     >
                         {{ t('budgets.exportXlsx') }}
                     </AppButton>
@@ -834,11 +853,10 @@ onUnmounted(() => {
                     >
                         {{ t('budgets.clearAll') }}
                     </AppButton>
-                    <span v-if="!isPro" class="text-xs font-semibold bg-amber-500 text-white px-2 py-1 rounded self-center">Pro</span>
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-lg overflow-clip">
+            <div class="bg-surface border border-base/60 rounded-lg overflow-clip" data-tour="budget-table">
                 <div class="md:hidden divide-y divide-base/40">
                     <template v-for="(items, type) in sections" :key="`mob-${type}`">
                         <div
@@ -1004,7 +1022,7 @@ onUnmounted(() => {
                                                     v-on:click.stop
                                                 >
                                                     <button
-                                                        v-if="isPro"
+                                                        v-if="showProFeatures"
                                                         class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors hover:bg-surface-2"
                                                         :class="item.repeat_next_month ? 'text-indigo-400' : 'text-secondary'"
                                                         v-on:click="toggleRepeat(item); closeMobileMenu()"
@@ -1013,7 +1031,7 @@ onUnmounted(() => {
                                                         {{ t('budgets.actions.toggleRepeat') }}
                                                     </button>
                                                     <button
-                                                        v-if="isPro"
+                                                        v-if="showProFeatures"
                                                         class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-secondary transition-colors hover:bg-surface-2"
                                                         v-on:click="duplicateItem(item); closeMobileMenu()"
                                                     >
@@ -1155,7 +1173,7 @@ onUnmounted(() => {
                             </div>
 
                             <div class="px-4 py-2">
-                                <AppLink v-on:click="startAddingItem(type)">
+                                <AppLink data-tour="add-budget-line" v-on:click="startAddingItem(type)">
                                     <Plus class="w-3 h-3" />
                                     {{ t('budgets.addRow.addLine') }}
                                 </AppLink>
@@ -1192,416 +1210,418 @@ onUnmounted(() => {
                             <th class="w-[10%]" />
                         </tr>
                     </thead>
-                    <tbody>
-                        <template v-for="(items, type) in sections" :key="type">
-                            <tr
-                                :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b cursor-pointer select-none']"
-                                v-on:click="toggleSection(type)"
-                            >
-                                <td class="px-4 py-2" colspan="2">
-                                    <div class="flex items-center gap-3">
-                                        <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
-                                            {{ SECTION_META[type].label }}
-                                        </span>
-                                        <template v-if="!collapsedSections[type]">
-                                            <div class="flex-1 max-w-30 h-1.5 bg-surface-3 rounded-full">
-                                                <div
-                                                    v-show="progress(totals[type]?.planned, totals[type]?.actual) > 0"
-                                                    class="h-full rounded-full transition-all duration-300"
-                                                    :class="SECTION_META[type].barColor"
-                                                    :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%' }"
-                                                />
-                                            </div>
-                                            <span class="text-xs text-muted">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
-                                        </template>
-                                        <span v-else class="text-xs text-subtle">{{ items.length }} ligne{{ items.length > 1 ? 's' : '' }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-2 text-right font-mono text-secondary text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
-                                <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
-                                <td
-                                    class="px-4 py-2 text-right font-mono text-xs"
-                                    :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood, totals[type]?.actual ?? 0)"
-                                >
-                                    {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
-                                </td>
-                                <td class="px-3 py-2 text-right">
-                                    <ChevronDown
-                                        class="w-3.5 h-3.5 inline transition-transform duration-200"
-                                        :class="[SECTION_META[type].color, collapsedSections[type] ? '-rotate-90' : '']"
-                                    />
-                                </td>
-                            </tr>
-
-                            <template v-if="!collapsedSections[type]">
-                                <template v-for="item in items" :key="item.id">
-                                    <template v-if="editingId === item.id">
-                                        <tr class="bg-surface-2 border-b border-base/40" data-editing>
-                                            <td class="pl-8 pr-2 py-1.5">
-                                                <BudgetInput
-                                                    :id="`edit-label-${item.id}`"
-                                                    v-model="editForm.label"
-                                                    type="text"
-                                                    tabindex="1"
-                                                    :placeholder="t('budgets.editRow.labelPlaceholder')"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                />
-                                            </td>
-                                            <td class="px-2 py-1.5">
-                                                <div v-if="creatingCategory && categoryTargetForm === editForm" class="flex items-center gap-1">
-                                                    <BudgetInput
-                                                        v-model="newCategoryName"
-                                                        data-new-category
-                                                        type="text"
-                                                        variant="focus"
-                                                        class="flex-1"
-                                                        :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
-                                                        :disabled="creatingCategoryLoading"
-                                                        v-on:keydown.enter.prevent="createCategory"
-                                                        v-on:keydown.escape="cancelCreateCategory"
-                                                    />
-                                                    <AppButton
-                                                        variant="icon"
-                                                        size="none"
-                                                        class="text-emerald-400 hover:text-emerald-300 shrink-0"
-                                                        :disabled="creatingCategoryLoading"
-                                                        v-on:click="createCategory"
-                                                    >
-                                                        <Check class="w-3.5 h-3.5" />
-                                                    </AppButton>
-                                                    <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                                        <X class="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
-                                                <BudgetSelect
-                                                    v-else
-                                                    v-model="editForm.category_id"
-                                                    tabindex="2"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                    v-on:change="onCategoryChange(editForm)"
-                                                >
-                                                    <option :value="null">—</option>
-                                                    <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                                    <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
-                                                </BudgetSelect>
-                                            </td>
-                                            <td class="px-2 py-1.5">
-                                                <BudgetInput
-                                                    v-model="editForm.planned_amount"
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    tabindex="3"
-                                                    placeholder="0,00"
-                                                    variant="mono"
-                                                    v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
-                                                />
-                                            </td>
-                                            <td class="px-2 py-1.5 text-right text-muted font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
-                                            <td />
-                                            <td class="px-3 py-1.5">
-                                                <div class="flex items-center gap-2 justify-end">
-                                                    <AppTooltip :text="t('budgets.editRow.confirm')">
-                                                        <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitEdit(item)">
-                                                            <Check class="w-4 h-4" />
-                                                        </button>
-                                                    </AppTooltip>
-                                                    <AppTooltip :text="t('budgets.editRow.cancel')">
-                                                        <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
-                                                            <X class="w-4 h-4" />
-                                                        </button>
-                                                    </AppTooltip>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr class="bg-surface-2 border-b border-base/40" data-editing>
-                                            <td colspan="6" class="pl-8 pr-3 py-2 space-y-1.5">
-                                                <textarea
-                                                    v-model="editForm.notes"
-                                                    :placeholder="t('budgets.editRow.notePlaceholder')"
-                                                    rows="2"
-                                                    tabindex="4"
-                                                    class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
-                                                    v-on:keydown="onNotesKeydown($event, item)"
-                                                />
-                                                <div class="flex items-center gap-2 flex-wrap">
-                                                    <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
-                                                    <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
-                                                        <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
-                                                    </BudgetSelect>
-                                                    <label class="text-xs text-muted ml-2">{{ t('budgets.target.label') }}</label>
-                                                    <BudgetSelect v-model="editForm.target_type" class="w-auto text-xs">
-                                                        <option :value="null">{{ t('budgets.target.none') }}</option>
-                                                        <option value="spending">{{ t('budgets.target.spending') }}</option>
-                                                        <option value="saving">{{ t('budgets.target.saving') }}</option>
-                                                        <option value="by_date">{{ t('budgets.target.byDate') }}</option>
-                                                    </BudgetSelect>
-                                                    <BudgetInput
-                                                        v-if="editForm.target_type"
-                                                        v-model="editForm.target_amount"
-                                                        type="number"
-                                                        step="0.01"
-                                                        min="0.01"
-                                                        variant="mono"
-                                                        class="w-28"
-                                                        :placeholder="t('budgets.target.amount')"
-                                                    />
-                                                    <BudgetInput
-                                                        v-if="editForm.target_type === 'by_date'"
-                                                        v-model="editForm.target_deadline"
-                                                        type="date"
-                                                    />
-                                                </div>
-                                            </td>
-                                        </tr>
+                    <tbody v-for="(items, type) in sections" :key="type" :data-tour-section="type">
+                        <tr
+                            :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b cursor-pointer select-none']"
+                            v-on:click="toggleSection(type)"
+                        >
+                            <td class="px-4 py-2" colspan="2">
+                                <div class="flex items-center gap-3">
+                                    <span :class="[SECTION_META[type].color, 'font-semibold uppercase text-xs tracking-widest']">
+                                        {{ SECTION_META[type].label }}
+                                    </span>
+                                    <template v-if="!collapsedSections[type]">
+                                        <div class="flex-1 max-w-30 h-1.5 bg-surface-3 rounded-full">
+                                            <div
+                                                v-show="progress(totals[type]?.planned, totals[type]?.actual) > 0"
+                                                class="h-full rounded-full transition-all duration-300"
+                                                :class="SECTION_META[type].barColor"
+                                                :style="{ width: progress(totals[type]?.planned, totals[type]?.actual) + '%' }"
+                                            />
+                                        </div>
+                                        <span class="text-xs text-muted">{{ progress(totals[type]?.planned, totals[type]?.actual) }}%</span>
                                     </template>
+                                    <span v-else class="text-xs text-subtle">{{ items.length }} ligne{{ items.length > 1 ? 's' : '' }}</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-2 text-right font-mono text-secondary text-xs">{{ fmt(totals[type]?.planned ?? 0) }}</td>
+                            <td class="px-4 py-2 text-right font-mono text-xs" :class="SECTION_META[type].color">{{ fmt(totals[type]?.actual ?? 0) }}</td>
+                            <td
+                                class="px-4 py-2 text-right font-mono text-xs"
+                                :class="diffClass((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), SECTION_META[type].positiveIsGood, totals[type]?.actual ?? 0)"
+                            >
+                                {{ fmt((totals[type]?.actual ?? 0) - (totals[type]?.planned ?? 0), true) }}
+                            </td>
+                            <td class="px-3 py-2 text-right">
+                                <ChevronDown
+                                    class="w-3.5 h-3.5 inline transition-transform duration-200"
+                                    :class="[SECTION_META[type].color, collapsedSections[type] ? '-rotate-90' : '']"
+                                />
+                            </td>
+                        </tr>
 
-                                    <tr
-                                        v-else
-                                        draggable="true"
-                                        class="border-b border-subtle/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
-                                        :class="[
-                                            item.planned_amount > 0 && item.actual_amount > item.planned_amount
-                                                ? SECTION_META[type]?.positiveIsGood ? 'border-l-2 border-l-emerald-500/60' : 'border-l-2 border-l-rose-500/60'
-                                                : '',
-                                            deletingItem && deletingItem.id === item.id ? 'opacity-40 pointer-events-none' : '',
-                                            draggingId === item.id ? 'opacity-50' : '',
-                                            dragOverId === item.id ? 'bg-indigo-500/10' : '',
-                                        ]"
-                                        :data-row-id="item.id"
-                                        v-on:click="!item.category?.is_system && startEditingItem(item)"
-                                        v-on:dragstart="onDragStart($event, item)"
-                                        v-on:dragend="onDragEnd"
-                                        v-on:dragover="onDragOver($event, item)"
-                                        v-on:drop.prevent="onDrop(item)"
-                                    >
-                                        <td class="pl-4 pr-4 py-2.5 text-primary">
-                                            <div class="flex items-center gap-2">
-                                                <div class="text-base opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                                                    <GripVertical class="w-3 h-4" />
-                                                </div>
-                                                <span>{{ item.label }}</span>
-                                                <NoteTooltip v-if="item.notes" :note="item.notes" />
-                                                <AppTooltip v-if="item.repeat_next_month" :text="t('budgets.repeatNextMonth')">
-                                                    <span
-                                                        class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none cursor-help"
-                                                    >
-                                                        <Repeat class="w-2.5 h-2.5" />
-                                                    </span>
-                                                </AppTooltip>
-                                                <AppTooltip
-                                                    v-if="item.target_type"
-                                                    :text="targetTooltip(item)"
-                                                >
-                                                    <span
-                                                        class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none cursor-help"
-                                                        :class="item.target_type === 'spending'
-                                                            ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
-                                                            : 'text-amber-400 border-amber-500/30'"
-                                                    >
-                                                        {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
-                                                    </span>
-                                                </AppTooltip>
-                                            </div>
+                        <template v-if="!collapsedSections[type]">
+                            <template v-for="item in items" :key="item.id">
+                                <template v-if="editingId === item.id">
+                                    <tr class="bg-surface-2 border-b border-base/40" data-editing>
+                                        <td class="pl-8 pr-2 py-1.5">
+                                            <BudgetInput
+                                                :id="`edit-label-${item.id}`"
+                                                v-model="editForm.label"
+                                                type="text"
+                                                tabindex="1"
+                                                :placeholder="t('budgets.editRow.labelPlaceholder')"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                            />
                                         </td>
-                                        <td class="px-4 py-2.5">
-                                            <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center text-xs rounded px-2 py-0.5 border">
-                                                {{ item.category.name }}
-                                            </span>
-                                            <span v-else class="text-subtle">—</span>
-                                        </td>
-                                        <td class="px-4 py-2.5 text-right text-secondary font-mono">
-                                            <div>
-                                                {{ fmt(item.planned_amount) }}
-                                                <AppTooltip
-                                                    v-if="item.carried_over !== 0"
-                                                    :text="item.carried_over > 0
-                                                        ? t('budgets.carriedOverTooltip', { amount: fmt(item.carried_over) })
-                                                        : t('budgets.carriedOverDeficitTooltip', { amount: fmt(Math.abs(item.carried_over)) })"
-                                                >
-                                                    <span class="text-xs ml-1 cursor-help" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
-                                                        {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
-                                                    </span>
-                                                </AppTooltip>
-                                            </div>
-                                            <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-surface-3 rounded-full">
-                                                <div
-                                                    v-show="progress(item.planned_amount, item.actual_amount) > 0"
-                                                    class="h-full rounded-full transition-all duration-300"
-                                                    :class="item.actual_amount > item.planned_amount ? (SECTION_META[type]?.positiveIsGood ? 'bg-emerald-400' : 'bg-rose-400') : SECTION_META[type]?.barColor"
-                                                    :style="{ width: progress(item.planned_amount, item.actual_amount) + '%' }"
+                                        <td class="px-2 py-1.5">
+                                            <div v-if="creatingCategory && categoryTargetForm === editForm" class="flex items-center gap-1">
+                                                <BudgetInput
+                                                    v-model="newCategoryName"
+                                                    data-new-category
+                                                    type="text"
+                                                    variant="focus"
+                                                    class="flex-1"
+                                                    :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                                    :disabled="creatingCategoryLoading"
+                                                    v-on:keydown.enter.prevent="createCategory"
+                                                    v-on:keydown.escape="cancelCreateCategory"
                                                 />
-                                            </div>
-                                        </td>
-                                        <td
-                                            class="px-4 py-2.5 text-right font-mono"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
-                                        >
-                                            <AppTooltip v-if="item.category_id && item.actual_amount > 0" :text="t('budgets.detailPanel.subtitle')">
-                                                <button class="hover:underline decoration-dotted" v-on:click.stop="openTxDetail(item)">
-                                                    {{ fmt(item.actual_amount) }}
+                                                <AppButton
+                                                    variant="icon"
+                                                    size="none"
+                                                    class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                                    :disabled="creatingCategoryLoading"
+                                                    v-on:click="createCategory"
+                                                >
+                                                    <Check class="w-3.5 h-3.5" />
+                                                </AppButton>
+                                                <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                                    <X class="w-3.5 h-3.5" />
                                                 </button>
-                                            </AppTooltip>
-                                            <span v-else>{{ fmt(item.actual_amount) }}</span>
+                                            </div>
+                                            <BudgetSelect
+                                                v-else
+                                                v-model="editForm.category_id"
+                                                tabindex="2"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                                v-on:change="onCategoryChange(editForm)"
+                                            >
+                                                <option :value="null">—</option>
+                                                <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                                <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                            </BudgetSelect>
                                         </td>
-                                        <td
-                                            class="px-4 py-2.5 text-right font-mono text-xs"
-                                            :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
-                                        >
-                                            {{ fmt(item.actual_amount - item.planned_amount, true) }}
+                                        <td class="px-2 py-1.5">
+                                            <BudgetInput
+                                                v-model="editForm.planned_amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                tabindex="3"
+                                                placeholder="0,00"
+                                                variant="mono"
+                                                v-on:keydown="onKeydown($event, () => submitEdit(item), cancelEditing)"
+                                            />
                                         </td>
-                                        <td class="px-3 py-2.5">
-                                            <div v-if="!item.category?.is_system" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <AppTooltip :text="t('budgets.actions.addTx')">
-                                                    <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)">
-                                                        <Plus class="w-3.5 h-3.5" />
+                                        <td class="px-2 py-1.5 text-right text-muted font-mono text-xs">{{ fmt(item.actual_amount) }}</td>
+                                        <td />
+                                        <td class="px-3 py-1.5">
+                                            <div class="flex items-center gap-2 justify-end">
+                                                <AppTooltip :text="t('budgets.editRow.confirm')">
+                                                    <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitEdit(item)">
+                                                        <Check class="w-4 h-4" />
                                                     </button>
                                                 </AppTooltip>
-                                                <AppTooltip v-if="isPro" :text="t('budgets.actions.toggleRepeat')">
-                                                    <button class="transition-colors" :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'" v-on:click.stop="toggleRepeat(item)">
-                                                        <Repeat class="w-3.5 h-3.5" />
-                                                    </button>
-                                                </AppTooltip>
-                                                <AppTooltip v-if="isPro" :text="t('budgets.actions.duplicate')">
-                                                    <button class="text-muted hover:text-amber-400 transition-colors" v-on:click.stop="duplicateItem(item)">
-                                                        <Copy class="w-3.5 h-3.5" />
-                                                    </button>
-                                                </AppTooltip>
-                                                <AppTooltip :text="t('budgets.actions.edit')">
-                                                    <button class="text-muted hover:text-sky-400 transition-colors" v-on:click.stop="startEditingItem(item)">
-                                                        <Pencil class="w-3.5 h-3.5" />
-                                                    </button>
-                                                </AppTooltip>
-                                                <AppTooltip :text="t('budgets.actions.delete')">
-                                                    <button class="text-muted hover:text-rose-400 transition-colors" v-on:click.stop="requestDelete(item)">
-                                                        <Trash2 class="w-3.5 h-3.5" />
+                                                <AppTooltip :text="t('budgets.editRow.cancel')">
+                                                    <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
+                                                        <X class="w-4 h-4" />
                                                     </button>
                                                 </AppTooltip>
                                             </div>
                                         </td>
                                     </tr>
+                                    <tr class="bg-surface-2 border-b border-base/40" data-editing>
+                                        <td colspan="6" class="pl-8 pr-3 py-2 space-y-1.5">
+                                            <textarea
+                                                v-model="editForm.notes"
+                                                :placeholder="t('budgets.editRow.notePlaceholder')"
+                                                rows="2"
+                                                tabindex="4"
+                                                class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                                v-on:keydown="onNotesKeydown($event, item)"
+                                            />
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
+                                                <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
+                                                    <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
+                                                </BudgetSelect>
+                                                <label class="text-xs text-muted ml-2">{{ t('budgets.target.label') }}</label>
+                                                <BudgetSelect v-model="editForm.target_type" class="w-auto text-xs">
+                                                    <option :value="null">{{ t('budgets.target.none') }}</option>
+                                                    <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                                    <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                                    <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                                </BudgetSelect>
+                                                <BudgetInput
+                                                    v-if="editForm.target_type"
+                                                    v-model="editForm.target_amount"
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0.01"
+                                                    variant="mono"
+                                                    class="w-28"
+                                                    :placeholder="t('budgets.target.amount')"
+                                                />
+                                                <BudgetInput
+                                                    v-if="editForm.target_type === 'by_date'"
+                                                    v-model="editForm.target_deadline"
+                                                    type="date"
+                                                />
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </template>
 
-                                <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
-                                    <td class="pl-8 pr-2 py-1.5">
+                                <tr
+                                    v-else
+                                    draggable="true"
+                                    :data-tour-item="item.id"
+                                    class="border-b border-subtle/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
+                                    :class="[
+                                        item.planned_amount > 0 && item.actual_amount > item.planned_amount
+                                            ? SECTION_META[type]?.positiveIsGood ? 'border-l-2 border-l-emerald-500/60' : 'border-l-2 border-l-rose-500/60'
+                                            : '',
+                                        deletingItem && deletingItem.id === item.id ? 'opacity-40 pointer-events-none' : '',
+                                        draggingId === item.id ? 'opacity-50' : '',
+                                        dragOverId === item.id ? 'bg-indigo-500/10' : '',
+                                    ]"
+                                    :data-row-id="item.id"
+                                    v-on:click="!item.category?.is_system && startEditingItem(item)"
+                                    v-on:dragstart="onDragStart($event, item)"
+                                    v-on:dragend="onDragEnd"
+                                    v-on:dragover="onDragOver($event, item)"
+                                    v-on:drop.prevent="onDrop(item)"
+                                >
+                                    <td class="pl-4 pr-4 py-2.5 text-primary">
+                                        <div class="flex items-center gap-2">
+                                            <div class="text-base opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                                                <GripVertical class="w-3 h-4" />
+                                            </div>
+                                            <span>{{ item.label }}</span>
+                                            <NoteTooltip v-if="item.notes" :note="item.notes" />
+                                            <AppTooltip v-if="item.repeat_next_month" :text="t('budgets.repeatNextMonth')">
+                                                <span
+                                                    class="inline-flex items-center gap-0.5 text-xs text-indigo-400 border border-indigo-500/30 rounded px-1 py-0.5 leading-none cursor-help"
+                                                >
+                                                    <Repeat class="w-2.5 h-2.5" />
+                                                </span>
+                                            </AppTooltip>
+                                            <AppTooltip
+                                                v-if="item.target_type"
+                                                :text="targetTooltip(item)"
+                                            >
+                                                <span
+                                                    class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none cursor-help"
+                                                    :class="item.target_type === 'spending'
+                                                        ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
+                                                        : 'text-amber-400 border-amber-500/30'"
+                                                >
+                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
+                                                </span>
+                                            </AppTooltip>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-2.5">
+                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center text-xs rounded px-2 py-0.5 border">
+                                            {{ item.category.name }}
+                                        </span>
+                                        <span v-else class="text-subtle">—</span>
+                                    </td>
+                                    <td class="px-4 py-2.5 text-right text-secondary font-mono" :data-tour-carried-over="item.carried_over !== 0 ? item.id : undefined">
+                                        <div>
+                                            {{ fmt(item.planned_amount) }}
+                                            <AppTooltip
+                                                v-if="item.carried_over !== 0"
+                                                :text="item.carried_over > 0
+                                                    ? t('budgets.carriedOverTooltip', { amount: fmt(item.carried_over) })
+                                                    : t('budgets.carriedOverDeficitTooltip', { amount: fmt(Math.abs(item.carried_over)) })"
+                                            >
+                                                <span class="text-xs ml-1 cursor-help" :class="item.carried_over > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                    {{ item.carried_over > 0 ? '+' : '' }}{{ fmt(item.carried_over) }}
+                                                </span>
+                                            </AppTooltip>
+                                        </div>
+                                        <div v-if="item.planned_amount > 0" class="mt-1 h-0.5 w-full bg-surface-3 rounded-full">
+                                            <div
+                                                v-show="progress(item.planned_amount, item.actual_amount) > 0"
+                                                class="h-full rounded-full transition-all duration-300"
+                                                :class="item.actual_amount > item.planned_amount ? (SECTION_META[type]?.positiveIsGood ? 'bg-emerald-400' : 'bg-rose-400') : SECTION_META[type]?.barColor"
+                                                :style="{ width: progress(item.planned_amount, item.actual_amount) + '%' }"
+                                            />
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="px-4 py-2.5 text-right font-mono"
+                                        :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
+                                        :data-tour-actual="(item.category_id && item.actual_amount > 0) ? item.id : undefined"
+                                    >
+                                        <AppTooltip v-if="item.category_id && item.actual_amount > 0" :text="t('budgets.detailPanel.subtitle')">
+                                            <button class="hover:underline decoration-dotted" v-on:click.stop="openTxDetail(item)">
+                                                {{ fmt(item.actual_amount) }}
+                                            </button>
+                                        </AppTooltip>
+                                        <span v-else>{{ fmt(item.actual_amount) }}</span>
+                                    </td>
+                                    <td
+                                        class="px-4 py-2.5 text-right font-mono text-xs"
+                                        :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
+                                    >
+                                        {{ fmt(item.actual_amount - item.planned_amount, true) }}
+                                    </td>
+                                    <td class="px-3 py-2.5">
+                                        <div v-if="!item.category?.is_system" :data-tour-actions="item.id" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <AppTooltip :text="t('budgets.actions.addTx')">
+                                                <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)">
+                                                    <Plus class="w-3.5 h-3.5" />
+                                                </button>
+                                            </AppTooltip>
+                                            <AppTooltip v-if="showProFeatures" :text="t('budgets.actions.toggleRepeat')">
+                                                <button class="transition-colors" :class="item.repeat_next_month ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'" v-on:click.stop="toggleRepeat(item)">
+                                                    <Repeat class="w-3.5 h-3.5" />
+                                                </button>
+                                            </AppTooltip>
+                                            <AppTooltip v-if="showProFeatures" :text="t('budgets.actions.duplicate')">
+                                                <button class="text-muted hover:text-amber-400 transition-colors" v-on:click.stop="duplicateItem(item)">
+                                                    <Copy class="w-3.5 h-3.5" />
+                                                </button>
+                                            </AppTooltip>
+                                            <AppTooltip :text="t('budgets.actions.edit')">
+                                                <button class="text-muted hover:text-sky-400 transition-colors" v-on:click.stop="startEditingItem(item)">
+                                                    <Pencil class="w-3.5 h-3.5" />
+                                                </button>
+                                            </AppTooltip>
+                                            <AppTooltip :text="t('budgets.actions.delete')">
+                                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click.stop="requestDelete(item)">
+                                                    <Trash2 class="w-3.5 h-3.5" />
+                                                </button>
+                                            </AppTooltip>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding data-tour="add-line-form">
+                                <td class="pl-8 pr-2 py-1.5 align-top" data-tour="add-field-label">
+                                    <BudgetInput
+                                        :id="`add-label-${type}`"
+                                        v-model="addForm.label"
+                                        type="text"
+                                        variant="focus"
+                                        :error="addFormSubmitted && !addForm.label"
+                                        :placeholder="t('budgets.addRow.labelPlaceholder')"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    />
+                                    <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
+                                </td>
+                                <td class="px-2 py-1.5 align-top" data-tour="add-field-category">
+                                    <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
                                         <BudgetInput
-                                            :id="`add-label-${type}`"
-                                            v-model="addForm.label"
+                                            v-model="newCategoryName"
+                                            data-new-category
                                             type="text"
                                             variant="focus"
-                                            :error="addFormSubmitted && !addForm.label"
-                                            :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                            class="flex-1"
+                                            :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:keydown.enter.prevent="createCategory"
+                                            v-on:keydown.escape="cancelCreateCategory"
                                         />
-                                        <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
-                                    </td>
-                                    <td class="px-2 py-1.5">
-                                        <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
-                                            <BudgetInput
-                                                v-model="newCategoryName"
-                                                data-new-category
-                                                type="text"
-                                                variant="focus"
-                                                class="flex-1"
-                                                :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
-                                                :disabled="creatingCategoryLoading"
-                                                v-on:keydown.enter.prevent="createCategory"
-                                                v-on:keydown.escape="cancelCreateCategory"
-                                            />
-                                            <AppButton
-                                                variant="icon"
-                                                size="none"
-                                                class="text-emerald-400 hover:text-emerald-300 shrink-0"
-                                                :disabled="creatingCategoryLoading"
-                                                v-on:click="createCategory"
-                                            >
-                                                <Check class="w-3.5 h-3.5" />
-                                            </AppButton>
-                                            <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                                <X class="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-                                        <BudgetSelect
-                                            v-else
-                                            v-model="addForm.category_id"
-                                            :error="addFormSubmitted && !addForm.category_id"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                            v-on:change="onCategoryChange(addForm)"
+                                        <AppButton
+                                            variant="icon"
+                                            size="none"
+                                            class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:click="createCategory"
                                         >
-                                            <option :value="null">—</option>
-                                            <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                            <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                            <Check class="w-3.5 h-3.5" />
+                                        </AppButton>
+                                        <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                            <X class="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                    <BudgetSelect
+                                        v-else
+                                        v-model="addForm.category_id"
+                                        :error="addFormSubmitted && !addForm.category_id"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:change="onCategoryChange(addForm)"
+                                    >
+                                        <option :value="null">—</option>
+                                        <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                        <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                    </BudgetSelect>
+                                    <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
+                                </td>
+                                <td class="px-2 py-1.5 align-top" data-tour="add-field-amount">
+                                    <BudgetInput
+                                        v-model="addForm.planned_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="0,00"
+                                        variant="mono"
+                                        :error="addFormSubmitted && addForm.planned_amount === ''"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    />
+                                    <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
+                                </td>
+                                <td colspan="2" />
+                                <td class="px-3 py-1.5">
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <AppTooltip :text="t('budgets.addRow.confirm')">
+                                            <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitAdd">
+                                                <Check class="w-4 h-4" />
+                                            </button>
+                                        </AppTooltip>
+                                        <AppTooltip :text="t('budgets.addRow.cancel')">
+                                            <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
+                                                <X class="w-4 h-4" />
+                                            </button>
+                                        </AppTooltip>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
+                                <td colspan="6" class="pl-8 pr-3 py-2" data-tour="add-field-target">
+                                    <div class="flex items-center gap-3">
+                                        <BudgetSelect v-model="addForm.target_type" class="w-auto">
+                                            <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
+                                            <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                            <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                            <option value="by_date">{{ t('budgets.target.byDate') }}</option>
                                         </BudgetSelect>
-                                        <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
-                                    </td>
-                                    <td class="px-2 py-1.5">
                                         <BudgetInput
-                                            v-model="addForm.planned_amount"
+                                            v-if="addForm.target_type"
+                                            v-model="addForm.target_amount"
                                             type="number"
                                             step="0.01"
-                                            min="0"
-                                            placeholder="0,00"
+                                            min="0.01"
                                             variant="mono"
-                                            :error="addFormSubmitted && addForm.planned_amount === ''"
-                                            v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                            class="w-32"
+                                            :placeholder="t('budgets.target.amount')"
                                         />
-                                        <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
-                                    </td>
-                                    <td colspan="2" />
-                                    <td class="px-3 py-1.5">
-                                        <div class="flex items-center gap-2 justify-end">
-                                            <AppTooltip :text="t('budgets.addRow.confirm')">
-                                                <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitAdd">
-                                                    <Check class="w-4 h-4" />
-                                                </button>
-                                            </AppTooltip>
-                                            <AppTooltip :text="t('budgets.addRow.cancel')">
-                                                <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
-                                                    <X class="w-4 h-4" />
-                                                </button>
-                                            </AppTooltip>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
-                                    <td colspan="6" class="pl-8 pr-3 py-2">
-                                        <div class="flex items-center gap-3">
-                                            <BudgetSelect v-model="addForm.target_type" class="w-auto">
-                                                <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
-                                                <option value="spending">{{ t('budgets.target.spending') }}</option>
-                                                <option value="saving">{{ t('budgets.target.saving') }}</option>
-                                                <option value="by_date">{{ t('budgets.target.byDate') }}</option>
-                                            </BudgetSelect>
-                                            <BudgetInput
-                                                v-if="addForm.target_type"
-                                                v-model="addForm.target_amount"
-                                                type="number"
-                                                step="0.01"
-                                                min="0.01"
-                                                variant="mono"
-                                                class="w-32"
-                                                :placeholder="t('budgets.target.amount')"
-                                            />
-                                            <BudgetInput
-                                                v-if="addForm.target_type === 'by_date'"
-                                                v-model="addForm.target_deadline"
-                                                type="date"
-                                            />
-                                        </div>
-                                    </td>
-                                </tr>
+                                        <BudgetInput
+                                            v-if="addForm.target_type === 'by_date'"
+                                            v-model="addForm.target_deadline"
+                                            type="date"
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
 
-                                <tr v-if="addingType !== type" class="border-b border-subtle/60">
-                                    <td colspan="6" class="pl-8 py-1.5">
-                                        <AppLink v-on:click="startAddingItem(type)">
-                                            <Plus class="w-3 h-3" />
-                                            {{ t('budgets.addRow.addLine') }}
-                                        </AppLink>
-                                    </td>
-                                </tr>
-                            </template><!-- end v-if !collapsedSections -->
-                        </template>
+                            <tr v-if="addingType !== type" class="border-b border-subtle/60">
+                                <td colspan="6" class="pl-8 py-1.5">
+                                    <AppLink :data-tour-add-line="type" v-on:click="startAddingItem(type)">
+                                        <Plus class="w-3 h-3" />
+                                        {{ t('budgets.addRow.addLine') }}
+                                    </AppLink>
+                                </td>
+                            </tr>
+                        </template><!-- end v-if !collapsedSections -->
+                    </tbody>
 
+                    <tbody>
                         <tr v-if="hasUnbudgeted" class="border-t border-amber-500/30 bg-amber-500/5">
                             <td class="px-4 py-2.5" colspan="2">
                                 <div class="flex items-center gap-2">
@@ -1667,7 +1687,7 @@ onUnmounted(() => {
             :section-meta="SECTION_META"
             :filtered-categories="txFilteredCategories"
             :suggested-category-id="suggestedCategoryId"
-            :is-pro="isPro"
+            :is-pro="showProFeatures"
             v-on:close="closeTxPanel"
             v-on:submit="submitTx"
             v-on:submit-split="submitSplit"

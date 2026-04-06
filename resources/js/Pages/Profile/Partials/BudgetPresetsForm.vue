@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useDragDrop } from '@/composables/ui/useDragDrop';
-import { Check, X, GripVertical, Pencil, Trash2, Plus } from 'lucide-vue-next';
+import { Check, X, GripVertical, Pencil, Trash2, Plus, FlaskConical } from 'lucide-vue-next';
 
 const { t } = useI18n();
 const { fmt } = useCurrency();
@@ -111,7 +111,7 @@ function onKeydown(e, submitFn) {
                     'ring-2 ring-indigo-500/50 border-indigo-500/50': dragOverId === item.id,
                     'cursor-grab active:cursor-grabbing': editingId !== item.id,
                 }"
-                :draggable="editingId !== item.id"
+                :draggable="editingId !== item.id && !item.is_demo"
                 v-on:dragstart="onDragStart($event, item)"
                 v-on:dragend="onDragEnd"
                 v-on:dragover="onDragOver($event, item)"
@@ -147,20 +147,26 @@ function onKeydown(e, submitFn) {
                 </template>
 
                 <template v-else>
-                    <div class="text-muted/40 shrink-0 pointer-events-none">
+                    <div class="shrink-0 pointer-events-none" :class="item.is_demo ? 'text-transparent' : 'text-muted/40'">
                         <GripVertical class="w-4 h-4" />
                     </div>
                     <span class="flex-1 text-sm text-primary font-medium">{{ item.label }}</span>
+                    <span v-if="item.is_demo" class="flex items-center gap-1 rounded-full bg-badge-warning-bg px-2 py-0.5 text-2xs font-medium text-badge-warning-text shrink-0">
+                        <FlaskConical class="w-2.5 h-2.5" />
+                        {{ t('wallets.demo') }}
+                    </span>
                     <span class="text-xs px-1.5 py-0.5 rounded-full" :class="[SECTION_STYLES[item.type]?.bg, SECTION_STYLES[item.type]?.color]">
                         {{ t(`budgets.sections.${item.type}`) }}
                     </span>
                     <span v-if="item.planned_amount > 0" class="text-xs text-muted font-mono">{{ fmt(item.planned_amount) }}</span>
-                    <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="startEdit(item)">
-                        <Pencil class="w-3.5 h-3.5" />
-                    </button>
-                    <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="remove(item)">
-                        <Trash2 class="w-3.5 h-3.5" />
-                    </button>
+                    <template v-if="!item.is_demo">
+                        <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="startEdit(item)">
+                            <Pencil class="w-3.5 h-3.5" />
+                        </button>
+                        <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="remove(item)">
+                            <Trash2 class="w-3.5 h-3.5" />
+                        </button>
+                    </template>
                 </template>
             </div>
 

@@ -38,12 +38,13 @@ const previewUrl = ref(null);
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
+                data-tour="detail-panel"
                 class="relative ml-auto w-120 bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
-                        <h3 class="font-semibold text-primary">{{ item?.label }}</h3>
+                        <h3 data-tour="detail-panel-header" class="font-semibold text-primary">{{ item?.label }}</h3>
                         <p class="text-xs text-secondary mt-0.5">{{ t('budgets.detailPanel.subtitle') }}</p>
                     </div>
                     <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
@@ -64,7 +65,7 @@ const previewUrl = ref(null);
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
                                     <p class="text-sm text-primary truncate">{{ tx.description || '—' }}</p>
-                                    <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-1.5 py-0.5 text-2xs font-medium text-amber-300 shrink-0">{{ t('search.splitBadge') }}</span>
+                                    <span v-if="tx.split_id" class="rounded-full bg-badge-warning-bg px-1.5 py-0.5 text-2xs font-medium text-badge-warning-text shrink-0">{{ t('search.splitBadge') }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     <p class="text-xs text-muted">{{ fmtDay(tx.date) }}</p>

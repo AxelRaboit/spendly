@@ -16,6 +16,7 @@ export default {
         lightMode: 'Heller Modus',
         darkMode: 'Dunkler Modus',
         'dev-dashboard': 'Verwaltung',
+        tour: 'Einstiegsleitfaden',
     },
 
     common: {
@@ -127,6 +128,7 @@ export default {
         colActions: 'Aktionen',
         none: 'Noch keine Geldbörsen.',
         confirmDelete: 'Möchtest du diese Geldbörse wirklich löschen?',
+        demo: 'Beispiel',
         addFavorite: 'Zu Favoriten hinzufügen',
         removeFavorite: 'Aus Favoriten entfernen',
         favoriteWallets: 'Schnellzugriff',
@@ -361,6 +363,10 @@ export default {
 
     profile: {
         title: 'Profil',
+        locale: {
+            title: 'Sprache',
+            subtitle: 'Wähle die Anzeigesprache der Anwendung.',
+        },
         info: {
             title: 'Profilinformationen',
             subtitle: 'Aktualisiere deinen Namen, deine E-Mail-Adresse und Währung.',
@@ -767,5 +773,150 @@ export default {
     impersonation: {
         banner: 'Sie sind als {name} eingeloggt',
         leave: 'Zu meinem Konto zurückkehren',
+    },
+    tour: {
+        next: 'Weiter',
+        prev: 'Zurück',
+        done: 'Fertig',
+        finish: 'Leitfaden beenden',
+        progressOf: 'von',
+        seeding: 'Beispielkonto wird erstellt…',
+        resumeBanner: 'Ihr Einrichtungsleitfaden läuft noch. Machen Sie dort weiter, wo Sie aufgehört haben.',
+        resumeBtn: 'Leitfaden fortsetzen',
+        stepWelcome: {
+            title: 'Willkommen!',
+            desc: 'Wir erstellen ein Beispielkonto mit realistischen Daten, um Ihnen die wichtigsten Funktionen von Spendly zu zeigen. Klicken Sie auf Weiter!',
+        },
+        stepTable: {
+            title: 'Budgettabelle',
+            desc: 'Hier ist Ihre Budgettabelle. Sie ist in Abschnitte gegliedert: Einnahmen, Sparen, Fixkosten, Ausgaben und Schulden. Jede Zeile vergleicht geplant mit tatsächlich.',
+        },
+        section: {
+            income: {
+                title: 'Einnahmen',
+                desc: 'Alle Ihre Einkünfte: Gehalt, Freelance usw. Die Anzeige zeigt, wie viel Sie im Vergleich zum Geplanten erhalten haben.',
+            },
+            savings: {
+                title: 'Sparen',
+                desc: 'Geld, das Sie jeden Monat zurücklegen. Setzen Sie ein Sparziel und verfolgen Sie Ihren Fortschritt.',
+            },
+            bills: {
+                title: 'Fixkosten',
+                desc: 'Miete, Strom, Internet, Versicherung… Wiederkehrende Ausgaben mit vorhersehbaren Beträgen.',
+            },
+            expenses: {
+                title: 'Ausgaben',
+                desc: 'Lebensmittel, Transport, Restaurants, Freizeit… Ihre alltäglichen variablen Ausgaben.',
+            },
+            debt: {
+                title: 'Schulden',
+                desc: 'Kredit- und Darlehensrückzahlungen. Verfolgen Sie Ihre monatlichen Zahlungen.',
+            },
+        },
+        stepRow: {
+            title: 'Budgetzeile',
+            desc: 'Jede Zeile zeigt: Bezeichnung, Kategorie, geplant, tatsächlich und Differenz. Der Fortschrittsbalken zeigt Ihren Stand. Grün/rot zeigt, ob Sie im Plan sind.',
+        },
+        stepRowActions: {
+            title: 'Zeilenaktionen',
+            desc: 'Fahren Sie über eine Zeile für diese Buttons: Transaktion hinzufügen, nächsten Monat wiederholen, duplizieren, bearbeiten und löschen.',
+        },
+        stepActualAmount: {
+            title: 'Tatsächlicher Betrag',
+            desc: 'Dieser Betrag ist anklickbar! Klicken Sie darauf, um alle verknüpften Transaktionen dieser Budgetzeile zu sehen.',
+        },
+        stepDetailPanel: {
+            title: 'Transaktionsdetails',
+            desc: 'Klicken Sie auf den tatsächlichen Betrag einer Zeile, um dieses Panel zu öffnen. Es listet alle verknüpften Transaktionen mit Datum, Beschreibung und Betrag auf. Sie können jede Transaktion hier bearbeiten oder löschen.',
+        },
+        stepAddLine: {
+            title: 'Zeile hinzufügen',
+            desc: 'Dieser Link öffnet ein Inline-Formular, um eine neue Kategorie zur Sektion hinzuzufügen.',
+        },
+        stepAddLineForm: {
+            title: 'Formular hinzufügen',
+            desc: 'Hier ist das Formular zum Hinzufügen einer Zeile. Gehen wir die Felder gemeinsam durch.',
+        },
+        addField: {
+            label: {
+                title: 'Bezeichnung',
+                desc: 'Der Name der Budgetzeile. Zum Beispiel „Lebensmittel", „Miete" oder „Netflix".',
+            },
+            category: {
+                title: 'Kategorie',
+                desc: 'Verknüpfen Sie eine vorhandene Kategorie oder erstellen Sie eine neue über „+ Neue Kategorie". Transaktionen werden nach Kategorie gruppiert.',
+            },
+            amount: {
+                title: 'Geplanter Betrag',
+                desc: 'Der Betrag, den Sie für diese Zeile diesen Monat planen. Sie können ihn jederzeit ändern.',
+            },
+            target: {
+                title: 'Ziel',
+                desc: 'Optional. Legen Sie ein Ausgabenlimit, Sparziel oder eine Frist fest. Ein Badge erscheint auf der Zeile zur Fortschrittsverfolgung.',
+            },
+        },
+        stepPrevKpi: {
+            title: 'Kennzahlen',
+            desc: 'Diese Karten fassen Ihren Monat zusammen: Einnahmen, Ausgaben, verbleibendes Budget, Cashflow und Sparquote. Aufklappen für erweiterte Metriken.',
+        },
+        stepNotes: {
+            title: 'Budgetnotizen',
+            desc: 'Fügen Sie persönliche Notizen zu jedem Monat hinzu: Erinnerungen, Ziele oder Kommentare.',
+        },
+        stepTransaction: {
+            title: 'Neue Transaktion',
+            desc: 'Diesen Button verwenden Sie am häufigsten, um eine Ausgabe oder Einnahme zu erfassen.',
+        },
+        stepTxPanel: {
+            title: 'Transaktionspanel',
+            desc: 'Hier ist das Formular zum Erfassen einer Transaktion. Gehen wir die Felder gemeinsam durch.',
+        },
+        txField: {
+            section: {
+                title: 'Budgetbereich',
+                desc: 'Filtern Sie nach Bereich (Einnahmen, Ersparnisse, Rechnungen…), um nur die relevanten Kategorien anzuzeigen und den richtigen Typ vorzuauswählen.',
+            },
+            type: {
+                title: 'Typ',
+                desc: 'Wählen Sie zwischen Ausgabe und Einnahme. Wenn Sie aus einem Budgetabschnitt kommen, ist der Typ vorausgewählt.',
+            },
+            amount: {
+                title: 'Betrag',
+                desc: 'Geben Sie den Betrag ein. Tipp: Sie können Ausdrücke wie „50+30" eingeben — wird automatisch berechnet!',
+            },
+            category: {
+                title: 'Kategorie',
+                desc: 'Verknüpfen Sie die Transaktion mit einer Kategorie. Bei Erkennung wird sie vorausgewählt (Funken-Symbol).',
+            },
+            date: { title: 'Datum', desc: 'Das Transaktionsdatum. Standard ist heute.' },
+            description: {
+                title: 'Beschreibung',
+                desc: 'Optional. Fügen Sie eine Bezeichnung hinzu, um die Transaktion leicht wiederzufinden.',
+            },
+            tags: {
+                title: 'Tags',
+                desc: 'Optional. Fügen Sie Tags hinzu zum Filtern und Gruppieren. Enter oder Komma zum Bestätigen.',
+            },
+            attachment: {
+                title: 'Anhang',
+                desc: 'Fügen Sie einen Beleg oder eine Rechnung bei (JPG, PNG, WebP). Direkt aus der Transaktionsliste abrufbar.',
+            },
+        },
+        stepMonthNav: {
+            title: 'Monatsnavigation',
+            desc: 'Navigieren Sie zwischen den Monaten, um vergangene und zukünftige Budgets anzuzeigen oder zu planen. Jeder Monat hat sein eigenes Budget.',
+        },
+        stepCarryOver: {
+            title: 'Automatischer Übertrag',
+            desc: 'Dieser grüne oder rote Betrag wird vom Vormonat übertragen. Bei Unterschreitung wird der Überschuss addiert, bei Überschreitung das Defizit. Alles automatisch!',
+        },
+        stepCurrentMonth: {
+            title: 'Aktueller Monat',
+            desc: 'Hier ist der aktuelle Monat mit laufenden Ausgaben. Die Fortschrittsbalken zeigen Ihren Stand gegenüber dem geplanten Budget.',
+        },
+        stepPresets: {
+            title: 'Standardzeilen',
+            desc: 'Definieren Sie hier Zeilen, die automatisch in jedem neuen Konto erstellt werden. Kein manuelles Neuerstellen jeden Monat!',
+        },
     },
 };

@@ -3,7 +3,7 @@ import { useForm } from '@inertiajs/vue3';
 export function useWalletForm(wallet = null) {
     const form = useForm({
         name: wallet?.name ?? '',
-        start_balance: wallet?.start_balance ?? 0,
+        start_balance: String(wallet?.start_balance ?? 0),
     });
 
     const submit = () => {

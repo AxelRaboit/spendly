@@ -16,6 +16,7 @@ export default {
         lightMode: 'Modo claro',
         darkMode: 'Modo oscuro',
         'dev-dashboard': 'Administración',
+        tour: 'Guía de inicio',
     },
 
     common: {
@@ -127,6 +128,7 @@ export default {
         colActions: 'Acciones',
         none: 'Aún no hay carteras.',
         confirmDelete: '¿Seguro que quieres eliminar esta cartera?',
+        demo: 'Ejemplo',
         addFavorite: 'Añadir a favoritos',
         removeFavorite: 'Quitar de favoritos',
         favoriteWallets: 'Acceso rápido',
@@ -360,6 +362,10 @@ export default {
 
     profile: {
         title: 'Perfil',
+        locale: {
+            title: 'Idioma',
+            subtitle: 'Elige el idioma de visualización de la aplicación.',
+        },
         info: {
             title: 'Información del perfil',
             subtitle: 'Actualiza tu nombre, correo electrónico y moneda.',
@@ -765,5 +771,150 @@ export default {
     impersonation: {
         banner: 'Ha iniciado sesión como {name}',
         leave: 'Volver a mi cuenta',
+    },
+    tour: {
+        next: 'Siguiente',
+        prev: 'Anterior',
+        done: 'Terminar',
+        finish: 'Terminar guía',
+        progressOf: 'de',
+        seeding: 'Creando cartera de ejemplo…',
+        resumeBanner: 'Su guía de inicio está en progreso. Retome donde lo dejó.',
+        resumeBtn: 'Reanudar guía',
+        stepWelcome: {
+            title: '¡Bienvenido!',
+            desc: 'Vamos a crear una cartera de ejemplo con datos realistas para mostrarle las características clave de Spendly. ¡Haga clic en Siguiente para empezar!',
+        },
+        stepTable: {
+            title: 'Tabla de presupuesto',
+            desc: 'Aquí está su tabla de presupuesto. Está organizada en secciones: Ingresos, Ahorro, Cargos fijos, Gastos y Deudas. Cada fila compara lo planificado con lo real.',
+        },
+        section: {
+            income: {
+                title: 'Ingresos',
+                desc: 'Todos sus ingresos: salario, freelance, etc. El indicador muestra cuánto ha recibido frente a lo planificado.',
+            },
+            savings: {
+                title: 'Ahorro',
+                desc: 'Dinero que reserva cada mes. Establezca un objetivo de ahorro y siga su progreso.',
+            },
+            bills: {
+                title: 'Cargos fijos',
+                desc: 'Alquiler, electricidad, internet, seguro… Gastos recurrentes con importes predecibles.',
+            },
+            expenses: {
+                title: 'Gastos',
+                desc: 'Alimentación, transporte, restaurantes, ocio… Sus gastos variables del día a día.',
+            },
+            debt: {
+                title: 'Deudas',
+                desc: 'Pagos de préstamos y créditos. Siga sus mensualidades y su progreso.',
+            },
+        },
+        stepRow: {
+            title: 'Línea de presupuesto',
+            desc: 'Cada fila muestra: etiqueta, categoría, importe planificado, real y diferencia. La barra de progreso indica su situación. Verde/rojo indica si va bien.',
+        },
+        stepRowActions: {
+            title: 'Acciones de fila',
+            desc: 'Pase el ratón sobre una fila para ver estos botones: añadir transacción, repetir mes siguiente, duplicar, editar y eliminar.',
+        },
+        stepActualAmount: {
+            title: 'Importe real',
+            desc: '¡Este importe es clicable! Haga clic para ver todas las transacciones asociadas a esta línea de presupuesto.',
+        },
+        stepDetailPanel: {
+            title: 'Detalle de transacciones',
+            desc: 'Haga clic en el importe real de una fila para abrir este panel. Lista todas las transacciones asociadas con su fecha, descripción e importe. Puede editar o eliminar cada transacción desde aquí.',
+        },
+        stepAddLine: {
+            title: 'Añadir una línea',
+            desc: 'Este enlace abre un formulario en línea para añadir una nueva categoría a la sección.',
+        },
+        stepAddLineForm: {
+            title: 'Formulario de añadir',
+            desc: 'Aquí está el formulario para añadir una línea. Recorramos los campos juntos.',
+        },
+        addField: {
+            label: {
+                title: 'Etiqueta',
+                desc: 'El nombre de la línea de presupuesto. Por ejemplo "Comida", "Alquiler" o "Netflix".',
+            },
+            category: {
+                title: 'Categoría',
+                desc: 'Asocie una categoría existente o cree una nueva con "+ Nueva categoría". Las transacciones se agruparán por categoría.',
+            },
+            amount: {
+                title: 'Importe planificado',
+                desc: 'El importe que planifica para esta línea este mes. Puede cambiarlo en cualquier momento.',
+            },
+            target: {
+                title: 'Objetivo',
+                desc: 'Opcional. Defina un tope de gasto, meta de ahorro o plazo. Aparecerá una insignia en la línea para seguir el progreso.',
+            },
+        },
+        stepPrevKpi: {
+            title: 'Métricas clave',
+            desc: 'Estas tarjetas resumen su mes: ingresos, gastos, presupuesto restante, flujo de caja y tasa de ahorro. Despliegue para métricas avanzadas.',
+        },
+        stepNotes: {
+            title: 'Notas de presupuesto',
+            desc: 'Añada notas personales a cada mes: recordatorios, objetivos o comentarios.',
+        },
+        stepTransaction: {
+            title: 'Nueva transacción',
+            desc: 'Este es el botón que más usará para registrar un gasto o ingreso.',
+        },
+        stepTxPanel: {
+            title: 'Panel de transacción',
+            desc: 'Aquí está el formulario para registrar una transacción. Recorramos los campos juntos.',
+        },
+        txField: {
+            section: {
+                title: 'Sección de presupuesto',
+                desc: 'Filtre por sección (ingresos, ahorros, facturas…) para mostrar solo las categorías relevantes y preseleccionar el tipo correcto.',
+            },
+            type: {
+                title: 'Tipo',
+                desc: 'Elija entre gasto e ingreso. Si viene de una sección del presupuesto, el tipo se preselecciona.',
+            },
+            amount: {
+                title: 'Importe',
+                desc: 'Introduzca el importe. Truco: puede escribir operaciones como "50+30" ¡y se calcula automáticamente!',
+            },
+            category: {
+                title: 'Categoría',
+                desc: 'Asocie la transacción a una categoría. Si Spendly detecta una coincidencia, se preselecciona (icono de destello).',
+            },
+            date: { title: 'Fecha', desc: 'La fecha de la transacción. Por defecto es hoy.' },
+            description: {
+                title: 'Descripción',
+                desc: 'Opcional. Añada una etiqueta para encontrar fácilmente esta transacción más tarde.',
+            },
+            tags: {
+                title: 'Etiquetas',
+                desc: 'Opcional. Añada etiquetas para filtrar y agrupar sus transacciones. Pulse Enter o coma para confirmar.',
+            },
+            attachment: {
+                title: 'Adjunto',
+                desc: 'Adjunte un recibo o factura (JPG, PNG, WebP). Accesible directamente desde la lista de transacciones.',
+            },
+        },
+        stepMonthNav: {
+            title: 'Navegación mensual',
+            desc: 'Navegue entre meses para ver o planificar sus presupuestos pasados y futuros. Cada mes tiene su propio presupuesto.',
+        },
+        stepCarryOver: {
+            title: 'Traspaso automático',
+            desc: 'Este importe en verde o rojo se traspasa del mes anterior. Si gastó menos de lo previsto, el superávit se suma. Si se excedió, el déficit se traspasa. ¡Todo automático!',
+        },
+        stepCurrentMonth: {
+            title: 'Mes actual',
+            desc: 'Aquí está el mes actual con gastos en curso. Las barras de progreso muestran su situación respecto al presupuesto planificado.',
+        },
+        stepPresets: {
+            title: 'Líneas predeterminadas',
+            desc: 'Defina aquí líneas que se crearán automáticamente en cada nueva cartera. ¡Sin necesidad de recrearlo todo cada mes!',
+        },
     },
 };

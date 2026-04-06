@@ -183,9 +183,9 @@ function submitEdit() {
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
-                                <span v-else class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
-                                <span v-if="tx.split_id" class="rounded-full bg-amber-900/60 px-2 py-0.5 text-xs font-medium text-amber-300">{{ t('search.splitBadge') }}</span>
+                                <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-badge-info-bg px-2 py-0.5 text-xs font-medium text-badge-info-text cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
+                                <span v-else class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ tx.category?.name ?? '—' }}</span>
+                                <span v-if="tx.split_id" class="rounded-full bg-badge-warning-bg px-2 py-0.5 text-xs font-medium text-badge-warning-text">{{ t('search.splitBadge') }}</span>
                                 <a v-if="tx.attachment_url" :href="tx.attachment_url" target="_blank" class="text-indigo-400 hover:text-indigo-300 transition-colors"><Paperclip class="w-3 h-3" /></a>
                                 <span class="text-xs text-muted">{{ tx.wallet?.name }}</span>
                                 <span class="text-xs text-muted">{{ fmtDay(tx.date) }}</span>
@@ -221,8 +221,8 @@ function submitEdit() {
                                     <td class="px-4 py-3 text-sm text-secondary whitespace-nowrap">{{ fmtDay(tx.date) }}</td>
                                     <td class="px-4 py-3 text-sm text-primary">{{ tx.description ?? '—' }}</td>
                                     <td class="px-4 py-3">
-                                        <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-sky-900/60 px-2.5 py-0.5 text-xs font-medium text-sky-300 cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
-                                        <span v-else class="rounded-full bg-indigo-900/60 px-2.5 py-0.5 text-xs font-medium text-indigo-300">{{ tx.category?.name ?? '—' }}</span>
+                                        <AppTooltip v-if="tx.transfer_id" :text="t('search.transferTip')"><span class="rounded-full bg-badge-info-bg px-2.5 py-0.5 text-xs font-medium text-badge-info-text cursor-help">{{ t('transfers.badge') }}</span></AppTooltip>
+                                        <span v-else class="rounded-full bg-badge-primary-bg px-2.5 py-0.5 text-xs font-medium text-badge-primary-text">{{ tx.category?.name ?? '—' }}</span>
                                     </td>
                                     <td class="px-4 py-3 text-sm text-secondary">{{ tx.wallet?.name }}</td>
                                     <td class="px-4 py-3">

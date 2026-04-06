@@ -19,6 +19,7 @@ use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ScheduledTransactionController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\TourController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WalletInvitationController;
@@ -130,6 +131,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wallets/{wallet}/budget/clear', [BudgetController::class, 'clearItems'])->name('wallets.budget.clear');
     Route::patch('/wallets/{wallet}/budget/notes', [BudgetController::class, 'updateNotes'])->name('wallets.budget.notes.update');
     Route::get('/wallets/{wallet}/budget/year', [BudgetController::class, 'yearView'])->name('wallets.budget.year');
+
+    Route::post('/tour/seed', [TourController::class, 'seed'])->name('tour.seed');
+    Route::delete('/tour/cleanup', [TourController::class, 'cleanup'])->name('tour.cleanup');
 });
 
 // Invitation show (accessible without auth so non-users can see the invite page)

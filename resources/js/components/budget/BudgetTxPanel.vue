@@ -94,12 +94,13 @@ function toggleSplit() {
             <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
+                data-tour="tx-panel"
                 class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
                     <div>
-                        <h3 class="font-semibold text-primary">{{ editing ? t('budgets.txPanel.titleEdit') : t('budgets.txPanel.title') }}</h3>
+                        <h3 data-tour="tx-panel-header" class="font-semibold text-primary">{{ editing ? t('budgets.txPanel.titleEdit') : t('budgets.txPanel.title') }}</h3>
                         <p v-if="prefillLabel" class="text-xs text-secondary mt-0.5">{{ prefillLabel }}</p>
                     </div>
                     <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
@@ -108,7 +109,7 @@ function toggleSplit() {
                 </div>
 
                 <form class="flex-1 overflow-y-auto px-6 py-6 space-y-5" v-on:submit.prevent="emit('submit')">
-                    <div v-if="showSectionFilter">
+                    <div v-if="showSectionFilter" data-tour="tx-section">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.section') }}</label>
                         <div class="flex flex-wrap gap-1.5">
                             <button
@@ -126,13 +127,13 @@ function toggleSplit() {
                         </div>
                     </div>
 
-                    <div>
+                    <div data-tour="tx-type">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.type') }}</label>
                         <TypeToggle v-model="txForm.type" :disabled="txSection !== null" />
                         <FormHint>{{ t('budgets.txPanel.typeHint') }}</FormHint>
                     </div>
 
-                    <div>
+                    <div data-tour="tx-amount">
                         <div class="flex items-center justify-between mb-2">
                             <label class="block text-xs text-secondary uppercase tracking-wide">{{ t('budgets.txPanel.amount') }}</label>
                             <button
@@ -164,7 +165,7 @@ function toggleSplit() {
                     </div>
 
                     <!-- Normal category (non-split) -->
-                    <div v-if="!splitMode">
+                    <div v-if="!splitMode" data-tour="tx-category">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.category') }}</label>
                         <SelectInput v-model="txForm.category_id" v-on:change="emit('category-manual-change')">
                             <option :value="null" disabled>— {{ t('budgets.txPanel.pickCategory') }} —</option>
@@ -222,14 +223,14 @@ function toggleSplit() {
                         </div>
                     </div>
 
-                    <div>
+                    <div data-tour="tx-date">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">{{ t('budgets.txPanel.date') }}</label>
                         <DateInput v-model="txForm.date" />
                         <p v-if="txForm.errors.date" class="text-rose-400 text-xs mt-1">{{ txForm.errors.date }}</p>
                         <FormHint>{{ t('budgets.txPanel.dateHint') }}</FormHint>
                     </div>
 
-                    <div>
+                    <div data-tour="tx-description">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.descLabel') }}
                             <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
@@ -243,7 +244,7 @@ function toggleSplit() {
                         <FormHint>{{ t('budgets.txPanel.descHint') }}</FormHint>
                     </div>
 
-                    <div>
+                    <div data-tour="tx-tags">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.tagsLabel') }}
                             <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
@@ -252,7 +253,7 @@ function toggleSplit() {
                             <span
                                 v-for="tag in txForm.tags"
                                 :key="tag"
-                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-900/60 text-indigo-300"
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-badge-primary-bg text-badge-primary-text"
                             >
                                 #{{ tag }}
                                 <button type="button" class="hover:text-white transition-colors" v-on:click="removeTag(txForm, tag)">
@@ -271,7 +272,7 @@ function toggleSplit() {
                         <FormHint>{{ t('budgets.txPanel.tagsHint') }}</FormHint>
                     </div>
 
-                    <div v-if="isPro">
+                    <div v-if="isPro" data-tour="tx-attachment">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.attachment') }}
                             <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>

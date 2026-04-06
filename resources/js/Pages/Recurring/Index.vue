@@ -213,7 +213,7 @@ function toggleGroup(id) {
                                     :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
                                 />
                                 <span class="text-sm text-primary font-medium truncate">{{ item.description || '—' }}</span>
-                                <span class="rounded-full bg-indigo-900/60 px-2 py-0.5 text-xs font-medium text-indigo-300">{{ item.category?.name ?? '—' }}</span>
+                                <span class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ item.category?.name ?? '—' }}</span>
                             </div>
                             <div class="flex items-center gap-3 mt-1 text-xs text-muted">
                                 <span>{{ fmtDate(item.scheduled_date) }}</span>

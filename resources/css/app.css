@@ -44,6 +44,16 @@
     --color-text-secondary: 107 114 128; /* gray-500 */
     --color-text-muted:     156 163 175; /* gray-400 */
     --color-text-subtle:    209 213 219; /* gray-300 */
+
+    /* Badge backgrounds & text (icon circles + inline text badges) */
+    --color-badge-danger-bg:   254 226 226; /* red-100   */
+    --color-badge-danger-text: 185  28  28; /* red-700   */
+    --color-badge-warning-bg:  254 243 199; /* amber-100 */
+    --color-badge-warning-text: 180  83   9; /* amber-700 */
+    --color-badge-primary-bg:  224 231 255; /* indigo-100 */
+    --color-badge-primary-text:  67  56 202; /* indigo-700 */
+    --color-badge-info-bg:     224 242 254; /* sky-100   */
+    --color-badge-info-text:     3 105 161; /* sky-700   */
 }
 
 .dark {
@@ -63,6 +73,16 @@
     --color-text-secondary: 156 163 175; /* gray-400 */
     --color-text-muted:     107 114 128; /* gray-500 */
     --color-text-subtle:     75  85  99; /* gray-600 */
+
+    /* Badge backgrounds & text */
+    --color-badge-danger-bg:   127  29  29; /* red-900   */
+    --color-badge-danger-text: 252 165 165; /* red-300   */
+    --color-badge-warning-bg:  120  53  15; /* amber-900 */
+    --color-badge-warning-text: 252 211  77; /* amber-300 */
+    --color-badge-primary-bg:   49  46 129; /* indigo-900 */
+    --color-badge-primary-text: 165 180 252; /* indigo-300 */
+    --color-badge-info-bg:      12  74 110; /* sky-900   */
+    --color-badge-info-text:   125 211 252; /* sky-300   */
 }
 
 /* ── Datepicker ──────────────────────────────────────────────────────────── */
@@ -114,3 +134,5 @@ input:-webkit-autofill:focus {
     caret-color: rgb(var(--color-text-primary));
     transition: background-color 5000s ease-in-out 0s;
 }
+
+@import './tour.css';
