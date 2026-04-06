@@ -128,7 +128,7 @@ cc-prod: ## Clear and regenerate all production caches
 	$(ARTISAN) route:cache
 	$(ARTISAN) view:cache
 	$(ARTISAN) event:cache
-	@sudo systemctl reload php8.3-fpm 2>/dev/null && echo "✅ PHP-FPM reloaded (opcache cleared)" || echo "⚠️  PHP-FPM reload skipped (not available)"
+	@sudo systemctl reload php8.4-fpm 2>/dev/null && echo "✅ PHP-FPM reloaded (opcache cleared)" || echo "⚠️  PHP-FPM reload skipped (not available)"
 	@echo "✅ Production caches regenerated successfully"
 
 # === Queue Worker ===
