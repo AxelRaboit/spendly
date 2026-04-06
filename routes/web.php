@@ -102,6 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transactions/{transaction}/attachment', [TransactionController::class, 'attachment'])->name('transactions.attachment');
     Route::delete('/transactions/split/{splitId}', [TransactionController::class, 'destroySplit'])->name('transactions.split.destroy');
     Route::post('/transfers', [WalletTransferController::class, 'store'])->name('transfers.store');
+    Route::put('/transfers/{transferId}', [WalletTransferController::class, 'update'])->name('transfers.update');
     Route::delete('/transfers/{transferId}', [WalletTransferController::class, 'destroy'])->name('transfers.destroy');
     Route::patch('/wallets/reorder', [WalletController::class, 'reorder'])->name('wallets.reorder');
     Route::resource('wallets', WalletController::class);

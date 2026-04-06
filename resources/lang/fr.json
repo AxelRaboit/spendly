@@ -133,6 +133,7 @@
     "flash.goal.deleted": "Objectif supprimé.",
     "flash.transfer.created": "Virement effectué.",
     "flash.transfer.deleted": "Virement supprimé.",
+    "flash.transfer.updated": "Virement modifié.",
     "flash.scheduled.created": "Transaction planifiée créée.",
     "flash.scheduled.updated": "Transaction planifiée mise à jour.",
     "flash.scheduled.deleted": "Transaction planifiée supprimée.",

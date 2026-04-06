@@ -168,6 +168,21 @@ setup-perms: ## Fix storage and cache permissions (usage: FULL_PERMS=1 make setu
 	chmod +x ./setup-perms.sh 2>/dev/null || true
 	sudo ./setup-perms.sh
 
+# === Demo User ===
+demo-seed: ## Create/reset the demo user with fixture data (usage: make demo-seed [EMAIL=demo@spendly.app])
+	@if [ -z "$(EMAIL)" ]; then \
+		$(ARTISAN) demo:seed --force; \
+	else \
+		$(ARTISAN) demo:seed --email=$(EMAIL) --force; \
+	fi
+
+demo-clear: ## Delete the demo user and all their data (usage: make demo-clear [EMAIL=demo@spendly.app])
+	@if [ -z "$(EMAIL)" ]; then \
+		$(ARTISAN) demo:clear --force; \
+	else \
+		$(ARTISAN) demo:clear --email=$(EMAIL) --force; \
+	fi
+
 # === User Management ===
 role-dev: ## Assign ROLE_DEV to a user (usage: make role-dev EMAIL=user@example.com)
 	@if [ -z "$(EMAIL)" ]; then \

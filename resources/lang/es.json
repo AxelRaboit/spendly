@@ -133,6 +133,7 @@
     "flash.goal.deleted": "Objetivo eliminado.",
     "flash.transfer.created": "Transferencia realizada.",
     "flash.transfer.deleted": "Transferencia eliminada.",
+    "flash.transfer.updated": "Transferencia actualizada.",
     "flash.scheduled.created": "Transacción programada creada.",
     "flash.scheduled.updated": "Transacción programada actualizada.",
     "flash.scheduled.deleted": "Transacción programada eliminada.",

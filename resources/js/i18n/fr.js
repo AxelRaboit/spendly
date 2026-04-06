@@ -601,6 +601,9 @@ export default {
         submit: 'Effectuer le virement',
         submitting: 'En cours…',
         badge: 'Virement',
+        editTitle: 'Modifier le virement',
+        update: 'Enregistrer',
+        updating: 'En cours…',
         confirmDelete: 'Supprimer ce virement ? Les deux transactions seront supprimées.',
     },
 

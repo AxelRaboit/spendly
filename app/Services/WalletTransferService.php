@@ -54,6 +54,19 @@ class WalletTransferService
         );
     }
 
+    public function update(string $transferId, User $user, array $data): void
+    {
+        $accessibleWalletIds = $user->accessibleWallets()->pluck('id');
+
+        Transaction::where('transfer_id', $transferId)
+            ->whereIn('wallet_id', $accessibleWalletIds)
+            ->update([
+                'amount' => $data['amount'],
+                'date' => $data['date'],
+                'description' => $data['description'] ?? null,
+            ]);
+    }
+
     public function deleteByTransferId(string $transferId, User $user): void
     {
         $accessibleWalletIds = $user->accessibleWallets()->pluck('id');

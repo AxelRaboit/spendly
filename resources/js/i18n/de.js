@@ -603,6 +603,9 @@ export default {
         submit: 'Überweisen',
         submitting: 'Wird verarbeitet…',
         badge: 'Überweisung',
+        editTitle: 'Überweisung bearbeiten',
+        update: 'Speichern',
+        updating: 'Wird gespeichert…',
         confirmDelete: 'Diese Überweisung löschen? Beide Transaktionen werden entfernt.',
     },
 

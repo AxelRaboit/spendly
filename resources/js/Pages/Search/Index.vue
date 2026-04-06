@@ -7,6 +7,7 @@ import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
+import TransferModal from '@/components/wallet/TransferModal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
@@ -38,14 +39,40 @@ function deleteTx(tx) {
 
 function confirmDeleteTx() {
     if (!pendingDeleteTx.value) return;
-    router.delete(`/transactions/${pendingDeleteTx.value.id}`, {
-        preserveScroll: true,
-        onSuccess: () => { pendingDeleteTx.value = null; },
-    });
+    const tx = pendingDeleteTx.value;
+    if (tx.transfer_id) {
+        router.delete(route('transfers.destroy', tx.transfer_id), {
+            preserveScroll: true,
+            onSuccess: () => { pendingDeleteTx.value = null; },
+        });
+    } else {
+        router.delete(`/transactions/${tx.id}`, {
+            preserveScroll: true,
+            onSuccess: () => { pendingDeleteTx.value = null; },
+        });
+    }
 }
 
 function cancelDeleteTx() {
     pendingDeleteTx.value = null;
+}
+
+const showTransferModal = ref(false);
+const editingTransfer = ref(null);
+
+function editTransfer(tx) {
+    editingTransfer.value = {
+        transfer_id: tx.transfer_id,
+        amount:      tx.amount,
+        date:        tx.date,
+        description: tx.description ?? '',
+    };
+    showTransferModal.value = true;
+}
+
+function closeTransferModal() {
+    showTransferModal.value = false;
+    editingTransfer.value = null;
 }
 
 const { SECTION_META } = useSectionMeta();
@@ -166,7 +193,15 @@ function submitEdit() {
                             <div class="flex items-center justify-between gap-3">
                                 <span class="text-sm text-primary font-medium truncate">{{ tx.description ?? '—' }}</span>
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <template v-if="!tx.transfer_id && !tx.split_id">
+                                    <template v-if="tx.transfer_id">
+                                        <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTransfer(tx)">
+                                            <Pencil class="w-3.5 h-3.5" />
+                                        </button>
+                                        <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
+                                            <Trash2 class="w-3.5 h-3.5" />
+                                        </button>
+                                    </template>
+                                    <template v-else-if="!tx.split_id">
                                         <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
                                             <Pencil class="w-3.5 h-3.5" />
                                         </button>
@@ -245,8 +280,11 @@ function submitEdit() {
                                         {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
                                     </td>
                                     <td class="px-2 py-3">
-                                        <div v-if="!tx.transfer_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="editTx(tx)">
+                                        <div v-if="!tx.split_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="text-muted hover:text-sky-400 transition-colors"
+                                                v-on:click="tx.transfer_id ? editTransfer(tx) : editTx(tx)"
+                                            >
                                                 <Pencil class="w-3.5 h-3.5" />
                                             </button>
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteTx(tx)">
@@ -280,9 +318,16 @@ function submitEdit() {
 
         <ConfirmModal
             :show="pendingDeleteTx !== null"
-            :message="t('transactions.confirmDelete')"
+            :message="pendingDeleteTx?.transfer_id ? t('transfers.confirmDelete') : t('transactions.confirmDelete')"
             v-on:confirm="confirmDeleteTx"
             v-on:cancel="cancelDeleteTx"
+        />
+
+        <TransferModal
+            :show="showTransferModal"
+            :wallets="wallets"
+            :editing="editingTransfer"
+            v-on:close="closeTransferModal"
         />
     </AuthenticatedLayout>
 </template>

@@ -340,7 +340,7 @@ const doDeleteUser = () => {
                                     <div class="flex items-center justify-end gap-1">
                                         <AppTooltip :text="t('admin.users.impersonate', { name: user.name })">
                                             <button
-                                                class="p-1.5 rounded text-muted hover:text-amber-400 hover:bg-amber-600/15 transition-colors"
+                                                class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors"
                                                 v-on:click="confirmImpersonate(user)"
                                             >
                                                 <LogIn class="w-4 h-4" />
@@ -348,10 +348,10 @@ const doDeleteUser = () => {
                                         </AppTooltip>
                                         <AppTooltip :text="user.roles.some(r => r.name === 'ROLE_DEV') ? t('admin.users.makeUser') : t('admin.users.makeDev')">
                                             <button
-                                                class="p-1.5 rounded transition-colors"
+                                                class="p-1.5 rounded text-muted transition-colors"
                                                 :class="user.roles.some(r => r.name === 'ROLE_DEV')
-                                                    ? 'text-indigo-400 hover:bg-indigo-600/15'
-                                                    : 'text-rose-400 hover:bg-rose-600/15'"
+                                                    ? 'hover:text-indigo-400'
+                                                    : 'hover:text-rose-400'"
                                                 v-on:click="confirmToggleRole(user)"
                                             >
                                                 <component :is="user.roles.some(r => r.name === 'ROLE_DEV') ? UserRound : Shield" class="w-4 h-4" />
@@ -359,7 +359,7 @@ const doDeleteUser = () => {
                                         </AppTooltip>
                                         <AppTooltip :text="t('admin.users.deleteUser', { name: user.name })">
                                             <button
-                                                class="p-1.5 rounded text-muted hover:text-red-400 hover:bg-red-600/15 transition-colors"
+                                                class="p-1.5 rounded text-muted hover:text-red-400 transition-colors"
                                                 v-on:click="confirmDeleteUser(user)"
                                             >
                                                 <Trash2 class="w-4 h-4" />
