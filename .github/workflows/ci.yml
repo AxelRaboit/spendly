@@ -121,6 +121,9 @@ jobs:
       - name: Pint (PHP code style)
         run: make lint-php
 
+      - name: Create cache directories
+        run: mkdir -p ./storage/app/{rector,phpstan}
+
       - name: Rector Cache
         uses: actions/cache@v5
         with:
