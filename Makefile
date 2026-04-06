@@ -219,6 +219,7 @@ deploy-prod: ## Deploy to production (requires git tag on HEAD, use FORCE=1 to b
 		$(COMPOSER) install --no-dev --optimize-autoloader; \
 		make cc-prod; \
 		$(ARTISAN) migrate --force; \
+		$(ARTISAN) storage:link --force; \
 		$(PNPM) install --frozen-lockfile; \
 		$(PNPM) build; \
 	} 2>&1 | tee -a $$LOG_FILE; \
