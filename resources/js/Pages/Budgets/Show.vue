@@ -131,6 +131,13 @@ function cancelCreateCategory() {
     categoryTargetForm.value = null;
 }
 
+async function handleSubmitAdd() {
+    if (creatingCategory.value && categoryTargetForm.value === addForm && newCategoryName.value.trim()) {
+        await createCategory();
+    }
+    submitAdd();
+}
+
 // ─── KPI toggle + mobile carousel ────────────────────────────────────────────
 const showMoreKpi = ref(localStorage.getItem('budget-show-more-kpi') === 'true');
 function toggleMoreKpi() {
@@ -1095,7 +1102,7 @@ onUnmounted(() => {
                                         variant="focus"
                                         :error="addFormSubmitted && !addForm.label"
                                         :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                     />
                                     <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
                                 </div>
@@ -1129,7 +1136,7 @@ onUnmounted(() => {
                                         v-else
                                         v-model="addForm.category_id"
                                         :error="addFormSubmitted && !addForm.category_id"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                         v-on:change="onCategoryChange(addForm)"
                                     >
                                         <option :value="null">—</option>
@@ -1147,7 +1154,7 @@ onUnmounted(() => {
                                         placeholder="0,00"
                                         variant="mono"
                                         :error="addFormSubmitted && addForm.planned_amount === ''"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                     />
                                     <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
                                 </div>
@@ -1174,7 +1181,7 @@ onUnmounted(() => {
                                     />
                                 </div>
                                 <div class="flex justify-end gap-3">
-                                    <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
+                                    <button class="text-emerald-400 hover:text-emerald-300" v-on:click="handleSubmitAdd">
                                         <Check class="w-5 h-5" />
                                     </button>
                                     <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelAdding">
@@ -1521,7 +1528,7 @@ onUnmounted(() => {
                                         variant="focus"
                                         :error="addFormSubmitted && !addForm.label"
                                         :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                     />
                                     <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
                                 </td>
@@ -1555,7 +1562,7 @@ onUnmounted(() => {
                                         v-else
                                         v-model="addForm.category_id"
                                         :error="addFormSubmitted && !addForm.category_id"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                         v-on:change="onCategoryChange(addForm)"
                                     >
                                         <option :value="null">—</option>
@@ -1573,7 +1580,7 @@ onUnmounted(() => {
                                         placeholder="0,00"
                                         variant="mono"
                                         :error="addFormSubmitted && addForm.planned_amount === ''"
-                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:keydown="onKeydown($event, handleSubmitAdd, cancelAdding)"
                                     />
                                     <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
                                 </td>
@@ -1581,7 +1588,7 @@ onUnmounted(() => {
                                 <td class="px-3 py-1.5">
                                     <div class="flex items-center gap-2 justify-end">
                                         <AppTooltip :text="t('budgets.addRow.confirm')">
-                                            <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="submitAdd">
+                                            <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="handleSubmitAdd">
                                                 <Check class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
