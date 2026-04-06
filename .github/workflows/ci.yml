@@ -16,7 +16,22 @@ jobs:
         node-version: [ 25 ]
         pnpm-version: [ 10 ]
     env:
-      extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_sqlite, dom, filter, json, gd, zip, tokenizer
+      extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_pgsql, dom, filter, json, gd, zip, tokenizer
+      DATABASE_URL: postgresql://app:!ChangeMe!@127.0.0.1:5432/spendly?serverVersion=17&charset=utf8
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: "!ChangeMe!"
+          POSTGRES_DB: spendly
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       # —— Setup GitHub actions 🐙 ———————————————————————————————————————————————————
       - name: Checkout
@@ -65,9 +80,12 @@ jobs:
       - name: Prepare Laravel environment
         run: |
           cp .env.example .env
-          echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
-          touch database/database.sqlite
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_DATABASE=spendly" >> .env
+          echo "DB_USERNAME=app" >> .env
+          echo "DB_PASSWORD=!ChangeMe!" >> .env
           php artisan key:generate
           php artisan migrate --force
 
