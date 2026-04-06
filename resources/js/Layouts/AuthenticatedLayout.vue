@@ -31,7 +31,9 @@ import {
     LogOut,
     Menu,
     X,
+    Map,
 } from 'lucide-vue-next';
+import { useTour } from '@/composables/ui/useTour';
 
 const { t } = useI18n();
 const showMobileMenu = ref(false);
@@ -135,6 +137,9 @@ const navItems = [
         pro: true,
     },
 ];
+
+// Tour
+const { startTour } = useTour();
 
 // Impersonation
 function leaveImpersonation() {
@@ -267,6 +272,21 @@ const devNavItem = computed(() => {
                     v-on:click="toggleSidebar"
                 >
                     <ChevronsRight class="w-4 h-4" />
+                </button>
+
+                <button
+                    class="flex items-center rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors w-full group relative"
+                    :class="collapsed ? 'justify-center py-2.5' : 'gap-3 px-3 py-2.5'"
+                    v-on:click="startTour"
+                >
+                    <Map class="w-5 h-5 text-muted shrink-0" />
+                    <span v-if="!collapsed">{{ t('nav.tour') }}</span>
+                    <span
+                        v-if="collapsed"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                    >
+                        {{ t('nav.tour') }}
+                    </span>
                 </button>
 
                 <button
@@ -432,6 +452,14 @@ const devNavItem = computed(() => {
                                 <p class="text-sm font-medium text-primary">{{ $page.props.auth.user.name }}</p>
                                 <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
                             </div>
+                            <button
+                                class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
+                                v-on:click="startTour(); showMobileMenu = false"
+                            >
+                                <Map class="w-5 h-5 text-muted shrink-0" />
+                                {{ t('nav.tour') }}
+                            </button>
+
                             <button
                                 class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
                                 v-on:click="toggleTheme"

@@ -16,6 +16,7 @@ export default {
         lightMode: 'Mode clair',
         darkMode: 'Mode sombre',
         'dev-dashboard': 'Administration',
+        tour: 'Guide de démarrage',
     },
 
     common: {
@@ -127,6 +128,7 @@ export default {
         colActions: 'Actions',
         none: "Aucun portefeuille pour l'instant.",
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer ce portefeuille ?',
+        demo: 'Exemple',
         addFavorite: 'Ajouter aux favoris',
         removeFavorite: 'Retirer des favoris',
         favoriteWallets: 'Accès rapide',
@@ -359,6 +361,10 @@ export default {
 
     profile: {
         title: 'Profil',
+        locale: {
+            title: 'Langue',
+            subtitle: "Choisissez la langue d'affichage de l'application.",
+        },
         info: {
             title: 'Informations du profil',
             subtitle: 'Mettez à jour votre nom, adresse e-mail et devise.',
@@ -767,5 +773,150 @@ export default {
     impersonation: {
         banner: 'Vous êtes connecté en tant que {name}',
         leave: 'Revenir à mon compte',
+    },
+    tour: {
+        next: 'Suivant',
+        prev: 'Précédent',
+        done: 'Terminer',
+        finish: 'Terminer le guide',
+        progressOf: 'sur',
+        seeding: "Création du portefeuille d'exemple…",
+        resumeBanner: 'Votre guide de démarrage est en cours. Reprenez là où vous en étiez.',
+        resumeBtn: 'Reprendre le guide',
+        stepWelcome: {
+            title: 'Bienvenue !',
+            desc: "On va créer un portefeuille d'exemple avec des données réalistes pour vous montrer les fonctionnalités clés de Spendly. Cliquez Suivant pour commencer !",
+        },
+        stepTable: {
+            title: 'Tableau de budget',
+            desc: 'Voici votre tableau de budget. Il est organisé en sections : Revenus, Épargne, Charges fixes, Dépenses et Dettes. Chaque ligne compare le montant prévu au réel.',
+        },
+        section: {
+            income: {
+                title: 'Revenus',
+                desc: "Tous vos revenus : salaire, freelance, etc. La jauge montre combien vous avez perçu par rapport au prévu. Cliquez sur l'en-tête pour replier/déplier.",
+            },
+            savings: {
+                title: 'Épargne',
+                desc: "L'argent que vous mettez de côté chaque mois. Définissez un objectif d'épargne et suivez votre progression.",
+            },
+            bills: {
+                title: 'Charges fixes',
+                desc: 'Loyer, électricité, internet, assurance… Les dépenses récurrentes dont le montant est prévisible.',
+            },
+            expenses: {
+                title: 'Dépenses',
+                desc: 'Alimentation, transport, restaurants, loisirs… Les dépenses courantes et variables du quotidien.',
+            },
+            debt: {
+                title: 'Dettes',
+                desc: 'Remboursements de prêts et crédits. Suivez vos mensualités et leur progression.',
+            },
+        },
+        stepRow: {
+            title: 'Ligne de budget',
+            desc: 'Chaque ligne affiche : le libellé, la catégorie, le montant prévu, le réel et la différence. La barre de progression montre où vous en êtes. Les montants verts/rouges indiquent si vous êtes dans les clous.',
+        },
+        stepRowActions: {
+            title: 'Actions sur une ligne',
+            desc: "Survolez une ligne pour voir ces boutons : ajouter une transaction, répéter le mois suivant, dupliquer, modifier et supprimer. Vous pouvez aussi cliquer sur la ligne pour l'éditer directement.",
+        },
+        stepActualAmount: {
+            title: 'Montant réel',
+            desc: 'Ce montant est cliquable ! Cliquez dessus pour voir le détail de toutes les transactions associées à cette ligne.',
+        },
+        stepDetailPanel: {
+            title: 'Détail des transactions',
+            desc: "Cliquez sur le montant réel d'une ligne pour ouvrir ce panneau. Il liste toutes les transactions associées avec leur date, description et montant. Vous pouvez modifier ou supprimer chaque transaction depuis ici.",
+        },
+        stepAddLine: {
+            title: 'Ajouter une ligne',
+            desc: 'Ce lien ouvre un formulaire en ligne pour ajouter une nouvelle catégorie à la section.',
+        },
+        stepAddLineForm: {
+            title: "Formulaire d'ajout",
+            desc: 'Voici le formulaire pour ajouter une ligne. Parcourons les champs ensemble.',
+        },
+        addField: {
+            label: {
+                title: 'Libellé',
+                desc: 'Le nom de la ligne de budget. Par exemple "Courses", "Loyer" ou "Netflix".',
+            },
+            category: {
+                title: 'Catégorie',
+                desc: 'Associez une catégorie existante ou créez-en une nouvelle via l\'option "+ Nouvelle catégorie". Les transactions seront regroupées par catégorie.',
+            },
+            amount: {
+                title: 'Montant prévu',
+                desc: 'Le montant que vous planifiez pour cette ligne ce mois-ci. Vous pourrez le modifier à tout moment.',
+            },
+            target: {
+                title: 'Objectif',
+                desc: "Optionnel. Définissez un plafond de dépense, un objectif d'épargne ou une échéance. Un badge apparaîtra sur la ligne pour suivre la progression.",
+            },
+        },
+        stepPrevKpi: {
+            title: 'Indicateurs clés',
+            desc: "Ces cartes résument votre mois : revenus, dépenses, reste à dépenser, cash-flow et taux d'épargne. Dépliez pour voir les métriques avancées.",
+        },
+        stepNotes: {
+            title: 'Notes de budget',
+            desc: 'Ajoutez des notes personnelles à chaque mois : rappels, objectifs ou commentaires.',
+        },
+        stepTransaction: {
+            title: 'Nouvelle transaction',
+            desc: "C'est le bouton que vous utiliserez le plus souvent pour saisir une dépense ou un revenu.",
+        },
+        stepTxPanel: {
+            title: 'Panel de transaction',
+            desc: 'Voici le formulaire pour enregistrer une transaction. Parcourons les champs ensemble.',
+        },
+        txField: {
+            section: {
+                title: 'Section budget',
+                desc: "Filtrez par section (revenus, épargne, factures…) pour n'afficher que les catégories correspondantes et pré-sélectionner le bon type.",
+            },
+            type: {
+                title: 'Type',
+                desc: "Choisissez entre dépense et revenu. Si vous venez d'une section du budget, le type est pré-sélectionné.",
+            },
+            amount: {
+                title: 'Montant',
+                desc: 'Saisissez le montant. Astuce : vous pouvez taper des opérations comme « 50+30 » et le calcul se fait automatiquement !',
+            },
+            category: {
+                title: 'Catégorie',
+                desc: 'Associez la transaction à une catégorie. Si Spendly détecte une correspondance, elle est pré-sélectionnée (icône étincelle).',
+            },
+            date: { title: 'Date', desc: "La date de la transaction. Par défaut c'est aujourd'hui." },
+            description: {
+                title: 'Description',
+                desc: 'Optionnel. Ajoutez un libellé pour retrouver facilement cette transaction plus tard.',
+            },
+            tags: {
+                title: 'Tags',
+                desc: 'Optionnel. Ajoutez des tags pour filtrer et regrouper vos transactions. Appuyez Entrée ou virgule pour valider.',
+            },
+            attachment: {
+                title: 'Pièce jointe',
+                desc: 'Joignez un reçu ou une facture (JPG, PNG, WebP). Retrouvez-le directement depuis la liste des transactions.',
+            },
+        },
+        stepMonthNav: {
+            title: 'Navigation mensuelle',
+            desc: 'Naviguez entre les mois pour consulter ou planifier vos budgets passés et futurs. Chaque mois a son propre budget.',
+        },
+        stepCarryOver: {
+            title: 'Report automatique',
+            desc: 'Ce montant en vert ou rouge est reporté du mois précédent. Si vous avez dépensé moins que prévu, le surplus est ajouté. Si vous avez dépassé, le déficit est reporté. Tout est automatique !',
+        },
+        stepCurrentMonth: {
+            title: 'Mois en cours',
+            desc: 'Voici le mois actuel avec des dépenses en cours. Les barres de progression montrent où vous en êtes par rapport au budget prévu.',
+        },
+        stepPresets: {
+            title: 'Lignes par défaut',
+            desc: 'Définissez ici des lignes qui seront automatiquement créées dans chaque nouveau portefeuille. Fini de tout recréer chaque mois !',
+        },
     },
 };

@@ -15,7 +15,7 @@ class BudgetPresetService
     {
         return BudgetPreset::where('user_id', $user->id)
             ->orderBy('position')
-            ->get(['id', 'label', 'type', 'planned_amount', 'position']);
+            ->get(['id', 'label', 'type', 'planned_amount', 'position', 'is_demo']);
     }
 
     public function create(User $user, array $data): BudgetPreset

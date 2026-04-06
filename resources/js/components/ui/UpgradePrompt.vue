@@ -30,8 +30,8 @@ const message = computed(() => {
     <Modal :show="show" max-width="md" v-on:close="emit('close')">
         <div class="px-6 py-4 border-b border-base">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-900/50">
-                    <Lightbulb class="h-5 w-5 text-amber-400" :stroke-width="1.5" />
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-badge-warning-bg">
+                    <Lightbulb class="h-5 w-5 text-badge-warning-text" :stroke-width="1.5" />
                 </div>
                 <div>
                     <h3 class="font-semibold text-primary">{{ title }}</h3>

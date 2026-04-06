@@ -1,16 +1,17 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
 import TransferModal from '@/components/wallet/TransferModal.vue';
 import WalletMembersModal from '@/components/wallet/WalletMembersModal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useDragDrop } from '@/composables/ui/useDragDrop';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
+import { useTour } from '@/composables/ui/useTour';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
@@ -19,6 +20,13 @@ const props = defineProps({
 
 const { t } = useI18n();
 const { isPro, canCreate, limit } = usePlanLimits();
+const { initForPage, tourActive } = useTour();
+const showProFeatures = computed(() => isPro.value || tourActive.value);
+onMounted(() => initForPage('wallets.index'));
+
+function deleteDemoWallet() {
+    router.delete(route('tour.cleanup'));
+}
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
 const { fmt } = useCurrency();
 const showTransfer = ref(false);
@@ -38,6 +46,7 @@ function toggleFavorite(wallet) {
 
 // ── Drag-and-drop reorder ─────────────────────────────────────────────────
 const localWallets = ref([...props.wallets]);
+watch(() => props.wallets, (val) => { localWallets.value = [...val]; });
 const { draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop } = useDragDrop(
     localWallets,
     (ids) => router.patch(route('wallets.reorder'), { ids }, { preserveScroll: true }),
@@ -71,19 +80,13 @@ function quickCreate(name) {
                     <ArrowLeftRight class="w-4 h-4 mr-1.5" />
                     {{ t('transfers.new') }}
                 </AppButton>
-                <div class="relative">
+                <div v-if="canCreateWallet || showProFeatures" data-tour="create-wallet">
                     <Link
                         href="/wallets/create"
-                        :class="[
-                            'bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition inline-flex items-center gap-2',
-                            !canCreateWallet ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''
-                        ]"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition inline-flex items-center gap-2"
                     >
                         {{ t('wallets.createBtn') }}
                     </Link>
-                    <span v-if="!isPro && props.wallets.length >= limit('wallet')" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
-                        Pro
-                    </span>
                 </div>
             </div>
 
@@ -118,7 +121,11 @@ function quickCreate(name) {
                             >
                                 {{ wallet.name }}
                             </Link>
-                            <span v-if="wallet.is_shared" class="flex items-center gap-1 rounded-full bg-indigo-900/40 px-2 py-0.5 text-2xs font-medium text-indigo-300">
+                            <span v-if="wallet.is_demo" class="flex items-center gap-1 rounded-full bg-badge-warning-bg px-2 py-0.5 text-2xs font-medium text-badge-warning-text">
+                                <FlaskConical class="w-2.5 h-2.5" />
+                                {{ t('wallets.demo') }}
+                            </span>
+                            <span v-if="wallet.is_shared" class="flex items-center gap-1 rounded-full bg-badge-primary-bg px-2 py-0.5 text-2xs font-medium text-badge-primary-text">
                                 <Users class="w-2.5 h-2.5" />
                                 {{ t(`sharing.${wallet.user_role}`) }}
                             </span>
@@ -151,13 +158,14 @@ function quickCreate(name) {
                             </button>
                         </AppTooltip>
                         <div class="flex items-center gap-2">
-                            <AppTooltip v-if="isPro || wallet.is_shared" :text="t('sharing.members')">
+                            <AppTooltip v-if="showProFeatures || wallet.is_shared" :text="t('sharing.members')">
                                 <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="openMembers(wallet)">
                                     <Users class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
-                            <EditButton v-if="wallet.user_role === 'owner'" :href="`/wallets/${wallet.id}/edit`" />
-                            <DeleteButton v-if="wallet.user_role === 'owner'" v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
+                            <EditButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" :href="`/wallets/${wallet.id}/edit`" />
+                            <DeleteButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
+                            <DeleteButton v-if="wallet.is_demo" v-on:click="deleteDemoWallet(wallet)" />
                         </div>
                     </div>
                 </div>

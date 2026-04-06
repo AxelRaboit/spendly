@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'label', 'type', 'planned_amount', 'position'])]
+#[Fillable(['user_id', 'label', 'type', 'planned_amount', 'position', 'is_demo'])]
 class BudgetPreset extends Model
 {
     public function user(): BelongsTo

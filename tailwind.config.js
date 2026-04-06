@@ -34,6 +34,13 @@ export default {
                     2: 'rgb(var(--color-surface-2) / <alpha-value>)',
                     3: 'rgb(var(--color-surface-3) / <alpha-value>)',
                 },
+                // Usage: bg-badge-danger-bg, text-badge-danger-text, etc.
+                badge: {
+                    danger:  { bg: 'rgb(var(--color-badge-danger-bg)  / <alpha-value>)', text: 'rgb(var(--color-badge-danger-text)  / <alpha-value>)' },
+                    warning: { bg: 'rgb(var(--color-badge-warning-bg) / <alpha-value>)', text: 'rgb(var(--color-badge-warning-text) / <alpha-value>)' },
+                    primary: { bg: 'rgb(var(--color-badge-primary-bg) / <alpha-value>)', text: 'rgb(var(--color-badge-primary-text) / <alpha-value>)' },
+                    info:    { bg: 'rgb(var(--color-badge-info-bg)    / <alpha-value>)', text: 'rgb(var(--color-badge-info-text)    / <alpha-value>)' },
+                },
             },
 
             // Usage: text-primary, text-secondary, text-muted, text-subtle

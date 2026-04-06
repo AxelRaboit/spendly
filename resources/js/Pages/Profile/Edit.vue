@@ -2,12 +2,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BudgetPresetsForm from './Partials/BudgetPresetsForm.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
+import LocaleForm from './Partials/LocaleForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useTour } from '@/composables/ui/useTour';
 
 const { t } = useI18n();
+const { initForPage } = useTour();
+onMounted(() => initForPage('profile.edit'));
 
 defineProps({
     mustVerifyEmail: { type: Boolean },
@@ -26,10 +31,14 @@ defineProps({
 
         <div class="mx-auto max-w-2xl space-y-6">
             <FormSection>
-                <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
+                <LocaleForm />
             </FormSection>
 
             <FormSection>
+                <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
+            </FormSection>
+
+            <FormSection data-tour="budget-presets">
                 <BudgetPresetsForm :presets="budgetPresets" />
             </FormSection>
 

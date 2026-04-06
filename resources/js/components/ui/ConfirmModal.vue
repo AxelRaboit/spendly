@@ -28,8 +28,8 @@ defineEmits(['confirm', 'cancel']);
 
             <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-base p-4 sm:p-6 shadow-xl">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-900/50">
-                        <AlertTriangle class="h-5 w-5 text-red-400" :stroke-width="1.5" />
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-badge-danger-bg">
+                        <AlertTriangle class="h-5 w-5 text-badge-danger-text" :stroke-width="1.5" />
                     </div>
                     <div>
                         <h3 class="text-base font-semibold text-primary">{{ t('common.confirm') }}</h3>

@@ -16,6 +16,7 @@ export default {
         lightMode: 'Light mode',
         darkMode: 'Dark mode',
         'dev-dashboard': 'Administration',
+        tour: 'Getting started guide',
     },
 
     common: {
@@ -127,6 +128,7 @@ export default {
         colActions: 'Actions',
         none: 'No wallets yet.',
         confirmDelete: 'Are you sure you want to delete this wallet?',
+        demo: 'Example',
         addFavorite: 'Add to favorites',
         removeFavorite: 'Remove from favorites',
         favoriteWallets: 'Quick access',
@@ -359,6 +361,10 @@ export default {
 
     profile: {
         title: 'Profile',
+        locale: {
+            title: 'Language',
+            subtitle: 'Choose the display language for the application.',
+        },
         info: {
             title: 'Profile information',
             subtitle: 'Update your name, email address and currency.',
@@ -764,5 +770,147 @@ export default {
     impersonation: {
         banner: 'You are logged in as {name}',
         leave: 'Return to my account',
+    },
+    tour: {
+        next: 'Next',
+        prev: 'Previous',
+        done: 'Finish',
+        finish: 'Finish guide',
+        progressOf: 'of',
+        seeding: 'Creating example wallet…',
+        resumeBanner: 'Your getting started guide is in progress. Pick up where you left off.',
+        resumeBtn: 'Resume guide',
+        stepWelcome: {
+            title: 'Welcome!',
+            desc: "We'll create an example wallet with realistic data to show you the key features of Spendly. Click Next to get started!",
+        },
+        stepTable: {
+            title: 'Budget table',
+            desc: "Here's your budget table. It's organized into sections: Income, Savings, Bills, Expenses and Debt. Each row compares planned vs actual amounts.",
+        },
+        section: {
+            income: {
+                title: 'Income',
+                desc: 'All your earnings: salary, freelance, etc. The gauge shows how much you received vs planned. Click the header to collapse/expand.',
+            },
+            savings: {
+                title: 'Savings',
+                desc: 'Money you set aside each month. Set a savings target and track your progress.',
+            },
+            bills: {
+                title: 'Bills',
+                desc: 'Rent, electricity, internet, insurance… Recurring expenses with predictable amounts.',
+            },
+            expenses: {
+                title: 'Expenses',
+                desc: 'Groceries, transport, restaurants, leisure… Your everyday variable spending.',
+            },
+            debt: {
+                title: 'Debt',
+                desc: 'Loan and credit repayments. Track your monthly payments and their progress.',
+            },
+        },
+        stepRow: {
+            title: 'Budget line',
+            desc: 'Each row shows: label, category, planned amount, actual and difference. The progress bar shows where you stand. Green/red amounts indicate if you are on track.',
+        },
+        stepRowActions: {
+            title: 'Row actions',
+            desc: 'Hover a row to reveal these buttons: add a transaction, repeat next month, duplicate, edit and delete. You can also click the row to edit directly.',
+        },
+        stepActualAmount: {
+            title: 'Actual amount',
+            desc: 'This amount is clickable! Click it to see all transactions linked to this budget line.',
+        },
+        stepDetailPanel: {
+            title: 'Transaction details',
+            desc: "Click a row's actual amount to open this panel. It lists all linked transactions with their date, description and amount. You can edit or delete each transaction from here.",
+        },
+        stepAddLine: {
+            title: 'Add a line',
+            desc: 'This link opens an inline form to add a new category to the section.',
+        },
+        stepAddLineForm: {
+            title: 'Add line form',
+            desc: "Here's the form to add a line. Let's go through the fields together.",
+        },
+        addField: {
+            label: {
+                title: 'Label',
+                desc: 'The name of the budget line. For example "Groceries", "Rent" or "Netflix".',
+            },
+            category: {
+                title: 'Category',
+                desc: 'Link an existing category or create a new one via "+ New category". Transactions will be grouped by category.',
+            },
+            amount: {
+                title: 'Planned amount',
+                desc: 'The amount you plan for this line this month. You can change it at any time.',
+            },
+            target: {
+                title: 'Target',
+                desc: 'Optional. Set a spending cap, savings goal or deadline. A badge will appear on the line to track progress.',
+            },
+        },
+        stepPrevKpi: {
+            title: 'Key metrics',
+            desc: 'These cards summarize your month: income, expenses, remaining budget, cash flow and savings rate. Expand to see advanced metrics.',
+        },
+        stepNotes: {
+            title: 'Budget notes',
+            desc: 'Add personal notes to each month: reminders, goals, or comments.',
+        },
+        stepTransaction: {
+            title: 'New transaction',
+            desc: "This is the button you'll use most to record an expense or income.",
+        },
+        stepTxPanel: {
+            title: 'Transaction panel',
+            desc: "Here's the form to record a transaction. Let's go through the fields together.",
+        },
+        txField: {
+            section: {
+                title: 'Budget section',
+                desc: 'Filter by section (income, savings, bills…) to only show the relevant categories and pre-select the right type.',
+            },
+            type: {
+                title: 'Type',
+                desc: 'Choose between expense and income. If coming from a budget section, the type is pre-selected.',
+            },
+            amount: {
+                title: 'Amount',
+                desc: 'Enter the amount. Tip: you can type expressions like "50+30" and it calculates automatically!',
+            },
+            category: {
+                title: 'Category',
+                desc: "Link the transaction to a category. If Spendly detects a match, it's pre-selected (sparkle icon).",
+            },
+            date: { title: 'Date', desc: 'The transaction date. Defaults to today.' },
+            description: { title: 'Description', desc: 'Optional. Add a label to easily find this transaction later.' },
+            tags: {
+                title: 'Tags',
+                desc: 'Optional. Add tags to filter and group your transactions. Press Enter or comma to confirm.',
+            },
+            attachment: {
+                title: 'Attachment',
+                desc: 'Attach a receipt or invoice (JPG, PNG, WebP). Find it directly from the transaction list.',
+            },
+        },
+        stepMonthNav: {
+            title: 'Monthly navigation',
+            desc: 'Navigate between months to view or plan your past and future budgets. Each month has its own budget.',
+        },
+        stepCarryOver: {
+            title: 'Automatic carry-over',
+            desc: "This green or red amount is carried over from last month. If you spent less than planned, the surplus is added. If you overspent, the deficit carries over. It's all automatic!",
+        },
+        stepCurrentMonth: {
+            title: 'Current month',
+            desc: "Here's the current month with expenses in progress. Progress bars show where you stand against your planned budget.",
+        },
+        stepPresets: {
+            title: 'Default lines',
+            desc: 'Define lines here that will be automatically created in each new wallet. No more recreating everything each month!',
+        },
     },
 };
