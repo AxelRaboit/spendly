@@ -1,4 +1,5 @@
 *.log
+/VERSION
 /storage/phpstan
 /storage/rector
 /tools/phpstan/vendor
