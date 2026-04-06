@@ -147,7 +147,10 @@ const navItems = [
             >
                 <Link v-if="!collapsed" :href="route('dashboard')" class="flex items-center gap-2.5 min-w-0">
                     <AppLogo :size="32" />
-                    <span class="text-primary font-bold text-lg tracking-tight truncate">Spendly</span>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-primary font-bold text-lg tracking-tight truncate leading-tight">Spendly</span>
+                        <span class="text-xs text-muted/50 leading-none">{{ $page.props.appVersion }}</span>
+                    </div>
                 </Link>
                 <Link v-else :href="route('dashboard')">
                     <AppLogo :size="32" />
@@ -336,7 +339,10 @@ const navItems = [
                         <div class="flex items-center justify-between px-5 h-14 border-b border-base shrink-0">
                             <div class="flex items-center gap-2">
                                 <AppLogo :size="28" />
-                                <span class="text-primary font-bold text-base">Spendly</span>
+                                <div class="flex flex-col">
+                                    <span class="text-primary font-bold text-base leading-tight">Spendly</span>
+                                    <span class="text-xs text-muted/50 leading-none">{{ $page.props.appVersion }}</span>
+                                </div>
                             </div>
                             <button class="p-1.5 text-muted hover:text-primary" v-on:click="showMobileMenu = false">
                                 <X class="w-5 h-5" />
