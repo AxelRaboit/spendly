@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,6 +25,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->randomElement($categories),
             'user_id' => User::factory(),
+            'wallet_id' => fn (array $attrs) => Wallet::factory()->create(['user_id' => $attrs['user_id']])->id,
         ];
     }
 }

@@ -20,22 +20,7 @@ class TransactionTest extends TestCase
 
     public function test_guest_cannot_access_transactions(): void
     {
-        $this->get(route('transactions.index'))->assertRedirect(route('login'));
-    }
-
-    public function test_user_cannot_edit_another_users_transaction(): void
-    {
-        $owner = User::factory()->create();
-        $other = User::factory()->create();
-        $category = Category::factory()->create(['user_id' => $owner->id]);
-        $transaction = Transaction::factory()->create([
-            'user_id' => $owner->id,
-            'category_id' => $category->id,
-        ]);
-
-        $this->actingAs($other)
-            ->get(route('transactions.edit', $transaction))
-            ->assertForbidden();
+        $this->get(route('wallets.index'))->assertRedirect(route('login'));
     }
 
     public function test_user_cannot_update_another_users_transaction(): void
@@ -50,6 +35,7 @@ class TransactionTest extends TestCase
 
         $this->actingAs($other)
             ->patch(route('transactions.update', $transaction), [
+                'type' => 'expense',
                 'category_id' => $category->id,
                 'amount' => 99,
                 'date' => '2026-01-01',
@@ -80,35 +66,12 @@ class TransactionTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('transactions.store'), [
+                'type' => 'expense',
                 'category_id' => $otherCategory->id,
                 'amount' => 50,
                 'date' => '2026-01-01',
             ])
             ->assertSessionHasErrors('category_id');
-    }
-
-    // -------------------------------------------------------------------------
-    // Index
-    // -------------------------------------------------------------------------
-
-    public function test_user_sees_only_their_transactions(): void
-    {
-        $user = User::factory()->create();
-        $other = User::factory()->create();
-
-        $cat1 = Category::factory()->create(['user_id' => $user->id]);
-        $cat2 = Category::factory()->create(['user_id' => $other->id]);
-
-        Transaction::factory()->create(['user_id' => $user->id, 'category_id' => $cat1->id]);
-        Transaction::factory()->create(['user_id' => $other->id, 'category_id' => $cat2->id]);
-
-        $response = $this->actingAs($user)->get(route('transactions.index'));
-
-        $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->component('Transactions/Index')
-            ->where('transactions.total', 1)
-        );
     }
 
     // -------------------------------------------------------------------------
@@ -121,13 +84,15 @@ class TransactionTest extends TestCase
         $category = Category::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
+            ->from('/')
             ->post(route('transactions.store'), [
+                'type' => 'expense',
                 'category_id' => $category->id,
                 'amount' => 42.50,
                 'description' => 'Courses',
                 'date' => '2026-01-15',
             ])
-            ->assertRedirect(route('transactions.index'));
+            ->assertRedirect('/');
 
         $this->assertDatabaseHas('transactions', [
             'user_id' => $user->id,
@@ -143,7 +108,7 @@ class TransactionTest extends TestCase
         $category = Category::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
-            ->post(route('transactions.store'), ['category_id' => $category->id])
+            ->post(route('transactions.store'), ['type' => 'expense', 'category_id' => $category->id])
             ->assertSessionHasErrors(['amount', 'date']);
     }
 
@@ -154,6 +119,7 @@ class TransactionTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('transactions.store'), [
+                'type' => 'expense',
                 'category_id' => $category->id,
                 'amount' => -10,
                 'date' => '2026-01-01',
@@ -176,12 +142,14 @@ class TransactionTest extends TestCase
         ]);
 
         $this->actingAs($user)
+            ->from('/')
             ->patch(route('transactions.update', $transaction), [
+                'type' => 'expense',
                 'category_id' => $category->id,
                 'amount' => 99.99,
                 'date' => '2026-03-01',
             ])
-            ->assertRedirect(route('transactions.index'));
+            ->assertRedirect('/');
 
         $this->assertDatabaseHas('transactions', ['id' => $transaction->id, 'amount' => 99.99]);
     }
@@ -200,55 +168,10 @@ class TransactionTest extends TestCase
         ]);
 
         $this->actingAs($user)
+            ->from('/')
             ->delete(route('transactions.destroy', $transaction))
-            ->assertRedirect(route('transactions.index'));
+            ->assertRedirect('/');
 
         $this->assertDatabaseMissing('transactions', ['id' => $transaction->id]);
-    }
-
-    // -------------------------------------------------------------------------
-    // Filters
-    // -------------------------------------------------------------------------
-
-    public function test_search_filter_returns_matching_transactions(): void
-    {
-        $user = User::factory()->create();
-        $category = Category::factory()->create(['user_id' => $user->id]);
-
-        Transaction::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
-            'description' => 'Courses Carrefour',
-        ]);
-        Transaction::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
-            'description' => 'Essence',
-        ]);
-
-        $response = $this->actingAs($user)
-            ->get(route('transactions.index', ['search' => 'courses']));
-
-        $response->assertInertia(fn ($page) => $page
-            ->where('transactions.total', 1)
-            ->where('transactions.data.0.description', 'Courses Carrefour')
-        );
-    }
-
-    public function test_category_filter_returns_matching_transactions(): void
-    {
-        $user = User::factory()->create();
-        $cat1 = Category::factory()->create(['user_id' => $user->id]);
-        $cat2 = Category::factory()->create(['user_id' => $user->id]);
-
-        Transaction::factory()->create(['user_id' => $user->id, 'category_id' => $cat1->id]);
-        Transaction::factory()->create(['user_id' => $user->id, 'category_id' => $cat2->id]);
-
-        $response = $this->actingAs($user)
-            ->get(route('transactions.index', ['category_id' => $cat1->id]));
-
-        $response->assertInertia(fn ($page) => $page
-            ->where('transactions.total', 1)
-        );
     }
 }
