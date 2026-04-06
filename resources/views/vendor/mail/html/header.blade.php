@@ -13,7 +13,7 @@
 </v:roundrect>
 <![endif]-->
 <!--[if !mso]><!-->
-<div style="width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #4f46e5); background-color: #4f46e5; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 28px; font-weight: 700; color: #ffffff;">S</div>
+<div style="width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #4f46e5); background-color: #4f46e5; border-radius: 11px; padding: 0; margin: 0 auto; display: table-cell; text-align: center; vertical-align: middle; font-family: 'Figtree', 'Segoe UI', sans-serif; font-size: 36px; font-weight: 700; color: #ffffff; line-height: 48px;">S</div>
 <!--<![endif]-->
 </td>
 </tr>
