@@ -60,12 +60,12 @@ set_code_source_permissions() {
 set_writable_directories_permissions() {
 	echo "Setting writable directories permissions..."
 
-	# storage/ must be writable by web server
-	chown -R ${WEB_GROUP}:${WEB_GROUP} storage/ 2>/dev/null || true
+	# storage/ must be writable by both deploy user and web server
+	chown -R ${APP_USER}:${WEB_GROUP} storage/ 2>/dev/null || true
 	chmod -R 2775 storage/ 2>/dev/null || true
 
-	# bootstrap/cache/ must be writable by web server
-	chown -R ${WEB_GROUP}:${WEB_GROUP} bootstrap/cache/ 2>/dev/null || true
+	# bootstrap/cache/ must be writable by both deploy user and web server
+	chown -R ${APP_USER}:${WEB_GROUP} bootstrap/cache/ 2>/dev/null || true
 	chmod -R 2775 bootstrap/cache/ 2>/dev/null || true
 
 	# public/build/ owned by deploy user but readable by web server
