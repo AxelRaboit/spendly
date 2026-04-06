@@ -168,6 +168,23 @@ setup-perms: ## Fix storage and cache permissions (usage: FULL_PERMS=1 make setu
 	chmod +x ./setup-perms.sh 2>/dev/null || true
 	sudo ./setup-perms.sh
 
+# === User Management ===
+role-dev: ## Assign ROLE_DEV to a user (usage: make role-dev EMAIL=user@example.com)
+	@if [ -z "$(EMAIL)" ]; then \
+		echo "❌ Error: EMAIL is required"; \
+		echo "Usage: make role-dev EMAIL=user@example.com"; \
+		exit 1; \
+	fi
+	$(ARTISAN) user:assign-role $(EMAIL) ROLE_DEV
+
+role-user: ## Assign ROLE_USER to a user (usage: make role-user EMAIL=user@example.com)
+	@if [ -z "$(EMAIL)" ]; then \
+		echo "❌ Error: EMAIL is required"; \
+		echo "Usage: make role-user EMAIL=user@example.com"; \
+		exit 1; \
+	fi
+	$(ARTISAN) user:assign-role $(EMAIL) ROLE_USER
+
 # === Deployment ===
 deploy-prod: ## Deploy to production (requires git tag on HEAD, use FORCE=1 to bypass up-to-date check)
 	@mkdir -p storage/logs
