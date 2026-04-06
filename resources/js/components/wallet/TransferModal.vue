@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import DateInput from '@/components/form/DateInput.vue';
 
 const { t } = useI18n();
 
@@ -90,11 +91,7 @@ function close() {
                         </div>
                         <div>
                             <InputLabel :value="t('transfers.date')" class="mb-1.5" />
-                            <TextInput
-                                v-model="form.date"
-                                type="date"
-                                :class="{ 'border-rose-500': form.errors.date }"
-                            />
+                            <DateInput v-model="form.date" />
                             <InputError v-if="form.errors.date" :message="form.errors.date" class="mt-1" />
                         </div>
                     </div>
