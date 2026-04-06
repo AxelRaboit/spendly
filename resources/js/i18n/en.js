@@ -601,6 +601,9 @@ export default {
         submit: 'Transfer',
         submitting: 'Processing…',
         badge: 'Transfer',
+        editTitle: 'Edit transfer',
+        update: 'Save',
+        updating: 'Saving…',
         confirmDelete: 'Delete this transfer? Both transactions will be removed.',
     },
 

@@ -133,6 +133,7 @@
     "flash.goal.deleted": "Goal deleted.",
     "flash.transfer.created": "Transfer completed.",
     "flash.transfer.deleted": "Transfer deleted.",
+    "flash.transfer.updated": "Transfer updated.",
     "flash.scheduled.created": "Scheduled transaction created.",
     "flash.scheduled.updated": "Scheduled transaction updated.",
     "flash.scheduled.deleted": "Scheduled transaction deleted.",
