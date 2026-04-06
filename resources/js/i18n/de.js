@@ -700,6 +700,15 @@ export default {
             scheduledTip: 'Einmalige Transaktionen, die für ein bestimmtes Datum geplant sind.',
         },
     },
+    onboarding: {
+        title: 'Willkommen bei Spendly!',
+        subtitle:
+            'Sie haben eine 30-tägige Pro-Testphase. Wählen Sie jetzt Ihren Plan oder starten Sie Ihre Testphase.',
+        startTrial: 'Kostenlose Pro-Testphase starten',
+        continueFree: 'Mit Free fortfahren',
+        trialBadge: '30 Tage kostenlos',
+        trialNote: 'Keine Kreditkarte · Plan jederzeit änderbar',
+    },
     trial: {
         bannerLink: 'Tarife ansehen',
         countdown: {

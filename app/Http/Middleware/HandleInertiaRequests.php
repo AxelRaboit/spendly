@@ -67,6 +67,7 @@ class HandleInertiaRequests extends Middleware
                 'info' => $request->session()->get('info'),
                 'plan_error' => $request->session()->get('plan_error'),
                 'plan_error_limit' => $request->session()->get('plan_error_limit'),
+                'show_plan_modal' => $request->session()->get('show_plan_modal', false),
             ],
         ];
     }

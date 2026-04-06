@@ -699,6 +699,14 @@ export default {
             scheduledTip: 'Transacciones puntuales previstas para una fecha concreta.',
         },
     },
+    onboarding: {
+        title: '¡Bienvenido a Spendly!',
+        subtitle: 'Tienes una prueba Pro de 30 días. Elige tu plan ahora o comienza tu prueba.',
+        startTrial: 'Comenzar prueba Pro gratuita',
+        continueFree: 'Continuar con Free',
+        trialBadge: '30 días gratis',
+        trialNote: 'Sin tarjeta de crédito · Cambia de plan cuando quieras',
+    },
     trial: {
         bannerLink: 'Ver planes',
         countdown: {

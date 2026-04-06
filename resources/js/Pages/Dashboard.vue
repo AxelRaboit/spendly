@@ -1,10 +1,12 @@
 <script setup>
 import AppTooltip from '@/components/ui/AppTooltip.vue';
+import PlanSelectionModal from '@/components/ui/PlanSelectionModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ChevronRight, Star } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
 import '@/plugins/chartjs';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import { Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -13,6 +15,9 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const { fmtDayLong: fmtDay } = useFmtDate();
+const page = usePage();
+
+const showPlanModal = ref(page.props.flash?.show_plan_modal === true);
 
 const props = defineProps({
     spentThisMonth: Number,
@@ -196,4 +201,6 @@ const topCategoryMax = computed(() => {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <PlanSelectionModal :show="showPlanModal" v-on:close="showPlanModal = false" />
 </template>

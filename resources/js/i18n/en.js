@@ -698,6 +698,14 @@ export default {
             scheduledTip: 'One-time transactions planned for a specific date.',
         },
     },
+    onboarding: {
+        title: 'Welcome to Spendly!',
+        subtitle: 'You have a 30-day Pro trial. Choose your plan now or start your trial.',
+        startTrial: 'Start free Pro trial',
+        continueFree: 'Continue with Free',
+        trialBadge: '30 days free',
+        trialNote: 'No credit card · Change your plan at any time',
+    },
     trial: {
         bannerLink: 'View plans',
         countdown: {

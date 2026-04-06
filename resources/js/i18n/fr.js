@@ -699,6 +699,15 @@ export default {
             scheduledTip: 'Transactions ponctuelles prévues à une date précise.',
         },
     },
+    onboarding: {
+        title: 'Bienvenue sur Spendly !',
+        subtitle:
+            "Vous bénéficiez d'un essai Pro de 30 jours. Choisissez votre formule dès maintenant ou commencez votre essai.",
+        startTrial: "Commencer l'essai Pro gratuit",
+        continueFree: 'Continuer avec Free',
+        trialBadge: '30 jours gratuits',
+        trialNote: 'Sans carte bancaire · Changez de formule à tout moment',
+    },
     trial: {
         bannerLink: 'Voir les formules',
         countdown: {

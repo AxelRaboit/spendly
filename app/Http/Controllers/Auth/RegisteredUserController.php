@@ -39,6 +39,6 @@ class RegisteredUserController extends Controller
 
         return $pendingInvitation instanceof WalletInvitation
             ? redirect()->route('wallet-invitations.show', $pendingInvitation->token)
-            : redirect(route('dashboard', absolute: false));
+            : redirect(route('dashboard', absolute: false))->with('show_plan_modal', true);
     }
 }
