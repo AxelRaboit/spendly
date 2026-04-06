@@ -478,7 +478,7 @@ onUnmounted(() => {
                 </div>
 
                 <div class="md:hidden">
-                    <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
                         <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
@@ -539,7 +539,7 @@ onUnmounted(() => {
                         </div>
                     </div>
 
-                    <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
                         <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
                             <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
@@ -621,7 +621,7 @@ onUnmounted(() => {
                         </div>
                     </div>
 
-                    <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+                    <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
                         <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                             <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
@@ -745,10 +745,10 @@ onUnmounted(() => {
                     class="flex items-center justify-between w-full px-4 py-3 text-xs transition-colors text-muted hover:text-secondary cursor-pointer"
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
                 >
-                    <span class="flex items-center gap-2 uppercase tracking-wide font-medium">
-                        <FileText class="w-3.5 h-3.5" />
-                        {{ t('budgets.notes.label') }}
-                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate max-w-30 sm:max-w-xs">{{ budgetNotesText }}</span>
+                    <span class="flex items-center gap-2 uppercase tracking-wide font-medium min-w-0 flex-1">
+                        <FileText class="w-3.5 h-3.5 shrink-0" />
+                        <span class="shrink-0">{{ t('budgets.notes.label') }}</span>
+                        <span v-if="budgetNotesText" class="text-indigo-400 normal-case tracking-normal font-normal truncate">{{ budgetNotesText }}</span>
                     </span>
                     <div class="flex items-center gap-2">
                         <ChevronDown
@@ -860,6 +860,7 @@ onUnmounted(() => {
                 <div class="md:hidden divide-y divide-base/40">
                     <template v-for="(items, type) in sections" :key="`mob-${type}`">
                         <div
+                            :data-tour-section="type"
                             :class="[SECTION_META[type].bg, SECTION_META[type].border, 'border-b px-4 py-2.5 flex flex-col gap-1 cursor-pointer select-none']"
                             v-on:click="toggleSection(type)"
                         >
@@ -964,6 +965,7 @@ onUnmounted(() => {
 
                                 <div
                                     v-else
+                                    :data-tour-item="item.id"
                                     class="px-4 py-3 flex flex-col gap-1.5"
                                     :class="[
                                         item.planned_amount > 0 && item.actual_amount > item.planned_amount
@@ -996,7 +998,7 @@ onUnmounted(() => {
                                                 </span>
                                             </AppTooltip>
                                         </div>
-                                        <div v-if="!item.category?.is_system" class="flex items-center gap-2 shrink-0">
+                                        <div v-if="!item.category?.is_system" :data-tour-actions="item.id" class="flex items-center gap-2 shrink-0">
                                             <button
                                                 class="text-muted hover:text-indigo-400 transition-colors"
                                                 v-on:click="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
@@ -1048,7 +1050,7 @@ onUnmounted(() => {
                                         </span>
                                         <span v-else class="text-subtle">—</span>
                                         <div class="flex items-center gap-2 font-mono">
-                                            <span class="text-muted">
+                                            <span class="text-muted" :data-tour-carried-over="item.carried_over !== 0 ? item.id : undefined">
                                                 {{ fmt(item.planned_amount) }}
                                                 <AppTooltip
                                                     v-if="item.carried_over !== 0"
@@ -1063,6 +1065,7 @@ onUnmounted(() => {
                                             </span>
                                             <button
                                                 v-if="item.category_id && item.actual_amount > 0"
+                                                :data-tour-actual="item.id"
                                                 :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
                                                 class="font-semibold hover:underline decoration-dotted"
                                                 v-on:click="openTxDetail(item)"
@@ -1083,85 +1086,93 @@ onUnmounted(() => {
                                 </div>
                             </template>
 
-                            <div v-if="addingType === type" class="bg-surface-2/60 px-4 py-3 space-y-2" data-adding>
-                                <BudgetInput
-                                    :id="`add-label-${type}`"
-                                    v-model="addForm.label"
-                                    type="text"
-                                    variant="focus"
-                                    :error="addFormSubmitted && !addForm.label"
-                                    :placeholder="t('budgets.addRow.labelPlaceholder')"
-                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                />
-                                <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
-                                <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
+                            <div v-if="addingType === type" class="bg-surface-2/60 px-4 py-3 space-y-2" data-adding data-tour="add-line-form">
+                                <div data-tour="add-field-label">
                                     <BudgetInput
-                                        v-model="newCategoryName"
-                                        data-new-category
+                                        :id="`add-label-${type}`"
+                                        v-model="addForm.label"
                                         type="text"
                                         variant="focus"
-                                        class="flex-1"
-                                        :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
-                                        :disabled="creatingCategoryLoading"
-                                        v-on:keydown.enter.prevent="createCategory"
-                                        v-on:keydown.escape="cancelCreateCategory"
+                                        :error="addFormSubmitted && !addForm.label"
+                                        :placeholder="t('budgets.addRow.labelPlaceholder')"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
                                     />
-                                    <AppButton
-                                        variant="icon"
-                                        size="none"
-                                        class="text-emerald-400 hover:text-emerald-300 shrink-0"
-                                        :disabled="creatingCategoryLoading"
-                                        v-on:click="createCategory"
-                                    >
-                                        <Check class="w-4 h-4" />
-                                    </AppButton>
-                                    <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                        <X class="w-4 h-4" />
-                                    </button>
+                                    <FormHint>{{ t('budgets.addRow.labelHint') }}</FormHint>
                                 </div>
-                                <BudgetSelect
-                                    v-else
-                                    v-model="addForm.category_id"
-                                    :error="addFormSubmitted && !addForm.category_id"
-                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                    v-on:change="onCategoryChange(addForm)"
-                                >
-                                    <option :value="null">—</option>
-                                    <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                    <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
-                                </BudgetSelect>
-                                <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
-                                <BudgetInput
-                                    v-model="addForm.planned_amount"
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0,00"
-                                    variant="mono"
-                                    :error="addFormSubmitted && addForm.planned_amount === ''"
-                                    v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
-                                />
-                                <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
-                                <BudgetSelect v-model="addForm.target_type">
-                                    <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
-                                    <option value="spending">{{ t('budgets.target.spending') }}</option>
-                                    <option value="saving">{{ t('budgets.target.saving') }}</option>
-                                    <option value="by_date">{{ t('budgets.target.byDate') }}</option>
-                                </BudgetSelect>
-                                <BudgetInput
-                                    v-if="addForm.target_type"
-                                    v-model="addForm.target_amount"
-                                    type="number"
-                                    step="0.01"
-                                    min="0.01"
-                                    variant="mono"
-                                    :placeholder="t('budgets.target.amount')"
-                                />
-                                <BudgetInput
-                                    v-if="addForm.target_type === 'by_date'"
-                                    v-model="addForm.target_deadline"
-                                    type="date"
-                                />
+                                <div data-tour="add-field-category">
+                                    <div v-if="creatingCategory && categoryTargetForm === addForm" class="flex items-center gap-1">
+                                        <BudgetInput
+                                            v-model="newCategoryName"
+                                            data-new-category
+                                            type="text"
+                                            variant="focus"
+                                            class="flex-1"
+                                            :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:keydown.enter.prevent="createCategory"
+                                            v-on:keydown.escape="cancelCreateCategory"
+                                        />
+                                        <AppButton
+                                            variant="icon"
+                                            size="none"
+                                            class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                            :disabled="creatingCategoryLoading"
+                                            v-on:click="createCategory"
+                                        >
+                                            <Check class="w-4 h-4" />
+                                        </AppButton>
+                                        <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                            <X class="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <BudgetSelect
+                                        v-else
+                                        v-model="addForm.category_id"
+                                        :error="addFormSubmitted && !addForm.category_id"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                        v-on:change="onCategoryChange(addForm)"
+                                    >
+                                        <option :value="null">—</option>
+                                        <option v-for="cat in availableCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                        <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                    </BudgetSelect>
+                                    <FormHint>{{ t('budgets.addRow.categoryHint') }}</FormHint>
+                                </div>
+                                <div data-tour="add-field-amount">
+                                    <BudgetInput
+                                        v-model="addForm.planned_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder="0,00"
+                                        variant="mono"
+                                        :error="addFormSubmitted && addForm.planned_amount === ''"
+                                        v-on:keydown="onKeydown($event, submitAdd, cancelAdding)"
+                                    />
+                                    <FormHint>{{ t('budgets.addRow.amountHint') }}</FormHint>
+                                </div>
+                                <div data-tour="add-field-target">
+                                    <BudgetSelect v-model="addForm.target_type">
+                                        <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
+                                        <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                        <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                        <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                    </BudgetSelect>
+                                    <BudgetInput
+                                        v-if="addForm.target_type"
+                                        v-model="addForm.target_amount"
+                                        type="number"
+                                        step="0.01"
+                                        min="0.01"
+                                        variant="mono"
+                                        :placeholder="t('budgets.target.amount')"
+                                    />
+                                    <BudgetInput
+                                        v-if="addForm.target_type === 'by_date'"
+                                        v-model="addForm.target_deadline"
+                                        type="date"
+                                    />
+                                </div>
                                 <div class="flex justify-end gap-3">
                                     <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitAdd">
                                         <Check class="w-5 h-5" />
@@ -1173,7 +1184,7 @@ onUnmounted(() => {
                             </div>
 
                             <div class="px-4 py-2">
-                                <AppLink data-tour="add-budget-line" v-on:click="startAddingItem(type)">
+                                <AppLink :data-tour-add-line="type" v-on:click="startAddingItem(type)">
                                     <Plus class="w-3 h-3" />
                                     {{ t('budgets.addRow.addLine') }}
                                 </AppLink>
