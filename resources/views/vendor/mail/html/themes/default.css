@@ -146,6 +146,8 @@ img {
     margin: 0 auto;
     padding: 0;
     width: 570px;
+    margin-left: 16px;
+    margin-right: 16px;
 }
 
 .inner-body a {
