@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'pendingInvitations' => $user !== null
                 ? Inertia::lazy(fn () => WalletInvitation::where('email', $user->email)->pending()->count())
                 : 0,
+            'appVersion' => file_exists(base_path('VERSION')) ? trim(file_get_contents(base_path('VERSION'))) : 'dev',
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
