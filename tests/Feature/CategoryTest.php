@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -83,13 +84,15 @@ class CategoryTest extends TestCase
     public function test_user_can_create_a_category(): void
     {
         $user = User::factory()->create();
+        $wallet = Wallet::factory()->create(['user_id' => $user->id]);
 
         $this->actingAs($user)
-            ->post(route('categories.store'), ['name' => 'Alimentation'])
+            ->post(route('categories.store'), ['name' => 'Alimentation', 'wallet_id' => $wallet->id])
             ->assertRedirect(route('categories.index'));
 
         $this->assertDatabaseHas('categories', [
             'user_id' => $user->id,
+            'wallet_id' => $wallet->id,
             'name' => 'Alimentation',
         ]);
     }
