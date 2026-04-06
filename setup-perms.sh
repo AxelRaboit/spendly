@@ -46,6 +46,13 @@ set_code_source_permissions() {
 		chmod 755 artisan 2>/dev/null || true
 	fi
 
+	# Restrict .env permissions
+	if [ -f ".env" ]; then
+		chown ${APP_USER}:${WEB_GROUP} .env 2>/dev/null || true
+		chmod 640 .env 2>/dev/null || true
+		echo ".env permissions restricted (640, ${APP_USER}:${WEB_GROUP})"
+	fi
+
 	echo "Code source permissions set!"
 }
 
@@ -101,6 +108,14 @@ set_code_source_permissions_if_needed() {
 create_directories
 set_code_source_permissions_if_needed
 set_writable_directories_permissions
+
+# Restrict .env permissions (always, regardless of FULL_PERMS)
+if [ -f ".env" ]; then
+	chown ${APP_USER}:${WEB_GROUP} .env 2>/dev/null || true
+	chmod 640 .env 2>/dev/null || true
+	echo ".env permissions restricted (640, ${APP_USER}:${WEB_GROUP})"
+fi
+
 set_ssh_key_permissions
 set_git_directory_permissions
 
