@@ -1,6 +1,8 @@
 <script setup>
 import AppLogo from '@/components/ui/AppLogo.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const appVersion = usePage().props.appVersion;
 </script>
 
 <template>
@@ -9,6 +11,7 @@ import { Link } from '@inertiajs/vue3';
             <Link href="/" class="flex flex-col items-center gap-2">
                 <AppLogo :size="64" />
                 <span class="text-primary font-bold text-2xl">Spendly</span>
+                <span v-if="appVersion" class="text-xs text-secondary">{{ appVersion }}</span>
             </Link>
         </div>
 

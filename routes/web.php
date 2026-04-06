@@ -7,6 +7,7 @@ use App\Http\Controllers\BudgetPresetController;
 use App\Http\Controllers\CategorizationRuleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevPasswordController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LocaleController;
@@ -24,6 +25,11 @@ use App\Http\Controllers\WalletMemberController;
 use App\Http\Controllers\WalletTransferController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Route::controller(DevPasswordController::class)->prefix('dev-access')->name('dev.password.')->group(function () {
+    Route::get('/', 'show')->name('show');
+    Route::post('/', 'check')->name('check');
+});
 
 Route::get('/', function () {
     return Auth::check()
