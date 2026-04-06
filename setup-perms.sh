@@ -27,16 +27,16 @@ create_directories() {
 # Set permissions for code source (restrictive - not writable by www-data)
 set_code_source_permissions() {
 	echo "Setting code source permissions..."
-	find . -type d \( -name node_modules -o -name vendor -o -name .git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type d -print0 2>/dev/null | \
+	find . -type d \( -name node_modules -o -name .git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type d -print0 2>/dev/null | \
 		xargs -0 -r chown ${APP_USER}:${APP_USER} 2>/dev/null || true
 
-	find . -type f \( -path ./node_modules -o -path ./vendor -o -path ./.git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type f -print0 2>/dev/null | \
+	find . -type f \( -path ./node_modules -o -path ./.git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type f -print0 2>/dev/null | \
 		xargs -0 -r chown ${APP_USER}:${APP_USER} 2>/dev/null || true
 
-	find . -type d \( -name node_modules -o -name vendor -o -name .git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type d -print0 2>/dev/null | \
+	find . -type d \( -name node_modules -o -name .git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type d -print0 2>/dev/null | \
 		xargs -0 -r chmod 755 2>/dev/null || true
 
-	find . -type f \( -path ./node_modules -o -path ./vendor -o -path ./.git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type f -print0 2>/dev/null | \
+	find . -type f \( -path ./node_modules -o -path ./.git -o -path ./storage -o -path ./bootstrap/cache \) -prune -o -type f -print0 2>/dev/null | \
 		xargs -0 -r chmod 644 2>/dev/null || true
 
 	find . -type f -name "*.sh" \( -path ./node_modules -o -path ./vendor -o -path ./.git \) -prune -o -name "*.sh" -print0 2>/dev/null | \
