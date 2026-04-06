@@ -10,7 +10,12 @@ const gradientId = `spendly-bg-${uid}`;
 </script>
 
 <template>
-    <svg :width="size" :height="size" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <svg
+        :width="size"
+        :height="size"
+        viewBox="0 0 64 64"
+        xmlns="http://www.w3.org/2000/svg"
+    >
         <defs>
             <linearGradient
                 :id="gradientId"
