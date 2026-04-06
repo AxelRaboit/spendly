@@ -130,7 +130,7 @@ img {
     border-bottom: 1px solid #f5f3ff;
     border-top: 1px solid #f5f3ff;
     margin: 0;
-    padding: 0;
+    padding: 16px;
     width: 100%;
 }
 
@@ -146,8 +146,6 @@ img {
     margin: 0 auto;
     padding: 0;
     width: 570px;
-    margin-left: 16px;
-    margin-right: 16px;
 }
 
 .inner-body a {
