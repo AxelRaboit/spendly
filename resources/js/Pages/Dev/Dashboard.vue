@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppBadge from '@/components/ui/AppBadge.vue';
+import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import '@/plugins/chartjs';
@@ -159,12 +160,16 @@ const doDeleteUser = () => {
     <AuthenticatedLayout>
         <Head :title="t('admin.title')" />
 
-        <div class="space-y-6 p-6">
-            <div>
-                <h1 class="text-3xl font-bold text-primary">{{ t('admin.title') }}</h1>
-                <p class="text-secondary mt-1">{{ tab === 'stats' ? t('admin.stats.title') : t('admin.users.title') }}</p>
-            </div>
+        <template #header>
+            <AppPageHeader
+                :crumbs="[
+                    { label: t('admin.title'), href: route('dev.dashboard.stats') },
+                    { label: tab === 'stats' ? t('admin.stats.title') : t('admin.users.title') },
+                ]"
+            />
+        </template>
 
+        <div class="space-y-6 p-6">
             <div class="border-b border-base">
                 <nav class="flex gap-8">
                     <Link
