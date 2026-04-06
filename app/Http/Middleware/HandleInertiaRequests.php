@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\WalletInvitation;
+use App\Services\ImpersonationService;
 use App\Services\PlanService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -35,7 +36,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = $request->user()?->load('roles');
 
         return [
             ...parent::share($request),
@@ -57,6 +58,7 @@ class HandleInertiaRequests extends Middleware
             'pendingInvitations' => $user !== null
                 ? Inertia::defer(fn () => WalletInvitation::where('email', $user->email)->pending()->count())
                 : 0,
+            'impersonating' => app(ImpersonationService::class)->isImpersonating(),
             'appVersion' => file_exists(base_path('VERSION')) ? trim(file_get_contents(base_path('VERSION'))) : 'dev',
             'flash' => [
                 'success' => $request->session()->get('success'),
@@ -65,6 +67,7 @@ class HandleInertiaRequests extends Middleware
                 'info' => $request->session()->get('info'),
                 'plan_error' => $request->session()->get('plan_error'),
                 'plan_error_limit' => $request->session()->get('plan_error_limit'),
+                'show_plan_modal' => $request->session()->get('show_plan_modal', false),
             ],
         ];
     }

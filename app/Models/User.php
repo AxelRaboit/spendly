@@ -17,6 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Override;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property Carbon|null $trial_ends_at
@@ -26,6 +27,7 @@ use Override;
 class User extends Authenticatable
 {
     use HasFactory;
+    use HasRoles;
     use Notifiable;
 
     /**

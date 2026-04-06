@@ -7,7 +7,7 @@ import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
-import { Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import {
     LayoutDashboard,
@@ -20,6 +20,8 @@ import {
     Wand2,
     TrendingUp,
     Upload,
+    Shield,
+    UserCheck,
     ChevronsLeft,
     ChevronsRight,
     Sun,
@@ -133,6 +135,23 @@ const navItems = [
         pro: true,
     },
 ];
+
+// Impersonation
+function leaveImpersonation() {
+    useForm({}).post(route('dev.impersonation.leave'));
+}
+
+// Dev dashboard item (shown only for ROLE_DEV users)
+const isDev = computed(() => page.props.auth?.user?.roles?.some(r => r.name === 'ROLE_DEV') ?? false);
+const devNavItem = computed(() => {
+    if (!isDev.value) return null;
+    return {
+        key: 'dev-dashboard',
+        route: 'dev.dashboard.stats',
+        match: 'dev.*',
+        icon: Shield,
+    };
+});
 </script>
 
 <template>
@@ -213,6 +232,32 @@ const navItems = [
                         </span>
                     </Link>
                 </template>
+
+                <Link
+                    v-if="devNavItem"
+                    :href="route(devNavItem.route)"
+                    class="flex items-center rounded-lg text-sm font-medium transition-colors group relative"
+                    :class="[
+                        collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
+                        route().current(devNavItem.match)
+                            ? 'bg-rose-600/15 text-rose-400'
+                            : 'text-secondary hover:text-primary hover:bg-surface-2',
+                    ]"
+                >
+                    <component
+                        :is="devNavItem.icon"
+                        class="w-5 h-5 shrink-0"
+                        :class="route().current(devNavItem.match) ? 'text-rose-400' : 'text-muted'"
+                    />
+                    <span v-if="!collapsed" class="truncate">{{ t('nav.dev-dashboard') }}</span>
+
+                    <span
+                        v-if="collapsed"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                    >
+                        {{ t('nav.dev-dashboard') }}
+                    </span>
+                </Link>
             </nav>
 
             <div class="shrink-0 border-t border-base py-3 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3'">
@@ -443,6 +488,14 @@ const navItems = [
                     <slot name="header" />
                 </div>
             </header>
+
+            <div v-if="$page.props.impersonating" class="bg-amber-500/15 border-b border-amber-500/40 px-4 py-2 flex items-center justify-center gap-3 text-xs text-amber-300">
+                <UserCheck class="w-4 h-4 shrink-0" />
+                <span>{{ t('impersonation.banner', { name: $page.props.auth.user.name }) }}</span>
+                <button class="ml-2 underline hover:text-amber-200 transition-colors font-medium" v-on:click="leaveImpersonation">
+                    {{ t('impersonation.leave') }}
+                </button>
+            </div>
 
             <div v-if="isTrialing" class="bg-indigo-600/10 border-b border-indigo-500/30 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-300">
                 <span>{{ trialLabel }}</span>

@@ -7,49 +7,38 @@ const props = defineProps({
     meta: { type: Object, required: true },
 });
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: 'global' });
 
-const prevLink = computed(() => props.meta.links?.find(l => l.label.includes('&laquo;') || l.label === '«') ?? null);
-const nextLink = computed(() => props.meta.links?.find(l => l.label.includes('&raquo;') || l.label === '»') ?? null);
-
-function decodeLabel(html) {
+function decodeHtml(html) {
     const el = document.createElement('textarea');
     el.innerHTML = html;
     return el.value;
 }
+
+const prevLink = computed(() => props.meta.links?.[0] ?? null);
+const nextLink = computed(() => props.meta.links?.[props.meta.links.length - 1] ?? null);
+const pageLinks = computed(() => props.meta.links?.slice(1, -1) ?? []);
 </script>
 
 <template>
     <div v-if="meta.last_page > 1" class="mt-6 space-y-3">
-        <p class="text-sm text-secondary text-center sm:text-left">
+        <p class="text-sm text-secondary">
             {{ t('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
         </p>
 
-        <div class="flex gap-2 sm:hidden">
+        <div class="flex flex-wrap gap-1 items-center">
             <component
                 :is="prevLink?.url ? Link : 'span'"
                 :href="prevLink?.url ?? undefined"
                 preserve-scroll
                 preserve-state
-                class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium transition"
+                class="px-3 py-1 rounded text-sm transition"
                 :class="prevLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
             >
-                ← {{ t('pagination.previous') }}
+                {{ t('pagination.previous') }}
             </component>
-            <component
-                :is="nextLink?.url ? Link : 'span'"
-                :href="nextLink?.url ?? undefined"
-                preserve-scroll
-                preserve-state
-                class="flex-1 text-center px-4 py-2 rounded-lg text-sm font-medium transition"
-                :class="nextLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
-            >
-                {{ t('pagination.next') }} →
-            </component>
-        </div>
 
-        <div class="hidden sm:flex gap-1">
-            <template v-for="link in meta.links" :key="link.label">
+            <template v-for="link in pageLinks" :key="link.label">
                 <Link
                     v-if="link.url"
                     :href="link.url"
@@ -58,13 +47,23 @@ function decodeLabel(html) {
                     class="px-3 py-1 rounded text-sm transition"
                     :class="link.active ? 'bg-indigo-600 text-white' : 'bg-surface-2 text-secondary hover:bg-surface-3'"
                 >
-                    {{ decodeLabel(link.label) }}
+                    {{ decodeHtml(link.label) }}
                 </Link>
-                <span
-                    v-else
-                    class="px-3 py-1 rounded text-sm text-subtle"
-                >{{ decodeLabel(link.label) }}</span>
+                <span v-else class="px-3 py-1 rounded text-sm text-subtle">
+                    {{ decodeHtml(link.label) }}
+                </span>
             </template>
+
+            <component
+                :is="nextLink?.url ? Link : 'span'"
+                :href="nextLink?.url ?? undefined"
+                preserve-scroll
+                preserve-state
+                class="px-3 py-1 rounded text-sm transition"
+                :class="nextLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
+            >
+                {{ t('pagination.next') }}
+            </component>
         </div>
     </div>
 </template>
