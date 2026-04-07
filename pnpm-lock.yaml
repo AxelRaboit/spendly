@@ -34,8 +34,8 @@ importers:
         version: 1.2.0
     devDependencies:
       '@inertiajs/vue3':
-        specifier: ^3.0.2
-        version: 3.0.2(axios@1.14.0)(vue@3.5.32)
+        specifier: ^3.0.3
+        version: 3.0.3(axios@1.14.0)(vue@3.5.32)
       '@tailwindcss/forms':
         specifier: ^0.5.3
         version: 0.5.11(tailwindcss@3.4.19)
@@ -170,16 +170,16 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@inertiajs/core@3.0.2':
-    resolution: {integrity: sha512-ZBfV4HK5zjPC76VQ42WcgFdPmtO8zi+fzdkFBF0uM7EVwC5MSS8UITg8Yon4lb/i0X9bE3Ym16uHzgcPP1lL3Q==}
+  '@inertiajs/core@3.0.3':
+    resolution: {integrity: sha512-/4sW/cfNpvujjVOZlB5UNypLGNySs7X7V8IMLNSK8+3j1KsUYGS5wpLd9EqAu8wy8RiW7PPra2rPwB6Lx/ACow==}
     peerDependencies:
       axios: ^1.13.2
     peerDependenciesMeta:
       axios:
         optional: true
 
-  '@inertiajs/vue3@3.0.2':
-    resolution: {integrity: sha512-oAhpklYp7F8/LFsh9DOCOkxzgGVeaIfDN6yi0PB9bHA+ObxTRVq8J4fqQgLExvwjNQIzl6RKh3PaLMf2JXacKQ==}
+  '@inertiajs/vue3@3.0.3':
+    resolution: {integrity: sha512-bhJN+GS66g1tYH1p6flKkG1N8oaT5J7ZLqBkavN9mHC6bVfoQCUG6sCuA07WTDfo9tDaxU89wsSSAf4mhn3SuA==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -1620,7 +1620,7 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@inertiajs/core@3.0.2(axios@1.14.0)':
+  '@inertiajs/core@3.0.3(axios@1.14.0)':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       es-toolkit: 1.45.1
@@ -1628,9 +1628,9 @@ snapshots:
     optionalDependencies:
       axios: 1.14.0
 
-  '@inertiajs/vue3@3.0.2(axios@1.14.0)(vue@3.5.32)':
+  '@inertiajs/vue3@3.0.3(axios@1.14.0)(vue@3.5.32)':
     dependencies:
-      '@inertiajs/core': 3.0.2(axios@1.14.0)
+      '@inertiajs/core': 3.0.3(axios@1.14.0)
       es-toolkit: 1.45.1
       laravel-precognition: 2.0.0(axios@1.14.0)
       vue: 3.5.32
