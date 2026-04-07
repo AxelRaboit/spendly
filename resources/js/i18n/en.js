@@ -53,6 +53,12 @@ export default {
             submit: 'Log in',
             noAccount: "Don't have an account? Sign up",
             tryDemo: 'Try the demo',
+            demoModal: {
+                title: 'Demo access',
+                description: 'Enter the password to access the demo.',
+                password: 'Password',
+                submit: 'Access',
+            },
         },
         register: {
             title: 'Register',
@@ -769,6 +775,19 @@ export default {
             confirmDelete: 'Delete {name} and all their data? This action is irreversible.',
             impersonate: 'Impersonate {name}',
             confirmImpersonate: 'You will be logged in as {name}. You can return to your account at any time.',
+        },
+        invitations: {
+            title: 'Invitations',
+            description: 'Send an email invitation to join the application.',
+            email: 'Email address',
+            emailPlaceholder: "example{'@'}domain.com",
+            message: 'Custom message',
+            messagePlaceholder: 'Write a message that will appear in the body of the email…',
+            credentialEmail: 'Login email (optional)',
+            credentialPassword: 'Password (optional)',
+            credentialsHint: 'If filled in, credentials will appear in the email body.',
+            send: 'Send invitation',
+            sending: 'Sending…',
         },
     },
     impersonation: {
