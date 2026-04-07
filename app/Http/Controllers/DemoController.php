@@ -31,7 +31,7 @@ class DemoController extends Controller
         $user = User::where('is_demo', true)->first();
 
         if (! $user) {
-            return redirect()->route('login')->with('status', 'Demo account not available.');
+            return redirect()->route('login')->with('status', __('demo.unavailable'));
         }
 
         Auth::login($user, remember: false);
