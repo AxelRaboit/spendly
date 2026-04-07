@@ -22,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @property Carbon|null $trial_ends_at
  */
-#[Fillable(['name', 'email', 'password', 'currency', 'locale', 'plan', 'trial_ends_at'])]
+#[Fillable(['name', 'email', 'password', 'currency', 'locale', 'plan', 'trial_ends_at', 'is_demo'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -43,6 +43,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'plan' => PlanType::class,
             'trial_ends_at' => 'datetime',
+            'is_demo' => 'boolean',
         ];
     }
 

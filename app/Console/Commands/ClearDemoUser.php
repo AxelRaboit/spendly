@@ -17,10 +17,11 @@ class ClearDemoUser extends Command
     {
         $email = $this->option('email') ?? config('demo.email');
 
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->first()
+            ?? User::where('is_demo', true)->first();
 
         if (! $user) {
-            $this->warn(sprintf('No user found with email [%s].', $email));
+            $this->warn(sprintf('No demo user found (tried email [%s] and is_demo flag).', $email));
 
             return 0;
         }

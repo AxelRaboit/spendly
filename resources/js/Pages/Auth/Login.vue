@@ -17,6 +17,10 @@ defineProps({
     status: {
         type: String,
     },
+    demoEnabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const form = useForm({
@@ -25,10 +29,16 @@ const form = useForm({
     remember: false,
 });
 
+const demoForm = useForm({});
+
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
+};
+
+const loginAsDemo = () => {
+    demoForm.post(route('demo.login'));
 };
 </script>
 
@@ -110,6 +120,24 @@ const submit = () => {
                     {{ t('auth.login.noAccount') }}
                 </Link>
             </div>
+
+            <template v-if="demoEnabled">
+                <div class="mt-6 flex items-center gap-4">
+                    <div class="flex-1 border-t border-base" />
+                    <span class="text-sm text-secondary">{{ t('common.or') }}</span>
+                    <div class="flex-1 border-t border-base" />
+                </div>
+
+                <AppButton
+                    variant="secondary"
+                    class="mt-4 w-full justify-center"
+                    :class="{ 'opacity-25': demoForm.processing }"
+                    :disabled="demoForm.processing"
+                    v-on:click="loginAsDemo"
+                >
+                    {{ t('auth.login.tryDemo') }}
+                </AppButton>
+            </template>
         </form>
     </GuestLayout>
 </template>
