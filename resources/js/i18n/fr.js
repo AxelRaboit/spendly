@@ -252,6 +252,7 @@ export default {
             edit: 'Modifier',
             delete: 'Supprimer',
             confirmDelete: 'Supprimer cette transaction ?',
+            addTransaction: 'Ajouter une transaction',
         },
         editRow: {
             labelPlaceholder: 'Libellé',

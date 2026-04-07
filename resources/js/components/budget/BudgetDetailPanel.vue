@@ -1,5 +1,5 @@
 <script setup>
-import { X, Pencil, Trash2, Paperclip } from 'lucide-vue-next';
+import { X, Pencil, Trash2, Paperclip, Plus } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
@@ -17,7 +17,7 @@ const props = defineProps({
     transactions: { type: Array,   default: () => [] },
 });
 
-const emit = defineEmits(['close', 'edit', 'delete']);
+const emit = defineEmits(['close', 'edit', 'delete', 'add']);
 
 const total = computed(() => props.transactions.reduce((s, tx) => s + tx.amount, 0));
 
@@ -42,13 +42,22 @@ const previewUrl = ref(null);
                 class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
-                <div class="flex items-center justify-between px-6 py-4 border-b border-base">
-                    <div>
-                        <h3 data-tour="detail-panel-header" class="font-semibold text-primary">{{ item?.label }}</h3>
-                        <p class="text-xs text-secondary mt-0.5">{{ t('budgets.detailPanel.subtitle') }}</p>
+                <div class="px-6 pt-4 pb-3 border-b border-base space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 data-tour="detail-panel-header" class="font-semibold text-primary">{{ item?.label }}</h3>
+                            <p class="text-xs text-secondary mt-0.5">{{ t('budgets.detailPanel.subtitle') }}</p>
+                        </div>
+                        <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
+                            <X class="w-5 h-5" />
+                        </button>
                     </div>
-                    <button class="text-secondary hover:text-primary transition-colors" v-on:click="emit('close')">
-                        <X class="w-5 h-5" />
+                    <button
+                        class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+                        v-on:click="emit('add')"
+                    >
+                        <Plus class="w-4 h-4" />
+                        {{ t('budgets.detailPanel.addTransaction') }}
                     </button>
                 </div>
 

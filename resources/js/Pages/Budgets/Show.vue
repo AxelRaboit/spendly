@@ -296,6 +296,12 @@ function closeMobileMenu() { mobileMenuOpenId.value = null; }
 function openTxPanelFromRow(categoryId, label, type, section) {
     openTxPanel(categoryId, label, type, { cancelEditing, cancelAdding }, section);
 }
+function addTxFromDetailPanel() {
+    if (!txDetailItem.value) return;
+    const { category_id, label, type } = txDetailItem.value;
+    closeTxDetail();
+    openTxPanelFromRow(category_id, label, type === 'income' ? 'income' : 'expense', type);
+}
 function startEditingItem(item) {
     editingOriginalCategoryId.value = item.category_id;
     startEditing(item, { cancelAdding });
@@ -1721,6 +1727,7 @@ onUnmounted(() => {
             v-on:close="closeTxDetail"
             v-on:edit="editTxFromDetail"
             v-on:delete="deleteTxFromDetail"
+            v-on:add="addTxFromDetailPanel"
         />
 
         <CopyBudgetModal

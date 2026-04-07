@@ -247,6 +247,7 @@ export default {
             edit: 'Bearbeiten',
             delete: 'Löschen',
             confirmDelete: 'Diese Transaktion löschen?',
+            addTransaction: 'Transaktion hinzufügen',
         },
         editRow: {
             labelPlaceholder: 'Bezeichnung',
