@@ -147,5 +147,5 @@
     "mail.app_invitation.credentials_intro": "Hier sind Ihre Zugangsdaten:",
     "mail.app_invitation.credential_email": "E-Mail: **:email**",
     "mail.app_invitation.credential_password": "Passwort: **:password**",
-    "mail.app_invitation.footer": "Wenn Sie diese Einladung nicht erwartet haben, können Sie diese E-Mail ignorieren."
+    "mail.app_invitation.footer": "Wenn Sie glauben, diese E-Mail irrtümlich erhalten zu haben, können Sie sie ignorieren."
 }
