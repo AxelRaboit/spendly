@@ -160,6 +160,7 @@ export default {
         fieldWallet: 'Portefeuille',
         pickWallet: 'Choisir un portefeuille',
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
+        usage: 'utilisation | utilisations',
         editTip: 'Modifier cette catégorie',
         deleteTip: 'Supprimer cette catégorie',
     },

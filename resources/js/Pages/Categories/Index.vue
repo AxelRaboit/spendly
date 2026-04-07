@@ -54,10 +54,15 @@ function filterByWallet(walletId) {
 
                     <div class="pb-3 border-b border-base/40">
                         <p class="text-base font-semibold text-primary truncate">{{ category.name }}</p>
-                        <p v-if="category.wallet" class="flex items-center gap-1 text-xs text-muted mt-1">
-                            <Wallet class="w-3 h-3" />
-                            {{ category.wallet.name }}
-                        </p>
+                        <div class="flex items-center justify-between mt-2">
+                            <p v-if="category.wallet" class="flex items-center gap-1 text-xs text-muted">
+                                <Wallet class="w-3 h-3" />
+                                {{ category.wallet.name }}
+                            </p>
+                            <span class="text-xs font-medium px-2 py-1 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                                {{ category.transactions_count }} {{ t('categories.usage', { count: category.transactions_count }) }}
+                            </span>
+                        </div>
                     </div>
 
                     <div class="flex items-center justify-end pt-3 gap-2">

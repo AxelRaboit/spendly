@@ -162,6 +162,7 @@ export default {
         confirmDelete: 'Are you sure you want to delete this category?',
         editTip: 'Edit this category',
         deleteTip: 'Delete this category',
+        usage: 'usage | usages',
     },
 
     budgets: {

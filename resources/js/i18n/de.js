@@ -155,6 +155,7 @@ export default {
         confirmDelete: 'Möchtest du diese Kategorie wirklich löschen?',
         editTip: 'Diese Kategorie bearbeiten',
         deleteTip: 'Diese Kategorie löschen',
+        usage: 'Verwendung | Verwendungen',
     },
 
     budgets: {

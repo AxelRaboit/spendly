@@ -155,6 +155,7 @@ export default {
         confirmDelete: '¿Seguro que quieres eliminar esta categoría?',
         editTip: 'Editar esta categoría',
         deleteTip: 'Eliminar esta categoría',
+        usage: 'uso | usos',
     },
 
     budgets: {
