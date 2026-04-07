@@ -77,6 +77,7 @@ class SeedDemoUser extends Command
             'email' => $email,
             'password' => bcrypt($password),
             'plan' => PlanType::Pro,
+            'is_demo' => true,
         ]);
         $user->assignRole('ROLE_USER');
 

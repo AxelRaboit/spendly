@@ -52,6 +52,7 @@ export default {
             forgot: 'Forgot your password?',
             submit: 'Log in',
             noAccount: "Don't have an account? Sign up",
+            tryDemo: 'Try the demo',
         },
         register: {
             title: 'Register',

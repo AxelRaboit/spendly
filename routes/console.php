@@ -7,6 +7,7 @@ use App\Console\Commands\ExpireTrials;
 use App\Console\Commands\GenerateRecurringTransactions;
 use App\Console\Commands\PruneExpiredInvitations;
 use App\Console\Commands\PruneImportFiles;
+use App\Console\Commands\SeedDemoUser;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -20,3 +21,7 @@ Schedule::command(PruneImportFiles::class)->dailyAt('03:00');
 Schedule::command(ExpireTrials::class)->dailyAt('00:05');
 Schedule::command(PruneExpiredInvitations::class)->dailyAt('04:00');
 Schedule::command(CleanupStaleDemoWallets::class)->dailyAt('02:00');
+
+if (config('demo.enabled')) {
+    Schedule::command(SeedDemoUser::class, ['--force' => true])->dailyAt('03:00');
+}

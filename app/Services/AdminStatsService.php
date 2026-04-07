@@ -10,6 +10,7 @@ use App\Models\RecurringTransaction;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -20,41 +21,52 @@ class AdminStatsService
         $months6 = $this->buildMonthRange(6);
         $months12 = $this->buildMonthRange(12);
 
-        $totalUsers = User::count();
-        $activeUserCount = Transaction::where('created_at', '>=', now()->subDays(30))
+        $totalUsers = $this->realUsers()->count();
+        $realUserIds = $this->realUsers()->select('id');
+
+        $activeUserCount = Transaction::whereIn('user_id', $realUserIds)
+            ->where('created_at', '>=', now()->subDays(30))
             ->distinct('user_id')
             ->count('user_id');
 
         return [
             'users' => [
                 'total' => $totalUsers,
-                'pro' => User::where('plan', PlanType::Pro)->count(),
-                'free' => User::where('plan', PlanType::Free)->count(),
-                'newThisMonth' => User::whereMonth('created_at', now()->month)
+                'pro' => $this->realUsers()->where('plan', PlanType::Pro)->count(),
+                'free' => $this->realUsers()->where('plan', PlanType::Free)->count(),
+                'newThisMonth' => $this->realUsers()
+                    ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
             ],
-            'wallets' => Wallet::count(),
+            'wallets' => Wallet::whereIn('user_id', $realUserIds)->count(),
             'transactions' => [
-                'total' => Transaction::count(),
-                'thisMonth' => Transaction::whereMonth('created_at', now()->month)
+                'total' => Transaction::whereIn('user_id', $realUserIds)->count(),
+                'thisMonth' => Transaction::whereIn('user_id', $realUserIds)
+                    ->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year)
                     ->count(),
             ],
-            'goals' => Goal::count(),
-            'recurring' => RecurringTransaction::where('active', true)->count(),
+            'goals' => Goal::whereIn('user_id', $realUserIds)->count(),
+            'recurring' => RecurringTransaction::whereIn('user_id', $realUserIds)->where('active', true)->count(),
             'activeUsers' => $activeUserCount,
             'inactiveUsers' => max(0, $totalUsers - $activeUserCount),
-            'usersByMonth' => $this->fillMonths($months6, $this->queryByMonth(User::class, 6)),
-            'transactionsByMonth' => $this->fillMonths($months6, $this->queryByMonth(Transaction::class, 6)),
+            'usersByMonth' => $this->fillMonths($months6, $this->queryUsersByMonth(6)),
+            'transactionsByMonth' => $this->fillMonths($months6, $this->queryTransactionsByMonth(6)),
             'cumulativeGrowth' => $this->buildCumulativeGrowth($months12),
-            'localeDistribution' => User::select('locale', DB::raw('COUNT(*) as locale_count'))
+            'localeDistribution' => $this->realUsers()
+                ->select('locale', DB::raw('COUNT(*) as locale_count'))
                 ->groupBy('locale')
                 ->orderByDesc(DB::raw('COUNT(*)'))
                 ->get()
                 ->map(fn ($r) => ['locale' => $r->locale ?? 'fr', 'count' => (int) $r->getAttribute('locale_count')])
                 ->all(),
         ];
+    }
+
+    private function realUsers(): Builder
+    {
+        return User::where('is_demo', false);
     }
 
     /**
@@ -66,16 +78,27 @@ class AdminStatsService
             ->map(fn (int $i) => now()->subMonths($i)->format('Y-m'));
     }
 
-    /**
-     * @param  class-string  $model
-     * @return Collection<string, int>
-     */
-    private function queryByMonth(string $model, int $months = 6): Collection
+    /** @return Collection<string, int> */
+    private function queryUsersByMonth(int $months): Collection
     {
-        return $model::select(
-            DB::raw("TO_CHAR(created_at, 'YYYY-MM') as month"),
-            DB::raw('COUNT(*) as count')
-        )
+        return $this->realUsers()
+            ->select(
+                DB::raw("TO_CHAR(created_at, 'YYYY-MM') as month"),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('created_at', '>=', now()->subMonths($months - 1)->startOfMonth())
+            ->groupBy('month')
+            ->pluck('count', 'month');
+    }
+
+    /** @return Collection<string, int> */
+    private function queryTransactionsByMonth(int $months): Collection
+    {
+        return Transaction::whereIn('user_id', $this->realUsers()->select('id'))
+            ->select(
+                DB::raw("TO_CHAR(created_at, 'YYYY-MM') as month"),
+                DB::raw('COUNT(*) as count')
+            )
             ->where('created_at', '>=', now()->subMonths($months - 1)->startOfMonth())
             ->groupBy('month')
             ->pluck('count', 'month');
@@ -87,11 +110,11 @@ class AdminStatsService
      */
     private function buildCumulativeGrowth(Collection $months): array
     {
-        $newByMonth = $this->queryByMonth(User::class, 12);
+        $newByMonth = $this->queryUsersByMonth(12);
 
-        $usersBeforeRange = User::where(
-            'created_at', '<', now()->subMonths(11)->startOfMonth()
-        )->count();
+        $usersBeforeRange = $this->realUsers()
+            ->where('created_at', '<', now()->subMonths(11)->startOfMonth())
+            ->count();
 
         $cumulative = $usersBeforeRange;
 

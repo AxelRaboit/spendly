@@ -7,6 +7,7 @@ use App\Http\Controllers\BudgetPresetController;
 use App\Http\Controllers\CategorizationRuleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DemoController;
 use App\Http\Controllers\DevDashboardController;
 use App\Http\Controllers\DevPasswordController;
 use App\Http\Controllers\GoalController;
@@ -38,6 +39,8 @@ Route::get('/', function () {
         ? redirect()->route('dashboard')
         : redirect()->route('login');
 });
+
+Route::middleware(['guest', 'throttle:10,1'])->post('/demo/login', [DemoController::class, 'login'])->name('demo.login');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
