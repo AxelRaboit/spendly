@@ -160,6 +160,7 @@ export default {
         fieldWallet: 'Portefeuille',
         pickWallet: 'Choisir un portefeuille',
         confirmDelete: 'Êtes-vous sûr de vouloir supprimer cette catégorie ?',
+        usage: 'utilisation | utilisations',
         editTip: 'Modifier cette catégorie',
         deleteTip: 'Supprimer cette catégorie',
     },
@@ -170,7 +171,7 @@ export default {
         carriedOverDeficitTooltip: 'Dépassement du mois précédent : {amount} de plus que prévu sur cette catégorie.',
         available: 'Disponible',
         target: {
-            label: 'Objectif',
+            label: 'Objectif :',
             none: 'Aucun',
             spending: 'Limite de dépense',
             saving: 'Épargne mensuelle',
@@ -252,12 +253,13 @@ export default {
             edit: 'Modifier',
             delete: 'Supprimer',
             confirmDelete: 'Supprimer cette transaction ?',
+            addTransaction: 'Ajouter une transaction',
         },
         editRow: {
             labelPlaceholder: 'Libellé',
             notePlaceholder: 'Note (optionnelle)…',
-            confirm: 'Valider (Entrée)',
-            cancel: 'Annuler (Échap)',
+            confirm: 'Valider',
+            cancel: 'Annuler',
             section: 'Section :',
         },
         notes: {

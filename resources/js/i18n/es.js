@@ -155,6 +155,7 @@ export default {
         confirmDelete: '¿Seguro que quieres eliminar esta categoría?',
         editTip: 'Editar esta categoría',
         deleteTip: 'Eliminar esta categoría',
+        usage: 'uso | usos',
     },
 
     budgets: {
@@ -163,7 +164,7 @@ export default {
         carriedOverDeficitTooltip: 'Exceso del mes anterior: {amount} de más en esta categoría.',
         available: 'Disponible',
         target: {
-            label: 'Objetivo',
+            label: 'Objetivo:',
             none: 'Ninguno',
             spending: 'Límite de gasto',
             saving: 'Ahorro mensual',
@@ -246,12 +247,13 @@ export default {
             edit: 'Editar',
             delete: 'Eliminar',
             confirmDelete: '¿Eliminar esta transacción?',
+            addTransaction: 'Añadir una transacción',
         },
         editRow: {
             labelPlaceholder: 'Etiqueta',
             notePlaceholder: 'Nota (opcional)…',
-            confirm: 'Confirmar (Enter)',
-            cancel: 'Cancelar (Escape)',
+            confirm: 'Confirmar',
+            cancel: 'Cancelar',
             section: 'Sección:',
         },
         notes: {

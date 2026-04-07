@@ -24,6 +24,7 @@ class CategoryService
         }
 
         return $query->with('wallet:id,name')
+            ->withCount('transactions')
             ->paginate(10)
             ->withQueryString();
     }

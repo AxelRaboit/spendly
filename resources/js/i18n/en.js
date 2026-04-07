@@ -162,6 +162,7 @@ export default {
         confirmDelete: 'Are you sure you want to delete this category?',
         editTip: 'Edit this category',
         deleteTip: 'Delete this category',
+        usage: 'usage | usages',
     },
 
     budgets: {
@@ -170,7 +171,7 @@ export default {
         carriedOverDeficitTooltip: 'Overspent last month: {amount} over budget in this category.',
         available: 'Available',
         target: {
-            label: 'Target',
+            label: 'Target:',
             none: 'None',
             spending: 'Spending limit',
             saving: 'Monthly saving',
@@ -252,12 +253,13 @@ export default {
             edit: 'Edit',
             delete: 'Delete',
             confirmDelete: 'Delete this transaction?',
+            addTransaction: 'Add a transaction',
         },
         editRow: {
             labelPlaceholder: 'Label',
             notePlaceholder: 'Note (optional)…',
-            confirm: 'Confirm (Enter)',
-            cancel: 'Cancel (Escape)',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
             section: 'Section:',
         },
         notes: {

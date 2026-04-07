@@ -95,7 +95,7 @@ function toggleSplit() {
 
             <div
                 data-tour="tx-panel"
-                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="flex items-center justify-between px-6 py-4 border-b border-base">
