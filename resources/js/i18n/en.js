@@ -542,6 +542,9 @@ export default {
         noWallets: 'No wallets.',
         viewBudget: 'View budget',
         favoriteTip: 'This wallet is a favorite and appears on the dashboard.',
+        trend: 'Income vs Expenses — last 6 months',
+        byCategory: 'Expenses by category',
+        noCategoryData: 'No expenses this month.',
     },
 
     locales: {

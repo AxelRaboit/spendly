@@ -537,6 +537,9 @@ export default {
         noWallets: 'Keine Geldbörsen.',
         viewBudget: 'Budget anzeigen',
         favoriteTip: 'Diese Geldbörse ist ein Favorit und wird im Dashboard angezeigt.',
+        trend: 'Einnahmen vs Ausgaben — letzte 6 Monate',
+        byCategory: 'Ausgaben nach Kategorie',
+        noCategoryData: 'Keine Ausgaben diesen Monat.',
     },
 
     locales: {

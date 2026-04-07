@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Support\Text;
 use Illuminate\Support\Str;
 
 class WalletTransferService
@@ -23,7 +24,8 @@ class WalletTransferService
         $expenseCategory = $this->getOrCreateTransferExpenseCategory($user, $fromWallet, $toWallet);
         $incomeCategory = $this->getOrCreateSystemCategory($user, $toWallet, SystemCategoryKey::TransferIncome);
 
-        $description = $data['description'] ?? __('transfer.default_description', ['from' => $fromWallet->name, 'to' => $toWallet->name]);
+        $raw = trim($data['description'] ?? '');
+        $description = blank($raw) ? __('transfer.default_description', ['from' => $fromWallet->name, 'to' => $toWallet->name]) : Text::normalize($raw);
 
         $base = [
             'user_id' => $user->id,
@@ -60,12 +62,31 @@ class WalletTransferService
     {
         $accessibleWalletIds = $user->accessibleWallets()->pluck('id');
 
+        $raw = trim($data['description'] ?? '');
+        if (blank($raw)) {
+            $txs = Transaction::where('transfer_id', $transferId)
+                ->whereIn('wallet_id', $accessibleWalletIds)
+                ->get(['type', 'wallet_id']);
+
+            $fromWalletId = $txs->firstWhere('type', TransactionType::Expense->value)?->wallet_id;
+            $toWalletId = $txs->firstWhere('type', TransactionType::Income->value)?->wallet_id;
+
+            $fromWallet = $fromWalletId ? Wallet::find($fromWalletId) : null;
+            $toWallet = $toWalletId ? Wallet::find($toWalletId) : null;
+
+            $description = ($fromWallet && $toWallet)
+                ? __('transfer.default_description', ['from' => $fromWallet->name, 'to' => $toWallet->name])
+                : null;
+        } else {
+            $description = Text::normalize($raw);
+        }
+
         Transaction::where('transfer_id', $transferId)
             ->whereIn('wallet_id', $accessibleWalletIds)
             ->update([
                 'amount' => $data['amount'],
                 'date' => $data['date'],
-                'description' => $data['description'] ?? null,
+                'description' => $description,
             ]);
     }
 

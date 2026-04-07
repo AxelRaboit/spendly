@@ -536,6 +536,9 @@ export default {
         noWallets: 'Sin carteras.',
         viewBudget: 'Ver presupuesto',
         favoriteTip: 'Esta cartera es favorita y aparece en el panel.',
+        trend: 'Ingresos vs Gastos — últimos 6 meses',
+        byCategory: 'Gastos por categoría',
+        noCategoryData: 'Sin gastos este mes.',
     },
 
     locales: {

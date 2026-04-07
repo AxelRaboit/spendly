@@ -22,6 +22,8 @@ class OverviewController extends Controller
             'next' => now()->createFromFormat('Y-m', $month)->addMonth()->format('Y-m'),
             'wallets' => $overviewService->walletsForMonth($user, $month),
             'totals' => $overviewService->totalsForMonth($user, $month),
+            'trend' => $overviewService->trendForMonths($user, $month),
+            'byCategory' => $overviewService->expensesByCategory($user, $month),
         ]);
     }
 }
