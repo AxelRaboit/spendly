@@ -773,6 +773,19 @@ export default {
             confirmImpersonate:
                 'Vous allez vous connecter en tant que {name}. Vous pourrez revenir à votre compte à tout moment.',
         },
+        invitations: {
+            title: 'Invitations',
+            description: "Envoyez une invitation par e-mail pour rejoindre l'application.",
+            email: 'Adresse e-mail',
+            emailPlaceholder: "exemple{'@'}domaine.com",
+            message: 'Message personnalisé',
+            messagePlaceholder: "Rédigez un message qui apparaîtra dans le corps de l'e-mail…",
+            credentialEmail: 'E-mail de connexion (optionnel)',
+            credentialPassword: 'Mot de passe (optionnel)',
+            credentialsHint: 'Si renseignés, les identifiants apparaîtront dans le corps du mail.',
+            send: "Envoyer l'invitation",
+            sending: 'Envoi en cours…',
+        },
     },
     impersonation: {
         banner: 'Vous êtes connecté en tant que {name}',

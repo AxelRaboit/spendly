@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendAppInvitationRequest;
 use App\Models\User;
 use App\Services\AdminStatsService;
+use App\Services\AppInvitationService;
 use App\Services\ImpersonationService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
@@ -19,6 +21,7 @@ class DevDashboardController extends Controller
         private readonly UserService $userService,
         private readonly AdminStatsService $adminStatsService,
         private readonly ImpersonationService $impersonationService,
+        private readonly AppInvitationService $invitationService,
     ) {}
 
     public function stats(): Response
@@ -69,5 +72,24 @@ class DevDashboardController extends Controller
             'users' => $this->userService->searchForAdmin(['search' => $request->query('search', '')]),
             'search' => $request->query('search', ''),
         ]);
+    }
+
+    public function invitations(): Response
+    {
+        return Inertia::render('Dev/Dashboard', [
+            'tab' => 'invitations',
+        ]);
+    }
+
+    public function sendInvitation(SendAppInvitationRequest $request): RedirectResponse
+    {
+        $this->invitationService->send(
+            $request->input('email'),
+            $request->input('message'),
+            $request->input('credential_email'),
+            $request->input('credential_password'),
+        );
+
+        return back()->with('success', __('admin.invitations.sent', ['email' => $request->input('email')]));
     }
 }

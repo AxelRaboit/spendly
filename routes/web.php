@@ -52,6 +52,8 @@ Route::middleware(['auth', 'role:ROLE_DEV'])->group(function () {
     Route::post('/dev/dashboard/users/{user}/toggle-role', [DevDashboardController::class, 'toggleRole'])->name('dev.dashboard.users.toggle-role');
     Route::delete('/dev/dashboard/users/{user}', [DevDashboardController::class, 'destroyUser'])->name('dev.dashboard.users.destroy');
     Route::post('/dev/dashboard/users/{user}/impersonate', [DevDashboardController::class, 'impersonate'])->name('dev.dashboard.users.impersonate');
+    Route::get('/dev/dashboard/invitations', [DevDashboardController::class, 'invitations'])->name('dev.dashboard.invitations');
+    Route::post('/dev/dashboard/invitations', [DevDashboardController::class, 'sendInvitation'])->name('dev.dashboard.invitations.send');
 });
 
 Route::middleware('auth')->group(function () {

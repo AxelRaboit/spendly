@@ -139,5 +139,13 @@
     "flash.scheduled.deleted": "Transacción programada eliminada.",
     "flash.import.created": ":created transacción(es) importada(s).",
     "flash.import.created_with_errors": ":created transacción(es) importada(s), :errors ignorada(s).",
-    "budgets.errors.categoryUsed": "Esta categoría ya se usa en este presupuesto."
+    "budgets.errors.categoryUsed": "Esta categoría ya se usa en este presupuesto.",
+    "admin.invitations.sent": "Invitación enviada a :email.",
+    "mail.app_invitation.subject": "Estás invitado a unirte a Spendly",
+    "mail.app_invitation.greeting": "¡Hola!",
+    "mail.app_invitation.action": "Iniciar sesión",
+    "mail.app_invitation.credentials_intro": "Aquí están sus credenciales de acceso:",
+    "mail.app_invitation.credential_email": "Correo: **:email**",
+    "mail.app_invitation.credential_password": "Contraseña: **:password**",
+    "mail.app_invitation.footer": "Si no esperabas esta invitación, puedes ignorar este correo."
 }

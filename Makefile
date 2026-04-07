@@ -121,7 +121,13 @@ fix: ## Run all fixers then static analysis
 	make fix-js
 	make stan
 
-# === Laravel Cache (Production) ===
+# === Laravel Cache ===
+cc: ## Clear all caches (dev)
+	$(ARTISAN) cache:clear
+	$(ARTISAN) config:clear
+	$(ARTISAN) route:clear
+	$(ARTISAN) view:clear
+
 cc-prod: ## Clear and regenerate all production caches
 	@echo "Clearing and regenerating production caches..."
 	$(ARTISAN) config:cache

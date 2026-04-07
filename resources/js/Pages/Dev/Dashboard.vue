@@ -7,7 +7,7 @@ import AppTooltip from '@/components/ui/AppTooltip.vue';
 import '@/plugins/chartjs';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Bar, Doughnut, Line } from 'vue-chartjs';
-import { LogIn, Shield, Trash2, UserRound, Wallet } from 'lucide-vue-next';
+import { LogIn, Mail, Shield, Trash2, UserRound, Wallet } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -154,6 +154,21 @@ const doDeleteUser = () => {
     useForm({}).delete(route('dev.dashboard.users.destroy', pendingDeleteUser.value.id));
     pendingDeleteUser.value = null;
 };
+
+// ── Invitations tab ─────────────────────────────────────────────────────────
+
+const invitationForm = useForm({
+    email: '',
+    message: '',
+    credential_email: '',
+    credential_password: '',
+});
+
+const submitInvitation = () => {
+    invitationForm.post(route('dev.dashboard.invitations.send'), {
+        onSuccess: () => invitationForm.reset(),
+    });
+};
 </script>
 
 <template>
@@ -164,27 +179,34 @@ const doDeleteUser = () => {
             <AppPageHeader
                 :crumbs="[
                     { label: t('admin.title'), href: route('dev.dashboard.stats') },
-                    { label: tab === 'stats' ? t('admin.stats.title') : t('admin.users.title') },
+                    { label: tab === 'stats' ? t('admin.stats.title') : tab === 'users' ? t('admin.users.title') : t('admin.invitations.title') },
                 ]"
             />
         </template>
 
-        <div class="space-y-6 p-6">
-            <div class="border-b border-base">
-                <nav class="flex gap-8">
+        <div class="space-y-6 p-4 sm:p-6">
+            <div class="border-b border-base overflow-x-auto">
+                <nav class="flex gap-6 sm:gap-8 whitespace-nowrap min-w-max">
                     <Link
                         :href="route('dev.dashboard.stats')"
-                        class="py-3 px-1 border-b-2 transition-colors"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
                         :class="tab === 'stats' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.stats.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.users')"
-                        class="py-3 px-1 border-b-2 transition-colors"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
                         :class="tab === 'users' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.users.title') }}
+                    </Link>
+                    <Link
+                        :href="route('dev.dashboard.invitations')"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
+                        :class="tab === 'invitations' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                    >
+                        {{ t('admin.invitations.title') }}
                     </Link>
                 </nav>
             </div>
@@ -315,28 +337,31 @@ const doDeleteUser = () => {
                     </button>
                 </div>
 
-                <div class="bg-surface border border-base rounded-lg overflow-hidden">
-                    <table class="w-full">
+                <div class="bg-surface border border-base rounded-lg overflow-x-auto">
+                    <table class="w-full min-w-[560px]">
                         <thead class="bg-surface-2 border-b border-base">
                             <tr>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.name') }}</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.email') }}</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.plan') }}</th>
-                                <th class="px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.created') }}</th>
-                                <th class="px-6 py-3 text-right text-sm font-semibold text-primary">{{ t('admin.users.actions') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.name') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden sm:table-cell">{{ t('admin.users.email') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden md:table-cell">{{ t('admin.users.plan') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden lg:table-cell">{{ t('admin.users.created') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-right text-sm font-semibold text-primary">{{ t('admin.users.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-base">
                             <tr v-for="user in users.data" :key="user.id" class="hover:bg-surface-2/50 transition-colors">
-                                <td class="px-6 py-3 text-sm text-primary">{{ user.name }}</td>
-                                <td class="px-6 py-3 text-sm text-secondary">{{ user.email }}</td>
-                                <td class="px-6 py-3 text-sm">
+                                <td class="px-4 sm:px-6 py-3 text-sm text-primary">
+                                    <div class="font-medium">{{ user.name }}</div>
+                                    <div class="text-xs text-secondary sm:hidden">{{ user.email }}</div>
+                                </td>
+                                <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
+                                <td class="px-4 sm:px-6 py-3 text-sm hidden md:table-cell">
                                     <AppBadge :variant="user.plan.toLowerCase() === 'pro' ? 'amber' : 'default'">
                                         {{ t('plan.' + user.plan.toLowerCase() + '.name') }}
                                     </AppBadge>
                                 </td>
-                                <td class="px-6 py-3 text-sm text-secondary">{{ new Date(user.created_at).toLocaleDateString() }}</td>
-                                <td class="px-6 py-3 text-sm text-right">
+                                <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden lg:table-cell">{{ new Date(user.created_at).toLocaleDateString() }}</td>
+                                <td class="px-4 sm:px-6 py-3 text-sm text-right">
                                     <div class="flex items-center justify-end gap-1">
                                         <AppTooltip :text="t('admin.users.impersonate', { name: user.name })">
                                             <button
@@ -373,6 +398,69 @@ const doDeleteUser = () => {
                 </div>
 
                 <AppPagination :meta="users" />
+            </div>
+
+            <!-- Invitations tab -->
+            <div v-if="tab === 'invitations'" class="max-w-lg space-y-4">
+                <p class="text-sm text-secondary">{{ t('admin.invitations.description') }}</p>
+
+                <form class="space-y-4" v-on:submit.prevent="submitInvitation">
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.email') }}</label>
+                        <input
+                            v-model="invitationForm.email"
+                            type="email"
+                            :placeholder="t('admin.invitations.emailPlaceholder')"
+                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                        <p v-if="invitationForm.errors.email" class="text-xs text-red-400">{{ invitationForm.errors.email }}</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.message') }}</label>
+                        <textarea
+                            v-model="invitationForm.message"
+                            rows="5"
+                            :placeholder="t('admin.invitations.messagePlaceholder')"
+                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                        />
+                        <p v-if="invitationForm.errors.message" class="text-xs text-red-400">{{ invitationForm.errors.message }}</p>
+                    </div>
+
+                    <div class="border border-base rounded-lg p-4 space-y-3 bg-surface-2/50">
+                        <p class="text-xs text-secondary">{{ t('admin.invitations.credentialsHint') }}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.credentialEmail') }}</label>
+                                <input
+                                    v-model="invitationForm.credential_email"
+                                    type="email"
+                                    :placeholder="t('admin.invitations.emailPlaceholder')"
+                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                >
+                                <p v-if="invitationForm.errors.credential_email" class="text-xs text-red-400">{{ invitationForm.errors.credential_email }}</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.credentialPassword') }}</label>
+                                <input
+                                    v-model="invitationForm.credential_password"
+                                    type="text"
+                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                >
+                                <p v-if="invitationForm.errors.credential_password" class="text-xs text-red-400">{{ invitationForm.errors.credential_password }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        :disabled="invitationForm.processing"
+                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+                    >
+                        <Mail class="w-4 h-4" />
+                        {{ invitationForm.processing ? t('admin.invitations.sending') : t('admin.invitations.send') }}
+                    </button>
+                </form>
             </div>
         </div>
     </AuthenticatedLayout>
