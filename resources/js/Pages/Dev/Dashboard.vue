@@ -351,7 +351,10 @@ const submitInvitation = () => {
                         <tbody class="divide-y divide-base">
                             <tr v-for="user in users.data" :key="user.id" class="hover:bg-surface-2/50 transition-colors">
                                 <td class="px-4 sm:px-6 py-3 text-sm text-primary">
-                                    <div class="font-medium">{{ user.name }}</div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium">{{ user.name }}</span>
+                                        <AppBadge v-if="user.is_demo" variant="indigo">Demo</AppBadge>
+                                    </div>
                                     <div class="text-xs text-secondary sm:hidden">{{ user.email }}</div>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
