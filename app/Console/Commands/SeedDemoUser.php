@@ -21,6 +21,8 @@ use App\Models\WalletMember;
 use App\Services\BudgetService;
 use App\Services\WalletTransferService;
 use Carbon\Carbon;
+use Faker\Factory as FakerFactory;
+use Faker\Generator as FakerGenerator;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -47,8 +49,11 @@ class SeedDemoUser extends Command
         ['type' => 'debt',     'label' => 'Remboursement prêt', 'planned' => 250.00,  'cat' => 'Remboursement prêt', 'target_type' => 'spending', 'target_amount' => 250.00, 'notes' => 'Fin du prêt dans 18 mois'],
     ];
 
+    private FakerGenerator $faker;
+
     public function handle(BudgetService $budgetService, WalletTransferService $transferService): int
     {
+        $this->faker = FakerFactory::create('fr_FR');
         $email = $this->option('email') ?? config('demo.email');
         $password = $this->option('password') ?? config('demo.password');
 
@@ -198,55 +203,55 @@ class SeedDemoUser extends Command
 
         $tx('Salaire', 2800.00, 27, 'Virement salaire', 'income', ['salaire']);
         if ($month->month !== now()->month) {
-            $tx('Freelance', fake()->randomFloat(2, 280, 520), 15, 'Facture client', 'income', ['freelance']);
+            $tx('Freelance', $this->faker->randomFloat(2, 280, 520), 15, 'Facture client', 'income', ['freelance']);
         }
 
         $tx('Épargne', 200.00, 2, 'Virement épargne vacances', 'expense', ['épargne']);
         $tx('Loyer', 850.00, 1, 'Loyer', 'expense', ['logement']);
         $tx('Remboursement prêt', 250.00, 3, 'Prêt auto', 'expense', ['crédit']);
-        $tx('Assurance', fake()->randomFloat(2, 58, 62), 8, 'Assurance habitation', 'expense', ['logement']);
-        $tx('Électricité', fake()->randomFloat(2, 68, 94), 10, 'Edf', 'expense', ['logement', 'facture']);
+        $tx('Assurance', $this->faker->randomFloat(2, 58, 62), 8, 'Assurance habitation', 'expense', ['logement']);
+        $tx('Électricité', $this->faker->randomFloat(2, 68, 94), 10, 'Edf', 'expense', ['logement', 'facture']);
         $tx('Internet', 34.99, 5, 'Freebox', 'expense', ['abonnement']);
         $tx('Téléphone', 19.99, 5, 'Forfait mobile', 'expense', ['abonnement']);
 
         foreach ([4, 9, 16, 22, 28] as $day) {
-            $tx('Alimentation', fake()->randomFloat(2, 55, 100), $day,
-                fake()->randomElement(['Lidl', 'Carrefour', 'Leclerc', 'Monoprix', 'Aldi']),
+            $tx('Alimentation', $this->faker->randomFloat(2, 55, 100), $day,
+                $this->faker->randomElement(['Lidl', 'Carrefour', 'Leclerc', 'Monoprix', 'Aldi']),
                 'expense', ['courses']);
         }
 
-        $tx('Transport', fake()->randomFloat(2, 18, 30), 3, 'Navigo / Carburant', 'expense', ['transport']);
-        $tx('Transport', fake()->randomFloat(2, 15, 25), 14, 'Trajet', 'expense', ['transport']);
-        if (fake()->boolean(60)) {
-            $tx('Transport', fake()->randomFloat(2, 10, 20), 22, 'Uber', 'expense', ['transport', 'vtc']);
+        $tx('Transport', $this->faker->randomFloat(2, 18, 30), 3, 'Navigo / Carburant', 'expense', ['transport']);
+        $tx('Transport', $this->faker->randomFloat(2, 15, 25), 14, 'Trajet', 'expense', ['transport']);
+        if ($this->faker->boolean(60)) {
+            $tx('Transport', $this->faker->randomFloat(2, 10, 20), 22, 'Uber', 'expense', ['transport', 'vtc']);
         }
 
         foreach ([7, 13, 19, 25] as $day) {
-            if (fake()->boolean(75)) {
-                $tx('Restaurants', fake()->randomFloat(2, 18, 48), $day,
-                    fake()->randomElement(['Déjeuner', 'Dîner', 'Brasserie', 'Sushi', 'Pizza']),
+            if ($this->faker->boolean(75)) {
+                $tx('Restaurants', $this->faker->randomFloat(2, 18, 48), $day,
+                    $this->faker->randomElement(['Déjeuner', 'Dîner', 'Brasserie', 'Sushi', 'Pizza']),
                     'expense', ['resto']);
             }
         }
 
-        $tx('Loisirs', fake()->randomFloat(2, 35, 65), 11,
-            fake()->randomElement(['Netflix', 'Spotify', 'Cinéma', 'Concert', 'Sport']),
+        $tx('Loisirs', $this->faker->randomFloat(2, 35, 65), 11,
+            $this->faker->randomElement(['Netflix', 'Spotify', 'Cinéma', 'Concert', 'Sport']),
             'expense', ['loisirs', 'abonnement']);
-        if (fake()->boolean(50)) {
-            $tx('Loisirs', fake()->randomFloat(2, 20, 55), 20,
-                fake()->randomElement(['Livre', 'Jeu', 'Exposition', 'Sortie']),
+        if ($this->faker->boolean(50)) {
+            $tx('Loisirs', $this->faker->randomFloat(2, 20, 55), 20,
+                $this->faker->randomElement(['Livre', 'Jeu', 'Exposition', 'Sortie']),
                 'expense', ['loisirs']);
         }
 
-        if (fake()->boolean(60)) {
-            $tx('Santé', fake()->randomFloat(2, 22, 65), fake()->numberBetween(5, 25),
-                fake()->randomElement(['Pharmacie', 'Médecin', 'Dentiste', 'Opticien']),
+        if ($this->faker->boolean(60)) {
+            $tx('Santé', $this->faker->randomFloat(2, 22, 65), $this->faker->numberBetween(5, 25),
+                $this->faker->randomElement(['Pharmacie', 'Médecin', 'Dentiste', 'Opticien']),
                 'expense', ['santé']);
         }
 
-        if (fake()->boolean(40)) {
-            $tx('Vêtements', fake()->randomFloat(2, 30, 90), fake()->numberBetween(8, 25),
-                fake()->randomElement(['H&m', 'Zara', 'Asos', 'Decathlon']),
+        if ($this->faker->boolean(40)) {
+            $tx('Vêtements', $this->faker->randomFloat(2, 30, 90), $this->faker->numberBetween(8, 25),
+                $this->faker->randomElement(['H&m', 'Zara', 'Asos', 'Decathlon']),
                 'expense', ['shopping']);
         }
     }

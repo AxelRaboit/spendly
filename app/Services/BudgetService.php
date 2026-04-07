@@ -46,9 +46,7 @@ class BudgetService
             ]
         );
 
-        if ($budget->wasRecentlyCreated) {
-            $this->seedTransferItem($budget, $wallet, $month);
-        }
+        $this->seedTransferItem($budget, $wallet, $month);
 
         return $budget;
     }
@@ -230,6 +228,14 @@ class BudgetService
             ->exists();
 
         if (! $hasTransfers) {
+            return;
+        }
+
+        $alreadyExists = BudgetItem::where('budget_id', $budget->id)
+            ->where('category_id', $category->id)
+            ->exists();
+
+        if ($alreadyExists) {
             return;
         }
 
