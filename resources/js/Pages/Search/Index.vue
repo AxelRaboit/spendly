@@ -3,6 +3,7 @@ import { Search, AlertTriangle, Pencil, Trash2, Paperclip } from 'lucide-vue-nex
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
+import EmptyState from '@/components/ui/EmptyState.vue';
 import BudgetTxPanel from '@/components/budget/BudgetTxPanel.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
@@ -211,9 +212,9 @@ function submitEdit() {
                                     </template>
                                     <span
                                         class="text-sm font-semibold font-mono"
-                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-primary'"
+                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
                                     >
-                                        {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
+                                        {{ tx.type === 'income' ? '+' : '-' }}{{ fmt(tx.amount) }}
                                     </span>
                                 </div>
                             </div>
@@ -275,9 +276,9 @@ function submitEdit() {
                                     </td>
                                     <td
                                         class="px-4 py-3 text-right text-sm font-semibold font-mono"
-                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-primary'"
+                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
                                     >
-                                        {{ tx.type === 'income' ? '+' : '' }}{{ fmt(tx.amount) }}
+                                        {{ tx.type === 'income' ? '+' : '-' }}{{ fmt(tx.amount) }}
                                     </td>
                                     <td class="px-2 py-3">
                                         <div v-if="!tx.split_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -298,9 +299,7 @@ function submitEdit() {
                     </div>
                 </template>
 
-                <div v-else class="flex items-center justify-center py-16 text-secondary">
-                    <p class="text-sm">{{ t('search.noResults') }}</p>
-                </div>
+                <EmptyState v-else :message="t('search.noResults')" icon="search" />
             </div>
 
             <AppPagination :meta="transactions" />

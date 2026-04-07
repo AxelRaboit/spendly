@@ -28,6 +28,7 @@ import { useFmtDate }        from '@/composables/core/useFmtDate';
 import { useFmtMonth }       from '@/composables/core/useFmtMonth';
 import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
+import { useUnbudgetedTransactions } from '@/composables/budget/useUnbudgetedTransactions';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
@@ -187,6 +188,16 @@ const { txPanel, txPrefillLabel, txForm, txSection, txFilteredCategories, editin
 // ─── Item transactions panel ─────────────────────────────────────────────────
 const { open: txDetailOpen, loading: txDetailLoading, transactions: txDetailList, currentItem: txDetailItem, openPanel: openTxDetail, closePanel: closeTxDetail } =
     useItemTransactions(walletId);
+
+// ─── Unbudgeted transactions panel ───────────────────────────────────────────
+const { open: unbudgetedOpen, loading: unbudgetedLoading, transactions: unbudgetedList, type: unbudgetedType, openPanel: openUnbudgeted, closePanel: closeUnbudgeted } =
+    useUnbudgetedTransactions(walletId);
+
+const unbudgetedPseudoItem = computed(() => ({
+    id: 'unbudgeted',
+    label: t('budgets.table.unbudgeted'),
+    category_id: null,
+}));
 
 function editTxFromDetail(tx) {
     closeTxDetail();
@@ -382,6 +393,11 @@ function onGlobalKeydown(e) {
     if (e.key === 'ArrowRight') router.visit(`/wallets/${props.wallet.id}/budget?month=${props.nextMonth}`);
     if (e.key === 'n' || e.key === 'N') startAddingItem(Object.keys(props.sections)[0] ?? 'income');
 }
+
+function openUnbudgetedPanel(type) {
+    openUnbudgeted(type);
+}
+
 onMounted(async () => {
     document.addEventListener('keydown', onGlobalKeydown);
     document.addEventListener('click', closeMobileMenu);
@@ -1228,14 +1244,14 @@ onUnmounted(() => {
                             <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-                            <div v-if="unbudgeted.income > 0">
+                            <button v-if="unbudgeted.income > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel('income')">
                                 <p class="text-muted">{{ t('budgets.sections.income') }}</p>
-                                <p class="font-semibold text-emerald-400">+{{ fmt(unbudgeted.income) }}</p>
-                            </div>
-                            <div v-if="unbudgeted.expenses > 0">
+                                <p class="font-semibold text-emerald-400 cursor-pointer">+{{ fmt(unbudgeted.income) }}</p>
+                            </button>
+                            <button v-if="unbudgeted.expenses > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel('expense')">
                                 <p class="text-muted">{{ t('budgets.kpi.expenses') }}</p>
-                                <p class="font-semibold text-rose-400">-{{ fmt(unbudgeted.expenses) }}</p>
-                            </div>
+                                <p class="font-semibold text-rose-400 cursor-pointer">-{{ fmt(unbudgeted.expenses) }}</p>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1679,10 +1695,10 @@ onUnmounted(() => {
                                 </div>
                             </td>
                             <td class="px-4 py-2.5 text-right font-mono text-xs text-muted">—</td>
-                            <td class="px-4 py-2.5 text-right font-mono text-xs">
-                                <span v-if="unbudgeted.income > 0" class="text-emerald-400">+{{ fmt(unbudgeted.income) }}</span>
-                                <span v-if="unbudgeted.income > 0 && unbudgeted.expenses > 0" class="text-muted mx-1">/</span>
-                                <span v-if="unbudgeted.expenses > 0" class="text-rose-400">-{{ fmt(unbudgeted.expenses) }}</span>
+                            <td class="px-4 py-2.5 text-right font-mono text-xs space-x-2">
+                                <button v-if="unbudgeted.income > 0" type="button" class="text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel('income')">+{{ fmt(unbudgeted.income) }}</button>
+                                <span v-if="unbudgeted.income > 0 && unbudgeted.expenses > 0" class="text-muted">/</span>
+                                <button v-if="unbudgeted.expenses > 0" type="button" class="text-rose-400 hover:text-rose-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel('expense')">-{{ fmt(unbudgeted.expenses) }}</button>
                             </td>
                             <td colspan="2" />
                         </tr>
@@ -1753,6 +1769,16 @@ onUnmounted(() => {
             v-on:edit="editTxFromDetail"
             v-on:delete="deleteTxFromDetail"
             v-on:add="addTxFromDetailPanel"
+        />
+
+        <BudgetDetailPanel
+            :open="unbudgetedOpen"
+            :item="unbudgetedPseudoItem"
+            :loading="unbudgetedLoading"
+            :transactions="unbudgetedList"
+            v-on:close="closeUnbudgeted"
+            v-on:edit="editTxFromDetail"
+            v-on:delete="deleteTxFromDetail"
         />
 
         <CopyBudgetModal

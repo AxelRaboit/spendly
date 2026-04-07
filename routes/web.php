@@ -131,6 +131,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/wallets/{wallet}/budget/items/{item}', [BudgetController::class, 'destroyItem'])->name('wallets.budget.items.destroy');
     Route::patch('/wallets/{wallet}/budget/items/reorder', [BudgetController::class, 'reorderItems'])->name('wallets.budget.items.reorder');
     Route::get('/wallets/{wallet}/budget/items/{item}/transactions', [BudgetController::class, 'itemTransactions'])->name('wallets.budget.items.transactions');
+    Route::get('/wallets/{wallet}/budget/unbudgeted-transactions', [BudgetController::class, 'unbudgetedTransactions'])->name('wallets.budget.unbudgeted.transactions');
     Route::post('/wallets/{wallet}/budget/items/{item}/duplicate', [BudgetController::class, 'duplicateItem'])->name('wallets.budget.items.duplicate');
     Route::post('/wallets/{wallet}/budget/copy-repeat', [BudgetController::class, 'copyRepeat'])->name('wallets.budget.copy-repeat');
     Route::post('/wallets/{wallet}/budget/quick-start', [BudgetController::class, 'quickStart'])->name('wallets.budget.quick-start');
