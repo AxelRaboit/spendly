@@ -542,6 +542,9 @@ export default {
         noWallets: 'Aucun portefeuille.',
         viewBudget: 'Voir le budget',
         favoriteTip: 'Ce portefeuille est en favori et apparaît sur le tableau de bord.',
+        trend: 'Revenus vs Dépenses — 6 derniers mois',
+        byCategory: 'Dépenses par catégorie',
+        noCategoryData: 'Aucune dépense ce mois.',
     },
 
     locales: {

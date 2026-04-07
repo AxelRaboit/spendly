@@ -1,22 +1,30 @@
 <script setup>
+import '@/plugins/chartjs';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import EmptyState from '@/components/ui/EmptyState.vue';
+import { Bar, Doughnut } from 'vue-chartjs';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
+import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useI18n } from 'vue-i18n';
 
 const { t }        = useI18n();
 const { fmt }      = useCurrency();
 const { fmtMonth } = useFmtMonth();
+const { barOptions, textColor, gridColor, labelColor } = useChartTheme();
 
-defineProps({
-    month:   String,
-    prev:    String,
-    next:    String,
-    wallets: Array,
-    totals:  Object,
+const props = defineProps({
+    month:      String,
+    prev:       String,
+    next:       String,
+    wallets:    Array,
+    totals:     Object,
+    trend:      { type: Array, default: () => [] },
+    byCategory: { type: Array, default: () => [] },
 });
 
 function cashFlowClass(val) {
@@ -24,6 +32,62 @@ function cashFlowClass(val) {
     if (val < 0) return 'text-rose-400';
     return 'text-secondary';
 }
+
+const trendData = computed(() => ({
+    labels: props.trend.map((m) => fmtMonth(m.month)),
+    datasets: [
+        {
+            label: t('overview.income'),
+            data: props.trend.map((m) => m.income),
+            backgroundColor: '#34d399',
+            borderRadius: 4,
+        },
+        {
+            label: t('overview.expenses'),
+            data: props.trend.map((m) => m.expenses),
+            backgroundColor: '#fb7185',
+            borderRadius: 4,
+        },
+    ],
+}));
+
+const trendOptions = computed(() => ({
+    ...barOptions.value,
+    plugins: {
+        ...barOptions.value.plugins,
+        tooltip: {
+            callbacks: { label: (ctx) => `${ctx.dataset.label} : ${fmt(ctx.raw)}` },
+        },
+    },
+    scales: {
+        x: { ticks: { color: textColor.value }, grid: { color: gridColor.value } },
+        y: { ticks: { color: textColor.value, callback: (v) => fmt(v) }, grid: { color: gridColor.value } },
+    },
+}));
+
+const CATEGORY_COLORS = [
+    '#818cf8', '#34d399', '#fb7185', '#fbbf24', '#38bdf8', '#c084fc', '#f97316', '#2dd4bf',
+];
+
+const donutData = computed(() => ({
+    labels: props.byCategory.map((c) => c.name),
+    datasets: [{
+        data: props.byCategory.map((c) => c.total),
+        backgroundColor: CATEGORY_COLORS.slice(0, props.byCategory.length),
+        borderWidth: 0,
+    }],
+}));
+
+const donutOptions = computed(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: { position: 'right', labels: { color: labelColor.value, boxWidth: 12, padding: 12 } },
+        tooltip: {
+            callbacks: { label: (ctx) => ` ${ctx.label} : ${fmt(ctx.raw)}` },
+        },
+    },
+}));
 </script>
 
 <template>
@@ -57,6 +121,23 @@ function cashFlowClass(val) {
                 <StatCard :label="t('overview.income')" value-class="text-emerald-400">{{ fmt(totals.income) }}</StatCard>
                 <StatCard :label="t('overview.expenses')" value-class="text-rose-400">{{ fmt(totals.expenses) }}</StatCard>
                 <StatCard :label="t('overview.cashFlow')" :value-class="cashFlowClass(totals.cash_flow)">{{ fmt(totals.cash_flow, true) }}</StatCard>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="bg-surface border border-base/60 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('overview.trend') }}</h3>
+                    <div class="h-52">
+                        <Bar :data="trendData" :options="trendOptions" />
+                    </div>
+                </div>
+
+                <div class="bg-surface border border-base/60 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('overview.byCategory') }}</h3>
+                    <div v-if="byCategory.length" class="h-52">
+                        <Doughnut :data="donutData" :options="donutOptions" />
+                    </div>
+                    <EmptyState v-else icon="chart" :message="t('overview.noCategoryData')" compact />
+                </div>
             </div>
 
             <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
