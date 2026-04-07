@@ -23,10 +23,12 @@ class WalletTransferService
         $expenseCategory = $this->getOrCreateTransferExpenseCategory($user, $fromWallet, $toWallet);
         $incomeCategory = $this->getOrCreateSystemCategory($user, $toWallet, SystemCategoryKey::TransferIncome);
 
+        $description = $data['description'] ?? __('transfer.default_description', ['from' => $fromWallet->name, 'to' => $toWallet->name]);
+
         $base = [
             'user_id' => $user->id,
             'amount' => $data['amount'],
-            'description' => $data['description'] ?? null,
+            'description' => $description,
             'date' => $data['date'],
             'tags' => null,
             'transfer_id' => $transferId,

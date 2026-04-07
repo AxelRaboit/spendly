@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\BudgetSection;
-use App\Enums\SystemCategoryKey;
 use App\Enums\TransactionType;
 use App\Models\Budget;
 use App\Models\BudgetItem;
@@ -36,7 +35,7 @@ class BudgetService
      */
     public function getOrCreate(Wallet $wallet, Carbon $month): Budget
     {
-        $budget = Budget::firstOrCreate(
+        return Budget::firstOrCreate(
             [
                 'wallet_id' => $wallet->id,
                 'month' => $month->copy()->startOfMonth()->toDateString(),
@@ -45,38 +44,6 @@ class BudgetService
                 'user_id' => $wallet->user_id,
             ]
         );
-
-        $this->seedTransferItem($budget, $wallet, $month);
-
-        return $budget;
-    }
-
-    /**
-     * Auto-create transfer budget items for wallets that have transfer transactions.
-     * - Income side  → "Virement reçu"   (BudgetSection::Income)
-     * - Expense side → "Virement effectué" (BudgetSection::Savings)
-     * Planned amount is taken from the previous month's actuals.
-     */
-    private function seedTransferItem(Budget $budget, Wallet $wallet, Carbon $month): void
-    {
-        // Income side — single shared category
-        $this->seedTransferItemForCategory(
-            $budget, $wallet, $month,
-            Category::where('wallet_id', $wallet->id)
-                ->where('system_key', SystemCategoryKey::TransferIncome->value)
-                ->first(),
-            BudgetSection::Income,
-        );
-
-        // Expense side — one category per destination wallet
-        $expenseCategories = Category::where('wallet_id', $wallet->id)
-            ->where('system_key', 'LIKE', 'transfer_expense_%')
-            ->whereHas('transactions', fn ($q) => $q->where('wallet_id', $wallet->id))
-            ->get();
-
-        foreach ($expenseCategories as $category) {
-            $this->seedTransferItemForCategory($budget, $wallet, $month, $category, BudgetSection::Savings);
-        }
     }
 
     /**
@@ -215,44 +182,6 @@ class BudgetService
                 ->orWhereHas('category', fn ($c) => $c->where('is_system', false))
             )
             ->delete();
-    }
-
-    private function seedTransferItemForCategory(Budget $budget, Wallet $wallet, Carbon $month, ?Category $category, BudgetSection $section): void
-    {
-        if (! $category instanceof Category) {
-            return;
-        }
-
-        $hasTransfers = Transaction::where('wallet_id', $wallet->id)
-            ->where('category_id', $category->id)
-            ->exists();
-
-        if (! $hasTransfers) {
-            return;
-        }
-
-        $alreadyExists = BudgetItem::where('budget_id', $budget->id)
-            ->where('category_id', $category->id)
-            ->exists();
-
-        if ($alreadyExists) {
-            return;
-        }
-
-        $prevMonthActual = (float) Transaction::where('wallet_id', $wallet->id)
-            ->where('category_id', $category->id)
-            ->whereYear('date', $month->copy()->subMonth()->year)
-            ->whereMonth('date', $month->copy()->subMonth()->month)
-            ->sum('amount');
-
-        BudgetItem::create([
-            'budget_id' => $budget->id,
-            'type' => $section->value,
-            'label' => $category->name,
-            'planned_amount' => $prevMonthActual,
-            'category_id' => $category->id,
-            'position' => 0,
-        ]);
     }
 
     /**
@@ -672,5 +601,41 @@ class BudgetService
                 'expenses' => (float) ($unbudgetedRows->get(TransactionType::Expense->value)->total ?? 0),
             ],
         ];
+    }
+
+    public function getUnbudgetedTransactions(Budget $budget): array
+    {
+        $allItems = $budget->items;
+        $budgetedCategoryIds = $allItems->whereNotNull('category_id')->pluck('category_id');
+
+        $query = Transaction::query()
+            ->where('wallet_id', $budget->wallet_id)
+            ->whereYear('date', $budget->month->year)
+            ->whereMonth('date', $budget->month->month)
+            ->orderByDesc('date')
+            ->orderByDesc('id');
+
+        if ($budgetedCategoryIds->isNotEmpty()) {
+            $query->where(fn ($q) => $q
+                ->whereNull('category_id')
+                ->orWhereNotIn('category_id', $budgetedCategoryIds)
+            );
+        }
+
+        return $query->get(['id', 'date', 'description', 'amount', 'type', 'category_id', 'wallet_id', 'tags', 'transfer_id', 'split_id', 'attachment_path'])
+            ->map(fn (Transaction $tx) => [
+                'id' => $tx->id,
+                'date' => $tx->date,
+                'description' => $tx->description,
+                'amount' => (float) $tx->amount,
+                'type' => $tx->type,
+                'category_id' => $tx->category_id,
+                'wallet_id' => $tx->wallet_id,
+                'tags' => $tx->tags ?? [],
+                'transfer_id' => $tx->transfer_id,
+                'split_id' => $tx->split_id,
+                'attachment_url' => $tx->attachment_path ? route('transactions.attachment', $tx->id) : null,
+            ])
+            ->all();
     }
 }

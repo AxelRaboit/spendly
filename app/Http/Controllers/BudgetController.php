@@ -250,4 +250,17 @@ class BudgetController extends Controller
 
         return response()->json($this->budgetService->itemTransactions($wallet, $item));
     }
+
+    public function unbudgetedTransactions(Request $request, Wallet $wallet): JsonResponse
+    {
+        $this->authorize('view', $wallet);
+
+        $monthParam = $request->query('month');
+        $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
+
+        $budget = $this->budgetService->getOrCreate($wallet, $month);
+        $transactions = $this->budgetService->getUnbudgetedTransactions($budget);
+
+        return response()->json($transactions);
+    }
 }
