@@ -586,7 +586,7 @@ export function useTour() {
             },
             // 8. Add a line form — _prep opens the form BEFORE driver.js activates this step
             {
-                element: '[data-tour="add-line-form"]',
+                element: () => getVisibleEl('[data-tour="add-line-form"]'),
                 _prep: () => {
                     if (pageHooks.openAddLine) pageHooks.openAddLine();
                 },
@@ -599,7 +599,7 @@ export function useTour() {
             },
             // 9-12. Add form fields detail
             {
-                element: '[data-tour="add-field-label"]',
+                element: () => getVisibleEl('[data-tour="add-field-label"]'),
                 popover: {
                     title: t('tour.addField.label.title'),
                     description: t('tour.addField.label.desc'),
@@ -608,7 +608,7 @@ export function useTour() {
                 },
             },
             {
-                element: '[data-tour="add-field-category"]',
+                element: () => getVisibleEl('[data-tour="add-field-category"]'),
                 popover: {
                     title: t('tour.addField.category.title'),
                     description: t('tour.addField.category.desc'),
@@ -617,7 +617,7 @@ export function useTour() {
                 },
             },
             {
-                element: '[data-tour="add-field-amount"]',
+                element: () => getVisibleEl('[data-tour="add-field-amount"]'),
                 popover: {
                     title: t('tour.addField.amount.title'),
                     description: t('tour.addField.amount.desc'),
@@ -626,7 +626,7 @@ export function useTour() {
                 },
             },
             {
-                element: '[data-tour="add-field-target"]',
+                element: () => getVisibleEl('[data-tour="add-field-target"]'),
                 popover: {
                     title: t('tour.addField.target.title'),
                     description: t('tour.addField.target.desc'),
