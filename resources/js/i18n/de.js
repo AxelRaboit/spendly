@@ -163,7 +163,7 @@ export default {
         carriedOverDeficitTooltip: 'Überschreitung vom Vormonat: {amount} über Budget in dieser Kategorie.',
         available: 'Verfügbar',
         target: {
-            label: 'Ziel',
+            label: 'Ziel:',
             none: 'Keins',
             spending: 'Ausgabenlimit',
             saving: 'Monatliches Sparen',
@@ -252,8 +252,8 @@ export default {
         editRow: {
             labelPlaceholder: 'Bezeichnung',
             notePlaceholder: 'Notiz (optional)…',
-            confirm: 'Bestätigen (Enter)',
-            cancel: 'Abbrechen (Escape)',
+            confirm: 'Bestätigen',
+            cancel: 'Abbrechen',
             section: 'Abschnitt:',
         },
         notes: {

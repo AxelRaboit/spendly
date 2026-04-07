@@ -39,7 +39,7 @@ const previewUrl = ref(null);
 
             <div
                 data-tour="detail-panel"
-                class="relative ml-auto w-full max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
                 <div class="px-6 pt-4 pb-3 border-b border-base space-y-3">

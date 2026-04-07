@@ -895,84 +895,101 @@ onUnmounted(() => {
 
                         <template v-if="!collapsedSections[type]">
                             <template v-for="item in items" :key="`mob-item-${item.id}`">
-                                <div v-if="editingId === item.id" class="bg-surface-2 px-4 py-3 space-y-2" data-editing>
+                                <div v-if="editingId === item.id" class="bg-surface-2 px-4 py-3 space-y-3" data-editing>
                                     <BudgetInput v-model="editForm.label" type="text" :placeholder="t('budgets.editRow.labelPlaceholder')" />
-                                    <div v-if="creatingCategory && categoryTargetForm === editForm" class="flex items-center gap-1">
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div v-if="creatingCategory && categoryTargetForm === editForm" class="col-span-2 flex items-center gap-1">
+                                            <BudgetInput
+                                                v-model="newCategoryName"
+                                                data-new-category
+                                                type="text"
+                                                variant="focus"
+                                                :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
+                                                class="flex-1"
+                                                :disabled="creatingCategoryLoading"
+                                                v-on:keydown.enter.prevent="createCategory"
+                                                v-on:keydown.escape="cancelCreateCategory"
+                                            />
+                                            <AppButton
+                                                variant="icon"
+                                                size="none"
+                                                class="text-emerald-400 hover:text-emerald-300 shrink-0"
+                                                :disabled="creatingCategoryLoading"
+                                                v-on:click="createCategory"
+                                            >
+                                                <Check class="w-4 h-4" />
+                                            </AppButton>
+                                            <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
+                                                <X class="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                        <BudgetSelect v-else v-model="editForm.category_id" v-on:change="onCategoryChange(editForm)">
+                                            <option :value="null">—</option>
+                                            <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                                            <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
+                                        </BudgetSelect>
                                         <BudgetInput
-                                            v-model="newCategoryName"
-                                            data-new-category
-                                            type="text"
-                                            variant="focus"
-                                            :placeholder="t('budgets.addRow.newCategoryPlaceholder')"
-                                            class="flex-1"
-                                            :disabled="creatingCategoryLoading"
-                                            v-on:keydown.enter.prevent="createCategory"
-                                            v-on:keydown.escape="cancelCreateCategory"
+                                            v-model="editForm.planned_amount"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            placeholder="0,00"
+                                            variant="mono"
                                         />
-                                        <AppButton
-                                            variant="icon"
-                                            size="none"
-                                            class="text-emerald-400 hover:text-emerald-300 shrink-0"
-                                            :disabled="creatingCategoryLoading"
-                                            v-on:click="createCategory"
-                                        >
-                                            <Check class="w-4 h-4" />
-                                        </AppButton>
-                                        <button class="text-rose-400 hover:text-rose-300 transition-colors shrink-0" v-on:click="cancelCreateCategory">
-                                            <X class="w-4 h-4" />
-                                        </button>
                                     </div>
-                                    <BudgetSelect v-else v-model="editForm.category_id" v-on:change="onCategoryChange(editForm)">
-                                        <option :value="null">—</option>
-                                        <option v-for="cat in availableCategoriesForEdit" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                                        <option value="__create__">+ {{ t('budgets.addRow.newCategory') }}</option>
-                                    </BudgetSelect>
-                                    <BudgetInput
-                                        v-model="editForm.planned_amount"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        placeholder="0,00"
-                                        variant="mono"
-                                    />
+
                                     <textarea
                                         v-model="editForm.notes"
                                         :placeholder="t('budgets.editRow.notePlaceholder')"
                                         rows="2"
-                                        class="mt-2 w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                        class="w-full bg-surface-3 text-secondary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none resize-none"
                                     />
-                                    <BudgetSelect v-model="editForm.target_type">
-                                        <option :value="null">{{ t('budgets.target.label') }} — {{ t('budgets.target.none') }}</option>
-                                        <option value="spending">{{ t('budgets.target.spending') }}</option>
-                                        <option value="saving">{{ t('budgets.target.saving') }}</option>
-                                        <option value="by_date">{{ t('budgets.target.byDate') }}</option>
-                                    </BudgetSelect>
-                                    <BudgetInput
-                                        v-if="editForm.target_type"
-                                        v-model="editForm.target_amount"
-                                        type="number"
-                                        step="0.01"
-                                        min="0.01"
-                                        variant="mono"
-                                        :placeholder="t('budgets.target.amount')"
-                                    />
-                                    <BudgetInput
-                                        v-if="editForm.target_type === 'by_date'"
-                                        v-model="editForm.target_deadline"
-                                        type="date"
-                                    />
-                                    <div class="flex items-center justify-between">
-                                        <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
-                                            <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
-                                        </BudgetSelect>
-                                        <div class="flex gap-3">
-                                            <button class="text-emerald-400 hover:text-emerald-300" v-on:click="submitEdit(item)">
-                                                <Check class="w-5 h-5" />
-                                            </button>
-                                            <button class="text-rose-400 hover:text-rose-300 transition-colors" v-on:click="cancelEditing">
-                                                <X class="w-5 h-5" />
-                                            </button>
+
+                                    <div class="pt-2 border-t border-base space-y-2">
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <BudgetSelect v-model="editForm.type" class="text-xs">
+                                                <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
+                                            </BudgetSelect>
+                                            <BudgetSelect v-model="editForm.target_type" class="text-xs">
+                                                <option :value="null">{{ t('budgets.target.none') }}</option>
+                                                <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                                <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                                <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                            </BudgetSelect>
                                         </div>
+                                        <div v-if="editForm.target_type" class="grid gap-2" :class="editForm.target_type === 'by_date' ? 'grid-cols-2' : ''">
+                                            <BudgetInput
+                                                v-model="editForm.target_amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0.01"
+                                                variant="mono"
+                                                :placeholder="t('budgets.target.amount')"
+                                            />
+                                            <BudgetInput
+                                                v-if="editForm.target_type === 'by_date'"
+                                                v-model="editForm.target_deadline"
+                                                type="date"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="flex gap-2 pt-4 border-t border-base">
+                                        <button
+                                            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors"
+                                            v-on:click="submitEdit(item)"
+                                        >
+                                            <Check class="w-4 h-4" />
+                                            {{ t('budgets.editRow.confirm') }}
+                                        </button>
+                                        <button
+                                            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-base text-muted hover:text-primary hover:border-primary text-sm font-medium transition-colors"
+                                            v-on:click="cancelEditing"
+                                        >
+                                            <X class="w-4 h-4" />
+                                            {{ t('budgets.editRow.cancel') }}
+                                        </button>
                                     </div>
                                 </div>
 
@@ -1356,42 +1373,50 @@ onUnmounted(() => {
                                         </td>
                                     </tr>
                                     <tr class="bg-surface-2 border-b border-base/40" data-editing>
-                                        <td colspan="6" class="pl-8 pr-3 py-2 space-y-1.5">
-                                            <textarea
-                                                v-model="editForm.notes"
-                                                :placeholder="t('budgets.editRow.notePlaceholder')"
-                                                rows="2"
-                                                tabindex="4"
-                                                class="w-full bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
-                                                v-on:keydown="onNotesKeydown($event, item)"
-                                            />
-                                            <div class="flex items-center gap-2 flex-wrap">
-                                                <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
-                                                <BudgetSelect v-model="editForm.type" class="w-auto text-xs">
-                                                    <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
-                                                </BudgetSelect>
-                                                <label class="text-xs text-muted ml-2">{{ t('budgets.target.label') }}</label>
-                                                <BudgetSelect v-model="editForm.target_type" class="w-auto text-xs">
-                                                    <option :value="null">{{ t('budgets.target.none') }}</option>
-                                                    <option value="spending">{{ t('budgets.target.spending') }}</option>
-                                                    <option value="saving">{{ t('budgets.target.saving') }}</option>
-                                                    <option value="by_date">{{ t('budgets.target.byDate') }}</option>
-                                                </BudgetSelect>
-                                                <BudgetInput
-                                                    v-if="editForm.target_type"
-                                                    v-model="editForm.target_amount"
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0.01"
-                                                    variant="mono"
-                                                    class="w-28"
-                                                    :placeholder="t('budgets.target.amount')"
+                                        <td colspan="6" class="pl-8 pr-3 py-2">
+                                            <div class="flex gap-4">
+                                                <textarea
+                                                    v-model="editForm.notes"
+                                                    :placeholder="t('budgets.editRow.notePlaceholder')"
+                                                    rows="2"
+                                                    tabindex="4"
+                                                    class="flex-1 bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                                    v-on:keydown="onNotesKeydown($event, item)"
                                                 />
-                                                <BudgetInput
-                                                    v-if="editForm.target_type === 'by_date'"
-                                                    v-model="editForm.target_deadline"
-                                                    type="date"
-                                                />
+                                                <div class="w-56 space-y-2">
+                                                    <div class="space-y-1">
+                                                        <label class="text-xs text-muted">{{ t('budgets.editRow.section') }}</label>
+                                                        <BudgetSelect v-model="editForm.type" class="w-full text-xs">
+                                                            <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
+                                                        </BudgetSelect>
+                                                    </div>
+                                                    <div class="space-y-1">
+                                                        <label class="text-xs text-muted">{{ t('budgets.target.label') }}</label>
+                                                        <BudgetSelect v-model="editForm.target_type" class="w-full text-xs">
+                                                            <option :value="null">{{ t('budgets.target.none') }}</option>
+                                                            <option value="spending">{{ t('budgets.target.spending') }}</option>
+                                                            <option value="saving">{{ t('budgets.target.saving') }}</option>
+                                                            <option value="by_date">{{ t('budgets.target.byDate') }}</option>
+                                                        </BudgetSelect>
+                                                        <div v-if="editForm.target_type" class="flex items-center gap-1 pt-1">
+                                                            <BudgetInput
+                                                                v-model="editForm.target_amount"
+                                                                type="number"
+                                                                step="0.01"
+                                                                min="0.01"
+                                                                variant="mono"
+                                                                class="flex-1"
+                                                                :placeholder="t('budgets.target.amount')"
+                                                            />
+                                                            <BudgetInput
+                                                                v-if="editForm.target_type === 'by_date'"
+                                                                v-model="editForm.target_deadline"
+                                                                type="date"
+                                                                class="w-32"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

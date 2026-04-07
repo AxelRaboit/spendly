@@ -170,7 +170,7 @@ export default {
         carriedOverDeficitTooltip: 'Overspent last month: {amount} over budget in this category.',
         available: 'Available',
         target: {
-            label: 'Target',
+            label: 'Target:',
             none: 'None',
             spending: 'Spending limit',
             saving: 'Monthly saving',
@@ -257,8 +257,8 @@ export default {
         editRow: {
             labelPlaceholder: 'Label',
             notePlaceholder: 'Note (optional)…',
-            confirm: 'Confirm (Enter)',
-            cancel: 'Cancel (Escape)',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
             section: 'Section:',
         },
         notes: {

@@ -170,7 +170,7 @@ export default {
         carriedOverDeficitTooltip: 'Dépassement du mois précédent : {amount} de plus que prévu sur cette catégorie.',
         available: 'Disponible',
         target: {
-            label: 'Objectif',
+            label: 'Objectif :',
             none: 'Aucun',
             spending: 'Limite de dépense',
             saving: 'Épargne mensuelle',
@@ -257,8 +257,8 @@ export default {
         editRow: {
             labelPlaceholder: 'Libellé',
             notePlaceholder: 'Note (optionnelle)…',
-            confirm: 'Valider (Entrée)',
-            cancel: 'Annuler (Échap)',
+            confirm: 'Valider',
+            cancel: 'Annuler',
             section: 'Section :',
         },
         notes: {
