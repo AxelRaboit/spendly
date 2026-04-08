@@ -2,7 +2,7 @@
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import AppModal from '@/components/ui/AppModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Maximize2, X } from 'lucide-vue-next';
@@ -181,7 +181,6 @@ const donutOptions = computed(() => ({
                         <div v-for="wallet in wallets" :key="wallet.id" class="p-4 space-y-2">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
-                                    <Star v-if="wallet.is_favorite" class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="currentColor" />
                                     <span class="font-medium text-primary">{{ wallet.name }}</span>
                                 </div>
                                 <Link
@@ -222,10 +221,7 @@ const donutOptions = computed(() => ({
                             <tbody class="divide-y divide-base/40">
                                 <tr v-for="wallet in wallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
                                     <td class="px-4 py-3">
-                                        <div class="flex items-center gap-2">
-                                            <Star v-if="wallet.is_favorite" class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="currentColor" />
-                                            <span class="font-medium text-primary">{{ wallet.name }}</span>
-                                        </div>
+                                        <span class="font-medium text-primary">{{ wallet.name }}</span>
                                     </td>
                                     <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(wallet.income) }}</td>
                                     <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(wallet.expenses) }}</td>

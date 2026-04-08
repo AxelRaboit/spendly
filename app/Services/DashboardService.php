@@ -81,14 +81,6 @@ class DashboardService
         return $user->accessibleWallets()->count();
     }
 
-    public function favoriteWallets(User $user): Collection
-    {
-        return $user->accessibleWallets()
-            ->where('is_favorite', true)
-            ->orderBy('name')
-            ->get();
-    }
-
     public function recentTransactions(User $user, int $limit = 5): Collection
     {
         return $this->accessibleExpenses($user)

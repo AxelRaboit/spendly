@@ -76,14 +76,6 @@ class WalletController extends Controller
         return redirect()->route('wallets.index')->with('success', __('flash.wallet.updated'));
     }
 
-    public function toggleFavorite(Wallet $wallet): RedirectResponse
-    {
-        $this->authorize(PolicyAction::Update->value, $wallet);
-        $this->walletService->toggleFavorite($wallet);
-
-        return back();
-    }
-
     public function toggleDashboard(Wallet $wallet): RedirectResponse
     {
         $this->authorize(PolicyAction::Update->value, $wallet);

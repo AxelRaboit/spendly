@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
-#[Fillable(['user_id', 'name', 'start_balance', 'mode', 'is_favorite', 'show_on_dashboard', 'position', 'is_demo'])]
+#[Fillable(['user_id', 'name', 'start_balance', 'mode', 'show_on_dashboard', 'position', 'is_demo'])]
 class Wallet extends Model
 {
     use Filterable;
@@ -26,7 +26,6 @@ class Wallet extends Model
     {
         return [
             'mode' => WalletMode::class,
-            'is_favorite' => 'boolean',
             'show_on_dashboard' => 'boolean',
             'is_demo' => 'boolean',
         ];

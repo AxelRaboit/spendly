@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2 } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
@@ -41,10 +41,6 @@ function openMembers(wallet) {
 }
 
 const canCreateWallet = computed(() => canCreate('wallet', props.wallets.length));
-
-function toggleFavorite(wallet) {
-    router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
-}
 
 function walletLink(wallet) {
     return wallet.mode === WalletMode.Simple
@@ -162,15 +158,6 @@ function quickCreate(name) {
 
                     <div class="flex items-center justify-between pt-3">
                         <div class="flex items-center gap-2">
-                            <AppTooltip :text="wallet.is_favorite ? t('wallets.removeFavorite') : t('wallets.addFavorite')">
-                                <button
-                                    class="transition-colors"
-                                    :class="wallet.is_favorite ? 'text-amber-400 hover:text-amber-300' : 'text-muted hover:text-amber-400'"
-                                    v-on:click="toggleFavorite(wallet)"
-                                >
-                                    <Star class="w-4 h-4" :fill="wallet.is_favorite ? 'currentColor' : 'none'" />
-                                </button>
-                            </AppTooltip>
                             <AppTooltip :text="wallet.show_on_dashboard ? t('wallets.removeFromDashboard') : t('wallets.pinToDashboard')">
                                 <button
                                     class="transition-colors"

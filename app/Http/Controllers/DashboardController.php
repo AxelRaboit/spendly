@@ -26,7 +26,6 @@ class DashboardController extends Controller
                 ? round(($spentThisMonth - $lastMonthSpent) / $lastMonthSpent * 100, 1)
                 : null,
             'totalWallets' => $dashboardService->totalWallets($user),
-            'favoriteWallets' => $dashboardService->favoriteWallets($user),
             'recentTransactions' => $dashboardService->recentTransactions($user),
             'sparkline' => $dashboardService->sparkline($user),
             'topCategories' => $dashboardService->topCategories($user),
