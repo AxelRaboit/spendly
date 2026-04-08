@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\WalletMode;
 use App\Enums\WalletRole;
 use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
-#[Fillable(['user_id', 'name', 'start_balance', 'is_favorite', 'show_on_dashboard', 'position', 'is_demo'])]
+#[Fillable(['user_id', 'name', 'start_balance', 'mode', 'is_favorite', 'show_on_dashboard', 'position', 'is_demo'])]
 class Wallet extends Model
 {
     use Filterable;
@@ -24,10 +25,19 @@ class Wallet extends Model
     protected function casts(): array
     {
         return [
+            'mode' => WalletMode::class,
             'is_favorite' => 'boolean',
             'show_on_dashboard' => 'boolean',
             'is_demo' => 'boolean',
         ];
+    }
+
+    public function isSimpleMode(): bool
+    {
+        /** @var WalletMode $mode */
+        $mode = $this->mode;
+
+        return $mode === WalletMode::Simple;
     }
 
     public function user(): BelongsTo

@@ -13,6 +13,8 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useTour } from '@/composables/ui/useTour';
 import { useI18n } from 'vue-i18n';
+import { WalletMode } from '@/enums/WalletMode';
+import { WalletRole } from '@/enums/WalletRole';
 
 const props = defineProps({
     wallets: Array,
@@ -42,6 +44,12 @@ const canCreateWallet = computed(() => canCreate('wallet', props.wallets.length)
 
 function toggleFavorite(wallet) {
     router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
+}
+
+function walletLink(wallet) {
+    return wallet.mode === WalletMode.Simple
+        ? `/wallets/${wallet.id}/simple`
+        : `/wallets/${wallet.id}/budget`;
 }
 
 function toggleDashboard(wallet) {
@@ -120,7 +128,7 @@ function quickCreate(name) {
                     <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
                         <div class="flex items-center gap-2">
                             <Link
-                                :href="`/wallets/${wallet.id}/budget`"
+                                :href="walletLink(wallet)"
                                 class="text-base font-semibold text-primary hover:text-indigo-400 transition-colors"
                                 v-on:dragstart.prevent
                             >
@@ -143,11 +151,11 @@ function quickCreate(name) {
                             <p class="text-xs text-muted mt-0.5">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
                         </div>
                         <Link
-                            :href="`/wallets/${wallet.id}/budget`"
+                            :href="walletLink(wallet)"
                             class="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
                             v-on:dragstart.prevent
                         >
-                            {{ t('wallets.viewBudget') }}
+                            {{ wallet.mode === WalletMode.Simple ? t('simple.viewTransactions') : t('wallets.viewBudget') }}
                             <ChevronRight class="w-3 h-3" />
                         </Link>
                     </div>
@@ -179,12 +187,12 @@ function quickCreate(name) {
                                     <Users class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
-                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.edit')">
+                            <AppTooltip v-if="wallet.user_role === WalletRole.Owner && !wallet.is_demo" :text="t('common.edit')">
                                 <Link :href="`/wallets/${wallet.id}/edit`" class="text-muted hover:text-indigo-400 transition-colors" v-on:dragstart.prevent>
                                     <Pencil class="w-4 h-4" />
                                 </Link>
                             </AppTooltip>
-                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.delete')">
+                            <AppTooltip v-if="wallet.user_role === WalletRole.Owner && !wallet.is_demo" :text="t('common.delete')">
                                 <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(`/wallets/${wallet.id}`)">
                                     <Trash2 class="w-4 h-4" />
                                 </button>
@@ -228,7 +236,7 @@ function quickCreate(name) {
             :key="membersWallet.id"
             :show="showMembers"
             :wallet-id="membersWallet.id"
-            :is-owner="membersWallet.user_role === 'owner'"
+            :is-owner="membersWallet.user_role === WalletRole.Owner"
             :is-pro="isPro"
             v-on:close="showMembers = false"
         />

@@ -6,9 +6,11 @@ namespace App\Services;
 
 use App\Enums\PlanType;
 use App\Enums\UserRole;
+use App\Mail\AccountDeletedMail;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserService
 {
@@ -29,6 +31,10 @@ class UserService
 
     public function deleteUser(User $user): void
     {
+        Mail::to($user->email)
+            ->locale($user->locale ?? config('app.locale'))
+            ->send(new AccountDeletedMail($user->name));
+
         $user->delete();
     }
 

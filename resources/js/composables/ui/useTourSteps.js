@@ -6,6 +6,7 @@
  */
 
 import { useI18n } from 'vue-i18n';
+import { BudgetSection } from '@/enums/BudgetSection';
 import { nextTick } from 'vue';
 
 export function useTourSteps() {
@@ -361,7 +362,7 @@ export function useTourSteps() {
                 },
             },
             // 16-19. Remaining sections (continue scrolling down)
-            ...['savings', 'bills', 'expenses', 'debt']
+            ...[BudgetSection.Savings, BudgetSection.Bills, BudgetSection.Expenses, BudgetSection.Debt]
                 .filter((s) => !!getVisibleEl(`[data-tour-section="${s}"]`))
                 .map((s) => ({
                     element: getVisibleEl(`[data-tour-section="${s}"]`),

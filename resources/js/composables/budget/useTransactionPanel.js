@@ -2,6 +2,8 @@ import { computed, nextTick, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useSectionCategoryFilter } from './useSectionCategoryFilter.js';
 import { useAutoCategory } from '@/composables/forms/useAutoCategory.js';
+import { TransactionType } from '@/enums/TransactionType';
+import { BudgetSection } from '@/enums/BudgetSection';
 
 /**
  * Transaction Panel - Add/Edit Transactions
@@ -42,7 +44,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
     const editingTx = ref(null);
     const txForm = useForm({
         wallet_id: walletId.value,
-        type: 'expense',
+        type: TransactionType.Expense,
         category_id: null,
         amount: '',
         description: '',
@@ -70,7 +72,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
     function openTxPanel(
         categoryId = null,
         label = '',
-        type = 'expense',
+        type = TransactionType.Expense,
         { cancelEditing, cancelAdding } = {},
         section = null
     ) {
@@ -120,7 +122,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         const method = editingTx.value ? 'put' : 'post';
         txForm[method](url, {
             onSuccess: () => {
-                const color = txForm.type === 'income' ? 'emerald' : 'rose';
+                const color = txForm.type === TransactionType.Income ? 'emerald' : 'rose';
                 closeTxPanel();
                 if (categoryId) {
                     for (const items of Object.values(sections.value)) {

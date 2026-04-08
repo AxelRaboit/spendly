@@ -38,7 +38,11 @@ class WalletController extends Controller
         try {
             $wallet = $this->walletService->create($request->user(), $request->validated());
 
-            return redirect()->route('wallets.budget.show', $wallet)->with('success', __('flash.wallet.created'));
+            $route = $wallet->isSimpleMode()
+                ? redirect()->route('wallets.simple.show', $wallet)
+                : redirect()->route('wallets.budget.show', $wallet);
+
+            return $route->with('success', __('flash.wallet.created'));
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
@@ -50,7 +54,9 @@ class WalletController extends Controller
     {
         $this->authorize(PolicyAction::View->value, $wallet);
 
-        return redirect()->route('wallets.budget.show', $wallet);
+        return $wallet->isSimpleMode()
+            ? redirect()->route('wallets.simple.show', $wallet)
+            : redirect()->route('wallets.budget.show', $wallet);
     }
 
     public function edit(Wallet $wallet): Response

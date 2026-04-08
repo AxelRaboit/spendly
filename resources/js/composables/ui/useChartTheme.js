@@ -1,10 +1,11 @@
 import { computed } from 'vue';
 import { useTheme } from '@/composables/ui/useTheme';
+import { Theme } from '@/enums/Theme';
 
 export function useChartTheme() {
     const { theme } = useTheme();
 
-    const isDark = computed(() => theme.value === 'dark');
+    const isDark = computed(() => theme.value === Theme.Dark);
 
     const textColor = computed(() => (isDark.value ? '#9ca3af' : '#6b7280'));
     const gridColor = computed(() => (isDark.value ? '#374151' : '#e5e7eb'));

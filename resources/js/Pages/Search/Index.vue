@@ -17,6 +17,7 @@ import { useTransactionDelete } from '@/composables/search/useTransactionDelete'
 import { useSectionMeta } from '@/composables/budget/useSectionMeta';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
 
 const { t } = useI18n();
 const { fmt } = useCurrency();
@@ -58,7 +59,7 @@ const editPanel = ref(false);
 const editingTx = ref(null);
 const editForm = useForm({
     wallet_id: null,
-    type: 'expense',
+    type: TransactionType.Expense,
     category_id: null,
     amount: '',
     description: '',
@@ -189,9 +190,9 @@ function submitEdit() {
                                     </template>
                                     <span
                                         class="text-sm font-semibold font-mono"
-                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                        :class="tx.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'"
                                     >
-                                        {{ tx.type === 'income' ? '+' : '-' }}{{ fmt(tx.amount) }}
+                                        {{ tx.type === TransactionType.Income ? '+' : '-' }}{{ fmt(tx.amount) }}
                                     </span>
                                 </div>
                             </div>
@@ -253,9 +254,9 @@ function submitEdit() {
                                     </td>
                                     <td
                                         class="px-4 py-3 text-right text-sm font-semibold font-mono"
-                                        :class="tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                        :class="tx.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'"
                                     >
-                                        {{ tx.type === 'income' ? '+' : '-' }}{{ fmt(tx.amount) }}
+                                        {{ tx.type === TransactionType.Income ? '+' : '-' }}{{ fmt(tx.amount) }}
                                     </td>
                                     <td class="px-2 py-3">
                                         <div v-if="!tx.split_id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

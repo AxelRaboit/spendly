@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { TransactionType } from '@/enums/TransactionType';
 
 export function useScheduledForm(wallets, categories) {
     const editingScheduled = ref(null);
@@ -8,7 +9,7 @@ export function useScheduledForm(wallets, categories) {
     const scheduledForm = useForm({
         description: '',
         amount: '',
-        type: 'expense',
+        type: TransactionType.Expense,
         scheduled_date: new Date().toISOString().slice(0, 10),
         wallet_id: '',
         category_id: '',
@@ -17,7 +18,7 @@ export function useScheduledForm(wallets, categories) {
     function openCreateScheduled() {
         editingScheduled.value = null;
         scheduledForm.reset();
-        scheduledForm.type = 'expense';
+        scheduledForm.type = TransactionType.Expense;
         scheduledForm.scheduled_date = new Date().toISOString().slice(0, 10);
         if (wallets.length) scheduledForm.wallet_id = wallets[0].id;
         if (categories.length) scheduledForm.category_id = categories[0].id;

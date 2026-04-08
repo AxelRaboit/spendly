@@ -4,6 +4,7 @@ import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { ref, computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useWalletMembers, ROLE_COLORS } from '@/composables/wallet/useWalletMembers';
+import { WalletRole } from '@/enums/WalletRole';
 
 const { t } = useI18n();
 
@@ -30,11 +31,11 @@ const {
     removeMember,
 } = useWalletMembers(toRef(props, 'walletId'), toRef(props, 'show'));
 
-const inviteRows = ref([{ email: '', role: 'editor' }]);
+const inviteRows = ref([{ email: '', role: WalletRole.Editor }]);
 const inviting = ref(false);
 
 function addInviteRow() {
-    inviteRows.value.push({ email: '', role: 'editor' });
+    inviteRows.value.push({ email: '', role: WalletRole.Editor });
 }
 
 function removeInviteRow(index) {
@@ -48,7 +49,7 @@ async function invite() {
     for (const row of rows) {
         await submitInvite(row.email.trim(), row.role);
     }
-    inviteRows.value = [{ email: '', role: 'editor' }];
+    inviteRows.value = [{ email: '', role: WalletRole.Editor }];
     inviting.value = false;
 }
 
@@ -101,14 +102,14 @@ function cancelConfirm() {
                         <p class="text-xs text-muted truncate">{{ member.user?.email }}</p>
                     </div>
 
-                    <template v-if="isOwner && member.role !== 'owner'">
+                    <template v-if="isOwner && member.role !== WalletRole.Owner">
                         <select
                             :value="member.role"
                             class="bg-surface text-primary rounded px-2 py-1 border border-base text-xs focus:border-indigo-500 focus:outline-none"
                             v-on:change="updateRole(member, $event.target.value)"
                         >
-                            <option value="editor">{{ t('sharing.editor') }}</option>
-                            <option value="viewer">{{ t('sharing.viewer') }}</option>
+                            <option :value="WalletRole.Editor">{{ t('sharing.editor') }}</option>
+                            <option :value="WalletRole.Viewer">{{ t('sharing.viewer') }}</option>
                         </select>
                         <AppTooltip :text="t('sharing.transferOwnership')">
                             <button class="text-muted hover:text-amber-400 transition-colors" v-on:click="requestTransfer(member)">

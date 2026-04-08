@@ -6,6 +6,7 @@ import FormHint from '@/components/form/FormHint.vue';
 import SelectInput from '@/components/form/SelectInput.vue';
 import { Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
 import { useImportUpload } from '@/composables/import/useImportUpload';
 import { useImportRows } from '@/composables/import/useImportRows';
 
@@ -160,7 +161,7 @@ function uploadAndPreview() {
                                         <select
                                             v-model="row.type"
                                             class="bg-transparent focus:bg-surface-2 rounded px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 cursor-pointer"
-                                            :class="row.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                            :class="row.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'"
                                         >
                                             <option value="expense">expense</option>
                                             <option value="income">income</option>

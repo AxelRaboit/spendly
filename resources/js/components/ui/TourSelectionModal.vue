@@ -3,6 +3,7 @@ import AppModal from '@/components/ui/AppModal.vue';
 import { useI18n } from 'vue-i18n';
 import { useTour } from '@/composables/ui/useTour';
 import { useTheme } from '@/composables/ui/useTheme';
+import { Theme } from '@/enums/Theme';
 import { Wallet, Sun } from 'lucide-vue-next';
 import { computed } from 'vue';
 
@@ -16,10 +17,10 @@ const { t } = useI18n();
 const { startTour } = useTour();
 const { theme, setTheme } = useTheme();
 
-const isDark = computed(() => theme.value === 'dark');
+const isDark = computed(() => theme.value === Theme.Dark);
 
 function enableLightMode() {
-    setTheme('light');
+    setTheme(Theme.Light);
 }
 
 const guides = [

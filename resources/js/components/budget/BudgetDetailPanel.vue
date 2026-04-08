@@ -5,6 +5,7 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
 
 const { t } = useI18n();
 const { fmt } = useCurrency();
@@ -98,9 +99,9 @@ const previewUrl = ref(null);
                                 </div>
                                 <span
                                     class="font-mono text-sm font-medium"
-                                    :class="tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                    :class="tx.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'"
                                 >
-                                    {{ fmt(tx.type === 'income' ? tx.amount : -tx.amount, true) }}
+                                    {{ fmt(tx.type === TransactionType.Income ? tx.amount : -tx.amount, true) }}
                                 </span>
                             </div>
                         </div>

@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { TransactionType } from '@/enums/TransactionType';
 
 export function useRecurringForm(wallets, categories) {
     const editingItem = ref(null);
@@ -8,7 +9,7 @@ export function useRecurringForm(wallets, categories) {
     const form = useForm({
         description: '',
         amount: '',
-        type: 'expense',
+        type: TransactionType.Expense,
         day_of_month: 1,
         wallet_id: '',
         category_id: '',
@@ -18,7 +19,7 @@ export function useRecurringForm(wallets, categories) {
     function openCreate() {
         editingItem.value = null;
         form.reset();
-        form.type = 'expense';
+        form.type = TransactionType.Expense;
         form.active = true;
         form.day_of_month = 1;
         if (wallets.length) form.wallet_id = wallets[0].id;

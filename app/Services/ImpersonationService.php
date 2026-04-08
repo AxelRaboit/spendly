@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\HttpStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ class ImpersonationService
     {
         $adminId = $this->request->session()->pull('impersonator_id');
 
-        abort_if($adminId === null, 403, 'Not currently impersonating.');
+        abort_if($adminId === null, HttpStatus::Forbidden->value, 'Not currently impersonating.');
 
         $admin = User::findOrFail($adminId);
         Auth::login($admin);

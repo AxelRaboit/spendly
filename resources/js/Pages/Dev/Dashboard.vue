@@ -7,6 +7,7 @@ import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { LogIn, Mail, Shield, Trash2, UserRound, Wallet } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
+import { PlanType } from '@/enums/PlanType';
 import { computed, ref } from 'vue';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -357,7 +358,7 @@ const submitInvitation = () => {
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm hidden md:table-cell">
-                                    <AppBadge :variant="user.plan.toLowerCase() === 'pro' ? 'amber' : 'default'">
+                                    <AppBadge :variant="user.plan.toLowerCase() === PlanType.Pro ? 'amber' : 'default'">
                                         {{ t('plan.' + user.plan.toLowerCase() + '.name') }}
                                     </AppBadge>
                                 </td>

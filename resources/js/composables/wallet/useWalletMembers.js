@@ -1,10 +1,11 @@
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { WalletRole } from '@/enums/WalletRole';
 
 export const ROLE_COLORS = {
-    owner: 'text-amber-600 dark:text-amber-400 bg-amber-500/15',
-    editor: 'text-sky-600 dark:text-sky-400 bg-sky-500/15',
-    viewer: 'text-muted bg-surface-3',
+    [WalletRole.Owner]: 'text-amber-600 dark:text-amber-400 bg-amber-500/15',
+    [WalletRole.Editor]: 'text-sky-600 dark:text-sky-400 bg-sky-500/15',
+    [WalletRole.Viewer]: 'text-muted bg-surface-3',
 };
 
 export function useWalletMembers(walletId, show) {

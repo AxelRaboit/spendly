@@ -37,6 +37,9 @@ import { useTour } from '@/composables/ui/useTour';
 import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
+import { BudgetSection } from '@/enums/BudgetSection';
+import { BudgetTargetType } from '@/enums/BudgetTargetType';
 
 // ─── i18n / currency ─────────────────────────────────────────────────────────
 const { t } = useI18n();
@@ -254,12 +257,12 @@ const savingsCategories = computed(() => {
 
 function targetTooltip(item) {
     const amount = fmt(item.target_amount);
-    if (item.target_type === 'spending') {
+    if (item.target_type === BudgetTargetType.Spending) {
         return item.actual_amount <= (item.target_amount ?? 0)
             ? t('budgets.target.onTrack', { amount })
             : t('budgets.target.overBudget', { amount });
     }
-    if (item.target_type === 'by_date') {
+    if (item.target_type === BudgetTargetType.ByDate) {
         return t('budgets.target.byDateInfo', { amount, date: item.target_deadline ?? '' });
     }
     return t('budgets.target.savingOnTrack', { amount });
@@ -278,7 +281,7 @@ function addTxFromDetailPanel() {
     if (!txDetailItem.value) return;
     const { category_id, label, type } = txDetailItem.value;
     closeTxDetail();
-    openTxPanelFromRow(category_id, label, type === 'income' ? 'income' : 'expense', type);
+    openTxPanelFromRow(category_id, label, type === BudgetSection.Income ? TransactionType.Income : TransactionType.Expense, type);
 }
 function startEditingItem(item) {
     editingOriginalCategoryId.value = item.category_id;
@@ -358,7 +361,7 @@ function onGlobalKeydown(e) {
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
     if (e.key === 'ArrowLeft')  router.visit(`/wallets/${props.wallet.id}/budget?month=${props.prevMonth}`);
     if (e.key === 'ArrowRight') router.visit(`/wallets/${props.wallet.id}/budget?month=${props.nextMonth}`);
-    if (e.key === 'n' || e.key === 'N') startAddingItem(Object.keys(props.sections)[0] ?? 'income');
+    if (e.key === 'n' || e.key === 'N') startAddingItem(Object.keys(props.sections)[0] ?? BudgetSection.Income);
 }
 
 function openUnbudgetedPanel(type) {
@@ -371,7 +374,7 @@ onMounted(async () => {
 
     initForPage('budgets.show', {
         expandKpi: () => { showMoreKpi.value = true; },
-        openTxPanel: () => { openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding }); },
+        openTxPanel: () => { openTxPanel(null, '', TransactionType.Expense, { cancelEditing, cancelAdding }); },
         closeTxPanel: () => { closeTxPanel(); },
         openAddLine: () => { startAddingItem('income'); },
         cancelAdding: () => { cancelAdding(); },
@@ -422,7 +425,7 @@ onUnmounted(() => {
                 <button
                     class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                     data-tour="new-transaction"
-                    v-on:click="openTxPanel(null, '', 'expense', { cancelEditing, cancelAdding })"
+                    v-on:click="openTxPanel(null, '', TransactionType.Expense, { cancelEditing, cancelAdding })"
                 >
                     <Plus class="w-4 h-4 shrink-0" />
                     {{ t('budgets.newTransaction') }}
@@ -945,7 +948,7 @@ onUnmounted(() => {
                                                 <option value="by_date">{{ t('budgets.target.byDate') }}</option>
                                             </BudgetSelect>
                                         </div>
-                                        <div v-if="editForm.target_type" class="grid gap-2" :class="editForm.target_type === 'by_date' ? 'grid-cols-2' : ''">
+                                        <div v-if="editForm.target_type" class="grid gap-2" :class="editForm.target_type === BudgetTargetType.ByDate ? 'grid-cols-2' : ''">
                                             <BudgetInput
                                                 v-model="editForm.target_amount"
                                                 type="number"
@@ -955,7 +958,7 @@ onUnmounted(() => {
                                                 :placeholder="t('budgets.target.amount')"
                                             />
                                             <BudgetInput
-                                                v-if="editForm.target_type === 'by_date'"
+                                                v-if="editForm.target_type === BudgetTargetType.ByDate"
                                                 v-model="editForm.target_deadline"
                                                 type="date"
                                             />
@@ -1007,18 +1010,18 @@ onUnmounted(() => {
                                             >
                                                 <span
                                                     class="inline-flex items-center text-xs border rounded px-1 py-0.5 cursor-help"
-                                                    :class="item.target_type === 'spending'
+                                                    :class="item.target_type === BudgetTargetType.Spending
                                                         ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
                                                         : 'text-amber-400 border-amber-500/30'"
                                                 >
-                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
+                                                    {{ item.target_type === BudgetTargetType.ByDate ? t('budgets.target.byDate') : fmt(item.target_amount) }}
                                                 </span>
                                             </AppTooltip>
                                         </div>
                                         <div v-if="!item.category?.is_system" :data-tour-actions="item.id" class="flex items-center gap-2 shrink-0">
                                             <button
                                                 class="text-muted hover:text-indigo-400 transition-colors"
-                                                v-on:click="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)"
+                                                v-on:click="openTxPanelFromRow(item.category_id, item.label, type === BudgetSection.Income ? TransactionType.Income : TransactionType.Expense, type)"
                                             >
                                                 <Plus class="w-4 h-4" />
                                             </button>
@@ -1185,7 +1188,7 @@ onUnmounted(() => {
                                         :placeholder="t('budgets.target.amount')"
                                     />
                                     <BudgetInput
-                                        v-if="addForm.target_type === 'by_date'"
+                                        v-if="addForm.target_type === BudgetTargetType.ByDate"
                                         v-model="addForm.target_deadline"
                                         type="date"
                                     />
@@ -1215,11 +1218,11 @@ onUnmounted(() => {
                             <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">{{ t('budgets.table.unbudgeted') }}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-                            <button v-if="unbudgeted.income > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel('income')">
+                            <button v-if="unbudgeted.income > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel(TransactionType.Income)">
                                 <p class="text-muted">{{ t('budgets.sections.income') }}</p>
                                 <p class="font-semibold text-emerald-400 cursor-pointer">+{{ fmt(unbudgeted.income) }}</p>
                             </button>
-                            <button v-if="unbudgeted.expenses > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel('expense')">
+                            <button v-if="unbudgeted.expenses > 0" type="button" class="text-left hover:opacity-70 transition-opacity" v-on:click="openUnbudgetedPanel(TransactionType.Expense)">
                                 <p class="text-muted">{{ t('budgets.kpi.expenses') }}</p>
                                 <p class="font-semibold text-rose-400 cursor-pointer">-{{ fmt(unbudgeted.expenses) }}</p>
                             </button>
@@ -1396,7 +1399,7 @@ onUnmounted(() => {
                                                                 :placeholder="t('budgets.target.amount')"
                                                             />
                                                             <BudgetInput
-                                                                v-if="editForm.target_type === 'by_date'"
+                                                                v-if="editForm.target_type === BudgetTargetType.ByDate"
                                                                 v-model="editForm.target_deadline"
                                                                 type="date"
                                                                 class="w-32"
@@ -1449,11 +1452,11 @@ onUnmounted(() => {
                                             >
                                                 <span
                                                     class="inline-flex items-center gap-0.5 text-xs border rounded px-1 py-0.5 leading-none cursor-help"
-                                                    :class="item.target_type === 'spending'
+                                                    :class="item.target_type === BudgetTargetType.Spending
                                                         ? (item.actual_amount <= (item.target_amount ?? 0) ? 'text-emerald-400 border-emerald-500/30' : 'text-rose-400 border-rose-500/30')
                                                         : 'text-amber-400 border-amber-500/30'"
                                                 >
-                                                    {{ item.target_type === 'by_date' ? t('budgets.target.byDate') : fmt(item.target_amount) }}
+                                                    {{ item.target_type === BudgetTargetType.ByDate ? t('budgets.target.byDate') : fmt(item.target_amount) }}
                                                 </span>
                                             </AppTooltip>
                                         </div>
@@ -1508,7 +1511,7 @@ onUnmounted(() => {
                                     <td class="px-3 py-2.5">
                                         <div v-if="!item.category?.is_system" :data-tour-actions="item.id" class="flex items-center gap-1.5 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                                             <AppTooltip :text="t('budgets.actions.addTx')">
-                                                <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === 'income' ? 'income' : 'expense', type)">
+                                                <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click.stop="openTxPanelFromRow(item.category_id, item.label, type === BudgetSection.Income ? TransactionType.Income : TransactionType.Expense, type)">
                                                     <Plus class="w-3.5 h-3.5" />
                                                 </button>
                                             </AppTooltip>
@@ -1638,7 +1641,7 @@ onUnmounted(() => {
                                             :placeholder="t('budgets.target.amount')"
                                         />
                                         <BudgetInput
-                                            v-if="addForm.target_type === 'by_date'"
+                                            v-if="addForm.target_type === BudgetTargetType.ByDate"
                                             v-model="addForm.target_deadline"
                                             type="date"
                                         />
@@ -1667,9 +1670,9 @@ onUnmounted(() => {
                             </td>
                             <td class="px-4 py-2.5 text-right font-mono text-xs text-muted">—</td>
                             <td class="px-4 py-2.5 text-right font-mono text-xs space-x-2">
-                                <button v-if="unbudgeted.income > 0" type="button" class="text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel('income')">+{{ fmt(unbudgeted.income) }}</button>
+                                <button v-if="unbudgeted.income > 0" type="button" class="text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel(TransactionType.Income)">+{{ fmt(unbudgeted.income) }}</button>
                                 <span v-if="unbudgeted.income > 0 && unbudgeted.expenses > 0" class="text-muted">/</span>
-                                <button v-if="unbudgeted.expenses > 0" type="button" class="text-rose-400 hover:text-rose-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel('expense')">-{{ fmt(unbudgeted.expenses) }}</button>
+                                <button v-if="unbudgeted.expenses > 0" type="button" class="text-rose-400 hover:text-rose-300 transition-colors cursor-pointer" v-on:click="openUnbudgetedPanel(TransactionType.Expense)">-{{ fmt(unbudgeted.expenses) }}</button>
                             </td>
                             <td colspan="2" />
                         </tr>

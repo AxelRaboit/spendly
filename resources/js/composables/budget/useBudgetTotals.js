@@ -1,4 +1,8 @@
 import { computed } from 'vue';
+import { BudgetSection } from '@/enums/BudgetSection';
+
+const ALL_SECTIONS = Object.values(BudgetSection);
+const EXPENSE_SECTIONS = [BudgetSection.Savings, BudgetSection.Bills, BudgetSection.Expenses, BudgetSection.Debt];
 
 /**
  * Budget Totals & KPIs Calculation
@@ -38,23 +42,19 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
         return result;
     });
 
-    const totalCarriedOver = computed(() => {
-        const keys = ['income', 'savings', 'bills', 'expenses', 'debt'];
-        return keys.reduce((s, k) => s + (totals.value[k]?.carried ?? 0), 0);
-    });
+    const totalCarriedOver = computed(() => ALL_SECTIONS.reduce((s, k) => s + (totals.value[k]?.carried ?? 0), 0));
 
     const totalIncome = computed(() => ({
-        planned: totals.value.income?.planned ?? 0,
-        actual: (totals.value.income?.actual ?? 0) + (unbudgeted?.value?.income ?? 0),
+        planned: totals.value[BudgetSection.Income]?.planned ?? 0,
+        actual: (totals.value[BudgetSection.Income]?.actual ?? 0) + (unbudgeted?.value?.income ?? 0),
     }));
 
-    const totalExpenses = computed(() => {
-        const keys = ['savings', 'bills', 'expenses', 'debt'];
-        return {
-            planned: keys.reduce((s, k) => s + (totals.value[k]?.planned ?? 0), 0),
-            actual: keys.reduce((s, k) => s + (totals.value[k]?.actual ?? 0), 0) + (unbudgeted?.value?.expenses ?? 0),
-        };
-    });
+    const totalExpenses = computed(() => ({
+        planned: EXPENSE_SECTIONS.reduce((s, k) => s + (totals.value[k]?.planned ?? 0), 0),
+        actual:
+            EXPENSE_SECTIONS.reduce((s, k) => s + (totals.value[k]?.actual ?? 0), 0) +
+            (unbudgeted?.value?.expenses ?? 0),
+    }));
 
     const cashFlow = computed(() => ({
         planned: totalIncome.value.planned - totalExpenses.value.planned,
@@ -68,7 +68,7 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
 
     const savingsRate = computed(() => {
         const income = totalIncome.value.actual;
-        const savings = totals.value.savings?.actual ?? 0;
+        const savings = totals.value[BudgetSection.Savings]?.actual ?? 0;
         if (!income) return null;
         return Math.round((savings / income) * 100);
     });
