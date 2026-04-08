@@ -34,7 +34,7 @@ export function useQuickCategoryCreate(walletId, localCategories) {
         }
         // Auto-fill label from category name if category was selected
         if (form.category_id && !form.label) {
-            const cat = localCategories.value.find(c => c.id === Number(form.category_id));
+            const cat = localCategories.value.find((c) => c.id === Number(form.category_id));
             if (cat) form.label = cat.name;
         }
     }
@@ -50,9 +50,7 @@ export function useQuickCategoryCreate(walletId, localCategories) {
         try {
             const { data: cat } = await window.axios.post('/categories/quick', { name, wallet_id: walletId });
             // Add to local list and sort
-            localCategories.value = [...localCategories.value, cat].sort((a, b) =>
-                a.name.localeCompare(b.name)
-            );
+            localCategories.value = [...localCategories.value, cat].sort((a, b) => a.name.localeCompare(b.name));
             // Update the form that triggered the creation
             if (categoryTargetForm.value) {
                 categoryTargetForm.value.category_id = cat.id;
