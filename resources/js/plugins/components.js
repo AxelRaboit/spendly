@@ -1,3 +1,7 @@
+import '@/plugins/chartjs';
+import BarChart from '@/components/charts/BarChart.vue';
+import LineChart from '@/components/charts/LineChart.vue';
+import DoughnutChart from '@/components/charts/DoughnutChart.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
@@ -37,5 +41,8 @@ export default {
         app.component('FormSection', FormSection);
         app.component('SearchInput', SearchInput);
         app.component('StatCard', StatCard);
+        app.component('BarChart', BarChart);
+        app.component('LineChart', LineChart);
+        app.component('DoughnutChart', DoughnutChart);
     },
 };

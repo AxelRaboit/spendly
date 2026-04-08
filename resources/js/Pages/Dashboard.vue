@@ -4,11 +4,9 @@ import PlanSelectionModal from '@/components/ui/PlanSelectionModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ChevronRight, Star, Map, TrendingUp, TrendingDown, AlertTriangle, Target, Repeat, CalendarDays, LayoutDashboard } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
-import '@/plugins/chartjs';
 import { computed, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { useTour } from '@/composables/ui/useTour';
-import { Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtDate } from '@/composables/core/useFmtDate';
@@ -247,7 +245,7 @@ const topCategoryMax = computed(() => {
                 <div class="lg:col-span-2 bg-surface rounded-2xl p-6 shadow-lg">
                     <AppTooltip :text="t('dashboard.chartTip')"><h3 class="text-sm font-medium text-secondary mb-1 cursor-help">{{ t('dashboard.chart') }}</h3></AppTooltip>
                     <div class="h-32">
-                        <Line :data="sparklineData" :options="sparklineOptions" />
+                        <LineChart :data="sparklineData" :options="sparklineOptions" />
                     </div>
                 </div>
 

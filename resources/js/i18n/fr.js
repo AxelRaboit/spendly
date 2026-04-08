@@ -507,12 +507,15 @@ export default {
         contentPlaceholder: 'Commencez à écrire…',
         saved: 'Enregistré',
         saving: 'Enregistrement…',
-        confirmDelete: 'Supprimer cette note ?',
+        confirmDelete: 'Supprimer cette note et son contenu ?',
         empty: "Aucune note pour l'instant.",
         emptyHint: 'Créez votre première note pour garder vos idées organisées.',
+        selectHint: 'Sélectionnez une note ou créez-en une nouvelle.',
         lastEdited: 'Modifié le {date}',
         searchPlaceholder: 'Rechercher dans les notes…',
         tagPlaceholder: 'Ajouter un tag…',
+        edit: 'Éditer',
+        preview: 'Aperçu',
     },
 
     recurring: {

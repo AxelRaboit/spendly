@@ -1,11 +1,15 @@
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue';
+import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { Trash2, Check, Loader2, X } from 'lucide-vue-next';
+import { Trash2, Check, Loader2, X, Eye, Pencil } from 'lucide-vue-next';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
+
+marked.setOptions({ breaks: true, gfm: true });
 
 const { t } = useI18n();
 
@@ -71,6 +75,11 @@ function onTagKeydown(event) {
 
 onBeforeUnmount(() => clearTimeout(saveTimer));
 
+const isPreview = ref(false);
+const renderedContent = computed(() =>
+    DOMPurify.sanitize(marked.parse(content.value || ''))
+);
+
 const showConfirmDelete = ref(false);
 
 function deleteNote() {
@@ -98,6 +107,25 @@ function deleteNote() {
                         <Check v-else class="w-3.5 h-3.5 text-emerald-500" />
                         {{ saveStatus === 'saving' ? t('notepad.saving') : t('notepad.saved') }}
                     </span>
+
+                    <div class="flex items-center rounded-lg border border-base overflow-hidden text-xs">
+                        <button
+                            class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
+                            :class="!isPreview ? 'bg-indigo-600/20 text-indigo-400' : 'text-muted hover:text-primary'"
+                            v-on:click="isPreview = false"
+                        >
+                            <Pencil class="w-3.5 h-3.5" />
+                            {{ t('notepad.edit') }}
+                        </button>
+                        <button
+                            class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
+                            :class="isPreview ? 'bg-indigo-600/20 text-indigo-400' : 'text-muted hover:text-primary'"
+                            v-on:click="isPreview = true"
+                        >
+                            <Eye class="w-3.5 h-3.5" />
+                            {{ t('notepad.preview') }}
+                        </button>
+                    </div>
 
                     <button
                         class="text-muted hover:text-rose-400 transition-colors"
@@ -144,9 +172,15 @@ function deleteNote() {
                     <div class="border-t border-base/40" />
 
                     <textarea
+                        v-if="!isPreview"
                         v-model="content"
                         :placeholder="t('notepad.contentPlaceholder')"
                         class="w-full min-h-[60vh] bg-transparent text-sm text-primary placeholder:text-muted/40 border-none outline-none focus:outline-none resize-none leading-7"
+                    />
+                    <div
+                        v-else
+                        class="prose prose-sm dark:prose-invert max-w-none min-h-[60vh] text-primary"
+                        v-html="renderedContent"
                     />
                 </div>
             </div>

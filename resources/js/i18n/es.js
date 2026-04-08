@@ -501,10 +501,15 @@ export default {
         contentPlaceholder: 'Empieza a escribir…',
         saved: 'Guardado',
         saving: 'Guardando…',
-        confirmDelete: '¿Eliminar esta nota?',
+        confirmDelete: '¿Eliminar esta nota y su contenido?',
         empty: 'Aún no hay notas.',
         emptyHint: 'Crea tu primera nota para mantener tus ideas organizadas.',
+        selectHint: 'Selecciona una nota o crea una nueva.',
         lastEdited: 'Editado el {date}',
+        searchPlaceholder: 'Buscar en notas…',
+        tagPlaceholder: 'Añadir etiqueta…',
+        edit: 'Editar',
+        preview: 'Vista previa',
     },
 
     recurring: {

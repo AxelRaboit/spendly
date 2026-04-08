@@ -12,6 +12,7 @@ use App\Models\BudgetPreset;
 use App\Models\CategorizationRule;
 use App\Models\Category;
 use App\Models\Goal;
+use App\Models\Note;
 use App\Models\RecurringTransaction;
 use App\Models\ScheduledTransaction;
 use App\Models\Transaction;
@@ -380,6 +381,7 @@ class SeedDemoUser extends Command
         $this->createScheduledTransactions($user, $wallet, $categories);
         $this->createBudgetPresets($user);
         $this->createCategorizationRules($user, $categories);
+        $this->createNotes($user);
 
         $this->newLine();
         $this->info('✅ Demo user created successfully.');
@@ -602,6 +604,112 @@ class SeedDemoUser extends Command
         foreach ($presets as $position => $preset) {
             BudgetPreset::create(['user_id' => $user->id, 'position' => $position, ...$preset]);
         }
+    }
+
+    private function createNotes(User $user): void
+    {
+        // ── Root level ────────────────────────────────────────────────────────
+        $admin = Note::create([
+            'user_id' => $user->id,
+            'parent_id' => null,
+            'title' => 'Administratif',
+            'content' => 'Tous mes documents et infos administratives importantes.',
+            'tags' => ['admin'],
+            'position' => 0,
+        ]);
+
+        $finances = Note::create([
+            'user_id' => $user->id,
+            'parent_id' => null,
+            'title' => 'Finances',
+            'content' => "# Finances personnelles\n\nCe dossier regroupe mes objectifs, budgets et suivi financier.",
+            'tags' => ['finances'],
+            'position' => 1,
+        ]);
+
+        $projets = Note::create([
+            'user_id' => $user->id,
+            'parent_id' => null,
+            'title' => 'Projets',
+            'content' => null,
+            'tags' => [],
+            'position' => 2,
+        ]);
+
+        // ── Administratif ─────────────────────────────────────────────────────
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $admin->id,
+            'title' => 'Infos compte bancaire',
+            'content' => "IBAN : FR76 3000 4028 3798 7654 3210 943\nBIC : BNPAFRPP\nRIB disponible sur l'espace client.",
+            'tags' => ['banque'],
+            'position' => 0,
+        ]);
+
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $admin->id,
+            'title' => 'Contacts assurances',
+            'content' => "Assurance habitation : 01 23 45 67 89 — contrat n°AH-2024-88321\nAssurance auto : 01 98 76 54 32 — contrat n°AA-2023-44712\nMutuelle : 0 800 123 456 (numéro gratuit)",
+            'tags' => ['assurance', 'contacts'],
+            'position' => 1,
+        ]);
+
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $admin->id,
+            'title' => 'Prêt auto — récap',
+            'content' => "Montant initial : 12 000 €\nDurée : 48 mois (démarrage mars 2023)\nMensualité : 248 €\nFin du prêt : mars 2027\nCapital restant dû (estimation) : ~3 300 €",
+            'tags' => ['crédit', 'voiture'],
+            'position' => 2,
+        ]);
+
+        // ── Finances ──────────────────────────────────────────────────────────
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $finances->id,
+            'title' => 'Objectifs financiers 2025',
+            'content' => "# Objectifs financiers 2025\n\n## Court terme (< 6 mois)\n- [ ] Atteindre **5 000 €** sur le fonds d'urgence\n- [ ] Rembourser la dette carte de crédit (~800 €)\n\n## Moyen terme (6–12 mois)\n- [ ] Constituer **3 500 €** pour le voyage au Japon\n- [ ] Augmenter l'épargne mensuelle à **500 €/mois**\n\n## Long terme (> 1 an)\n- [ ] Apport immobilier : objectif **20 000 €** d'ici 3 ans\n- [ ] Investir en ETF monde via le PEA\n\n> Revoir ces objectifs chaque trimestre.",
+            'tags' => ['objectifs', 'épargne'],
+            'position' => 0,
+        ]);
+
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $finances->id,
+            'title' => 'Suivi freelance',
+            'content' => "# Missions freelance — Suivi\n\n## Clients actifs\n\n### Agence Bloom\n- **Tarif** : 450 €/jour\n- **Rythme** : ~2 jours/mois\n- Contact : sophie.martin@bloom-agency.fr\n\n### Studio Digital\n- **Tarif** : 400 €/jour\n- **Rythme** : ~1 jour/mois\n- Contact : via plateforme Malt\n\n## Facturation\n- Délai de paiement : **30 jours** fin de mois\n- Numérotation : `YYYY-MM-XX`\n- Seuil de TVA non atteint — facturation en HT\n\n## Rappel déclarations\n- Urssaf : déclaration **mensuelle**, avant le 31\n- Impôts : cocher le prélèvement libératoire",
+            'tags' => ['freelance'],
+            'position' => 1,
+        ]);
+
+        // ── Projets > Voyage Japon ────────────────────────────────────────────
+        $japon = Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $projets->id,
+            'title' => 'Voyage Japon',
+            'content' => "Projet de voyage au Japon prévu dans ~10 mois. Objectif d'épargne : 3 500 €.",
+            'tags' => ['vacances', 'japon'],
+            'position' => 0,
+        ]);
+
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $japon->id,
+            'title' => 'Budget prévisionnel',
+            'content' => "# Voyage Japon — Budget\n\n| Poste | Estimation |\n|---|---|\n| Vols A/R | 850 € |\n| Hébergement (14 nuits) | 1 100 € |\n| Nourriture | 600 € |\n| Transport sur place | 350 € |\n| Activités & visites | 400 € |\n| Shopping & souvenirs | 200 € |\n| **Total** | **3 500 €** |\n\n## Astuces budget\n- Privilégier les **konbini** pour les repas du midi\n- Utiliser la carte **IC Card** pour les transports\n- Réserver les *ryokans* populaires 6 mois à l'avance",
+            'tags' => ['budget'],
+            'position' => 0,
+        ]);
+
+        Note::create([
+            'user_id' => $user->id,
+            'parent_id' => $japon->id,
+            'title' => 'Check-list départ',
+            'content' => "## À faire avant le départ\n- [ ] Réserver les vols (idéalement 3 mois avant)\n- [ ] Obtenir le JR Pass\n- [ ] Souscrire une assurance voyage\n- [ ] Prévenir la banque pour les paiements à l'étranger\n- [ ] Télécharger les applis : Google Maps offline, Google Translate, Suica",
+            'tags' => ['checklist'],
+            'position' => 1,
+        ]);
     }
 
     private function createCategorizationRules(User $user, array $categories): void

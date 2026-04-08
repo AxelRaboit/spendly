@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
-#[Fillable(['user_id', 'title', 'content', 'tags', 'position'])]
+#[Fillable(['user_id', 'parent_id', 'title', 'content', 'tags', 'position'])]
 class Note extends Model
 {
     use HasFactory;
@@ -28,5 +29,15 @@ class Note extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Note::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Note::class, 'parent_id')->orderBy('position');
     }
 }

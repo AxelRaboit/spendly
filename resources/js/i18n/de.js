@@ -502,10 +502,15 @@ export default {
         contentPlaceholder: 'Schreiben Sie hier…',
         saved: 'Gespeichert',
         saving: 'Speichern…',
-        confirmDelete: 'Diese Notiz löschen?',
+        confirmDelete: 'Diese Notiz und ihren Inhalt löschen?',
         empty: 'Noch keine Notizen.',
         emptyHint: 'Erstellen Sie Ihre erste Notiz, um Ihre Ideen zu organisieren.',
+        selectHint: 'Wählen Sie eine Notiz aus oder erstellen Sie eine neue.',
         lastEdited: 'Bearbeitet am {date}',
+        searchPlaceholder: 'In Notizen suchen…',
+        tagPlaceholder: 'Tag hinzufügen…',
+        edit: 'Bearbeiten',
+        preview: 'Vorschau',
     },
 
     recurring: {

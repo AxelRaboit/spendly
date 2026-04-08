@@ -507,10 +507,15 @@ export default {
         contentPlaceholder: 'Start writing…',
         saved: 'Saved',
         saving: 'Saving…',
-        confirmDelete: 'Delete this note?',
+        confirmDelete: 'Delete this note and its content?',
         empty: 'No notes yet.',
         emptyHint: 'Create your first note to keep your ideas organised.',
+        selectHint: 'Select a note or create a new one.',
         lastEdited: 'Edited on {date}',
+        searchPlaceholder: 'Search in notes…',
+        tagPlaceholder: 'Add a tag…',
+        edit: 'Edit',
+        preview: 'Preview',
     },
 
     recurring: {

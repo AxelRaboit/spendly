@@ -1,59 +1,133 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
+import { ref, computed, watch, onBeforeUnmount, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Search, Plus, Trash2, Clock, GripVertical } from 'lucide-vue-next';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+import axios from 'axios';
+import { Check, Loader2, Plus, Trash2, Eye, Pencil, X, FilePlus, Search } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
-import AppButton from '@/components/ui/AppButton.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
-import { useDragDrop } from '@/composables/ui/useDragDrop';
-import { useNoteFilters } from '@/composables/notes/useNoteFilters';
-import { ref, watch } from 'vue';
+import NoteTree from '@/components/notes/NoteTree.vue';
+import { useNoteTree } from '@/composables/notes/useNoteTree';
 
-const { t, d } = useI18n();
+marked.setOptions({ breaks: true, gfm: true });
+
+const { t } = useI18n();
 
 const props = defineProps({
-    notes:   { type: Array,  default: () => [] },
-    allTags: { type: Array,  default: () => [] },
-    filters: { type: Object, default: () => ({}) },
+    notes: { type: Array, default: () => [] },
 });
 
-const { filters: form, search, filterByTag, reset, hasFilters } = useNoteFilters(props.filters);
+const {
+    tree,
+    selectedNoteId,
+    loadedNote,
+    loadingNote,
+    selectNote,
+    createNote,
+    deleteNote,
+    updateNoteTitle,
+    searchQuery,
+    draggingId,
+    dragOverId,
+    onDragStart,
+    onDragEnd,
+    onDragOver,
+    onDrop,
+} = useNoteTree(props.notes);
 
-const localNotes = ref([...props.notes]);
+// Provide drag state to all NoteTreeItem instances (avoids prop drilling in recursive tree)
+provide('draggingId',  draggingId);
+provide('dragOverId',  dragOverId);
+provide('onDragStart', onDragStart);
+provide('onDragEnd',   onDragEnd);
+provide('onDragOver',  onDragOver);
+provide('onDrop',      onDrop);
 
-watch(() => props.notes, (notes) => {
-    localNotes.value = [...notes];
+// ── Editor state ──────────────────────────────────────────────────────────────
+const editTitle   = ref('');
+const editContent = ref('');
+const editTags    = ref([]);
+const tagInput    = ref('');
+const isPreview   = ref(false);
+const saveStatus  = ref('idle'); // idle | saving | saved
+let saveTimer     = null;
+
+watch(loadedNote, (note) => {
+    if (!note) return;
+    editTitle.value   = note.title   ?? '';
+    editContent.value = note.content ?? '';
+    editTags.value    = [...(note.tags ?? [])];
+    isPreview.value   = false;
+    saveStatus.value  = 'idle';
 });
 
-const { draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop } = useDragDrop(
-    localNotes,
-    (ids) => router.patch(route('notes.reorder'), { ids }, { preserveScroll: true }),
+watch([editTitle, editContent, editTags], () => {
+    if (!loadedNote.value) return;
+    scheduleSave();
+}, { deep: true });
+
+function scheduleSave() {
+    saveStatus.value = 'saving';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => save(), 1500);
+}
+
+async function save() {
+    if (!loadedNote.value) return;
+    clearTimeout(saveTimer);
+    saveStatus.value = 'saving';
+    try {
+        await axios.put(route('notes.update', loadedNote.value.id), {
+            title:   editTitle.value,
+            content: editContent.value,
+            tags:    editTags.value,
+        });
+        saveStatus.value = 'saved';
+        updateNoteTitle(loadedNote.value.id, editTitle.value);
+    } catch {
+        saveStatus.value = 'idle';
+    }
+}
+
+onBeforeUnmount(() => clearTimeout(saveTimer));
+
+const renderedContent = computed(() =>
+    DOMPurify.sanitize(marked.parse(editContent.value || ''))
 );
 
-const confirmNote = ref(null);
-
-function createNote() {
-    router.post(route('notes.store'));
+// ── Tags ──────────────────────────────────────────────────────────────────────
+function addTag() {
+    const tag = tagInput.value.trim().toLowerCase().replace(/\s+/g, '-');
+    if (!tag || editTags.value.includes(tag)) {
+        tagInput.value = '';
+        return;
+    }
+    editTags.value.push(tag);
+    tagInput.value = '';
 }
 
-function openNote(note) {
-    router.visit(route('notes.show', note.id));
+function removeTag(tag) {
+    editTags.value = editTags.value.filter((existingTag) => existingTag !== tag);
 }
 
-function deleteNote() {
-    router.delete(route('notes.destroy', confirmNote.value.id), {
-        onFinish: () => { confirmNote.value = null; },
-    });
+function onTagKeydown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        addTag();
+    } else if (event.key === 'Backspace' && tagInput.value === '' && editTags.value.length > 0) {
+        editTags.value.pop();
+    }
 }
 
-function formatDate(date) {
-    return d(new Date(date), { day: '2-digit', month: 'short', year: 'numeric' });
-}
+// ── Delete ────────────────────────────────────────────────────────────────────
+const confirmDeleteId = ref(null);
 
-function excerpt(content) {
-    if (!content) return '';
-    return content.length > 120 ? content.slice(0, 120) + '…' : content;
+async function confirmDelete() {
+    const id = confirmDeleteId.value;
+    confirmDeleteId.value = null;
+    await deleteNote(id);
 }
 </script>
 
@@ -63,119 +137,186 @@ function excerpt(content) {
             <AppPageHeader :title="t('notepad.title')" />
         </template>
 
-        <div class="space-y-4">
-            <!-- Filters -->
-            <div class="bg-surface border border-base/60 rounded-xl p-4 space-y-3">
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <input
-                            v-model="form.q"
-                            type="text"
-                            :placeholder="t('notepad.searchPlaceholder')"
-                            class="w-full pl-9 pr-3 py-2 bg-surface-2 text-primary border border-base rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
-                            v-on:input="search"
-                        >
-                        <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted pointer-events-none" />
-                    </div>
-                    <AppButton v-if="hasFilters()" variant="secondary" size="sm" v-on:click="reset">
-                        {{ t('search.reset') }}
-                    </AppButton>
-                </div>
-
-                <div v-if="allTags.length > 0" class="flex flex-wrap gap-1.5">
+        <!-- Two-panel layout: editor left + tree sidebar right -->
+        <div class="flex h-[calc(100vh-10rem)] rounded-xl overflow-hidden border border-base/60 bg-surface">
+            <!-- ── Editor (left) ───────────────────────────────────────────── -->
+            <div class="flex-1 flex flex-col min-w-0">
+                <!-- Empty state -->
+                <div
+                    v-if="!selectedNoteId"
+                    class="flex-1 flex flex-col items-center justify-center gap-4 text-center p-8"
+                >
+                    <FilePlus class="w-10 h-10 text-muted/30" />
+                    <p class="text-sm text-muted">{{ t('notepad.selectHint') }}</p>
                     <button
-                        v-for="tag in allTags"
-                        :key="tag"
-                        class="px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors border"
-                        :class="form.tag === tag
-                            ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/50'
-                            : 'bg-surface-2 text-muted border-base hover:border-indigo-500/40 hover:text-primary'"
-                        v-on:click="filterByTag(tag)"
+                        class="text-xs px-3 py-1.5 rounded-lg bg-indigo-600/15 text-indigo-400 hover:bg-indigo-600/25 transition-colors"
+                        v-on:click="createNote(null)"
                     >
-                        #{{ tag }}
+                        {{ t('notepad.newNote') }}
                     </button>
                 </div>
-            </div>
 
-            <!-- Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div
-                    v-for="note in localNotes"
-                    :key="note.id"
-                    class="group relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 transition-all cursor-grab active:cursor-grabbing select-none flex flex-col"
-                    :class="{
-                        'opacity-50 scale-95': draggingId === note.id,
-                        'ring-2 ring-indigo-500/50 border-indigo-500/50': dragOverId === note.id,
-                    }"
-                    draggable="true"
-                    v-on:dragstart="onDragStart($event, note)"
-                    v-on:dragend="onDragEnd"
-                    v-on:dragover="onDragOver($event, note)"
-                    v-on:drop="onDrop($event, note)"
-                    v-on:click="openNote(note)"
-                >
-                    <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
-                    <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
+                <!-- Loading -->
+                <div v-else-if="loadingNote" class="flex-1 flex items-center justify-center">
+                    <Loader2 class="w-5 h-5 text-muted animate-spin" />
+                </div>
 
-                    <div class="absolute top-3 right-3 text-muted/40 pointer-events-none">
-                        <GripVertical class="w-4 h-4" />
-                    </div>
+                <!-- Note editor -->
+                <template v-else-if="loadedNote">
+                    <!-- Editor toolbar -->
+                    <div class="flex items-center justify-between gap-3 border-b border-base/60 px-6 py-2.5 shrink-0">
+                        <span
+                            class="text-xs text-muted flex items-center gap-1.5 transition-opacity"
+                            :class="saveStatus === 'idle' ? 'opacity-0' : 'opacity-100'"
+                        >
+                            <Loader2 v-if="saveStatus === 'saving'" class="w-3.5 h-3.5 animate-spin" />
+                            <Check v-else class="w-3.5 h-3.5 text-emerald-500" />
+                            {{ saveStatus === 'saving' ? t('notepad.saving') : t('notepad.saved') }}
+                        </span>
 
-                    <div class="flex flex-col gap-2 pb-3 border-b border-base/40 flex-1">
-                        <p class="text-base font-semibold text-primary pr-6 truncate">
-                            {{ note.title || t('notepad.untitled') }}
-                        </p>
-                        <p class="text-xs text-secondary leading-relaxed line-clamp-3 whitespace-pre-wrap">
-                            {{ excerpt(note.content) }}
-                        </p>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-3">
-                        <div class="flex flex-wrap gap-1">
-                            <span
-                                v-for="tag in note.tags"
-                                :key="tag"
-                                class="text-xs px-1.5 py-0.5 rounded-full bg-indigo-600/15 text-indigo-400"
-                                v-on:click.stop="filterByTag(tag)"
-                                v-on:dragstart.prevent
-                            >
-                                #{{ tag }}
-                            </span>
-                        </div>
-
-                        <div class="flex items-center gap-3 shrink-0">
-                            <div class="flex items-center gap-1 text-xs text-muted">
-                                <Clock class="w-3 h-3 shrink-0" />
-                                <span>{{ formatDate(note.updated_at) }}</span>
+                        <div class="flex items-center gap-2">
+                            <!-- Edit / Preview toggle -->
+                            <div class="flex items-center rounded-lg border border-base overflow-hidden text-xs">
+                                <button
+                                    class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
+                                    :class="!isPreview ? 'bg-indigo-600/20 text-indigo-400' : 'text-muted hover:text-primary'"
+                                    v-on:click="isPreview = false"
+                                >
+                                    <Pencil class="w-3.5 h-3.5" />
+                                    {{ t('notepad.edit') }}
+                                </button>
+                                <button
+                                    class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
+                                    :class="isPreview ? 'bg-indigo-600/20 text-indigo-400' : 'text-muted hover:text-primary'"
+                                    v-on:click="isPreview = true"
+                                >
+                                    <Eye class="w-3.5 h-3.5" />
+                                    {{ t('notepad.preview') }}
+                                </button>
                             </div>
+
+                            <!-- Delete -->
                             <button
                                 class="text-muted hover:text-rose-400 transition-colors"
-                                v-on:click.stop="confirmNote = note"
-                                v-on:dragstart.prevent
+                                v-on:click="confirmDeleteId = loadedNote.id"
                             >
                                 <Trash2 class="w-4 h-4" />
                             </button>
                         </div>
                     </div>
+
+                    <!-- Content area -->
+                    <div class="flex-1 overflow-auto px-8 py-6 space-y-4">
+                        <!-- Title -->
+                        <input
+                            v-model="editTitle"
+                            type="text"
+                            :placeholder="t('notepad.titlePlaceholder')"
+                            class="w-full bg-transparent text-2xl font-semibold text-primary placeholder:text-muted/40 border-none outline-none focus:outline-none"
+                        >
+
+                        <!-- Tags -->
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <span
+                                v-for="tag in editTags"
+                                :key="tag"
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-indigo-600/15 text-indigo-400"
+                            >
+                                #{{ tag }}
+                                <button class="hover:text-rose-400 transition-colors" v-on:click="removeTag(tag)">
+                                    <X class="w-3 h-3" />
+                                </button>
+                            </span>
+                            <input
+                                v-model="tagInput"
+                                type="text"
+                                :placeholder="t('notepad.tagPlaceholder')"
+                                class="bg-transparent text-xs text-muted placeholder:text-muted/40 border-none outline-none focus:outline-none min-w-[100px]"
+                                v-on:keydown="onTagKeydown"
+                                v-on:blur="addTag"
+                            >
+                        </div>
+
+                        <div class="border-t border-base/40" />
+
+                        <!-- Editor / Preview -->
+                        <textarea
+                            v-if="!isPreview"
+                            v-model="editContent"
+                            :placeholder="t('notepad.contentPlaceholder')"
+                            class="w-full min-h-[50vh] bg-transparent text-sm text-primary placeholder:text-muted/40 border-none outline-none focus:outline-none resize-none leading-7"
+                        />
+                        <div
+                            v-else
+                            class="prose prose-sm dark:prose-invert max-w-none min-h-[50vh] text-primary"
+                            v-html="renderedContent"
+                        />
+                    </div>
+                </template>
+            </div>
+
+            <!-- ── Sidebar (right) ─────────────────────────────────────────── -->
+            <div class="w-60 border-l border-base/60 flex flex-col shrink-0 bg-surface">
+                <!-- Sidebar header -->
+                <div class="flex items-center justify-between px-3 py-2.5 border-b border-base/60 shrink-0">
+                    <span class="text-xs font-medium text-muted uppercase tracking-wide">
+                        {{ t('notepad.title') }}
+                    </span>
+                    <button
+                        class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-indigo-600/15 hover:text-indigo-400 text-muted transition-colors"
+                        :title="t('notepad.newNote')"
+                        v-on:click="createNote(null)"
+                    >
+                        <Plus class="w-3.5 h-3.5" />
+                    </button>
                 </div>
 
-                <button
-                    class="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-base/60 rounded-xl p-5 min-h-[120px] hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all group"
-                    v-on:click="createNote"
-                >
-                    <Plus class="w-6 h-6 text-muted group-hover:text-indigo-400 transition-colors" />
-                    <span class="text-sm text-muted group-hover:text-indigo-400 transition-colors">{{ t('notepad.newNote') }}</span>
-                </button>
+                <!-- Search -->
+                <div class="px-2 py-2 border-b border-base/60 shrink-0">
+                    <div class="relative">
+                        <Search class="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted/50 pointer-events-none" />
+                        <input
+                            v-model="searchQuery"
+                            type="text"
+                            :placeholder="t('notepad.searchPlaceholder')"
+                            class="w-full pl-6 pr-2 py-1.5 bg-surface-2 text-xs text-primary placeholder:text-muted/40 border border-base/60 rounded-md focus:border-indigo-500/60 focus:outline-none transition-colors"
+                        >
+                    </div>
+                </div>
+
+                <!-- Tree -->
+                <div class="flex-1 overflow-auto px-1 flex flex-col">
+                    <NoteTree
+                        :nodes="tree"
+                        :selected-id="selectedNoteId"
+                        v-on:select="selectNote($event)"
+                        v-on:create="createNote($event)"
+                        v-on:delete="confirmDeleteId = $event"
+                    />
+
+                    <!-- Empty state -->
+                    <div v-if="tree.length === 0" class="px-3 py-6 text-center">
+                        <p class="text-xs text-muted/60">{{ t('notepad.empty') }}</p>
+                    </div>
+
+                    <!-- Root drop zone: empty space below the tree moves note to root -->
+                    <div
+                        class="flex-1 min-h-[2rem] rounded-md transition-colors"
+                        :class="draggingId && dragOverId === null ? 'bg-indigo-600/10 ring-1 ring-inset ring-indigo-500/40' : ''"
+                        v-on:dragover.prevent="onDragOver(null)"
+                        v-on:drop.prevent="onDrop(null)"
+                    />
+                </div>
             </div>
         </div>
 
         <ConfirmModal
-            :show="confirmNote !== null"
+            :show="confirmDeleteId !== null"
             :message="t('notepad.confirmDelete')"
             :confirm-label="t('common.delete')"
             confirm-variant="danger"
-            v-on:confirm="deleteNote"
-            v-on:cancel="confirmNote = null"
+            v-on:confirm="confirmDelete"
+            v-on:cancel="confirmDeleteId = null"
         />
     </AuthenticatedLayout>
 </template>

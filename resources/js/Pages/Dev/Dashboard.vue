@@ -4,9 +4,7 @@ import AppBadge from '@/components/ui/AppBadge.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
-import '@/plugins/chartjs';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Bar, Doughnut, Line } from 'vue-chartjs';
 import { LogIn, Mail, Shield, Trash2, UserRound, Wallet } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
@@ -238,13 +236,13 @@ const submitInvitation = () => {
                     <div class="bg-surface border border-base/60 rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.usersPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
-                            <Line :data="usersLineData" :options="lineOptions" />
+                            <LineChart :data="usersLineData" :options="lineOptions" />
                         </div>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.transactionsPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
-                            <Bar :data="transactionsBarData" :options="barOptions" />
+                            <BarChart :data="transactionsBarData" :options="barOptions" />
                         </div>
                     </div>
                 </div>
@@ -254,13 +252,13 @@ const submitInvitation = () => {
                     <div class="bg-surface border border-base/60 rounded-xl p-5 lg:col-span-2">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.cumulativeGrowth') }}</h3>
                         <div class="h-48 sm:h-64">
-                            <Line :data="cumulativeLineData" :options="lineOptions" />
+                            <LineChart :data="cumulativeLineData" :options="lineOptions" />
                         </div>
                     </div>
                     <div class="bg-surface border border-base/60 rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.localeDistribution') }}</h3>
                         <div class="h-48 sm:h-64">
-                            <Doughnut :data="localeDonutData" :options="donutOptions" />
+                            <DoughnutChart :data="localeDonutData" :options="donutOptions" />
                         </div>
                     </div>
                 </div>
@@ -270,14 +268,14 @@ const submitInvitation = () => {
                     <div class="bg-surface border border-base/60 rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.planDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
-                            <Doughnut :data="planDonutData" :options="donutOptions" />
+                            <DoughnutChart :data="planDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
                     <div class="bg-surface border border-base/60 rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.activityDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
-                            <Doughnut :data="activityDonutData" :options="donutOptions" />
+                            <DoughnutChart :data="activityDonutData" :options="donutOptions" />
                         </div>
                     </div>
 

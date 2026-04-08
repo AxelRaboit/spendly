@@ -2,9 +2,7 @@
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import '@/plugins/chartjs';
 import { computed, ref } from 'vue';
-import { Bar, Doughnut, Line } from 'vue-chartjs';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -221,14 +219,14 @@ const trendLineOptions = computed(() => ({
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.byCategoryTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.byCategory') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
-                        <Doughnut :data="donutData" :options="chartOptions" />
+                        <DoughnutChart :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.evolutionTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.evolution') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
-                        <Bar :data="barData" :options="barOptions" />
+                        <BarChart :data="barData" :options="barOptions" />
                     </div>
                 </div>
             </div>
@@ -237,14 +235,14 @@ const trendLineOptions = computed(() => ({
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.savingsRateTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.savingsRate') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
-                        <Line :data="savingsLineData" :options="savingsLineOptions" />
+                        <LineChart :data="savingsLineData" :options="savingsLineOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface border border-base/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.budgetVsActualTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.budgetVsActual') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
-                        <Bar :data="budgetBarData" :options="barOptions" />
+                        <BarChart :data="budgetBarData" :options="barOptions" />
                     </div>
                 </div>
             </div>
@@ -273,7 +271,7 @@ const trendLineOptions = computed(() => ({
                     </div>
 
                     <div class="h-64 sm:h-80">
-                        <Line :data="trendLineData" :options="trendLineOptions" />
+                        <LineChart :data="trendLineData" :options="trendLineOptions" />
                     </div>
                 </div>
 
