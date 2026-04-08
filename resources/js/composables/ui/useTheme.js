@@ -1,15 +1,16 @@
 import { ref, watch } from 'vue';
+import { Theme } from '@/enums/Theme';
 
 const STORAGE_KEY = 'spendly-theme';
 
 function getInitial() {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'dark' || stored === 'light') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if (stored === Theme.Dark || stored === Theme.Light) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.Dark : Theme.Light;
 }
 
 function apply(t) {
-    document.documentElement.classList.toggle('dark', t === 'dark');
+    document.documentElement.classList.toggle('dark', t === Theme.Dark);
 }
 
 // Singleton state — shared across all composable calls
@@ -23,7 +24,7 @@ export function useTheme() {
     });
 
     function toggle() {
-        theme.value = theme.value === 'dark' ? 'light' : 'dark';
+        theme.value = theme.value === Theme.Dark ? Theme.Light : Theme.Dark;
     }
 
     function setTheme(t) {

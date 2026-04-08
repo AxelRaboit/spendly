@@ -20,6 +20,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecurringTransactionController;
 use App\Http\Controllers\ScheduledTransactionController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SimpleWalletController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\TransactionController;
@@ -132,6 +133,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/wallets/{wallet}/invitations/{invitation}/resend', [WalletInvitationController::class, 'resend'])->name('wallets.invitations.resend')->scopeBindings();
     Route::delete('/wallets/{wallet}/invitations/{invitation}', [WalletInvitationController::class, 'destroy'])->name('wallets.invitations.destroy')->scopeBindings();
     Route::post('/wallet-invitations/{token}/accept', [WalletInvitationController::class, 'accept'])->name('wallet-invitations.accept');
+
+    // Simple wallet routes
+    Route::get('/wallets/{wallet}/simple', [SimpleWalletController::class, 'show'])->name('wallets.simple.show');
+    Route::post('/wallets/{wallet}/simple/transactions', [SimpleWalletController::class, 'store'])->name('wallets.simple.transactions.store');
+    Route::put('/wallets/{wallet}/simple/transactions/{transaction}', [SimpleWalletController::class, 'update'])->name('wallets.simple.transactions.update');
 
     // Budget routes (nested under wallet)
     Route::get('/wallets/{wallet}/budget', [BudgetController::class, 'show'])->name('wallets.budget.show');

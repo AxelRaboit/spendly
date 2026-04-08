@@ -11,6 +11,7 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
 
 const { t } = useI18n();
 const { fmtDayLong: fmtDay } = useFmtDate();
@@ -313,8 +314,8 @@ const topCategoryMax = computed(() => {
                                     <p class="text-xs text-muted truncate">{{ item.wallet?.name }}</p>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold font-mono shrink-0" :class="item.type === 'income' ? 'text-emerald-400' : 'text-rose-400'">
-                                {{ item.type === 'income' ? '+' : '-' }}{{ fmt(item.amount) }}
+                            <span class="text-sm font-semibold font-mono shrink-0" :class="item.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'">
+                                {{ item.type === TransactionType.Income ? '+' : '-' }}{{ fmt(item.amount) }}
                             </span>
                         </div>
                     </div>

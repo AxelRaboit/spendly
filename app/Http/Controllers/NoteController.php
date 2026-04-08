@@ -15,7 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpFoundation\Response as HttpStatus;
+use App\Enums\HttpStatus;
 
 class NoteController extends Controller
 {
@@ -37,7 +37,7 @@ class NoteController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::Forbidden->value);
 
         $parentId = $request->input('parent_id') ? (int) $request->input('parent_id') : null;
         $note = $this->noteService->create($request->user(), $parentId);
@@ -75,7 +75,7 @@ class NoteController extends Controller
 
     public function reorder(ReorderRequest $request): JsonResponse
     {
-        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::Forbidden->value);
 
         $this->noteService->reorder($request->user(), $request->validated()['ids']);
 

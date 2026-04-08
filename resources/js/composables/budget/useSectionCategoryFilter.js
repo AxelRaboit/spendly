@@ -1,4 +1,6 @@
 import { computed } from 'vue';
+import { BudgetSection } from '@/enums/BudgetSection';
+import { TransactionType } from '@/enums/TransactionType';
 
 export function useSectionCategoryFilter(txSection, sections, categories, txForm) {
     const txFilteredCategories = computed(() => {
@@ -11,10 +13,10 @@ export function useSectionCategoryFilter(txSection, sections, categories, txForm
 
     function onTxSectionChange(newSection) {
         txSection.value = newSection;
-        if (newSection === 'income') {
-            txForm.type = 'income';
+        if (newSection === BudgetSection.Income) {
+            txForm.type = TransactionType.Income;
         } else if (newSection !== null) {
-            txForm.type = 'expense';
+            txForm.type = TransactionType.Expense;
         }
         if (newSection && txForm.category_id) {
             const sectionItems = sections.value[newSection] ?? [];

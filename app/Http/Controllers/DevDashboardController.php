@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\HttpStatus;
 use App\Http\Requests\SendAppInvitationRequest;
 use App\Models\User;
 use App\Services\AdminStatsService;
@@ -34,8 +35,8 @@ class DevDashboardController extends Controller
 
     public function impersonate(User $user): RedirectResponse
     {
-        abort_if($user->id === auth()->id(), 403, 'Cannot impersonate yourself.');
-        abort_if($this->impersonationService->isImpersonating(), 403, 'Already impersonating a user.');
+        abort_if($user->id === auth()->id(), HttpStatus::Forbidden->value, 'Cannot impersonate yourself.');
+        abort_if($this->impersonationService->isImpersonating(), HttpStatus::Forbidden->value, 'Already impersonating a user.');
 
         $this->impersonationService->impersonate($user, auth()->user());
 
@@ -51,7 +52,7 @@ class DevDashboardController extends Controller
 
     public function destroyUser(User $user): RedirectResponse
     {
-        abort_if($user->id === auth()->id(), 403, 'Cannot delete your own account.');
+        abort_if($user->id === auth()->id(), HttpStatus::Forbidden->value, 'Cannot delete your own account.');
 
         $this->userService->deleteUser($user);
 

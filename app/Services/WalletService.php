@@ -14,6 +14,7 @@ use App\Models\WalletMember;
 use App\Support\Text;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class WalletService
 {
@@ -40,6 +41,28 @@ class WalletService
             ]));
     }
 
+    /** @return array{ wallet: array<string, mixed>, transactions: EloquentCollection } */
+    public function getSimpleWalletData(Wallet $wallet, User $user): array
+    {
+        $transactions = $wallet->transactions()
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get(['id', 'type', 'amount', 'description', 'date']);
+
+        $incomeSum  = round((float) $transactions->where('type', TransactionType::Income)->sum('amount'), 2);
+        $expenseSum = round((float) $transactions->where('type', TransactionType::Expense)->sum('amount'), 2);
+
+        return [
+            'wallet' => array_merge($wallet->toArray(), [
+                'user_role'       => $wallet->roleFor($user)?->value,
+                'current_balance' => round((float) $wallet->start_balance + $incomeSum - $expenseSum, 2),
+                'income_sum'      => $incomeSum,
+                'expense_sum'     => $expenseSum,
+            ]),
+            'transactions' => $transactions,
+        ];
+    }
+
     public function toggleFavorite(Wallet $wallet): void
     {
         $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
@@ -60,6 +83,7 @@ class WalletService
             'user_id' => $user->id,
             'name' => Text::normalize($data['name']),
             'start_balance' => $data['start_balance'],
+            'mode' => $data['mode'],
         ]);
 
         WalletMember::create([

@@ -1,38 +1,39 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { TransactionType } from '@/enums/TransactionType';
 
 export function useScheduledForm(wallets, categories) {
-    const editingScheduled = ref(null);
+    const editingScheduled  = ref(null);
     const showScheduledForm = ref(false);
 
     const scheduledForm = useForm({
-        description: '',
-        amount: '',
-        type: 'expense',
+        description:    '',
+        amount:         '',
+        type:           TransactionType.Expense,
         scheduled_date: new Date().toISOString().slice(0, 10),
-        wallet_id: '',
-        category_id: '',
+        wallet_id:      '',
+        category_id:    '',
     });
 
     function openCreateScheduled() {
-        editingScheduled.value = null;
+        editingScheduled.value    = null;
         scheduledForm.reset();
-        scheduledForm.type = 'expense';
+        scheduledForm.type           = TransactionType.Expense;
         scheduledForm.scheduled_date = new Date().toISOString().slice(0, 10);
-        if (wallets.length) scheduledForm.wallet_id = wallets[0].id;
+        if (wallets.length) scheduledForm.wallet_id    = wallets[0].id;
         if (categories.length) scheduledForm.category_id = categories[0].id;
         showScheduledForm.value = true;
     }
 
     function openEditScheduled(item) {
-        editingScheduled.value = item;
-        scheduledForm.description = item.description;
-        scheduledForm.amount = item.amount;
-        scheduledForm.type = item.type;
+        editingScheduled.value       = item;
+        scheduledForm.description    = item.description;
+        scheduledForm.amount         = item.amount;
+        scheduledForm.type           = item.type;
         scheduledForm.scheduled_date = item.scheduled_date;
-        scheduledForm.wallet_id = item.wallet_id;
-        scheduledForm.category_id = item.category_id ?? '';
-        showScheduledForm.value = true;
+        scheduledForm.wallet_id      = item.wallet_id;
+        scheduledForm.category_id    = item.category_id ?? '';
+        showScheduledForm.value      = true;
     }
 
     function submitScheduled() {

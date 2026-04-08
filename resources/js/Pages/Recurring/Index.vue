@@ -11,6 +11,7 @@ import { useRecurringForm } from '@/composables/recurring/useRecurringForm';
 import { useScheduledForm } from '@/composables/recurring/useScheduledForm';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useI18n } from 'vue-i18n';
+import { TransactionType } from '@/enums/TransactionType';
 
 const { t } = useI18n();
 const { fmt, symbol } = useCurrency();
@@ -134,7 +135,7 @@ function toggleGroup(id) {
                                 <div class="flex items-start gap-3">
                                     <div
                                         class="mt-0.5 w-2.5 h-2.5 rounded-full shrink-0"
-                                        :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
+                                        :class="item.type === TransactionType.Income ? 'bg-emerald-400' : 'bg-rose-400'"
                                     />
 
                                     <div class="flex-1 min-w-0">
@@ -142,9 +143,9 @@ function toggleGroup(id) {
                                             <span class="font-semibold text-primary truncate">{{ item.description }}</span>
                                             <span
                                                 class="text-base font-mono font-semibold"
-                                                :class="item.type === 'income' ? 'text-emerald-400' : 'text-rose-400'"
+                                                :class="item.type === TransactionType.Income ? 'text-emerald-400' : 'text-rose-400'"
                                             >
-                                                {{ item.type === 'income' ? '+' : '−' }}{{ fmt(item.amount) }}
+                                                {{ item.type === TransactionType.Income ? '+' : '−' }}{{ fmt(item.amount) }}
                                             </span>
                                         </div>
 
@@ -210,7 +211,7 @@ function toggleGroup(id) {
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span
                                     class="w-2 h-2 rounded-full shrink-0"
-                                    :class="item.type === 'income' ? 'bg-emerald-400' : 'bg-rose-400'"
+                                    :class="item.type === TransactionType.Income ? 'bg-emerald-400' : 'bg-rose-400'"
                                 />
                                 <span class="text-sm text-primary font-medium truncate">{{ item.description || '—' }}</span>
                                 <span class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ item.category?.name ?? '—' }}</span>
@@ -221,8 +222,8 @@ function toggleGroup(id) {
                             </div>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
-                            <span class="font-mono font-semibold text-sm" :class="item.type === 'income' ? 'text-emerald-400' : 'text-primary'">
-                                {{ item.type === 'income' ? '+' : '' }}{{ fmt(item.amount) }}
+                            <span class="font-mono font-semibold text-sm" :class="item.type === TransactionType.Income ? 'text-emerald-400' : 'text-primary'">
+                                {{ item.type === TransactionType.Income ? '+' : '' }}{{ fmt(item.amount) }}
                             </span>
                             <div class="flex items-center gap-1">
                                 <AppTooltip :text="t('scheduled.editTip')">

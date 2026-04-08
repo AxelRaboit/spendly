@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { BudgetSection } from '@/enums/BudgetSection';
 import { useI18n } from 'vue-i18n';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useDragDrop } from '@/composables/ui/useDragDrop';
@@ -12,13 +13,13 @@ const props = defineProps({
     presets: { type: Array, default: () => [] },
 });
 
-const SECTION_TYPES = ['income', 'savings', 'bills', 'expenses', 'debt'];
+const SECTION_TYPES = Object.values(BudgetSection);
 const SECTION_STYLES = {
-    income:   { bg: 'bg-emerald-400/10', color: 'text-emerald-400' },
-    savings:  { bg: 'bg-sky-400/10',     color: 'text-sky-400' },
-    bills:    { bg: 'bg-amber-400/10',   color: 'text-amber-400' },
-    expenses: { bg: 'bg-rose-400/10',    color: 'text-rose-400' },
-    debt:     { bg: 'bg-purple-400/10',  color: 'text-purple-400' },
+    [BudgetSection.Income]:   { bg: 'bg-emerald-400/10', color: 'text-emerald-400' },
+    [BudgetSection.Savings]:  { bg: 'bg-sky-400/10',     color: 'text-sky-400' },
+    [BudgetSection.Bills]:    { bg: 'bg-amber-400/10',   color: 'text-amber-400' },
+    [BudgetSection.Expenses]: { bg: 'bg-rose-400/10',    color: 'text-rose-400' },
+    [BudgetSection.Debt]:     { bg: 'bg-purple-400/10',  color: 'text-purple-400' },
 };
 
 const items = ref([...props.presets]);

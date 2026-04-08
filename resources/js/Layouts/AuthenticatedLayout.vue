@@ -6,6 +6,7 @@ import TourSelectionModal from '@/components/ui/TourSelectionModal.vue';
 import UpgradePrompt from '@/components/ui/UpgradePrompt.vue';
 import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
+import { Theme } from '@/enums/Theme';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { Link, router, useForm, usePage } from '@inertiajs/vue3';
@@ -305,19 +306,19 @@ const devNavItem = computed(() => {
                     v-on:click="toggleTheme"
                 >
                     <Sun
-                        v-if="theme === 'dark'"
+                        v-if="theme === Theme.Dark"
                         class="w-5 h-5 text-muted shrink-0"
                     />
                     <Moon
                         v-else
                         class="w-5 h-5 text-muted shrink-0"
                     />
-                    <span v-if="!collapsed">{{ theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode') }}</span>
+                    <span v-if="!collapsed">{{ theme === Theme.Dark ? t('nav.lightMode') : t('nav.darkMode') }}</span>
                     <span
                         v-if="collapsed"
                         class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
-                        {{ theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode') }}
+                        {{ theme === Theme.Dark ? t('nav.lightMode') : t('nav.darkMode') }}
                     </span>
                 </button>
 
@@ -475,14 +476,14 @@ const devNavItem = computed(() => {
                                 v-on:click="toggleTheme"
                             >
                                 <Sun
-                                    v-if="theme === 'dark'"
+                                    v-if="theme === Theme.Dark"
                                     class="w-5 h-5 text-muted shrink-0"
                                 />
                                 <Moon
                                     v-else
                                     class="w-5 h-5 text-muted shrink-0"
                                 />
-                                {{ theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode') }}
+                                {{ theme === Theme.Dark ? t('nav.lightMode') : t('nav.darkMode') }}
                             </button>
                             <Link
                                 :href="route('plan.index')"
