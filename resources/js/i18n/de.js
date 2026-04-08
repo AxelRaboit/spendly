@@ -712,6 +712,7 @@ export default {
             recurringUnlimited: 'Unbegrenzte automatische Transaktionen',
             historyUnlimited: 'Vollständiger Transaktionsverlauf',
             budgetBasic: 'Budgetzeilen erstellen und bearbeiten',
+            notes: 'Notizen (verschlüsseltes Notizbuch)',
             budgetAdvanced: 'Erweiterte Budget-Tools (duplizieren, übernehmen, kopieren)',
             importExport: 'Import & Export (XLSX)',
             splitTransactions: 'Aufgeteilte Transaktionen',

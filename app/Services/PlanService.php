@@ -80,6 +80,11 @@ class PlanService
         return $this->isPro($user);
     }
 
+    public function canNotes(User $user): bool
+    {
+        return $this->isPro($user);
+    }
+
     public function statsMonthLimit(User $user): int
     {
         return $this->isPro($user) ? 6 : self::FREE_STATS_MONTHS;

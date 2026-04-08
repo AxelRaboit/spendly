@@ -53,6 +53,7 @@ class HandleInertiaRequests extends Middleware
                 'recurring' => PlanService::FREE_RECURRING_LIMIT,
                 'transactionHistoryDays' => PlanService::FREE_TRANSACTION_HISTORY_DAYS,
                 'canExportImport' => $user !== null && app(PlanService::class)->canExportImport($user),
+                'canNotes' => $user !== null && app(PlanService::class)->canNotes($user),
                 'proPrice' => PlanService::PRO_PRICE,
             ],
             'pendingInvitations' => $user !== null

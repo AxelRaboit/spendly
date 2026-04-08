@@ -92,6 +92,10 @@ function downgrade() {
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
                             <X class="w-4 h-4 shrink-0 text-muted" />
+                            <span class="text-muted line-through">{{ t('plan.features.notes') }}</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <X class="w-4 h-4 shrink-0 text-muted" />
                             <span class="text-muted line-through">{{ t('plan.features.budgetAdvanced') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
@@ -175,6 +179,10 @@ function downgrade() {
                         <li class="flex items-center gap-2.5 text-sm">
                             <Check class="w-4 h-4 shrink-0 text-emerald-400" />
                             <span class="text-secondary">{{ t('plan.features.statsMonthsPro') }}</span>
+                        </li>
+                        <li class="flex items-center gap-2.5 text-sm">
+                            <Check class="w-4 h-4 shrink-0 text-emerald-400" />
+                            <span class="text-secondary">{{ t('plan.features.notes') }}</span>
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
                             <Check class="w-4 h-4 shrink-0 text-emerald-400" />

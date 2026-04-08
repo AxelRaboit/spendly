@@ -9,18 +9,27 @@ use App\Http\Requests\NoteRequest;
 use App\Http\Requests\ReorderRequest;
 use App\Models\Note;
 use App\Services\NoteService;
+use App\Services\PlanService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as HttpStatus;
 
 class NoteController extends Controller
 {
-    public function __construct(private readonly NoteService $noteService) {}
+    public function __construct(
+        private readonly NoteService $noteService,
+        private readonly PlanService $planService,
+    ) {}
 
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
+        if (! $this->planService->canNotes($request->user())) {
+            return redirect()->route('plan.index')->with('info', __('flash.notes.proRequired'));
+        }
+
         return Inertia::render('Notes/Index', [
             'notes' => $this->noteService->list($request->user()),
         ]);
@@ -28,6 +37,8 @@ class NoteController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
+
         $parentId = $request->input('parent_id') ? (int) $request->input('parent_id') : null;
         $note = $this->noteService->create($request->user(), $parentId);
 
@@ -64,6 +75,8 @@ class NoteController extends Controller
 
     public function reorder(ReorderRequest $request): JsonResponse
     {
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
+
         $this->noteService->reorder($request->user(), $request->validated()['ids']);
 
         return response()->json(['ok' => true]);

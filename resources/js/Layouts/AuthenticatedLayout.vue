@@ -113,6 +113,7 @@ const navItems = [
         route: 'notes.index',
         match: 'notes.*',
         icon: NotebookPen,
+        pro: true,
     },
     {
         key: 'recurring',
@@ -201,7 +202,7 @@ const devNavItem = computed(() => {
             <nav class="flex-1 py-4 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3 overflow-y-auto'">
                 <template v-for="item in navItems" :key="item.key">
                     <span
-                        v-if="item.pro && !canExportImport"
+                        v-if="item.pro && !isPro"
                         class="flex items-center rounded-lg text-sm font-medium text-secondary group relative cursor-not-allowed opacity-50"
                         :class="collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5'"
                     >
@@ -426,7 +427,7 @@ const devNavItem = computed(() => {
                         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
                             <template v-for="item in navItems" :key="item.key">
                                 <span
-                                    v-if="item.pro && !canExportImport"
+                                    v-if="item.pro && !isPro"
                                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-secondary cursor-not-allowed opacity-50"
                                 >
                                     <component
