@@ -805,6 +805,8 @@ export default {
         modal: {
             title: 'Getting started guides',
             subtitle: 'Select a guide to explore the features.',
+            lightModeHint: 'Guides are more visible in light mode. Would you like to enable it?',
+            enableLightMode: 'Switch to light mode',
         },
         guides: {
             wallet: {

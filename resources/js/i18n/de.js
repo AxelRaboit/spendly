@@ -801,6 +801,8 @@ export default {
         modal: {
             title: 'Einführungsanleitungen',
             subtitle: 'Wählen Sie eine Anleitung, um die Funktionen zu erkunden.',
+            lightModeHint: 'Anleitungen sind im hellen Modus besser sichtbar. Möchten Sie ihn aktivieren?',
+            enableLightMode: 'Zum hellen Modus wechseln',
         },
         guides: {
             wallet: {

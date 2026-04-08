@@ -808,6 +808,8 @@ export default {
         modal: {
             title: 'Guides de démarrage',
             subtitle: 'Sélectionnez un guide pour explorer les fonctionnalités.',
+            lightModeHint: "Les guides sont plus visibles en mode clair. Voulez-vous l'activer ?",
+            enableLightMode: 'Passer en mode clair',
         },
         guides: {
             wallet: {

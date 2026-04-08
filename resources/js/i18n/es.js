@@ -799,6 +799,8 @@ export default {
         modal: {
             title: 'Guías de inicio',
             subtitle: 'Seleccione una guía para explorar las funcionalidades.',
+            lightModeHint: '¿Las guías son más visibles en modo claro. ¿Desea activarlo?',
+            enableLightMode: 'Cambiar a modo claro',
         },
         guides: {
             wallet: {
