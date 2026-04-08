@@ -9,62 +9,84 @@ use App\Http\Requests\NoteRequest;
 use App\Http\Requests\ReorderRequest;
 use App\Models\Note;
 use App\Services\NoteService;
+use App\Services\PlanService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as HttpStatus;
 
 class NoteController extends Controller
 {
-    public function __construct(private readonly NoteService $noteService) {}
+    public function __construct(
+        private readonly NoteService $noteService,
+        private readonly PlanService $planService,
+    ) {}
 
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
-        $filters = $request->only(['q', 'tag']);
+        if (! $this->planService->canNotes($request->user())) {
+            return redirect()->route('plan.index')->with('info', __('flash.notes.proRequired'));
+        }
 
         return Inertia::render('Notes/Index', [
-            'notes' => $this->noteService->list($request->user(), $filters),
-            'allTags' => $this->noteService->allTags($request->user()),
-            'filters' => $filters,
+            'notes' => $this->noteService->list($request->user()),
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse
     {
-        $note = $this->noteService->create($request->user());
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
 
-        return redirect()->route('notes.show', $note);
+        $parentId = $request->input('parent_id') ? (int) $request->input('parent_id') : null;
+        $note = $this->noteService->create($request->user(), $parentId);
+
+        return response()->json($note);
     }
 
-    public function show(Note $note): Response
+    public function show(Note $note, Request $request): JsonResponse|RedirectResponse
     {
         $this->authorize(PolicyAction::View->value, $note);
 
-        return Inertia::render('Notes/Show', [
-            'note' => $note,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json($note);
+        }
+
+        return redirect()->route('notes.index');
     }
 
-    public function update(NoteRequest $request, Note $note): RedirectResponse
+    public function update(NoteRequest $request, Note $note): JsonResponse
     {
         $this->authorize(PolicyAction::Update->value, $note);
-        $this->noteService->update($note, $request->validated());
+        $updated = $this->noteService->update($note, $request->validated());
 
-        return back()->with('success', __('flash.note.updated'));
+        return response()->json($updated);
     }
 
-    public function reorder(ReorderRequest $request): RedirectResponse
+    public function move(Request $request, Note $note): JsonResponse
     {
+        $this->authorize(PolicyAction::Update->value, $note);
+        $parentId = $request->input('parent_id') ? (int) $request->input('parent_id') : null;
+        $this->noteService->move($note, $parentId);
+
+        return response()->json(['ok' => true]);
+    }
+
+    public function reorder(ReorderRequest $request): JsonResponse
+    {
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::HTTP_FORBIDDEN);
+
         $this->noteService->reorder($request->user(), $request->validated()['ids']);
 
-        return back();
+        return response()->json(['ok' => true]);
     }
 
-    public function destroy(Note $note): RedirectResponse
+    public function destroy(Note $note): JsonResponse
     {
         $this->authorize(PolicyAction::Delete->value, $note);
         $this->noteService->delete($note);
 
-        return redirect()->route('notes.index')->with('success', __('flash.note.deleted'));
+        return response()->json(['ok' => true]);
     }
 }

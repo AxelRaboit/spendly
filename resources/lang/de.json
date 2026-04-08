@@ -141,6 +141,7 @@
     "flash.import.created_with_errors": ":created Transaktion(en) importiert, :errors übersprungen.",
     "flash.note.updated": "Notiz gespeichert.",
     "flash.note.deleted": "Notiz gelöscht.",
+    "flash.notes.proRequired": "Notizen sind nur im Pro-Plan verfügbar.",
     "budgets.errors.categoryUsed": "Diese Kategorie wird bereits in diesem Budget verwendet.",
     "admin.invitations.sent": "Einladung an :email gesendet.",
     "mail.app_invitation.subject": "Sie sind eingeladen, Spendly beizutreten",

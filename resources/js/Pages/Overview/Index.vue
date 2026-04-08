@@ -1,9 +1,7 @@
 <script setup>
-import '@/plugins/chartjs';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
-import { Bar, Doughnut } from 'vue-chartjs';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
 import AppModal from '@/components/ui/AppModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
@@ -164,14 +162,14 @@ const donutOptions = computed(() => ({
                         </div>
                     </div>
                     <div class="h-52">
-                        <Bar :data="trendData" :options="trendOptions" />
+                        <BarChart :data="trendData" :options="trendOptions" />
                     </div>
                 </div>
 
                 <div class="bg-surface border border-base/60 rounded-xl p-4">
                     <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('overview.byCategory') }}</h3>
                     <div v-if="byCategory.length" class="h-52">
-                        <Doughnut :data="donutData" :options="donutOptions" />
+                        <DoughnutChart :data="donutData" :options="donutOptions" />
                     </div>
                     <EmptyState v-else icon="chart" :message="t('overview.noCategoryData')" compact />
                 </div>
@@ -285,7 +283,7 @@ const donutOptions = computed(() => ({
                 </div>
             </div>
             <div class="h-80">
-                <Bar :data="trendData" :options="trendOptions" />
+                <BarChart :data="trendData" :options="trendOptions" />
             </div>
         </AppModal>
     </AuthenticatedLayout>

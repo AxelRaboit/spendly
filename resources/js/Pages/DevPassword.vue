@@ -1,8 +1,8 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/components/form/InputError.vue';
+import InputLabel from '@/components/form/InputLabel.vue';
+import TextInput from '@/components/form/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({ password: '' });

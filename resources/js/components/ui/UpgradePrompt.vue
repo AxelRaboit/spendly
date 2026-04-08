@@ -3,7 +3,7 @@ import { Lightbulb } from 'lucide-vue-next';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppButton from '@/components/ui/AppButton.vue';
-import Modal from '@/Components/Modal.vue';
+import Modal from '@/components/ui/Modal.vue';
 
 const { t } = useI18n();
 

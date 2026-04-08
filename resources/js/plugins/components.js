@@ -1,9 +1,13 @@
+import '@/plugins/chartjs';
+import BarChart from '@/components/charts/BarChart.vue';
+import LineChart from '@/components/charts/LineChart.vue';
+import DoughnutChart from '@/components/charts/DoughnutChart.vue';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
+import TextInput from '@/components/form/TextInput.vue';
+import InputLabel from '@/components/form/InputLabel.vue';
+import InputError from '@/components/form/InputError.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import DateInput from '@/components/form/DateInput.vue';
 import DeleteButton from '@/components/ui/DeleteButton.vue';
@@ -37,5 +41,8 @@ export default {
         app.component('FormSection', FormSection);
         app.component('SearchInput', SearchInput);
         app.component('StatCard', StatCard);
+        app.component('BarChart', BarChart);
+        app.component('LineChart', LineChart);
+        app.component('DoughnutChart', DoughnutChart);
     },
 };

@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/notes/reorder', [NoteController::class, 'reorder'])->name('notes.reorder');
     Route::get('/notes/{note}', [NoteController::class, 'show'])->name('notes.show');
     Route::put('/notes/{note}', [NoteController::class, 'update'])->name('notes.update');
+    Route::patch('/notes/{note}/move', [NoteController::class, 'move'])->name('notes.move');
     Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
     Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');

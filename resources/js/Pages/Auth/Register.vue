@@ -1,10 +1,10 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/components/form/InputError.vue';
+import InputLabel from '@/components/form/InputLabel.vue';
 
 import { AlertTriangle } from 'lucide-vue-next';
-import TextInput from '@/Components/TextInput.vue';
+import TextInput from '@/components/form/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

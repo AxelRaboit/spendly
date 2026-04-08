@@ -7,50 +7,28 @@ namespace App\Services;
 use App\Models\Note;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
 
 class NoteService
 {
-    public function list(User $user, array $filters = []): Collection
-    {
-        $query = $user->notes()->orderBy('position')->orderByDesc('created_at');
-
-        // Tag filter can be done at SQL level (not encrypted)
-        if (! empty($filters['tag'])) {
-            $query->whereJsonContains('tags', $filters['tag']);
-        }
-
-        /** @var Collection<int, Note> $notes */
-        $notes = $query->get();
-
-        // Full-text search on title/content must be done after decryption
-        if (! empty($filters['q'])) {
-            $search = Str::lower($filters['q']);
-            $notes = $notes->filter(fn (Note $note) => Str::contains(Str::lower($note->title ?? ''), $search)
-                || Str::contains(Str::lower($note->content ?? ''), $search))->values();
-        }
-
-        return $notes;
-    }
-
-    public function allTags(User $user): array
+    /**
+     * Return a flat list of all user notes (frontend builds the tree).
+     * Content is excluded — loaded on demand via show().
+     */
+    public function list(User $user): Collection
     {
         return $user->notes()
-            ->whereNotNull('tags')
-            ->pluck('tags')
-            ->flatten()
-            ->unique()
-            ->sort()
-            ->values()
-            ->all();
+            ->orderBy('position')
+            ->orderByDesc('created_at')
+            ->get(['id', 'parent_id', 'position', 'title', 'tags', 'updated_at', 'created_at']);
     }
 
-    public function create(User $user): Note
+    public function create(User $user, ?int $parentId = null): Note
     {
-        $maxPosition = $user->notes()->max('position') ?? -1;
+        $maxPosition = $user->notes()->where('parent_id', $parentId)->max('position') ?? -1;
 
         /** @var Note $note */
         $note = $user->notes()->create([
+            'parent_id' => $parentId,
             'title' => null,
             'content' => null,
             'tags' => [],
@@ -65,6 +43,11 @@ class NoteService
         $note->update($data);
 
         return $note;
+    }
+
+    public function move(Note $note, ?int $parentId): void
+    {
+        $note->update(['parent_id' => $parentId]);
     }
 
     public function reorder(User $user, array $ids): void

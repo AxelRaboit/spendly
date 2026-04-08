@@ -1,10 +1,10 @@
 <script setup>
 import AppModal from '@/components/ui/AppModal.vue';
-import Checkbox from '@/Components/Checkbox.vue';
+import Checkbox from '@/components/form/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/components/form/InputError.vue';
+import InputLabel from '@/components/form/InputLabel.vue';
+import TextInput from '@/components/form/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';

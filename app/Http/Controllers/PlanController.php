@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Services\PlanService;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class PlanController extends Controller
 {
@@ -19,17 +19,19 @@ class PlanController extends Controller
         return Inertia::render('Plan/Index');
     }
 
-    public function upgrade(Request $request): RedirectResponse
+    public function upgrade(Request $request): SymfonyResponse
     {
         $this->planService->upgrade($request->user());
+        $request->session()->flash('success', __('flash.plan.upgraded'));
 
-        return redirect()->route('plan.index')->with('success', __('flash.plan.upgraded'));
+        return Inertia::location(route('plan.index'));
     }
 
-    public function downgrade(Request $request): RedirectResponse
+    public function downgrade(Request $request): SymfonyResponse
     {
         $this->planService->downgrade($request->user());
+        $request->session()->flash('success', __('flash.plan.downgraded'));
 
-        return redirect()->route('plan.index')->with('success', __('flash.plan.downgraded'));
+        return Inertia::location(route('plan.index'));
     }
 }
