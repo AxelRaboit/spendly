@@ -188,6 +188,7 @@ const topCategoryMax = computed(() => {
                                     <div class="flex items-center gap-2">
                                         <span class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ transaction.category.name }}</span>
                                         <span class="text-xs text-muted">{{ fmtDay(transaction.date) }}</span>
+                                        <span class="text-xs text-muted">· {{ transaction.wallet.name }}</span>
                                     </div>
                                 </div>
                                 <span class="text-sm font-semibold text-primary shrink-0 font-mono">{{ fmt(transaction.amount) }}</span>
@@ -201,6 +202,7 @@ const topCategoryMax = computed(() => {
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.date') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.description') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.category') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.wallet') }}</th>
                                         <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.amount') }}</th>
                                     </tr>
                                 </thead>
@@ -213,6 +215,7 @@ const topCategoryMax = computed(() => {
                                                 {{ transaction.category.name }}
                                             </span>
                                         </td>
+                                        <td class="px-6 py-4 text-sm text-secondary">{{ transaction.wallet.name }}</td>
                                         <td class="px-6 py-4 text-right text-sm font-semibold text-primary">{{ fmt(transaction.amount) }}</td>
                                     </tr>
                                 </tbody>

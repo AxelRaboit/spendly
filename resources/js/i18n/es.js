@@ -37,6 +37,7 @@ export default {
         amount: 'Importe',
         description: 'Descripción',
         category: 'Categoría',
+        wallet: 'Cartera',
         tags: 'Etiquetas',
         or: 'o',
         notNow: 'Ahora no',

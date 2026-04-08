@@ -37,6 +37,7 @@ export default {
         amount: 'Betrag',
         description: 'Beschreibung',
         category: 'Kategorie',
+        wallet: 'Geldbörse',
         tags: 'Tags',
         or: 'oder',
         notNow: 'Nicht jetzt',

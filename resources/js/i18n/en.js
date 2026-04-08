@@ -37,6 +37,7 @@ export default {
         amount: 'Amount',
         description: 'Description',
         category: 'Category',
+        wallet: 'Wallet',
         tags: 'Tags',
         or: 'or',
         notNow: 'Not now',
