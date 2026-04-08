@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\HttpStatus;
 use App\Enums\PolicyAction;
 use App\Http\Requests\NoteRequest;
 use App\Http\Requests\ReorderRequest;
@@ -15,7 +16,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Enums\HttpStatus;
 
 class NoteController extends Controller
 {

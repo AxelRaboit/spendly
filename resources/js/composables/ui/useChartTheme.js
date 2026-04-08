@@ -7,8 +7,8 @@ export function useChartTheme() {
 
     const isDark = computed(() => theme.value === Theme.Dark);
 
-    const textColor  = computed(() => (isDark.value ? '#9ca3af' : '#6b7280'));
-    const gridColor  = computed(() => (isDark.value ? '#374151' : '#e5e7eb'));
+    const textColor = computed(() => (isDark.value ? '#9ca3af' : '#6b7280'));
+    const gridColor = computed(() => (isDark.value ? '#374151' : '#e5e7eb'));
     const labelColor = computed(() => (isDark.value ? '#d1d5db' : '#374151'));
 
     const baseOptions = computed(() => ({

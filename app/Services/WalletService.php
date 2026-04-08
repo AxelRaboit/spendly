@@ -12,9 +12,9 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletMember;
 use App\Support\Text;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class WalletService
 {
@@ -49,15 +49,15 @@ class WalletService
             ->orderBy('created_at', 'desc')
             ->get(['id', 'type', 'amount', 'description', 'date']);
 
-        $incomeSum  = round((float) $transactions->where('type', TransactionType::Income)->sum('amount'), 2);
+        $incomeSum = round((float) $transactions->where('type', TransactionType::Income)->sum('amount'), 2);
         $expenseSum = round((float) $transactions->where('type', TransactionType::Expense)->sum('amount'), 2);
 
         return [
             'wallet' => array_merge($wallet->toArray(), [
-                'user_role'       => $wallet->roleFor($user)?->value,
+                'user_role' => $wallet->roleFor($user)?->value,
                 'current_balance' => round((float) $wallet->start_balance + $incomeSum - $expenseSum, 2),
-                'income_sum'      => $incomeSum,
-                'expense_sum'     => $expenseSum,
+                'income_sum' => $incomeSum,
+                'expense_sum' => $expenseSum,
             ]),
             'transactions' => $transactions,
         ];

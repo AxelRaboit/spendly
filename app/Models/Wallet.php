@@ -34,7 +34,10 @@ class Wallet extends Model
 
     public function isSimpleMode(): bool
     {
-        return $this->mode === WalletMode::Simple;
+        /** @var WalletMode $mode */
+        $mode = $this->mode;
+
+        return $mode === WalletMode::Simple;
     }
 
     public function user(): BelongsTo

@@ -256,12 +256,9 @@ export function useTourDriver() {
      * Cleanup demo wallet after tour completion
      */
     async function cleanupDemoWallet() {
-        const walletId = getState()?.walletId;
-        if (walletId) {
-            try {
-                await axios.delete(route('tour.cleanup'));
-            } catch {}
-        }
+        try {
+            await axios.delete(route('tour.cleanup'));
+        } catch {}
     }
 
     return { initForPage };

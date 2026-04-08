@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { WalletRole } from '@/enums/WalletRole';
 
 export const ROLE_COLORS = {
-    [WalletRole.Owner]:  'text-amber-600 dark:text-amber-400 bg-amber-500/15',
+    [WalletRole.Owner]: 'text-amber-600 dark:text-amber-400 bg-amber-500/15',
     [WalletRole.Editor]: 'text-sky-600 dark:text-sky-400 bg-sky-500/15',
     [WalletRole.Viewer]: 'text-muted bg-surface-3',
 };
@@ -11,11 +11,11 @@ export const ROLE_COLORS = {
 export function useWalletMembers(walletId, show) {
     const { t } = useI18n();
 
-    const members     = ref([]);
+    const members = ref([]);
     const invitations = ref([]);
-    const loading     = ref(false);
-    const error       = ref('');
-    const success     = ref('');
+    const loading = ref(false);
+    const error = ref('');
+    const success = ref('');
 
     function clearFlash() {
         setTimeout(() => {
@@ -31,7 +31,7 @@ export function useWalletMembers(walletId, show) {
         loading.value = true;
         try {
             const res = await window.axios.get(`/wallets/${walletId.value}/members`);
-            members.value     = res.data.members;
+            members.value = res.data.members;
             invitations.value = res.data.invitations;
         } finally {
             loading.value = false;
@@ -39,7 +39,7 @@ export function useWalletMembers(walletId, show) {
     }
 
     async function invite(email, role) {
-        error.value   = '';
+        error.value = '';
         success.value = '';
         try {
             await window.axios.post(`/wallets/${walletId.value}/invitations`, { email, role });

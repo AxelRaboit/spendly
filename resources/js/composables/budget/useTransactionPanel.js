@@ -38,19 +38,19 @@ import { BudgetSection } from '@/enums/BudgetSection';
  *   - onTxSectionChange: Handle section change (filters categories)
  */
 export function useTransactionPanel(walletId, budget, sections, flash, categories) {
-    const txPanel        = ref(false);
+    const txPanel = ref(false);
     const txPrefillLabel = ref('');
-    const txSection      = ref(null);
-    const editingTx      = ref(null);
+    const txSection = ref(null);
+    const editingTx = ref(null);
     const txForm = useForm({
-        wallet_id:   walletId.value,
-        type:        TransactionType.Expense,
+        wallet_id: walletId.value,
+        type: TransactionType.Expense,
         category_id: null,
-        amount:      '',
+        amount: '',
         description: '',
-        date:        new Date().toISOString().slice(0, 10),
-        tags:        [],
-        attachment:  null,
+        date: new Date().toISOString().slice(0, 10),
+        tags: [],
+        attachment: null,
     });
 
     const { txFilteredCategories, onTxSectionChange } = useSectionCategoryFilter(
@@ -78,47 +78,47 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
     ) {
         cancelEditing?.();
         cancelAdding?.();
-        txForm.wallet_id   = walletId.value;
-        txForm.type        = type;
+        txForm.wallet_id = walletId.value;
+        txForm.type = type;
         txForm.category_id = categoryId;
-        txForm.amount      = '';
+        txForm.amount = '';
         txForm.description = '';
-        txForm.tags        = [];
-        const today   = new Date().toISOString().slice(0, 10);
-        txForm.date   = budget.value.month === today.slice(0, 7) ? today : budget.value.month + '-01';
+        txForm.tags = [];
+        const today = new Date().toISOString().slice(0, 10);
+        txForm.date = budget.value.month === today.slice(0, 7) ? today : budget.value.month + '-01';
         txPrefillLabel.value = label;
-        txSection.value      = section;
+        txSection.value = section;
         resetAutoCategory();
         txPanel.value = true;
         nextTick(() => document.getElementById('tx-amount')?.focus());
     }
 
     function openEditTx(tx) {
-        editingTx.value    = tx;
-        txForm.wallet_id   = tx.wallet_id ?? walletId.value;
-        txForm.type        = tx.type;
+        editingTx.value = tx;
+        txForm.wallet_id = tx.wallet_id ?? walletId.value;
+        txForm.type = tx.type;
         txForm.category_id = tx.category_id;
-        txForm.amount      = tx.amount;
+        txForm.amount = tx.amount;
         txForm.description = tx.description ?? '';
-        txForm.date        = tx.date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
-        txForm.tags        = tx.tags ?? [];
+        txForm.date = tx.date?.slice(0, 10) ?? new Date().toISOString().slice(0, 10);
+        txForm.tags = tx.tags ?? [];
         txPrefillLabel.value = '';
-        txSection.value      = null;
-        txPanel.value        = true;
+        txSection.value = null;
+        txPanel.value = true;
     }
 
     function closeTxPanel() {
-        txPanel.value        = false;
+        txPanel.value = false;
         txPrefillLabel.value = '';
-        txSection.value      = null;
-        editingTx.value      = null;
+        txSection.value = null;
+        editingTx.value = null;
         txForm.reset();
         resetAutoCategory();
     }
 
     function submitTx() {
         const categoryId = txForm.category_id;
-        const url    = editingTx.value ? `/transactions/${editingTx.value.id}` : '/transactions';
+        const url = editingTx.value ? `/transactions/${editingTx.value.id}` : '/transactions';
         const method = editingTx.value ? 'put' : 'post';
         txForm[method](url, {
             onSuccess: () => {
@@ -141,12 +141,12 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         router.post(
             '/transactions/split',
             {
-                wallet_id:   txForm.wallet_id,
-                type:        txForm.type,
+                wallet_id: txForm.wallet_id,
+                type: txForm.type,
                 description: txForm.description,
-                date:        txForm.date,
-                tags:        txForm.tags,
-                splits:      splits.map((s) => ({ category_id: s.category_id, amount: parseFloat(s.amount) || 0 })),
+                date: txForm.date,
+                tags: txForm.tags,
+                splits: splits.map((s) => ({ category_id: s.category_id, amount: parseFloat(s.amount) || 0 })),
             },
             {
                 preserveScroll: true,

@@ -27,7 +27,7 @@ const adding = ref(false);
 const editingId = ref(null);
 
 const newLabel = ref('');
-const newType = ref('expenses');
+const newType = ref(BudgetSection.Expenses);
 const newAmount = ref(0);
 
 const editLabel = ref('');
@@ -51,7 +51,7 @@ async function addPreset() {
         });
         items.value.push(data);
         newLabel.value = '';
-        newType.value = 'expenses';
+        newType.value = BudgetSection.Expenses;
         newAmount.value = 0;
         adding.value = false;
     } catch { /* validation errors handled silently */ }
