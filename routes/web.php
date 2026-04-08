@@ -121,7 +121,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/transfers/{transferId}', [WalletTransferController::class, 'destroy'])->name('transfers.destroy');
     Route::patch('/wallets/reorder', [WalletController::class, 'reorder'])->name('wallets.reorder');
     Route::resource('wallets', WalletController::class);
-    Route::post('/wallets/{wallet}/favorite', [WalletController::class, 'toggleFavorite'])->name('wallets.favorite');
     Route::post('/wallets/{wallet}/dashboard', [WalletController::class, 'toggleDashboard'])->name('wallets.dashboard');
 
     // Wallet members & invitations (scoped bindings ensure {member}/{invitation} belong to {wallet})

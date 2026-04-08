@@ -39,7 +39,6 @@ class OverviewService
             return [
                 'id' => $wallet->id,
                 'name' => $wallet->name,
-                'is_favorite' => $wallet->is_favorite,
                 'start_balance' => (float) $wallet->start_balance,
                 'income' => $income,
                 'expenses' => $expenses,

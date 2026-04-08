@@ -63,11 +63,6 @@ class WalletService
         ];
     }
 
-    public function toggleFavorite(Wallet $wallet): void
-    {
-        $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
-    }
-
     public function toggleDashboard(Wallet $wallet): void
     {
         $wallet->update(['show_on_dashboard' => ! $wallet->show_on_dashboard]);

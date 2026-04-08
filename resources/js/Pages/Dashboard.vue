@@ -2,7 +2,7 @@
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import PlanSelectionModal from '@/components/ui/PlanSelectionModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ChevronRight, Star, Map, TrendingUp, TrendingDown, AlertTriangle, Target, Repeat, CalendarDays, LayoutDashboard } from 'lucide-vue-next';
+import { Map, TrendingUp, TrendingDown, AlertTriangle, Target, Repeat, CalendarDays, LayoutDashboard } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
@@ -35,10 +35,9 @@ const props = defineProps({
     lastMonthSpent:    Number,
     lastMonthDiff:     { type: Number, default: null },
     totalWallets:      Number,
-    favoriteWallets:   Array,
-    recentTransactions: Array,
-    sparkline:         Array,
-    topCategories:     Array,
+    recentTransactions: { type: Array, default: () => [] },
+    sparkline:         { type: Array, default: () => [] },
+    topCategories:     { type: Array, default: () => [] },
     dailyAverage:      Number,
     bestDay:           Object,
     pinnedWallets:     { type: Array, default: () => [] },
@@ -127,24 +126,6 @@ const topCategoryMax = computed(() => {
                         {{ fmt(wallet.current_balance) }}
                     </span>
                 </Link>
-            </div>
-
-            <div v-if="favoriteWallets.length > 0">
-                <h3 class="text-xs font-medium text-muted uppercase tracking-wider mb-3">{{ t('wallets.favoriteWallets') }}</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <Link
-                        v-for="wallet in favoriteWallets"
-                        :key="wallet.id"
-                        :href="`/wallets/${wallet.id}/budget`"
-                        class="flex items-center justify-between bg-surface border border-base/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
-                    >
-                        <div class="flex items-center gap-3 min-w-0">
-                            <Star class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="currentColor" />
-                            <span class="text-sm font-medium text-primary truncate">{{ wallet.name }}</span>
-                        </div>
-                        <ChevronRight class="w-4 h-4 text-muted group-hover:text-indigo-400 transition-colors shrink-0" />
-                    </Link>
-                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
