@@ -35,7 +35,7 @@ importers:
     devDependencies:
       '@inertiajs/vue3':
         specifier: ^3.0.3
-        version: 3.0.3(axios@1.14.0)(vue@3.5.32)
+        version: 3.0.3(axios@1.15.0)(vue@3.5.32)
       '@tailwindcss/forms':
         specifier: ^0.5.3
         version: 0.5.11(tailwindcss@3.4.19)
@@ -52,8 +52,8 @@ importers:
         specifier: ^10.4.12
         version: 10.4.27(postcss@8.5.8)
       axios:
-        specifier: '>=1.11.0 <=1.14.0'
-        version: 1.14.0
+        specifier: '>=1.11.0 <=1.16.0'
+        version: 1.15.0
       concurrently:
         specifier: ^9.0.1
         version: 9.2.1
@@ -543,8 +543,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
-  axios@1.14.0:
-    resolution: {integrity: sha512-3Y8yrqLSwjuzpXuZ0oIYZ/XGgLwUIBU3uLvbcpb0pidD9ctpShJd43KSlEEkVQg6DS0G9NKyzOvBfUtDKEyHvQ==}
+  axios@1.15.0:
+    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
 
   balanced-match@4.0.4:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
@@ -1620,19 +1620,19 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@inertiajs/core@3.0.3(axios@1.14.0)':
+  '@inertiajs/core@3.0.3(axios@1.15.0)':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       es-toolkit: 1.45.1
-      laravel-precognition: 2.0.0(axios@1.14.0)
+      laravel-precognition: 2.0.0(axios@1.15.0)
     optionalDependencies:
-      axios: 1.14.0
+      axios: 1.15.0
 
-  '@inertiajs/vue3@3.0.3(axios@1.14.0)(vue@3.5.32)':
+  '@inertiajs/vue3@3.0.3(axios@1.15.0)(vue@3.5.32)':
     dependencies:
-      '@inertiajs/core': 3.0.3(axios@1.14.0)
+      '@inertiajs/core': 3.0.3(axios@1.15.0)
       es-toolkit: 1.45.1
-      laravel-precognition: 2.0.0(axios@1.14.0)
+      laravel-precognition: 2.0.0(axios@1.15.0)
       vue: 3.5.32
     transitivePeerDependencies:
       - axios
@@ -1954,7 +1954,7 @@ snapshots:
       postcss: 8.5.8
       postcss-value-parser: 4.2.0
 
-  axios@1.14.0:
+  axios@1.15.0:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
@@ -2366,11 +2366,11 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  laravel-precognition@2.0.0(axios@1.14.0):
+  laravel-precognition@2.0.0(axios@1.15.0):
     dependencies:
       es-toolkit: 1.45.1
     optionalDependencies:
-      axios: 1.14.0
+      axios: 1.15.0
 
   laravel-vite-plugin@3.0.1(vite@8.0.7(jiti@1.21.7)):
     dependencies:
