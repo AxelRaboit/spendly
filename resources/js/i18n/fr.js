@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistiques',
         search: 'Transactions',
         goals: 'Objectifs',
+        notepad: 'Notes',
         recurring: 'Automatiques',
         import: 'Importer',
         plan: 'Formule',
@@ -37,6 +38,7 @@ export default {
         amount: 'Montant',
         description: 'Description',
         category: 'Catégorie',
+        wallet: 'Portefeuille',
         tags: 'Tags',
         or: 'ou',
         notNow: 'Pas maintenant',
@@ -118,6 +120,16 @@ export default {
         seeAll: 'Voir tout →',
         noExpenses: "Aucune dépense pour l'instant.",
         noCatExpenses: 'Aucune dépense ce mois.',
+        monthlyCashflow: 'Bilan mensuel',
+        income: 'Revenus',
+        expenses: 'Dépenses',
+        cashflow: 'Cash-flow net',
+        vsLastMonth: 'vs mois dernier :',
+        budgetAlerts: 'Alertes budget',
+        alertOver: 'Dépassé',
+        alertNear: 'Proche',
+        goalsInProgress: 'Objectifs en cours',
+        upcomingRecurring: 'Prochains récurrents',
     },
 
     wallets: {
@@ -138,6 +150,8 @@ export default {
         demo: 'Exemple',
         addFavorite: 'Ajouter aux favoris',
         removeFavorite: 'Retirer des favoris',
+        pinToDashboard: 'Épingler le solde au tableau de bord',
+        removeFromDashboard: 'Retirer du tableau de bord',
         favoriteWallets: 'Accès rapide',
         noFavorites: 'Aucun favori. Étoilez un portefeuille depuis la page Portefeuilles.',
         quickChecking: 'Compte courant',
@@ -438,6 +452,7 @@ export default {
         removeMember: 'Retirer le membre',
         revokeInvitation: "Annuler l'invitation",
         emailPlaceholder: 'Adresse e-mail…',
+        addAddress: 'Ajouter une adresse',
     },
 
     invitation: {
@@ -482,6 +497,22 @@ export default {
         depositTip: 'Ajouter un dépôt à cet objectif',
         progressTip: "Pourcentage de l'objectif atteint.",
         autoSyncTip: 'Le montant se met à jour automatiquement depuis les transactions de cette catégorie.',
+    },
+
+    notepad: {
+        title: 'Notes',
+        newNote: 'Nouvelle note',
+        untitled: 'Sans titre',
+        titlePlaceholder: 'Titre…',
+        contentPlaceholder: 'Commencez à écrire…',
+        saved: 'Enregistré',
+        saving: 'Enregistrement…',
+        confirmDelete: 'Supprimer cette note ?',
+        empty: "Aucune note pour l'instant.",
+        emptyHint: 'Créez votre première note pour garder vos idées organisées.',
+        lastEdited: 'Modifié le {date}',
+        searchPlaceholder: 'Rechercher dans les notes…',
+        tagPlaceholder: 'Ajouter un tag…',
     },
 
     recurring: {
@@ -542,7 +573,9 @@ export default {
         noWallets: 'Aucun portefeuille.',
         viewBudget: 'Voir le budget',
         favoriteTip: 'Ce portefeuille est en favori et apparaît sur le tableau de bord.',
-        trend: 'Revenus vs Dépenses — 6 derniers mois',
+        trend: 'Revenus vs Dépenses',
+        months: 'm',
+        monthsFull: 'mois',
         byCategory: 'Dépenses par catégorie',
         noCategoryData: 'Aucune dépense ce mois.',
     },
@@ -803,6 +836,19 @@ export default {
         leave: 'Revenir à mon compte',
     },
     tour: {
+        start: 'Démarrer',
+        modal: {
+            title: 'Guides de démarrage',
+            subtitle: 'Sélectionnez un guide pour explorer les fonctionnalités.',
+            lightModeHint: "Les guides sont plus visibles en mode clair. Voulez-vous l'activer ?",
+            enableLightMode: 'Passer en mode clair',
+        },
+        guides: {
+            wallet: {
+                title: 'Portefeuille & Budget',
+                desc: 'Découvrez comment créer un portefeuille, gérer votre budget mensuel et suivre vos dépenses.',
+            },
+        },
         next: 'Suivant',
         prev: 'Précédent',
         done: 'Terminer',

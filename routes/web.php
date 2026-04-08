@@ -13,6 +13,7 @@ use App\Http\Controllers\DevPasswordController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
@@ -81,6 +82,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/import/template', [ImportController::class, 'template'])->name('import.template');
     Route::post('/import/preview', [ImportController::class, 'preview'])->name('import.preview');
     Route::post('/import/process', [ImportController::class, 'process'])->name('import.process');
+    Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::patch('/notes/reorder', [NoteController::class, 'reorder'])->name('notes.reorder');
+    Route::get('/notes/{note}', [NoteController::class, 'show'])->name('notes.show');
+    Route::put('/notes/{note}', [NoteController::class, 'update'])->name('notes.update');
+    Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
+
     Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');
     Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
     Route::put('/goals/{goal}', [GoalController::class, 'update'])->name('goals.update');
@@ -112,6 +120,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/wallets/reorder', [WalletController::class, 'reorder'])->name('wallets.reorder');
     Route::resource('wallets', WalletController::class);
     Route::post('/wallets/{wallet}/favorite', [WalletController::class, 'toggleFavorite'])->name('wallets.favorite');
+    Route::post('/wallets/{wallet}/dashboard', [WalletController::class, 'toggleDashboard'])->name('wallets.dashboard');
 
     // Wallet members & invitations (scoped bindings ensure {member}/{invitation} belong to {wallet})
     Route::get('/wallets/{wallet}/members', [WalletMemberController::class, 'index'])->name('wallets.members.index');

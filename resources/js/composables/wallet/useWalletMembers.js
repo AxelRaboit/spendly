@@ -2,8 +2,8 @@ import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export const ROLE_COLORS = {
-    owner: 'text-amber-400 bg-amber-900/40',
-    editor: 'text-sky-400 bg-sky-900/40',
+    owner: 'text-amber-600 dark:text-amber-400 bg-amber-500/15',
+    editor: 'text-sky-600 dark:text-sky-400 bg-sky-500/15',
     viewer: 'text-muted bg-surface-3',
 };
 

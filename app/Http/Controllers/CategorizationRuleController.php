@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\PolicyAction;
 use App\Http\Requests\UpdateCategorizationRuleRequest;
 use App\Models\CategorizationRule;
 use App\Services\CategorizationRuleService;
@@ -43,7 +44,7 @@ class CategorizationRuleController extends Controller
 
     public function update(UpdateCategorizationRuleRequest $updateCategorizationRuleRequest, CategorizationRule $categorizationRule): RedirectResponse
     {
-        $this->authorize('update', $categorizationRule);
+        $this->authorize(PolicyAction::Update->value, $categorizationRule);
 
         $this->ruleService->updateCategory($categorizationRule, $updateCategorizationRuleRequest->validated()['category_id']);
 
@@ -52,7 +53,7 @@ class CategorizationRuleController extends Controller
 
     public function destroy(Request $request, CategorizationRule $categorizationRule): RedirectResponse
     {
-        $this->authorize('delete', $categorizationRule);
+        $this->authorize(PolicyAction::Delete->value, $categorizationRule);
 
         $this->ruleService->delete($categorizationRule);
 

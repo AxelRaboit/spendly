@@ -8,6 +8,7 @@ export default {
         statistics: 'Estadísticas',
         search: 'Transacciones',
         goals: 'Objetivos',
+        notepad: 'Notas',
         recurring: 'Automáticas',
         import: 'Importar',
         plan: 'Plan',
@@ -37,6 +38,7 @@ export default {
         amount: 'Importe',
         description: 'Descripción',
         category: 'Categoría',
+        wallet: 'Cartera',
         tags: 'Etiquetas',
         or: 'o',
         notNow: 'Ahora no',
@@ -111,6 +113,16 @@ export default {
         seeAll: 'Ver todo →',
         noExpenses: 'Aún no hay gastos.',
         noCatExpenses: 'Sin gastos este mes.',
+        monthlyCashflow: 'Balance mensual',
+        income: 'Ingresos',
+        expenses: 'Gastos',
+        cashflow: 'Flujo de caja neto',
+        vsLastMonth: 'vs mes anterior:',
+        budgetAlerts: 'Alertas de presupuesto',
+        alertOver: 'Superado',
+        alertNear: 'Cerca del límite',
+        goalsInProgress: 'Objetivos en curso',
+        upcomingRecurring: 'Próximos recurrentes',
     },
 
     wallets: {
@@ -131,6 +143,8 @@ export default {
         demo: 'Ejemplo',
         addFavorite: 'Añadir a favoritos',
         removeFavorite: 'Quitar de favoritos',
+        pinToDashboard: 'Fijar saldo en el panel',
+        removeFromDashboard: 'Quitar del panel',
         favoriteWallets: 'Acceso rápido',
         noFavorites: 'Sin favoritos. Marca una cartera desde la página de Carteras.',
         quickChecking: 'Cuenta corriente',
@@ -432,6 +446,7 @@ export default {
         removeMember: 'Eliminar miembro',
         revokeInvitation: 'Revocar invitación',
         emailPlaceholder: 'Dirección de correo…',
+        addAddress: 'Añadir otra dirección',
     },
 
     invitation: {
@@ -476,6 +491,20 @@ export default {
         depositTip: 'Añadir un depósito a este objetivo',
         progressTip: 'Porcentaje del objetivo alcanzado.',
         autoSyncTip: 'El importe se actualiza automáticamente desde las transacciones de esta categoría.',
+    },
+
+    notepad: {
+        title: 'Notas',
+        newNote: 'Nueva nota',
+        untitled: 'Sin título',
+        titlePlaceholder: 'Título…',
+        contentPlaceholder: 'Empieza a escribir…',
+        saved: 'Guardado',
+        saving: 'Guardando…',
+        confirmDelete: '¿Eliminar esta nota?',
+        empty: 'Aún no hay notas.',
+        emptyHint: 'Crea tu primera nota para mantener tus ideas organizadas.',
+        lastEdited: 'Editado el {date}',
     },
 
     recurring: {
@@ -536,7 +565,9 @@ export default {
         noWallets: 'Sin carteras.',
         viewBudget: 'Ver presupuesto',
         favoriteTip: 'Esta cartera es favorita y aparece en el panel.',
-        trend: 'Ingresos vs Gastos — últimos 6 meses',
+        trend: 'Ingresos vs Gastos',
+        months: 'm',
+        monthsFull: 'meses',
         byCategory: 'Gastos por categoría',
         noCategoryData: 'Sin gastos este mes.',
     },
@@ -794,6 +825,19 @@ export default {
         leave: 'Volver a mi cuenta',
     },
     tour: {
+        start: 'Iniciar',
+        modal: {
+            title: 'Guías de inicio',
+            subtitle: 'Seleccione una guía para explorar las funcionalidades.',
+            lightModeHint: '¿Las guías son más visibles en modo claro. ¿Desea activarlo?',
+            enableLightMode: 'Cambiar a modo claro',
+        },
+        guides: {
+            wallet: {
+                title: 'Cartera & Presupuesto',
+                desc: 'Aprenda a crear una cartera, gestionar su presupuesto mensual y controlar sus gastos.',
+            },
+        },
         next: 'Siguiente',
         prev: 'Anterior',
         done: 'Terminar',

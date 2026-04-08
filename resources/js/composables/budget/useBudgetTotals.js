@@ -1,5 +1,29 @@
 import { computed } from 'vue';
 
+/**
+ * Budget Totals & KPIs Calculation
+ *
+ * Computes aggregated budget metrics from detailed sections.
+ * Calculates totals (planned, actual, carried-over, available) per section,
+ * plus derived KPIs like cash flow, savings rate, projected expenses, etc.
+ *
+ * @param {Ref<Object>} sections - Reactive sections object with keys (income, savings, bills, expenses, debt)
+ *                                 Each section contains budget items with planned/actual/carried amounts
+ * @param {Ref<number>} startBalance - Account balance at the start of the month
+ * @param {Ref<Object>} budget - Budget metadata object (optional)
+ * @param {Ref<Object>} unbudgeted - Unbudgeted transactions (income/expenses) (optional)
+ *
+ * @returns {Object}
+ *   - totals: Object with per-section breakdown (planned, actual, carried, available)
+ *   - totalCarriedOver: Total amount carried from previous month
+ *   - totalIncome: {planned, actual} aggregate
+ *   - totalExpenses: {planned, actual} aggregate (savings, bills, expenses, debt)
+ *   - cashFlow: Income minus expenses
+ *   - leftToSpend: Available budget remaining
+ *   - savingsRate: Percentage of income going to savings/investments
+ *   - isCurrentMonth: True if budget is for current month
+ *   - projectedExpenses: Estimated expenses based on actual-to-planned ratio
+ */
 export function useBudgetTotals(sections, startBalance, budget = null, unbudgeted = null) {
     const totals = computed(() => {
         const result = {};

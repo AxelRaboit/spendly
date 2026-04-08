@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Http\Requests\ClearBudgetItemsRequest;
 use App\Http\Requests\QuickStartBudgetRequest;
 use App\Http\Requests\ReorderRequest;
@@ -37,7 +38,7 @@ class BudgetController extends Controller
 
     public function show(Request $request, Wallet $wallet): Response
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $monthParam = $request->query('month');
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
@@ -77,7 +78,7 @@ class BudgetController extends Controller
 
     public function copyFromPrevious(Request $request, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
 
         $monthParam = $request->input('month');
@@ -94,7 +95,7 @@ class BudgetController extends Controller
 
     public function storeItem(StoreBudgetItemRequest $storeBudgetItemRequest, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $monthParam = $storeBudgetItemRequest->input('month');
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
@@ -118,7 +119,7 @@ class BudgetController extends Controller
 
     public function updateItem(UpdateBudgetItemRequest $updateBudgetItemRequest, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
@@ -139,7 +140,7 @@ class BudgetController extends Controller
 
     public function destroyItem(Request $request, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
 
@@ -150,7 +151,7 @@ class BudgetController extends Controller
 
     public function reorderItems(ReorderRequest $reorderRequest, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if(! $this->planService->canEditBudget($reorderRequest->user()), HttpStatus::Forbidden->value);
 
         $this->budgetService->reorderItems($wallet, $reorderRequest->validated()['ids']);
@@ -160,7 +161,7 @@ class BudgetController extends Controller
 
     public function duplicateItem(Request $request, Wallet $wallet, BudgetItem $item): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
         abort_if($item->category?->is_system, HttpStatus::Forbidden->value);
@@ -172,7 +173,7 @@ class BudgetController extends Controller
 
     public function copyRepeat(Request $request, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if(! $this->planService->canEditBudget($request->user()), HttpStatus::Forbidden->value);
 
         $monthParam = $request->input('month');
@@ -188,7 +189,7 @@ class BudgetController extends Controller
 
     public function updateNotes(UpdateBudgetNotesRequest $updateBudgetNotesRequest, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $validated = $updateBudgetNotesRequest->validated();
         $month = Carbon::createFromFormat('Y-m', $validated['month']);
@@ -200,7 +201,7 @@ class BudgetController extends Controller
 
     public function quickStart(QuickStartBudgetRequest $quickStartBudgetRequest, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $validated = $quickStartBudgetRequest->validated();
         $month = Carbon::createFromFormat('Y-m', $validated['month']);
@@ -216,7 +217,7 @@ class BudgetController extends Controller
 
     public function clearItems(ClearBudgetItemsRequest $clearBudgetItemsRequest, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $validated = $clearBudgetItemsRequest->validated();
 
@@ -230,7 +231,7 @@ class BudgetController extends Controller
 
     public function yearView(Request $request, Wallet $wallet): Response
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $year = (int) $request->query('year', now()->year);
 
@@ -245,7 +246,7 @@ class BudgetController extends Controller
 
     public function itemTransactions(Wallet $wallet, BudgetItem $item): JsonResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
         abort_if($item->budget()->value('wallet_id') !== $wallet->id, HttpStatus::Forbidden->value);
 
         return response()->json($this->budgetService->itemTransactions($wallet, $item));
@@ -253,7 +254,7 @@ class BudgetController extends Controller
 
     public function unbudgetedTransactions(Request $request, Wallet $wallet): JsonResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         $monthParam = $request->query('month');
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();

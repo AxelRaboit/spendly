@@ -13,6 +13,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useSearchFilters } from '@/composables/search/useSearchFilters';
+import { useTransactionDelete } from '@/composables/search/useTransactionDelete';
 import { useSectionMeta } from '@/composables/budget/useSectionMeta';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
@@ -32,31 +33,7 @@ const props = defineProps({
 
 const { filters: form, search, reset, filterByTag, hasFilters } = useSearchFilters(props.filters);
 
-const pendingDeleteTx = ref(null);
-
-function deleteTx(tx) {
-    pendingDeleteTx.value = tx;
-}
-
-function confirmDeleteTx() {
-    if (!pendingDeleteTx.value) return;
-    const tx = pendingDeleteTx.value;
-    if (tx.transfer_id) {
-        router.delete(route('transfers.destroy', tx.transfer_id), {
-            preserveScroll: true,
-            onSuccess: () => { pendingDeleteTx.value = null; },
-        });
-    } else {
-        router.delete(`/transactions/${tx.id}`, {
-            preserveScroll: true,
-            onSuccess: () => { pendingDeleteTx.value = null; },
-        });
-    }
-}
-
-function cancelDeleteTx() {
-    pendingDeleteTx.value = null;
-}
+const { pendingDeleteTx, deleteTx, confirmDeleteTx, cancelDeleteTx } = useTransactionDelete();
 
 const showTransferModal = ref(false);
 const editingTransfer = ref(null);

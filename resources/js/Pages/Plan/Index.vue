@@ -39,7 +39,7 @@ function downgrade() {
         </template>
 
         <div class="mx-auto max-w-4xl space-y-8">
-            <div v-if="isTrialing" class="rounded-lg bg-indigo-600/10 border border-indigo-500/30 px-4 py-3 text-center text-sm text-indigo-300">
+            <div v-if="isTrialing" class="rounded-lg bg-indigo-600/15 border border-indigo-500/40 px-4 py-3 text-center text-sm text-indigo-400">
                 {{ trialLabel }}
             </div>
 
@@ -198,7 +198,7 @@ function downgrade() {
                         </li>
                         <li class="flex items-center gap-2.5 text-sm">
                             <Sparkles class="w-4 h-4 shrink-0 text-indigo-400" />
-                            <span class="text-indigo-300/80 italic">{{ t('plan.features.andMore') }}</span>
+                            <span class="text-indigo-400 italic">{{ t('plan.features.andMore') }}</span>
                         </li>
                     </ul>
 

@@ -15,8 +15,16 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
+        $spentThisMonth = round($dashboardService->spentThisMonth($user), 2);
+        $lastMonthSpent = round($dashboardService->lastMonthSpent($user), 2);
+
         return Inertia::render('Dashboard', [
-            'spentThisMonth' => round($dashboardService->spentThisMonth($user), 2),
+            'spentThisMonth' => $spentThisMonth,
+            'incomeThisMonth' => round($dashboardService->incomeThisMonth($user), 2),
+            'lastMonthSpent' => $lastMonthSpent,
+            'lastMonthDiff' => $lastMonthSpent > 0
+                ? round(($spentThisMonth - $lastMonthSpent) / $lastMonthSpent * 100, 1)
+                : null,
             'totalWallets' => $dashboardService->totalWallets($user),
             'favoriteWallets' => $dashboardService->favoriteWallets($user),
             'recentTransactions' => $dashboardService->recentTransactions($user),
@@ -24,6 +32,10 @@ class DashboardController extends Controller
             'topCategories' => $dashboardService->topCategories($user),
             'dailyAverage' => round($dashboardService->dailyAverage($user), 2),
             'bestDay' => $dashboardService->bestDay($user),
+            'pinnedWallets' => $dashboardService->pinnedWallets($user),
+            'activeGoals' => $dashboardService->activeGoals($user),
+            'upcomingRecurring' => $dashboardService->upcomingRecurring($user),
+            'overBudgetAlerts' => $dashboardService->overBudgetAlerts($user),
         ]);
     }
 }

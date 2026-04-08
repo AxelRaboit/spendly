@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\PolicyAction;
 use App\Exceptions\PlanLimitException;
 use App\Http\Requests\ReorderRequest;
 use App\Http\Requests\StoreWalletRequest;
@@ -47,14 +48,14 @@ class WalletController extends Controller
 
     public function show(Wallet $wallet): RedirectResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         return redirect()->route('wallets.budget.show', $wallet);
     }
 
     public function edit(Wallet $wallet): Response
     {
-        $this->authorize('update', $wallet);
+        $this->authorize(PolicyAction::Update->value, $wallet);
 
         return Inertia::render('Wallets/Form', [
             'wallet' => $wallet,
@@ -63,7 +64,7 @@ class WalletController extends Controller
 
     public function update(UpdateWalletRequest $request, Wallet $wallet): RedirectResponse
     {
-        $this->authorize('update', $wallet);
+        $this->authorize(PolicyAction::Update->value, $wallet);
         $this->walletService->update($wallet, $request->validated());
 
         return redirect()->route('wallets.index')->with('success', __('flash.wallet.updated'));
@@ -71,8 +72,16 @@ class WalletController extends Controller
 
     public function toggleFavorite(Wallet $wallet): RedirectResponse
     {
-        $this->authorize('update', $wallet);
+        $this->authorize(PolicyAction::Update->value, $wallet);
         $this->walletService->toggleFavorite($wallet);
+
+        return back();
+    }
+
+    public function toggleDashboard(Wallet $wallet): RedirectResponse
+    {
+        $this->authorize(PolicyAction::Update->value, $wallet);
+        $this->walletService->toggleDashboard($wallet);
 
         return back();
     }
@@ -86,7 +95,7 @@ class WalletController extends Controller
 
     public function destroy(Wallet $wallet): RedirectResponse
     {
-        $this->authorize('delete', $wallet);
+        $this->authorize(PolicyAction::Delete->value, $wallet);
         $this->walletService->delete($wallet);
 
         return redirect()->route('wallets.index')->with('success', __('flash.wallet.deleted'));

@@ -169,7 +169,7 @@ function choosePro() {
                     </li>
                     <li class="flex items-center gap-2 text-xs">
                         <Sparkles class="w-3.5 h-3.5 shrink-0 text-indigo-400" />
-                        <span class="text-indigo-300/80 italic">{{ t('plan.features.andMore') }}</span>
+                        <span class="text-indigo-400 italic">{{ t('plan.features.andMore') }}</span>
                     </li>
                 </ul>
 

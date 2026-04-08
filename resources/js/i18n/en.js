@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistics',
         search: 'Transactions',
         goals: 'Goals',
+        notepad: 'Notes',
         recurring: 'Automatic',
         import: 'Import',
         plan: 'Plan',
@@ -37,6 +38,7 @@ export default {
         amount: 'Amount',
         description: 'Description',
         category: 'Category',
+        wallet: 'Wallet',
         tags: 'Tags',
         or: 'or',
         notNow: 'Not now',
@@ -118,6 +120,16 @@ export default {
         seeAll: 'See all →',
         noExpenses: 'No expenses yet.',
         noCatExpenses: 'No expenses this month.',
+        monthlyCashflow: 'Monthly cashflow',
+        income: 'Income',
+        expenses: 'Expenses',
+        cashflow: 'Net cashflow',
+        vsLastMonth: 'vs last month:',
+        budgetAlerts: 'Budget alerts',
+        alertOver: 'Exceeded',
+        alertNear: 'Near limit',
+        goalsInProgress: 'Goals in progress',
+        upcomingRecurring: 'Upcoming recurring',
     },
 
     wallets: {
@@ -138,6 +150,8 @@ export default {
         demo: 'Example',
         addFavorite: 'Add to favorites',
         removeFavorite: 'Remove from favorites',
+        pinToDashboard: 'Pin balance to dashboard',
+        removeFromDashboard: 'Remove from dashboard',
         favoriteWallets: 'Quick access',
         noFavorites: 'No favorites yet. Star a wallet from the Wallets page.',
         quickChecking: 'Checking account',
@@ -438,6 +452,7 @@ export default {
         removeMember: 'Remove member',
         revokeInvitation: 'Revoke invitation',
         emailPlaceholder: 'Email address…',
+        addAddress: 'Add another address',
     },
 
     invitation: {
@@ -482,6 +497,20 @@ export default {
         depositTip: 'Add a deposit to this goal',
         progressTip: 'Percentage of the goal reached.',
         autoSyncTip: 'The amount updates automatically from transactions in this category.',
+    },
+
+    notepad: {
+        title: 'Notes',
+        newNote: 'New note',
+        untitled: 'Untitled',
+        titlePlaceholder: 'Title…',
+        contentPlaceholder: 'Start writing…',
+        saved: 'Saved',
+        saving: 'Saving…',
+        confirmDelete: 'Delete this note?',
+        empty: 'No notes yet.',
+        emptyHint: 'Create your first note to keep your ideas organised.',
+        lastEdited: 'Edited on {date}',
     },
 
     recurring: {
@@ -542,7 +571,9 @@ export default {
         noWallets: 'No wallets.',
         viewBudget: 'View budget',
         favoriteTip: 'This wallet is a favorite and appears on the dashboard.',
-        trend: 'Income vs Expenses — last 6 months',
+        trend: 'Income vs Expenses',
+        months: 'm',
+        monthsFull: 'months',
         byCategory: 'Expenses by category',
         noCategoryData: 'No expenses this month.',
     },
@@ -800,6 +831,19 @@ export default {
         leave: 'Return to my account',
     },
     tour: {
+        start: 'Start',
+        modal: {
+            title: 'Getting started guides',
+            subtitle: 'Select a guide to explore the features.',
+            lightModeHint: 'Guides are more visible in light mode. Would you like to enable it?',
+            enableLightMode: 'Switch to light mode',
+        },
+        guides: {
+            wallet: {
+                title: 'Wallet & Budget',
+                desc: 'Learn how to create a wallet, manage your monthly budget and track your expenses.',
+            },
+        },
         next: 'Next',
         prev: 'Previous',
         done: 'Finish',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Enums\WalletRole;
 use App\Http\Requests\UpdateWalletMemberRequest;
 use App\Models\Wallet;
@@ -24,7 +25,7 @@ class WalletMemberController extends Controller
 
     public function index(Request $request, Wallet $wallet): JsonResponse
     {
-        $this->authorize('view', $wallet);
+        $this->authorize(PolicyAction::View->value, $wallet);
 
         return response()->json([
             'members' => $this->memberService->listMembers($wallet),
@@ -34,7 +35,7 @@ class WalletMemberController extends Controller
 
     public function update(UpdateWalletMemberRequest $updateWalletMemberRequest, Wallet $wallet, WalletMember $member): JsonResponse
     {
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         try {
             $this->memberService->updateRole($member, WalletRole::from($updateWalletMemberRequest->validated()['role']));
@@ -47,7 +48,7 @@ class WalletMemberController extends Controller
 
     public function transferOwnership(Request $request, Wallet $wallet, WalletMember $member): JsonResponse
     {
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         try {
             $currentOwner = $this->memberService->findMember($wallet, $request->user());
@@ -71,7 +72,7 @@ class WalletMemberController extends Controller
             return response()->json(null, HttpStatus::NoContent->value);
         }
 
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         try {
             $this->memberService->removeMember($member);

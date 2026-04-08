@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import AppLogo from '@/components/ui/AppLogo.vue';
 import AppToast from '@/components/ui/AppToast.vue';
+import TourSelectionModal from '@/components/ui/TourSelectionModal.vue';
 import UpgradePrompt from '@/components/ui/UpgradePrompt.vue';
 import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
@@ -15,6 +16,7 @@ import {
     Wallet,
     ClipboardList,
     BadgeCheck,
+    NotebookPen,
     Repeat,
     Tag,
     Wand2,
@@ -37,6 +39,7 @@ import { useTour } from '@/composables/ui/useTour';
 
 const { t } = useI18n();
 const showMobileMenu = ref(false);
+const showTourModal = ref(false);
 const { message: flashMessage, type: flashType, dismiss: dismissFlash } = useFlash();
 const { theme, toggle: toggleTheme } = useTheme();
 const page = usePage();
@@ -106,6 +109,12 @@ const navItems = [
         icon: BadgeCheck,
     },
     {
+        key: 'notepad',
+        route: 'notes.index',
+        match: 'notes.*',
+        icon: NotebookPen,
+    },
+    {
         key: 'recurring',
         route: 'recurring.index',
         match: 'recurring.*',
@@ -139,7 +148,7 @@ const navItems = [
 ];
 
 // Tour
-const { startTour } = useTour();
+useTour();
 
 // Impersonation
 function leaveImpersonation() {
@@ -277,7 +286,7 @@ const devNavItem = computed(() => {
                 <button
                     class="flex items-center rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors w-full group relative"
                     :class="collapsed ? 'justify-center py-2.5' : 'gap-3 px-3 py-2.5'"
-                    v-on:click="startTour"
+                    v-on:click="showTourModal = true"
                 >
                     <Map class="w-5 h-5 text-muted shrink-0" />
                     <span v-if="!collapsed">{{ t('nav.tour') }}</span>
@@ -454,7 +463,7 @@ const devNavItem = computed(() => {
                             </div>
                             <button
                                 class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
-                                v-on:click="startTour(); showMobileMenu = false"
+                                v-on:click="showTourModal = true; showMobileMenu = false"
                             >
                                 <Map class="w-5 h-5 text-muted shrink-0" />
                                 {{ t('nav.tour') }}
@@ -525,7 +534,7 @@ const devNavItem = computed(() => {
                 </button>
             </div>
 
-            <div v-if="isTrialing" class="bg-indigo-600/10 border-b border-indigo-500/30 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-300">
+            <div v-if="isTrialing" class="bg-indigo-600/15 border-b border-indigo-500/40 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-400">
                 <span>{{ trialLabel }}</span>
                 <Link :href="route('plan.index')" class="underline hover:text-indigo-200 transition-colors font-medium">
                     {{ t('trial.bannerLink') }}
@@ -562,5 +571,7 @@ const devNavItem = computed(() => {
             :limit-value="planErrorLimit"
             v-on:close="showUpgradePrompt = false"
         />
+
+        <TourSelectionModal :show="showTourModal" v-on:close="showTourModal = false" />
     </div>
 </template>

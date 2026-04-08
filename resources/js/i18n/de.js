@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistiken',
         search: 'Transaktionen',
         goals: 'Ziele',
+        notepad: 'Notizen',
         recurring: 'Automatisch',
         import: 'Importieren',
         plan: 'Tarif',
@@ -37,6 +38,7 @@ export default {
         amount: 'Betrag',
         description: 'Beschreibung',
         category: 'Kategorie',
+        wallet: 'Geldbörse',
         tags: 'Tags',
         or: 'oder',
         notNow: 'Nicht jetzt',
@@ -111,6 +113,16 @@ export default {
         seeAll: 'Alle anzeigen →',
         noExpenses: 'Noch keine Ausgaben.',
         noCatExpenses: 'Keine Ausgaben diesen Monat.',
+        monthlyCashflow: 'Monatliche Bilanz',
+        income: 'Einnahmen',
+        expenses: 'Ausgaben',
+        cashflow: 'Netto-Cashflow',
+        vsLastMonth: 'vs. letzter Monat:',
+        budgetAlerts: 'Budget-Warnungen',
+        alertOver: 'Überschritten',
+        alertNear: 'Fast erreicht',
+        goalsInProgress: 'Laufende Ziele',
+        upcomingRecurring: 'Nächste Wiederkehrende',
     },
 
     wallets: {
@@ -131,6 +143,8 @@ export default {
         demo: 'Beispiel',
         addFavorite: 'Zu Favoriten hinzufügen',
         removeFavorite: 'Aus Favoriten entfernen',
+        pinToDashboard: 'Guthaben im Dashboard anzeigen',
+        removeFromDashboard: 'Aus dem Dashboard entfernen',
         favoriteWallets: 'Schnellzugriff',
         noFavorites: 'Noch keine Favoriten. Markiere eine Geldbörse auf der Geldbörsen-Seite.',
         quickChecking: 'Girokonto',
@@ -433,6 +447,7 @@ export default {
         removeMember: 'Mitglied entfernen',
         revokeInvitation: 'Einladung widerrufen',
         emailPlaceholder: 'E-Mail-Adresse…',
+        addAddress: 'Weitere Adresse hinzufügen',
     },
 
     invitation: {
@@ -477,6 +492,20 @@ export default {
         depositTip: 'Eine Einzahlung zu diesem Ziel hinzufügen',
         progressTip: 'Prozentsatz des erreichten Ziels.',
         autoSyncTip: 'Der Betrag wird automatisch aus den Transaktionen dieser Kategorie aktualisiert.',
+    },
+
+    notepad: {
+        title: 'Notizen',
+        newNote: 'Neue Notiz',
+        untitled: 'Ohne Titel',
+        titlePlaceholder: 'Titel…',
+        contentPlaceholder: 'Schreiben Sie hier…',
+        saved: 'Gespeichert',
+        saving: 'Speichern…',
+        confirmDelete: 'Diese Notiz löschen?',
+        empty: 'Noch keine Notizen.',
+        emptyHint: 'Erstellen Sie Ihre erste Notiz, um Ihre Ideen zu organisieren.',
+        lastEdited: 'Bearbeitet am {date}',
     },
 
     recurring: {
@@ -537,7 +566,9 @@ export default {
         noWallets: 'Keine Geldbörsen.',
         viewBudget: 'Budget anzeigen',
         favoriteTip: 'Diese Geldbörse ist ein Favorit und wird im Dashboard angezeigt.',
-        trend: 'Einnahmen vs Ausgaben — letzte 6 Monate',
+        trend: 'Einnahmen vs Ausgaben',
+        months: 'M',
+        monthsFull: 'Monate',
         byCategory: 'Ausgaben nach Kategorie',
         noCategoryData: 'Keine Ausgaben diesen Monat.',
     },
@@ -796,6 +827,19 @@ export default {
         leave: 'Zu meinem Konto zurückkehren',
     },
     tour: {
+        start: 'Starten',
+        modal: {
+            title: 'Einführungsanleitungen',
+            subtitle: 'Wählen Sie eine Anleitung, um die Funktionen zu erkunden.',
+            lightModeHint: 'Anleitungen sind im hellen Modus besser sichtbar. Möchten Sie ihn aktivieren?',
+            enableLightMode: 'Zum hellen Modus wechseln',
+        },
+        guides: {
+            wallet: {
+                title: 'Geldbörse & Budget',
+                desc: 'Erfahren Sie, wie Sie eine Geldbörse erstellen, Ihr Monatsbudget verwalten und Ihre Ausgaben verfolgen.',
+            },
+        },
         next: 'Weiter',
         prev: 'Zurück',
         done: 'Fertig',

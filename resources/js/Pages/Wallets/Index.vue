@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
@@ -42,6 +42,10 @@ const canCreateWallet = computed(() => canCreate('wallet', props.wallets.length)
 
 function toggleFavorite(wallet) {
     router.post(`/wallets/${wallet.id}/favorite`, {}, { preserveScroll: true });
+}
+
+function toggleDashboard(wallet) {
+    router.post(`/wallets/${wallet.id}/dashboard`, {}, { preserveScroll: true });
 }
 
 // ── Drag-and-drop reorder ─────────────────────────────────────────────────
@@ -149,24 +153,47 @@ function quickCreate(name) {
                     </div>
 
                     <div class="flex items-center justify-between pt-3">
-                        <AppTooltip :text="wallet.is_favorite ? t('wallets.removeFavorite') : t('wallets.addFavorite')">
-                            <button
-                                class="transition-colors"
-                                :class="wallet.is_favorite ? 'text-amber-400 hover:text-amber-300' : 'text-muted hover:text-amber-400'"
-                                v-on:click="toggleFavorite(wallet)"
-                            >
-                                <Star class="w-4 h-4" :fill="wallet.is_favorite ? 'currentColor' : 'none'" />
-                            </button>
-                        </AppTooltip>
+                        <div class="flex items-center gap-2">
+                            <AppTooltip :text="wallet.is_favorite ? t('wallets.removeFavorite') : t('wallets.addFavorite')">
+                                <button
+                                    class="transition-colors"
+                                    :class="wallet.is_favorite ? 'text-amber-400 hover:text-amber-300' : 'text-muted hover:text-amber-400'"
+                                    v-on:click="toggleFavorite(wallet)"
+                                >
+                                    <Star class="w-4 h-4" :fill="wallet.is_favorite ? 'currentColor' : 'none'" />
+                                </button>
+                            </AppTooltip>
+                            <AppTooltip :text="wallet.show_on_dashboard ? t('wallets.removeFromDashboard') : t('wallets.pinToDashboard')">
+                                <button
+                                    class="transition-colors"
+                                    :class="wallet.show_on_dashboard ? 'text-indigo-400 hover:text-indigo-300' : 'text-muted hover:text-indigo-400'"
+                                    v-on:click="toggleDashboard(wallet)"
+                                >
+                                    <LayoutDashboard class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
+                        </div>
                         <div class="flex items-center gap-2">
                             <AppTooltip v-if="showProFeatures || wallet.is_shared" :text="t('sharing.members')">
                                 <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="openMembers(wallet)">
                                     <Users class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
-                            <EditButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" :href="`/wallets/${wallet.id}/edit`" />
-                            <DeleteButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
-                            <DeleteButton v-if="wallet.is_demo" v-on:click="deleteDemoWallet(wallet)" />
+                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.edit')">
+                                <Link :href="`/wallets/${wallet.id}/edit`" class="text-muted hover:text-indigo-400 transition-colors" v-on:dragstart.prevent>
+                                    <Pencil class="w-4 h-4" />
+                                </Link>
+                            </AppTooltip>
+                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.delete')">
+                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(`/wallets/${wallet.id}`)">
+                                    <Trash2 class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
+                            <AppTooltip v-if="wallet.is_demo" :text="t('common.delete')">
+                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteDemoWallet(wallet)">
+                                    <Trash2 class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
                         </div>
                     </div>
                 </div>
