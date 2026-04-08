@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, onBeforeUnmount } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Trash2, Check, Loader2, X, Eye, Pencil } from 'lucide-vue-next';
 import { marked } from 'marked';
@@ -89,6 +89,7 @@ function deleteNote() {
 
 <template>
     <AuthenticatedLayout>
+        <Head :title="note.title || t('notepad.untitled')" />
         <template #header>
             <div class="flex items-center justify-between gap-4">
                 <AppPageHeader
