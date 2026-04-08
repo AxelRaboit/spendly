@@ -61,6 +61,7 @@ export function useTourDriver() {
             stagePadding: 12,
             stageRadius: 12,
             disableActiveInteraction: true,
+            allowKeyboardControl: false,
             overlayClickBehavior: () => {},
             scrollIntoViewOptions: { behavior: 'auto', block: 'center', inline: 'nearest' },
             onHighlightStarted: (element) => {
@@ -160,7 +161,7 @@ export function useTourDriver() {
                         if (prep) {
                             prep();
                             await nextTick();
-                            await new Promise((r) => setTimeout(r, 300));
+                            await new Promise((resolve) => setTimeout(resolve, 300));
                         }
                         driverObj.moveNext();
                     } else {
