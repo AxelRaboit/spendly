@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
 import { Bar, Doughnut } from 'vue-chartjs';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -18,14 +18,24 @@ const { fmtMonth } = useFmtMonth();
 const { barOptions, textColor, gridColor, labelColor } = useChartTheme();
 
 const props = defineProps({
-    month:      String,
-    prev:       String,
-    next:       String,
-    wallets:    Array,
-    totals:     Object,
-    trend:      { type: Array, default: () => [] },
-    byCategory: { type: Array, default: () => [] },
+    month:       String,
+    prev:        String,
+    next:        String,
+    trendMonths: { type: Number, default: 6 },
+    wallets:     Array,
+    totals:      Object,
+    trend:       { type: Array, default: () => [] },
+    byCategory:  { type: Array, default: () => [] },
 });
+
+const TREND_PERIODS = [3, 6, 12];
+
+function setTrendPeriod(months) {
+    router.get(route('overview.index'), { month: props.month, trend_months: months }, {
+        preserveScroll: true,
+        only: ['trend', 'trendMonths'],
+    });
+}
 
 function cashFlowClass(val) {
     if (val > 0) return 'text-emerald-400';
@@ -125,7 +135,22 @@ const donutOptions = computed(() => ({
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-surface border border-base/60 rounded-xl p-4">
-                    <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('overview.trend') }}</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-semibold text-secondary">{{ t('overview.trend') }}</h3>
+                        <div class="flex items-center gap-1">
+                            <button
+                                v-for="period in TREND_PERIODS"
+                                :key="period"
+                                v-on:click="setTrendPeriod(period)"
+                                class="px-2 py-0.5 text-xs rounded transition-colors"
+                                :class="trendMonths === period
+                                    ? 'bg-indigo-500/20 text-indigo-400 font-semibold'
+                                    : 'text-muted hover:text-secondary'"
+                            >
+                                {{ period }}{{ t('overview.months') }}
+                            </button>
+                        </div>
+                    </div>
                     <div class="h-52">
                         <Bar :data="trendData" :options="trendOptions" />
                     </div>

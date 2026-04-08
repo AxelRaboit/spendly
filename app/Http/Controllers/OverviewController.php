@@ -15,14 +15,18 @@ class OverviewController extends Controller
     {
         $user = $request->user();
         $month = $request->input('month', now()->format('Y-m'));
+        $trendMonths = in_array((int) $request->input('trend_months', 6), [3, 6, 12])
+            ? (int) $request->input('trend_months', 6)
+            : 6;
 
         return Inertia::render('Overview/Index', [
             'month' => $month,
             'prev' => now()->createFromFormat('Y-m', $month)->subMonth()->format('Y-m'),
             'next' => now()->createFromFormat('Y-m', $month)->addMonth()->format('Y-m'),
+            'trendMonths' => $trendMonths,
             'wallets' => $overviewService->walletsForMonth($user, $month),
             'totals' => $overviewService->totalsForMonth($user, $month),
-            'trend' => $overviewService->trendForMonths($user, $month),
+            'trend' => $overviewService->trendForMonths($user, $month, $trendMonths),
             'byCategory' => $overviewService->expensesByCategory($user, $month),
         ]);
     }
