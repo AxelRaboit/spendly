@@ -539,6 +539,7 @@ export default {
         favoriteTip: 'Esta cartera es favorita y aparece en el panel.',
         trend: 'Ingresos vs Gastos',
         months: 'm',
+        monthsFull: 'meses',
         byCategory: 'Gastos por categoría',
         noCategoryData: 'Sin gastos este mes.',
     },

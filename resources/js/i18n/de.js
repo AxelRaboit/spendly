@@ -540,6 +540,7 @@ export default {
         favoriteTip: 'Diese Geldbörse ist ein Favorit und wird im Dashboard angezeigt.',
         trend: 'Einnahmen vs Ausgaben',
         months: 'M',
+        monthsFull: 'Monate',
         byCategory: 'Ausgaben nach Kategorie',
         noCategoryData: 'Keine Ausgaben diesen Monat.',
     },

@@ -15,7 +15,7 @@ class OverviewController extends Controller
     {
         $user = $request->user();
         $month = $request->input('month', now()->format('Y-m'));
-        $trendMonths = in_array((int) $request->input('trend_months', 6), [3, 6, 12])
+        $trendMonths = in_array((int) $request->input('trend_months', 6), [3, 6, 12], true)
             ? (int) $request->input('trend_months', 6)
             : 6;
 

@@ -545,6 +545,7 @@ export default {
         favoriteTip: 'This wallet is a favorite and appears on the dashboard.',
         trend: 'Income vs Expenses',
         months: 'm',
+        monthsFull: 'months',
         byCategory: 'Expenses by category',
         noCategoryData: 'No expenses this month.',
     },

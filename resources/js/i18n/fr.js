@@ -545,6 +545,7 @@ export default {
         favoriteTip: 'Ce portefeuille est en favori et apparaît sur le tableau de bord.',
         trend: 'Revenus vs Dépenses',
         months: 'm',
+        monthsFull: 'mois',
         byCategory: 'Dépenses par catégorie',
         noCategoryData: 'Aucune dépense ce mois.',
     },

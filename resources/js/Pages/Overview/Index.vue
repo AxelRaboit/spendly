@@ -5,8 +5,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
 import { Bar, Doughnut } from 'vue-chartjs';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
+import AppModal from '@/components/ui/AppModal.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Maximize2, X } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -29,10 +31,12 @@ const props = defineProps({
 });
 
 const TREND_PERIODS = [3, 6, 12];
+const showTrendModal = ref(false);
 
 function setTrendPeriod(months) {
     router.get(route('overview.index'), { month: props.month, trend_months: months }, {
         preserveScroll: true,
+        preserveState: true,
         only: ['trend', 'trendMonths'],
     });
 }
@@ -137,17 +141,25 @@ const donutOptions = computed(() => ({
                 <div class="bg-surface border border-base/60 rounded-xl p-4">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-secondary">{{ t('overview.trend') }}</h3>
-                        <div class="flex items-center gap-1">
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1">
+                                <button
+                                    v-for="period in TREND_PERIODS"
+                                    :key="period"
+                                    class="px-2 py-0.5 text-xs rounded transition-colors"
+                                    :class="trendMonths === period
+                                        ? 'bg-indigo-500/20 text-indigo-400 font-semibold'
+                                        : 'text-muted hover:text-secondary'"
+                                    v-on:click="setTrendPeriod(period)"
+                                >
+                                    {{ period }}{{ t('overview.months') }}
+                                </button>
+                            </div>
                             <button
-                                v-for="period in TREND_PERIODS"
-                                :key="period"
-                                v-on:click="setTrendPeriod(period)"
-                                class="px-2 py-0.5 text-xs rounded transition-colors"
-                                :class="trendMonths === period
-                                    ? 'bg-indigo-500/20 text-indigo-400 font-semibold'
-                                    : 'text-muted hover:text-secondary'"
+                                class="text-muted hover:text-secondary transition-colors"
+                                v-on:click="showTrendModal = true"
                             >
-                                {{ period }}{{ t('overview.months') }}
+                                <Maximize2 class="w-3.5 h-3.5" />
                             </button>
                         </div>
                     </div>
@@ -247,5 +259,34 @@ const donutOptions = computed(() => ({
                 </div>
             </div>
         </div>
+        <AppModal :show="showTrendModal" max-width="max-w-4xl" v-on:close="showTrendModal = false">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-sm font-semibold text-primary">{{ t('overview.trend') }}</h3>
+                    <p class="text-xs text-muted mt-0.5">{{ trendMonths }} {{ t('overview.monthsFull') }}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                        <button
+                            v-for="period in TREND_PERIODS"
+                            :key="period"
+                            class="px-2 py-0.5 text-xs rounded transition-colors"
+                            :class="trendMonths === period
+                                ? 'bg-indigo-500/20 text-indigo-400 font-semibold'
+                                : 'text-muted hover:text-secondary'"
+                            v-on:click="setTrendPeriod(period)"
+                        >
+                            {{ period }}{{ t('overview.months') }}
+                        </button>
+                    </div>
+                    <button class="text-muted hover:text-secondary transition-colors" v-on:click="showTrendModal = false">
+                        <X class="w-4 h-4" />
+                    </button>
+                </div>
+            </div>
+            <div class="h-80">
+                <Bar :data="trendData" :options="trendOptions" />
+            </div>
+        </AppModal>
     </AuthenticatedLayout>
 </template>
