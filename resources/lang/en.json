@@ -139,6 +139,8 @@
     "flash.scheduled.deleted": "Scheduled transaction deleted.",
     "flash.import.created": ":created transaction(s) imported.",
     "flash.import.created_with_errors": ":created transaction(s) imported, :errors skipped.",
+    "flash.note.updated": "Note saved.",
+    "flash.note.deleted": "Note deleted.",
     "budgets.errors.categoryUsed": "This category is already used in this budget.",
     "admin.invitations.sent": "Invitation sent to :email.",
     "mail.app_invitation.subject": "You're invited to join Spendly",

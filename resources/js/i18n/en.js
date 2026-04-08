@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistics',
         search: 'Transactions',
         goals: 'Goals',
+        notepad: 'Notes',
         recurring: 'Automatic',
         import: 'Import',
         plan: 'Plan',
@@ -496,6 +497,20 @@ export default {
         depositTip: 'Add a deposit to this goal',
         progressTip: 'Percentage of the goal reached.',
         autoSyncTip: 'The amount updates automatically from transactions in this category.',
+    },
+
+    notepad: {
+        title: 'Notes',
+        newNote: 'New note',
+        untitled: 'Untitled',
+        titlePlaceholder: 'Title…',
+        contentPlaceholder: 'Start writing…',
+        saved: 'Saved',
+        saving: 'Saving…',
+        confirmDelete: 'Delete this note?',
+        empty: 'No notes yet.',
+        emptyHint: 'Create your first note to keep your ideas organised.',
+        lastEdited: 'Edited on {date}',
     },
 
     recurring: {

@@ -16,6 +16,7 @@ import {
     Wallet,
     ClipboardList,
     BadgeCheck,
+    NotebookPen,
     Repeat,
     Tag,
     Wand2,
@@ -106,6 +107,12 @@ const navItems = [
         route: 'goals.index',
         match: 'goals.*',
         icon: BadgeCheck,
+    },
+    {
+        key: 'notepad',
+        route: 'notes.index',
+        match: 'notes.*',
+        icon: NotebookPen,
     },
     {
         key: 'recurring',

@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistiken',
         search: 'Transaktionen',
         goals: 'Ziele',
+        notepad: 'Notizen',
         recurring: 'Automatisch',
         import: 'Importieren',
         plan: 'Tarif',
@@ -491,6 +492,20 @@ export default {
         depositTip: 'Eine Einzahlung zu diesem Ziel hinzufügen',
         progressTip: 'Prozentsatz des erreichten Ziels.',
         autoSyncTip: 'Der Betrag wird automatisch aus den Transaktionen dieser Kategorie aktualisiert.',
+    },
+
+    notepad: {
+        title: 'Notizen',
+        newNote: 'Neue Notiz',
+        untitled: 'Ohne Titel',
+        titlePlaceholder: 'Titel…',
+        contentPlaceholder: 'Schreiben Sie hier…',
+        saved: 'Gespeichert',
+        saving: 'Speichern…',
+        confirmDelete: 'Diese Notiz löschen?',
+        empty: 'Noch keine Notizen.',
+        emptyHint: 'Erstellen Sie Ihre erste Notiz, um Ihre Ideen zu organisieren.',
+        lastEdited: 'Bearbeitet am {date}',
     },
 
     recurring: {

@@ -8,6 +8,7 @@ export default {
         statistics: 'Statistiques',
         search: 'Transactions',
         goals: 'Objectifs',
+        notepad: 'Notes',
         recurring: 'Automatiques',
         import: 'Importer',
         plan: 'Formule',
@@ -496,6 +497,22 @@ export default {
         depositTip: 'Ajouter un dépôt à cet objectif',
         progressTip: "Pourcentage de l'objectif atteint.",
         autoSyncTip: 'Le montant se met à jour automatiquement depuis les transactions de cette catégorie.',
+    },
+
+    notepad: {
+        title: 'Notes',
+        newNote: 'Nouvelle note',
+        untitled: 'Sans titre',
+        titlePlaceholder: 'Titre…',
+        contentPlaceholder: 'Commencez à écrire…',
+        saved: 'Enregistré',
+        saving: 'Enregistrement…',
+        confirmDelete: 'Supprimer cette note ?',
+        empty: "Aucune note pour l'instant.",
+        emptyHint: 'Créez votre première note pour garder vos idées organisées.',
+        lastEdited: 'Modifié le {date}',
+        searchPlaceholder: 'Rechercher dans les notes…',
+        tagPlaceholder: 'Ajouter un tag…',
     },
 
     recurring: {

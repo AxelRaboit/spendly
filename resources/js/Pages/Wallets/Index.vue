@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus, LayoutDashboard } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Star, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2 } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
@@ -179,9 +179,21 @@ function quickCreate(name) {
                                     <Users class="w-4 h-4" />
                                 </button>
                             </AppTooltip>
-                            <EditButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" :href="`/wallets/${wallet.id}/edit`" />
-                            <DeleteButton v-if="wallet.user_role === 'owner' && !wallet.is_demo" v-on:click="confirmDelete(`/wallets/${wallet.id}`)" />
-                            <DeleteButton v-if="wallet.is_demo" v-on:click="deleteDemoWallet(wallet)" />
+                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.edit')">
+                                <Link :href="`/wallets/${wallet.id}/edit`" class="text-muted hover:text-indigo-400 transition-colors" v-on:dragstart.prevent>
+                                    <Pencil class="w-4 h-4" />
+                                </Link>
+                            </AppTooltip>
+                            <AppTooltip v-if="wallet.user_role === 'owner' && !wallet.is_demo" :text="t('common.delete')">
+                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(`/wallets/${wallet.id}`)">
+                                    <Trash2 class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
+                            <AppTooltip v-if="wallet.is_demo" :text="t('common.delete')">
+                                <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="deleteDemoWallet(wallet)">
+                                    <Trash2 class="w-4 h-4" />
+                                </button>
+                            </AppTooltip>
                         </div>
                     </div>
                 </div>
