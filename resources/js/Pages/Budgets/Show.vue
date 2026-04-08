@@ -823,6 +823,7 @@ onUnmounted(() => {
                         variant="secondary"
                         v-on:click="copyFromPrevious()"
                     >
+                        <Copy class="w-4 h-4 mr-1.5" />
                         {{ t('budgets.copyFromPrevious', { month: fmtMonth(prevMonth) }) }}
                     </AppButton>
                     <AppButton
@@ -831,6 +832,7 @@ onUnmounted(() => {
                         variant="secondary"
                         v-on:click="copyRepeat()"
                     >
+                        <Copy class="w-4 h-4 mr-1.5" />
                         {{ t('budgets.copyRepeat') }}
                     </AppButton>
                     <AppButton
@@ -839,6 +841,7 @@ onUnmounted(() => {
                         variant="secondary"
                         v-on:click="exportXlsx()"
                     >
+                        <FileText class="w-4 h-4 mr-1.5" />
                         {{ t('budgets.exportXlsx') }}
                     </AppButton>
                     <AppButton
@@ -847,6 +850,7 @@ onUnmounted(() => {
                         variant="danger-outline"
                         v-on:click="clearAll"
                     >
+                        <Trash2 class="w-4 h-4 mr-1.5" />
                         {{ t('budgets.clearAll') }}
                     </AppButton>
                 </div>
