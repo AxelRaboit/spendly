@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch, onBeforeUnmount, provide } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -133,6 +134,7 @@ async function confirmDelete() {
 
 <template>
     <AuthenticatedLayout>
+        <Head :title="t('notepad.title')" />
         <template #header>
             <AppPageHeader :title="t('notepad.title')" />
         </template>
