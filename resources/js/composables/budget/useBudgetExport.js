@@ -1,5 +1,20 @@
 import { applyStyles, diffColor, XLSX_COLORS, xStyle } from './excelStyles.js';
 
+/**
+ * Budget Excel Export
+ *
+ * Generates and downloads budget data as an Excel file.
+ * Includes formatted sections, totals, and color-coded variance analysis.
+ *
+ * @param {Ref<Object>} sections - Budget sections with items (income, savings, bills, expenses, debt)
+ * @param {Ref<Object>} totals - Aggregated totals per section (planned, actual)
+ * @param {Ref<Object>} sectionMeta - Metadata for sections (labels, colors, positiveIsGood flags)
+ * @param {Ref<Object>} budget - Budget metadata
+ * @param {Function} t - i18n translation function
+ *
+ * @returns {Object}
+ *   - exportXlsx: Async function to generate and download Excel file
+ */
 export function useBudgetExport(sections, totals, sectionMeta, budget, t) {
     async function exportXlsx() {
         const XLSXModule = await import('xlsx-js-style');

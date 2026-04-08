@@ -795,6 +795,17 @@ export default {
         leave: 'Volver a mi cuenta',
     },
     tour: {
+        start: 'Iniciar',
+        modal: {
+            title: 'Guías de inicio',
+            subtitle: 'Seleccione una guía para explorar las funcionalidades.',
+        },
+        guides: {
+            wallet: {
+                title: 'Cartera & Presupuesto',
+                desc: 'Aprenda a crear una cartera, gestionar su presupuesto mensual y controlar sus gastos.',
+            },
+        },
         next: 'Siguiente',
         prev: 'Anterior',
         done: 'Terminar',

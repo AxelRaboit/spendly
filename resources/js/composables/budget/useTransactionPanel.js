@@ -3,6 +3,38 @@ import { router, useForm } from '@inertiajs/vue3';
 import { useSectionCategoryFilter } from './useSectionCategoryFilter.js';
 import { useAutoCategory } from '@/composables/forms/useAutoCategory.js';
 
+/**
+ * Transaction Panel - Add/Edit Transactions
+ *
+ * Manages the transaction creation and editing UI panel.
+ * Handles form state, category filtering, auto-categorization, and split transactions.
+ *
+ * Composed of:
+ * - useSectionCategoryFilter: Filters available categories by budget section
+ * - useAutoCategory: Suggests categories based on transaction description
+ *
+ * @param {Object} walletId - Wallet ID (usually computed ref)
+ * @param {Object} budget - Budget metadata
+ * @param {Object} sections - Budget sections with items
+ * @param {Object} flash - Flash message state
+ * @param {Object} categories - Available categories list
+ *
+ * @returns {Object}
+ *   - txPanel: Ref for panel visibility
+ *   - txPrefillLabel: Ref for prefill text (e.g., from budget row click)
+ *   - txForm: Inertia form object with transaction fields (wallet_id, type, category_id, amount, description, date, tags, attachment)
+ *   - txSection: Ref for selected budget section (income/savings/bills/expenses/debt)
+ *   - txFilteredCategories: Computed list of available categories for selected section
+ *   - editingTx: Ref to transaction being edited
+ *   - suggestedCategoryId: Auto-suggested category from description
+ *   - markCategoryManual: Function to mark category as manually selected (disables auto-suggestion)
+ *   - openTxPanel: Open panel for new transaction (with optional prefill)
+ *   - openEditTx: Open panel to edit existing transaction
+ *   - closeTxPanel: Close panel and reset form
+ *   - submitTx: Submit new/edited transaction
+ *   - submitSplit: Submit split transaction
+ *   - onTxSectionChange: Handle section change (filters categories)
+ */
 export function useTransactionPanel(walletId, budget, sections, flash, categories) {
     const txPanel = ref(false);
     const txPrefillLabel = ref('');

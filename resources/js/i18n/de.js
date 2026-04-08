@@ -797,6 +797,17 @@ export default {
         leave: 'Zu meinem Konto zurückkehren',
     },
     tour: {
+        start: 'Starten',
+        modal: {
+            title: 'Einführungsanleitungen',
+            subtitle: 'Wählen Sie eine Anleitung, um die Funktionen zu erkunden.',
+        },
+        guides: {
+            wallet: {
+                title: 'Geldbörse & Budget',
+                desc: 'Erfahren Sie, wie Sie eine Geldbörse erstellen, Ihr Monatsbudget verwalten und Ihre Ausgaben verfolgen.',
+            },
+        },
         next: 'Weiter',
         prev: 'Zurück',
         done: 'Fertig',

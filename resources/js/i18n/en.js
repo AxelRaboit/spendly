@@ -801,6 +801,17 @@ export default {
         leave: 'Return to my account',
     },
     tour: {
+        start: 'Start',
+        modal: {
+            title: 'Getting started guides',
+            subtitle: 'Select a guide to explore the features.',
+        },
+        guides: {
+            wallet: {
+                title: 'Wallet & Budget',
+                desc: 'Learn how to create a wallet, manage your monthly budget and track your expenses.',
+            },
+        },
         next: 'Next',
         prev: 'Previous',
         done: 'Finish',

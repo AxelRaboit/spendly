@@ -1,6 +1,23 @@
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 
+/**
+ * Drag & Drop Reordering
+ *
+ * Manages budget item reordering via drag-and-drop.
+ * Maintains local state and syncs changes to backend.
+ *
+ * @param {Object} walletId - Wallet ID (usually a computed ref)
+ * @param {Object} sections - Reactive sections object with budget items
+ *
+ * @returns {Object}
+ *   - draggingId: Ref to ID of item being dragged
+ *   - dragOverId: Ref to ID of item under drag cursor
+ *   - onDragStart: Handler for drag start event
+ *   - onDragOver: Handler for drag over event
+ *   - onDrop: Handler for drop event (performs reorder)
+ *   - onDragEnd: Handler for drag end event
+ */
 export function useDragDropReorder(walletId, sections) {
     const draggingId = ref(null);
     const dragOverId = ref(null);

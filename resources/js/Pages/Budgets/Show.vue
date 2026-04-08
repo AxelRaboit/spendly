@@ -29,6 +29,7 @@ import { useFmtMonth }       from '@/composables/core/useFmtMonth';
 import { useTransactionPanel } from '@/composables/budget/useTransactionPanel';
 import { useItemTransactions } from '@/composables/budget/useItemTransactions';
 import { useUnbudgetedTransactions } from '@/composables/budget/useUnbudgetedTransactions';
+import { useQuickCategoryCreate } from '@/composables/budget/useQuickCategoryCreate';
 import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
@@ -88,49 +89,15 @@ const availableCategoriesForEdit = computed(() =>
     localCategories.value.filter(c => !usedCategoryIds.value.has(c.id) || c.id === editingOriginalCategoryId.value),
 );
 
-const creatingCategory = ref(false);
-const newCategoryName = ref('');
-const creatingCategoryLoading = ref(false);
-const categoryTargetForm = ref(null);
-
-function onCategoryChange(form) {
-    if (form.category_id === '__create__') {
-        form.category_id = null;
-        categoryTargetForm.value = form;
-        creatingCategory.value = true;
-        nextTick(() => document.querySelector('[data-new-category]')?.focus());
-        return;
-    }
-    if (form.category_id && !form.label) {
-        const cat = localCategories.value.find(c => c.id === Number(form.category_id));
-        if (cat) form.label = cat.name;
-    }
-}
-
-async function createCategory() {
-    const name = newCategoryName.value.trim();
-    if (!name || creatingCategoryLoading.value) return;
-    creatingCategoryLoading.value = true;
-    try {
-        const { data: cat } = await window.axios.post('/categories/quick', { name, wallet_id: props.wallet.id });
-        localCategories.value = [...localCategories.value, cat].sort((a, b) => a.name.localeCompare(b.name));
-        if (categoryTargetForm.value) {
-            categoryTargetForm.value.category_id = cat.id;
-            if (!categoryTargetForm.value.label) categoryTargetForm.value.label = cat.name;
-        }
-    } finally {
-        creatingCategoryLoading.value = false;
-        creatingCategory.value = false;
-        newCategoryName.value = '';
-        categoryTargetForm.value = null;
-    }
-}
-
-function cancelCreateCategory() {
-    creatingCategory.value = false;
-    newCategoryName.value = '';
-    categoryTargetForm.value = null;
-}
+const {
+    creatingCategory,
+    newCategoryName,
+    creatingCategoryLoading,
+    categoryTargetForm,
+    onCategoryChange,
+    createCategory,
+    cancelCreateCategory,
+} = useQuickCategoryCreate(props.wallet.id, localCategories);
 
 async function handleSubmitAdd() {
     if (creatingCategory.value && categoryTargetForm.value === addForm && newCategoryName.value.trim()) {

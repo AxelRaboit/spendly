@@ -804,6 +804,17 @@ export default {
         leave: 'Revenir à mon compte',
     },
     tour: {
+        start: 'Démarrer',
+        modal: {
+            title: 'Guides de démarrage',
+            subtitle: 'Sélectionnez un guide pour explorer les fonctionnalités.',
+        },
+        guides: {
+            wallet: {
+                title: 'Portefeuille & Budget',
+                desc: 'Découvrez comment créer un portefeuille, gérer votre budget mensuel et suivre vos dépenses.',
+            },
+        },
         next: 'Suivant',
         prev: 'Précédent',
         done: 'Terminer',
