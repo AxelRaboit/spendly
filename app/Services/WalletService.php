@@ -45,6 +45,11 @@ class WalletService
         $wallet->update(['is_favorite' => ! $wallet->is_favorite]);
     }
 
+    public function toggleDashboard(Wallet $wallet): void
+    {
+        $wallet->update(['show_on_dashboard' => ! $wallet->show_on_dashboard]);
+    }
+
     public function create(User $user, array $data): Wallet
     {
         if (! $this->planService->canCreateWallet($user)) {

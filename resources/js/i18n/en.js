@@ -119,6 +119,16 @@ export default {
         seeAll: 'See all →',
         noExpenses: 'No expenses yet.',
         noCatExpenses: 'No expenses this month.',
+        monthlyCashflow: 'Monthly cashflow',
+        income: 'Income',
+        expenses: 'Expenses',
+        cashflow: 'Net cashflow',
+        vsLastMonth: 'vs last month:',
+        budgetAlerts: 'Budget alerts',
+        alertOver: 'Exceeded',
+        alertNear: 'Near limit',
+        goalsInProgress: 'Goals in progress',
+        upcomingRecurring: 'Upcoming recurring',
     },
 
     wallets: {
@@ -139,6 +149,8 @@ export default {
         demo: 'Example',
         addFavorite: 'Add to favorites',
         removeFavorite: 'Remove from favorites',
+        pinToDashboard: 'Pin balance to dashboard',
+        removeFromDashboard: 'Remove from dashboard',
         favoriteWallets: 'Quick access',
         noFavorites: 'No favorites yet. Star a wallet from the Wallets page.',
         quickChecking: 'Checking account',
@@ -439,6 +451,7 @@ export default {
         removeMember: 'Remove member',
         revokeInvitation: 'Revoke invitation',
         emailPlaceholder: 'Email address…',
+        addAddress: 'Add another address',
     },
 
     invitation: {

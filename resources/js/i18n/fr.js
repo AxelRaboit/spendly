@@ -119,6 +119,16 @@ export default {
         seeAll: 'Voir tout →',
         noExpenses: "Aucune dépense pour l'instant.",
         noCatExpenses: 'Aucune dépense ce mois.',
+        monthlyCashflow: 'Bilan mensuel',
+        income: 'Revenus',
+        expenses: 'Dépenses',
+        cashflow: 'Cash-flow net',
+        vsLastMonth: 'vs mois dernier :',
+        budgetAlerts: 'Alertes budget',
+        alertOver: 'Dépassé',
+        alertNear: 'Proche',
+        goalsInProgress: 'Objectifs en cours',
+        upcomingRecurring: 'Prochains récurrents',
     },
 
     wallets: {
@@ -139,6 +149,8 @@ export default {
         demo: 'Exemple',
         addFavorite: 'Ajouter aux favoris',
         removeFavorite: 'Retirer des favoris',
+        pinToDashboard: 'Épingler le solde au tableau de bord',
+        removeFromDashboard: 'Retirer du tableau de bord',
         favoriteWallets: 'Accès rapide',
         noFavorites: 'Aucun favori. Étoilez un portefeuille depuis la page Portefeuilles.',
         quickChecking: 'Compte courant',
@@ -439,6 +451,7 @@ export default {
         removeMember: 'Retirer le membre',
         revokeInvitation: "Annuler l'invitation",
         emailPlaceholder: 'Adresse e-mail…',
+        addAddress: 'Ajouter une adresse',
     },
 
     invitation: {

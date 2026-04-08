@@ -112,6 +112,16 @@ export default {
         seeAll: 'Alle anzeigen →',
         noExpenses: 'Noch keine Ausgaben.',
         noCatExpenses: 'Keine Ausgaben diesen Monat.',
+        monthlyCashflow: 'Monatliche Bilanz',
+        income: 'Einnahmen',
+        expenses: 'Ausgaben',
+        cashflow: 'Netto-Cashflow',
+        vsLastMonth: 'vs. letzter Monat:',
+        budgetAlerts: 'Budget-Warnungen',
+        alertOver: 'Überschritten',
+        alertNear: 'Fast erreicht',
+        goalsInProgress: 'Laufende Ziele',
+        upcomingRecurring: 'Nächste Wiederkehrende',
     },
 
     wallets: {
@@ -132,6 +142,8 @@ export default {
         demo: 'Beispiel',
         addFavorite: 'Zu Favoriten hinzufügen',
         removeFavorite: 'Aus Favoriten entfernen',
+        pinToDashboard: 'Guthaben im Dashboard anzeigen',
+        removeFromDashboard: 'Aus dem Dashboard entfernen',
         favoriteWallets: 'Schnellzugriff',
         noFavorites: 'Noch keine Favoriten. Markiere eine Geldbörse auf der Geldbörsen-Seite.',
         quickChecking: 'Girokonto',
@@ -434,6 +446,7 @@ export default {
         removeMember: 'Mitglied entfernen',
         revokeInvitation: 'Einladung widerrufen',
         emailPlaceholder: 'E-Mail-Adresse…',
+        addAddress: 'Weitere Adresse hinzufügen',
     },
 
     invitation: {

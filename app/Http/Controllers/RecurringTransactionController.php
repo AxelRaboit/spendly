@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\PolicyAction;
 use App\Exceptions\PlanLimitException;
 use App\Http\Requests\RecurringTransactionRequest;
 use App\Models\RecurringTransaction;
@@ -45,7 +46,7 @@ class RecurringTransactionController extends Controller
 
     public function update(RecurringTransactionRequest $recurringTransactionRequest, RecurringTransaction $recurringTransaction): RedirectResponse
     {
-        $this->authorize('update', $recurringTransaction);
+        $this->authorize(PolicyAction::Update->value, $recurringTransaction);
         $this->recurringService->update($recurringTransaction, $recurringTransactionRequest->validated());
 
         return back()->with('success', __('flash.recurring.updated'));
@@ -53,7 +54,7 @@ class RecurringTransactionController extends Controller
 
     public function toggle(RecurringTransaction $recurringTransaction): RedirectResponse
     {
-        $this->authorize('update', $recurringTransaction);
+        $this->authorize(PolicyAction::Update->value, $recurringTransaction);
         $this->recurringService->toggle($recurringTransaction);
 
         return back()->with('preserveScroll', true);
@@ -61,7 +62,7 @@ class RecurringTransactionController extends Controller
 
     public function destroy(RecurringTransaction $recurringTransaction): RedirectResponse
     {
-        $this->authorize('delete', $recurringTransaction);
+        $this->authorize(PolicyAction::Delete->value, $recurringTransaction);
         $this->recurringService->delete($recurringTransaction);
 
         return back()->with('success', __('flash.recurring.deleted'));

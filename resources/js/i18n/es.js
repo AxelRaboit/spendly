@@ -112,6 +112,16 @@ export default {
         seeAll: 'Ver todo →',
         noExpenses: 'Aún no hay gastos.',
         noCatExpenses: 'Sin gastos este mes.',
+        monthlyCashflow: 'Balance mensual',
+        income: 'Ingresos',
+        expenses: 'Gastos',
+        cashflow: 'Flujo de caja neto',
+        vsLastMonth: 'vs mes anterior:',
+        budgetAlerts: 'Alertas de presupuesto',
+        alertOver: 'Superado',
+        alertNear: 'Cerca del límite',
+        goalsInProgress: 'Objetivos en curso',
+        upcomingRecurring: 'Próximos recurrentes',
     },
 
     wallets: {
@@ -132,6 +142,8 @@ export default {
         demo: 'Ejemplo',
         addFavorite: 'Añadir a favoritos',
         removeFavorite: 'Quitar de favoritos',
+        pinToDashboard: 'Fijar saldo en el panel',
+        removeFromDashboard: 'Quitar del panel',
         favoriteWallets: 'Acceso rápido',
         noFavorites: 'Sin favoritos. Marca una cartera desde la página de Carteras.',
         quickChecking: 'Cuenta corriente',
@@ -433,6 +445,7 @@ export default {
         removeMember: 'Eliminar miembro',
         revokeInvitation: 'Revocar invitación',
         emailPlaceholder: 'Dirección de correo…',
+        addAddress: 'Añadir otra dirección',
     },
 
     invitation: {

@@ -527,7 +527,7 @@ const devNavItem = computed(() => {
                 </button>
             </div>
 
-            <div v-if="isTrialing" class="bg-indigo-600/10 border-b border-indigo-500/30 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-300">
+            <div v-if="isTrialing" class="bg-indigo-600/15 border-b border-indigo-500/40 px-4 py-2 flex items-center justify-center gap-3 text-xs text-indigo-400">
                 <span>{{ trialLabel }}</span>
                 <Link :href="route('plan.index')" class="underline hover:text-indigo-200 transition-colors font-medium">
                     {{ t('trial.bannerLink') }}

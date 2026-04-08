@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Enums\WalletRole;
 use App\Http\Requests\StoreWalletInvitationRequest;
 use App\Models\Wallet;
@@ -25,7 +26,7 @@ class WalletInvitationController extends Controller
     public function store(StoreWalletInvitationRequest $storeWalletInvitationRequest, Wallet $wallet, PlanService $planService): JsonResponse
     {
         abort_if(! $planService->isPro($storeWalletInvitationRequest->user()), HttpStatus::Forbidden->value);
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         $data = $storeWalletInvitationRequest->validated();
 
@@ -91,7 +92,7 @@ class WalletInvitationController extends Controller
 
     public function resend(Request $request, Wallet $wallet, WalletInvitation $invitation): JsonResponse
     {
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         $newInvitation = $this->invitationService->resend($invitation, $request->user(), $wallet);
 
@@ -100,7 +101,7 @@ class WalletInvitationController extends Controller
 
     public function destroy(Request $request, Wallet $wallet, WalletInvitation $invitation): JsonResponse
     {
-        $this->authorize('manageMembers', $wallet);
+        $this->authorize(PolicyAction::ManageMembers->value, $wallet);
 
         $this->invitationService->revoke($invitation);
 

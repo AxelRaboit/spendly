@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Filters\CategoryFilter;
 use App\Http\Requests\DestroyCategoryRequest;
 use App\Http\Requests\StoreCategoryRequest;
@@ -56,7 +57,7 @@ class CategoryController extends Controller
 
     public function show(Request $request, Category $category): Response
     {
-        $this->authorize('view', $category);
+        $this->authorize(PolicyAction::View->value, $category);
 
         return Inertia::render('Categories/Show', [
             'category' => $category,
@@ -65,7 +66,7 @@ class CategoryController extends Controller
 
     public function edit(Request $request, Category $category): Response
     {
-        $this->authorize('update', $category);
+        $this->authorize(PolicyAction::Update->value, $category);
 
         return Inertia::render('Categories/Form', [
             'category' => $category,

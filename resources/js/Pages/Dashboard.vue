@@ -2,7 +2,7 @@
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import PlanSelectionModal from '@/components/ui/PlanSelectionModal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ChevronRight, Star, Map } from 'lucide-vue-next';
+import { ChevronRight, Star, Map, TrendingUp, TrendingDown, AlertTriangle, Target, Repeat, CalendarDays, LayoutDashboard } from 'lucide-vue-next';
 import { Head, Link } from '@inertiajs/vue3';
 import '@/plugins/chartjs';
 import { computed, ref, watch } from 'vue';
@@ -31,14 +31,31 @@ if (wasShowingPlanModal) {
 }
 
 const props = defineProps({
-    spentThisMonth: Number,
-    totalWallets: Number,
-    favoriteWallets: Array,
+    spentThisMonth:    Number,
+    incomeThisMonth:   Number,
+    lastMonthSpent:    Number,
+    lastMonthDiff:     { type: Number, default: null },
+    totalWallets:      Number,
+    favoriteWallets:   Array,
     recentTransactions: Array,
-    sparkline: Array,
-    topCategories: Array,
-    dailyAverage: Number,
-    bestDay: Object,
+    sparkline:         Array,
+    topCategories:     Array,
+    dailyAverage:      Number,
+    bestDay:           Object,
+    pinnedWallets:     { type: Array, default: () => [] },
+    activeGoals:       { type: Array, default: () => [] },
+    upcomingRecurring: { type: Array, default: () => [] },
+    overBudgetAlerts:  { type: Array, default: () => [] },
+});
+
+const cashFlow = computed(() => (props.incomeThisMonth ?? 0) - (props.spentThisMonth ?? 0));
+const incomeBarWidth = computed(() => {
+    const max = Math.max(props.incomeThisMonth ?? 0, props.spentThisMonth ?? 0, 1);
+    return Math.min(100, ((props.incomeThisMonth ?? 0) / max) * 100);
+});
+const expenseBarWidth = computed(() => {
+    const max = Math.max(props.incomeThisMonth ?? 0, props.spentThisMonth ?? 0, 1);
+    return Math.min(100, ((props.spentThisMonth ?? 0) / max) * 100);
 });
 
 const { fmt } = useCurrency();
@@ -82,7 +99,7 @@ const topCategoryMax = computed(() => {
         </template>
 
         <div class="space-y-6">
-            <div v-if="showTourBanner" class="rounded-lg bg-indigo-600/10 border border-indigo-500/30 px-4 py-3 flex items-center justify-between gap-3 text-sm text-indigo-300">
+            <div v-if="showTourBanner" class="rounded-lg bg-indigo-600/15 border border-indigo-500/40 px-4 py-3 flex items-center justify-between gap-3 text-sm text-indigo-400">
                 <div class="flex items-center gap-2">
                     <Map class="w-4 h-4 shrink-0" />
                     <span>{{ t('tour.resumeBanner') }}</span>
@@ -93,6 +110,24 @@ const topCategoryMax = computed(() => {
                 >
                     {{ t('tour.resumeBtn') }}
                 </button>
+            </div>
+
+            <!-- Pinned wallets balances -->
+            <div v-if="pinnedWallets.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <Link
+                    v-for="wallet in pinnedWallets"
+                    :key="wallet.id"
+                    :href="`/wallets/${wallet.id}/budget`"
+                    class="flex items-center justify-between bg-surface border border-base/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
+                >
+                    <div class="flex items-center gap-2 min-w-0">
+                        <LayoutDashboard class="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        <span class="text-sm font-medium text-primary truncate">{{ wallet.name }}</span>
+                    </div>
+                    <span class="text-sm font-semibold font-mono ml-3 shrink-0" :class="wallet.current_balance >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                        {{ fmt(wallet.current_balance) }}
+                    </span>
+                </Link>
             </div>
 
             <div v-if="favoriteWallets.length > 0">
@@ -117,8 +152,20 @@ const topCategoryMax = computed(() => {
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-6 shadow-lg">
                     <div class="bubble-1 pointer-events-none absolute -top-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
                     <div class="bubble-2 pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-white/10" />
-                    <AppTooltip :text="t('dashboard.spentThisMonthTip')"><p class="text-sm font-medium text-violet-200 cursor-help">{{ t('dashboard.spentThisMonth') }}</p></AppTooltip>
+                    <div class="flex items-start justify-between">
+                        <AppTooltip :text="t('dashboard.spentThisMonthTip')"><p class="text-sm font-medium text-violet-200 cursor-help">{{ t('dashboard.spentThisMonth') }}</p></AppTooltip>
+                        <span
+                            v-if="lastMonthDiff !== null"
+                            class="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                            :class="lastMonthDiff <= 0 ? 'bg-emerald-500/30 text-emerald-200' : 'bg-rose-500/30 text-rose-200'"
+                        >
+                            <TrendingDown v-if="lastMonthDiff <= 0" class="w-3 h-3" />
+                            <TrendingUp v-else class="w-3 h-3" />
+                            {{ Math.abs(lastMonthDiff) }}%
+                        </span>
+                    </div>
                     <p class="mt-2 text-4xl font-bold text-white font-mono">{{ fmt(spentThisMonth) }}</p>
+                    <p v-if="lastMonthDiff !== null" class="mt-1 text-xs text-violet-300">{{ t('dashboard.vsLastMonth') }} {{ fmt(lastMonthSpent) }}</p>
                 </div>
 
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-6 shadow-lg">
@@ -130,6 +177,68 @@ const topCategoryMax = computed(() => {
                         <Link href="/wallets" class="rounded-lg bg-white/20 px-4 py-2 text-sm font-medium text-white hover:bg-white/30 transition">
                             {{ t('common.seeAll') }}
                         </Link>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly cashflow -->
+            <div class="bg-surface rounded-2xl p-6 shadow-lg">
+                <h3 class="text-sm font-medium text-secondary mb-4">{{ t('dashboard.monthlyCashflow') }}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-xs text-muted mb-1">{{ t('dashboard.income') }}</p>
+                        <p class="text-xl font-bold text-emerald-400 font-mono">{{ fmt(incomeThisMonth) }}</p>
+                        <div class="mt-2 h-1.5 rounded-full bg-surface-3">
+                            <div class="h-1.5 rounded-full bg-emerald-400 transition-all" :style="{ width: incomeBarWidth + '%' }" />
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-muted mb-1">{{ t('dashboard.expenses') }}</p>
+                        <p class="text-xl font-bold text-rose-400 font-mono">{{ fmt(spentThisMonth) }}</p>
+                        <div class="mt-2 h-1.5 rounded-full bg-surface-3">
+                            <div class="h-1.5 rounded-full bg-rose-400 transition-all" :style="{ width: expenseBarWidth + '%' }" />
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-muted mb-1">{{ t('dashboard.cashflow') }}</p>
+                        <p class="text-xl font-bold font-mono" :class="cashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                            {{ fmt(cashFlow, true) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget alerts -->
+            <div v-if="overBudgetAlerts.length" class="bg-surface rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center gap-2 mb-4">
+                    <AlertTriangle class="w-4 h-4 text-amber-400 shrink-0" />
+                    <h3 class="text-sm font-medium text-secondary">{{ t('dashboard.budgetAlerts') }}</h3>
+                </div>
+                <div class="space-y-3">
+                    <div v-for="alert in overBudgetAlerts" :key="alert.label">
+                        <div class="flex justify-between text-sm mb-1.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span
+                                    class="shrink-0 text-xs font-bold px-1.5 py-0.5 rounded"
+                                    :class="parseFloat(alert.actual) > parseFloat(alert.planned_amount)
+                                        ? 'bg-rose-500/20 text-rose-400'
+                                        : 'bg-amber-500/20 text-amber-400'"
+                                >
+                                    {{ parseFloat(alert.actual) > parseFloat(alert.planned_amount) ? t('dashboard.alertOver') : t('dashboard.alertNear') }}
+                                </span>
+                                <span class="text-secondary truncate">{{ alert.label }}</span>
+                            </div>
+                            <span class="text-xs shrink-0 ml-2 text-muted font-mono">
+                                {{ fmt(alert.actual) }} / {{ fmt(alert.planned_amount) }}
+                            </span>
+                        </div>
+                        <div class="h-1.5 rounded-full bg-surface-3">
+                            <div
+                                class="h-1.5 rounded-full transition-all"
+                                :class="parseFloat(alert.actual) > parseFloat(alert.planned_amount) ? 'bg-rose-400' : 'bg-amber-400'"
+                                :style="{ width: Math.min(100, parseFloat(alert.actual) / parseFloat(alert.planned_amount) * 100) + '%' }"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,7 +264,66 @@ const topCategoryMax = computed(() => {
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Goals + Upcoming recurring -->
+            <div v-if="activeGoals.length || upcomingRecurring.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Goals -->
+                <div v-if="activeGoals.length" class="bg-surface rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <Target class="w-4 h-4 text-indigo-400 shrink-0" />
+                            <h3 class="text-sm font-medium text-secondary">{{ t('dashboard.goalsInProgress') }}</h3>
+                        </div>
+                        <Link href="/goals" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">{{ t('common.seeAll') }} →</Link>
+                    </div>
+                    <div class="space-y-4">
+                        <div v-for="goal in activeGoals" :key="goal.id">
+                            <div class="flex justify-between text-sm mb-1.5">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: goal.color ?? '#818cf8' }" />
+                                    <span class="text-secondary truncate">{{ goal.name }}</span>
+                                </div>
+                                <span class="text-xs text-muted shrink-0 ml-2">{{ fmt(goal.saved_amount) }} / {{ fmt(goal.target_amount) }}</span>
+                            </div>
+                            <div class="h-2 rounded-full bg-surface-3">
+                                <div
+                                    class="h-2 rounded-full transition-all"
+                                    :style="{ width: Math.min(100, parseFloat(goal.saved_amount) / parseFloat(goal.target_amount) * 100) + '%', backgroundColor: goal.color ?? '#818cf8' }"
+                                />
+                            </div>
+                            <p v-if="goal.deadline" class="mt-1 flex items-center gap-1 text-xs text-muted">
+                                <CalendarDays class="w-3 h-3 shrink-0" />
+                                {{ fmtDay(goal.deadline) }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming recurring -->
+                <div v-if="upcomingRecurring.length" class="bg-surface rounded-2xl p-6 shadow-lg">
+                    <div class="flex items-center gap-2 mb-4">
+                        <Repeat class="w-4 h-4 text-indigo-400 shrink-0" />
+                        <h3 class="text-sm font-medium text-secondary">{{ t('dashboard.upcomingRecurring') }}</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div v-for="item in upcomingRecurring" :key="item.id" class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-surface-2 flex items-center justify-center shrink-0">
+                                    <span class="text-xs font-bold text-secondary">{{ item.day_of_month }}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm text-primary truncate">{{ item.description ?? item.category?.name ?? '—' }}</p>
+                                    <p class="text-xs text-muted truncate">{{ item.wallet?.name }}</p>
+                                </div>
+                            </div>
+                            <span class="text-sm font-semibold font-mono shrink-0" :class="item.type === 'income' ? 'text-emerald-400' : 'text-rose-400'">
+                                {{ item.type === 'income' ? '+' : '-' }}{{ fmt(item.amount) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
                 <div class="bg-surface rounded-2xl p-6 shadow-lg">
                     <AppTooltip :text="t('dashboard.topCategoriesTip')"><h3 class="text-sm font-medium text-secondary mb-4 cursor-help">{{ t('dashboard.topCategories') }}</h3></AppTooltip>
                     <div v-if="topCategories.length" class="space-y-3">
@@ -175,7 +343,7 @@ const topCategoryMax = computed(() => {
                     <EmptyState v-else :message="t('dashboard.noCatExpenses')" icon="chart" />
                 </div>
 
-                <div class="lg:col-span-2 overflow-hidden rounded-2xl bg-surface shadow-lg">
+                <div class="overflow-hidden rounded-2xl bg-surface shadow-lg">
                     <div class="flex items-center justify-between border-b border-subtle px-6 py-4">
                         <AppTooltip :text="t('dashboard.recentExpensesTip')"><h3 class="text-base font-semibold text-primary cursor-help">{{ t('dashboard.recentExpenses') }}</h3></AppTooltip>
                     </div>

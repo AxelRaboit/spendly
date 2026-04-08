@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Http\Requests\ScheduledTransactionRequest;
 use App\Models\ScheduledTransaction;
 use App\Services\ScheduledTransactionService;
@@ -23,7 +24,7 @@ class ScheduledTransactionController extends Controller
 
     public function update(ScheduledTransactionRequest $scheduledTransactionRequest, ScheduledTransaction $scheduledTransaction): RedirectResponse
     {
-        $this->authorize('update', $scheduledTransaction);
+        $this->authorize(PolicyAction::Update->value, $scheduledTransaction);
         abort_if($scheduledTransaction->is_generated, HttpStatus::Forbidden->value);
 
         $this->scheduledService->update($scheduledTransaction, $scheduledTransactionRequest->validated());
@@ -33,7 +34,7 @@ class ScheduledTransactionController extends Controller
 
     public function destroy(ScheduledTransaction $scheduledTransaction): RedirectResponse
     {
-        $this->authorize('delete', $scheduledTransaction);
+        $this->authorize(PolicyAction::Delete->value, $scheduledTransaction);
 
         $this->scheduledService->delete($scheduledTransaction);
 

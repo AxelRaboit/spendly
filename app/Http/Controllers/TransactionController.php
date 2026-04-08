@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Enums\PolicyAction;
 use App\Http\Requests\DestroyTransactionRequest;
 use App\Http\Requests\StoreSplitTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
@@ -76,7 +77,7 @@ class TransactionController extends Controller
 
     public function attachment(Request $request, Transaction $transaction, AttachmentService $attachmentService): BinaryFileResponse
     {
-        $this->authorize('view', $transaction);
+        $this->authorize(PolicyAction::View->value, $transaction);
         abort_if(! $attachmentService->exists($transaction->attachment_path), HttpStatus::NotFound->value);
 
         return response()->file($attachmentService->path($transaction->attachment_path));

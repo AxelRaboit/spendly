@@ -1,5 +1,5 @@
 <script setup>
-import { Users, Trash2, Send, X, Clock, RefreshCw, ArrowRightLeft } from 'lucide-vue-next';
+import { Users, Trash2, Send, X, Clock, RefreshCw, ArrowRightLeft, Plus } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { ref, computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -30,15 +30,25 @@ const {
     removeMember,
 } = useWalletMembers(toRef(props, 'walletId'), toRef(props, 'show'));
 
-const inviteEmail = ref('');
-const inviteRole = ref('editor');
+const inviteRows = ref([{ email: '', role: 'editor' }]);
 const inviting = ref(false);
 
+function addInviteRow() {
+    inviteRows.value.push({ email: '', role: 'editor' });
+}
+
+function removeInviteRow(index) {
+    inviteRows.value.splice(index, 1);
+}
+
 async function invite() {
-    if (!inviteEmail.value.trim()) return;
+    const rows = inviteRows.value.filter(r => r.email.trim());
+    if (!rows.length) return;
     inviting.value = true;
-    const ok = await submitInvite(inviteEmail.value.trim(), inviteRole.value);
-    if (ok) inviteEmail.value = '';
+    for (const row of rows) {
+        await submitInvite(row.email.trim(), row.role);
+    }
+    inviteRows.value = [{ email: '', role: 'editor' }];
     inviting.value = false;
 }
 
@@ -148,25 +158,46 @@ function cancelConfirm() {
             <p v-if="memberError" class="text-rose-400 text-xs">{{ memberError }}</p>
 
             <div v-if="isOwner && isPro" class="border-t border-base pt-4">
-                <p class="text-xs text-secondary uppercase tracking-wide mb-2">{{ t('sharing.invite') }}</p>
-                <div class="flex items-center gap-2">
-                    <input
-                        v-model="inviteEmail"
-                        type="email"
-                        :placeholder="t('sharing.emailPlaceholder')"
-                        class="flex-1 bg-surface-2 text-primary rounded-lg px-3 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
-                        v-on:keydown.enter="invite"
-                    >
-                    <select
-                        v-model="inviteRole"
-                        class="bg-surface-2 text-primary rounded-lg px-2 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
-                    >
-                        <option value="editor">{{ t('sharing.editor') }}</option>
-                        <option value="viewer">{{ t('sharing.viewer') }}</option>
-                    </select>
-                    <AppButton :disabled="inviting || !inviteEmail.trim()" v-on:click="invite">
-                        <Send class="w-4 h-4" />
-                    </AppButton>
+                <p class="text-xs text-secondary uppercase tracking-wide mb-3">{{ t('sharing.invite') }}</p>
+                <div class="flex flex-col gap-3">
+                    <div v-for="(row, index) in inviteRows" :key="index" class="flex flex-col gap-2 border border-base rounded-lg p-3 bg-surface-2">
+                        <div class="flex items-center gap-2">
+                            <input
+                                v-model="row.email"
+                                type="email"
+                                :placeholder="t('sharing.emailPlaceholder')"
+                                class="flex-1 bg-surface text-primary rounded-lg px-3 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                                v-on:keydown.enter="invite"
+                            >
+                            <button
+                                v-if="inviteRows.length > 1"
+                                class="text-muted hover:text-rose-400 transition-colors"
+                                v-on:click="removeInviteRow(index)"
+                            >
+                                <X class="w-4 h-4" />
+                            </button>
+                        </div>
+                        <select
+                            v-model="row.role"
+                            class="w-full bg-surface text-primary rounded-lg px-2 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                        >
+                            <option value="editor">{{ t('sharing.editor') }}</option>
+                            <option value="viewer">{{ t('sharing.viewer') }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 pt-1">
+                        <button
+                            class="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                            v-on:click="addInviteRow"
+                        >
+                            <Plus class="w-3.5 h-3.5" />
+                            {{ t('sharing.addAddress') }}
+                        </button>
+                        <AppButton :disabled="inviting || !inviteRows.some(r => r.email.trim())" v-on:click="invite">
+                            <Send class="w-4 h-4" />
+                        </AppButton>
+                    </div>
                 </div>
                 <p v-if="memberSuccess" class="text-emerald-400 text-xs mt-2">{{ memberSuccess }}</p>
             </div>

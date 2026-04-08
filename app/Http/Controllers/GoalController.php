@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\PolicyAction;
 use App\Exceptions\PlanLimitException;
 use App\Http\Requests\GoalDepositRequest;
 use App\Http\Requests\GoalRequest;
@@ -47,7 +48,7 @@ class GoalController extends Controller
 
     public function update(GoalRequest $goalRequest, Goal $goal): RedirectResponse
     {
-        $this->authorize('update', $goal);
+        $this->authorize(PolicyAction::Update->value, $goal);
         $this->goalService->update($goal, $goalRequest->validated());
 
         return back()->with('success', __('flash.goal.updated'));
@@ -55,7 +56,7 @@ class GoalController extends Controller
 
     public function deposit(GoalDepositRequest $goalDepositRequest, Goal $goal): RedirectResponse
     {
-        $this->authorize('update', $goal);
+        $this->authorize(PolicyAction::Update->value, $goal);
 
         $this->goalService->deposit($goalDepositRequest->user(), $goal, $goalDepositRequest->validated());
 
@@ -64,7 +65,7 @@ class GoalController extends Controller
 
     public function destroy(Goal $goal): RedirectResponse
     {
-        $this->authorize('delete', $goal);
+        $this->authorize(PolicyAction::Delete->value, $goal);
         $this->goalService->delete($goal);
 
         return back()->with('success', __('flash.goal.deleted'));
