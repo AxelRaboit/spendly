@@ -39,6 +39,14 @@ class Wallet extends Model
         return $mode === WalletMode::Simple;
     }
 
+    public function isBudgetMode(): bool
+    {
+        /** @var WalletMode $mode */
+        $mode = $this->mode;
+
+        return $mode === WalletMode::Budget;
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

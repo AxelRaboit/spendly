@@ -358,8 +358,8 @@ const submitInvitation = () => {
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm hidden md:table-cell">
-                                    <AppBadge :variant="user.plan.toLowerCase() === PlanType.Pro ? 'amber' : 'default'">
-                                        {{ t('plan.' + user.plan.toLowerCase() + '.name') }}
+                                    <AppBadge :variant="user.plan === PlanType.Pro ? 'amber' : 'default'">
+                                        {{ t('plan.' + user.plan + '.name') }}
                                     </AppBadge>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden lg:table-cell">{{ new Date(user.created_at).toLocaleDateString() }}</td>

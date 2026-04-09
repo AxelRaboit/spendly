@@ -39,6 +39,7 @@ class BudgetController extends Controller
     public function show(Request $request, Wallet $wallet): Response
     {
         $this->authorize(PolicyAction::View->value, $wallet);
+        abort_if($wallet->isSimpleMode(), HttpStatus::NotFound->value);
 
         $monthParam = $request->query('month');
         $month = $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
