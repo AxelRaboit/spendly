@@ -7,7 +7,6 @@ import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
-import { WalletMode } from '@/enums/WalletMode';
 import { TransactionType } from '@/enums/TransactionType';
 import { WalletRole } from '@/enums/WalletRole';
 
@@ -23,6 +22,8 @@ const props = defineProps({
 const canEdit = computed(() => [WalletRole.Owner, WalletRole.Editor].includes(props.wallet.user_role));
 
 // ── Filter ────────────────────────────────────────────────────────────────
+const FILTERS = ['all', TransactionType.Income, TransactionType.Expense];
+
 const activeFilter = ref('all');
 
 const filteredTransactions = computed(() => {
@@ -161,7 +162,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             <!-- Filter -->
             <div v-if="transactions.length > 0" class="flex gap-2">
                 <button
-                    v-for="filter in ['all', 'income', 'expense']"
+                    v-for="filter in FILTERS"
                     :key="filter"
                     type="button"
                     class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"

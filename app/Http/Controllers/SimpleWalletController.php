@@ -24,6 +24,7 @@ class SimpleWalletController extends Controller
     public function show(Request $request, Wallet $wallet): Response
     {
         $this->authorize(PolicyAction::View->value, $wallet);
+        abort_if($wallet->isBudgetMode(), HttpStatus::NotFound->value);
 
         return Inertia::render('Wallets/Simple/Show', $this->walletService->getSimpleWalletData($wallet, $request->user()));
     }

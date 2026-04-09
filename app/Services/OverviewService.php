@@ -26,6 +26,23 @@ class OverviewService
         $wallets = $user->accessibleWallets()->orderBy('name')->get();
 
         return $wallets->map(function (Wallet $wallet) use ($start, $end) {
+            if ($wallet->isSimpleMode()) {
+                $allTimeIncome = (float) $wallet->transactions()
+                    ->where('type', TransactionType::Income)
+                    ->sum('amount');
+
+                $allTimeExpenses = (float) $wallet->transactions()
+                    ->where('type', TransactionType::Expense)
+                    ->sum('amount');
+
+                return [
+                    'id' => $wallet->id,
+                    'name' => $wallet->name,
+                    'is_budget' => false,
+                    'current_balance' => round((float) $wallet->start_balance + $allTimeIncome - $allTimeExpenses, 2),
+                ];
+            }
+
             $income = (float) $wallet->transactions()
                 ->where('type', TransactionType::Income)
                 ->whereBetween('date', [$start, $end])
@@ -39,7 +56,7 @@ class OverviewService
             return [
                 'id' => $wallet->id,
                 'name' => $wallet->name,
-                'start_balance' => (float) $wallet->start_balance,
+                'is_budget' => true,
                 'income' => $income,
                 'expenses' => $expenses,
                 'cash_flow' => $income - $expenses,

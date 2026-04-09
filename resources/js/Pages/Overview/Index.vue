@@ -31,6 +31,19 @@ const props = defineProps({
 const TREND_PERIODS = [3, 6, 12];
 const showTrendModal = ref(false);
 
+const budgetWallets = computed(() => props.wallets.filter((w) => w.is_budget));
+const simpleWallets = computed(() => props.wallets.filter((w) => !w.is_budget));
+
+const budgetTotals = computed(() => {
+    const income   = budgetWallets.value.reduce((sum, w) => sum + w.income, 0);
+    const expenses = budgetWallets.value.reduce((sum, w) => sum + w.expenses, 0);
+    return { income, expenses, cash_flow: income - expenses };
+});
+
+const simpleTotals = computed(() => ({
+    current_balance: simpleWallets.value.reduce((sum, w) => sum + w.current_balance, 0),
+}));
+
 function setTrendPeriod(months) {
     router.get(route('overview.index'), { month: props.month, trend_months: months }, {
         preserveScroll: true,
@@ -175,82 +188,125 @@ const donutOptions = computed(() => ({
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
-                <template v-if="wallets.length > 0">
-                    <div class="sm:hidden divide-y divide-base/40">
-                        <div v-for="wallet in wallets" :key="wallet.id" class="p-4 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-medium text-primary">{{ wallet.name }}</span>
-                                </div>
-                                <Link
-                                    :href="`/wallets/${wallet.id}/budget?month=${month}`"
-                                    class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-                                >
-                                    {{ t('overview.viewBudget') }} →
-                                </Link>
+            <!-- Budget wallets -->
+            <div v-if="budgetWallets.length > 0" class="bg-surface border border-base/60 rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-base/40 bg-surface-2/30">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">{{ t('overview.sectionBudget') }}</h3>
+                </div>
+
+                <!-- Mobile -->
+                <div class="sm:hidden divide-y divide-base/40">
+                    <div v-for="wallet in budgetWallets" :key="wallet.id" class="p-4 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-primary">{{ wallet.name }}</span>
+                            <Link :href="`/wallets/${wallet.id}/budget?month=${month}`" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                                {{ t('overview.viewBudget') }} →
+                            </Link>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div>
+                                <AppTooltip :text="t('overview.incomeTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.income') }}</p></AppTooltip>
+                                <p class="text-sm font-mono font-semibold text-emerald-400">{{ fmt(wallet.income) }}</p>
                             </div>
-                            <div class="grid grid-cols-3 gap-2 text-center">
-                                <div>
-                                    <AppTooltip :text="t('overview.incomeTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.income') }}</p></AppTooltip>
-                                    <p class="text-sm font-mono font-semibold text-emerald-400">{{ fmt(wallet.income) }}</p>
-                                </div>
-                                <div>
-                                    <AppTooltip :text="t('overview.expensesTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.expenses') }}</p></AppTooltip>
-                                    <p class="text-sm font-mono font-semibold text-rose-400">{{ fmt(wallet.expenses) }}</p>
-                                </div>
-                                <div>
-                                    <AppTooltip :text="t('overview.cashFlowTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.cashFlow') }}</p></AppTooltip>
-                                    <p class="text-sm font-mono font-semibold" :class="cashFlowClass(wallet.cash_flow)">{{ fmt(wallet.cash_flow, true) }}</p>
-                                </div>
+                            <div>
+                                <AppTooltip :text="t('overview.expensesTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.expenses') }}</p></AppTooltip>
+                                <p class="text-sm font-mono font-semibold text-rose-400">{{ fmt(wallet.expenses) }}</p>
+                            </div>
+                            <div>
+                                <AppTooltip :text="t('overview.cashFlowTip')"><p class="text-xs text-muted cursor-help">{{ t('overview.cashFlow') }}</p></AppTooltip>
+                                <p class="text-sm font-mono font-semibold" :class="cashFlowClass(wallet.cash_flow)">{{ fmt(wallet.cash_flow, true) }}</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="hidden sm:block overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead>
-                                <tr class="bg-surface-2/50 border-b border-base/40">
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.incomeTip')"><span class="cursor-help">{{ t('overview.income') }}</span></AppTooltip></th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.expensesTip')"><span class="cursor-help">{{ t('overview.expenses') }}</span></AppTooltip></th>
-                                    <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.cashFlowTip')"><span class="cursor-help">{{ t('overview.cashFlow') }}</span></AppTooltip></th>
-                                    <th class="px-4 py-3" />
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-base/40">
-                                <tr v-for="wallet in wallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
-                                    <td class="px-4 py-3">
-                                        <span class="font-medium text-primary">{{ wallet.name }}</span>
-                                    </td>
-                                    <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(wallet.income) }}</td>
-                                    <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(wallet.expenses) }}</td>
-                                    <td class="px-4 py-3 text-right font-mono font-semibold" :class="cashFlowClass(wallet.cash_flow)">{{ fmt(wallet.cash_flow, true) }}</td>
-                                    <td class="px-4 py-3 text-right">
-                                        <Link
-                                            :href="`/wallets/${wallet.id}/budget?month=${month}`"
-                                            class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-                                        >
-                                            {{ t('overview.viewBudget') }} →
-                                        </Link>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
-                                    <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
-                                    <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(totals.income) }}</td>
-                                    <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(totals.expenses) }}</td>
-                                    <td class="px-4 py-3 text-right font-mono" :class="cashFlowClass(totals.cash_flow)">{{ fmt(totals.cash_flow, true) }}</td>
-                                    <td />
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </template>
-
-                <div v-else class="flex items-center justify-center py-16 text-secondary">
-                    <p class="text-sm">{{ t('overview.noWallets') }}</p>
                 </div>
+
+                <!-- Desktop -->
+                <div class="hidden sm:block overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-surface-2/50 border-b border-base/40">
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.incomeTip')"><span class="cursor-help">{{ t('overview.income') }}</span></AppTooltip></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.expensesTip')"><span class="cursor-help">{{ t('overview.expenses') }}</span></AppTooltip></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.cashFlowTip')"><span class="cursor-help">{{ t('overview.cashFlow') }}</span></AppTooltip></th>
+                                <th class="px-4 py-3" />
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base/40">
+                            <tr v-for="wallet in budgetWallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
+                                <td class="px-4 py-3 font-medium text-primary">{{ wallet.name }}</td>
+                                <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(wallet.income) }}</td>
+                                <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(wallet.expenses) }}</td>
+                                <td class="px-4 py-3 text-right font-mono font-semibold" :class="cashFlowClass(wallet.cash_flow)">{{ fmt(wallet.cash_flow, true) }}</td>
+                                <td class="px-4 py-3 text-right">
+                                    <Link :href="`/wallets/${wallet.id}/budget?month=${month}`" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                                        {{ t('overview.viewBudget') }} →
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
+                                <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
+                                <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(budgetTotals.income) }}</td>
+                                <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(budgetTotals.expenses) }}</td>
+                                <td class="px-4 py-3 text-right font-mono" :class="cashFlowClass(budgetTotals.cash_flow)">{{ fmt(budgetTotals.cash_flow, true) }}</td>
+                                <td />
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Simple wallets -->
+            <div v-if="simpleWallets.length > 0" class="bg-surface border border-base/60 rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-base/40 bg-surface-2/30">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">{{ t('overview.sectionSimple') }}</h3>
+                </div>
+
+                <!-- Mobile -->
+                <div class="sm:hidden divide-y divide-base/40">
+                    <div v-for="wallet in simpleWallets" :key="wallet.id" class="p-4 flex items-center justify-between">
+                        <div>
+                            <p class="font-medium text-primary">{{ wallet.name }}</p>
+                            <p class="text-xs text-muted mt-0.5">{{ t('overview.currentBalance') }} <span class="font-mono font-semibold ml-1" :class="cashFlowClass(wallet.current_balance)">{{ fmt(wallet.current_balance, true) }}</span></p>
+                        </div>
+                        <Link :href="`/wallets/${wallet.id}/simple`" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                            {{ t('overview.viewTransactions') }} →
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Desktop -->
+                <div class="hidden sm:block overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-surface-2/50 border-b border-base/40">
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.currentBalance') }}</th>
+                                <th class="px-4 py-3" />
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base/40">
+                            <tr v-for="wallet in simpleWallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
+                                <td class="px-4 py-3 font-medium text-primary">{{ wallet.name }}</td>
+                                <td class="px-4 py-3 text-right font-mono font-semibold" :class="cashFlowClass(wallet.current_balance)">{{ fmt(wallet.current_balance, true) }}</td>
+                                <td class="px-4 py-3 text-right">
+                                    <Link :href="`/wallets/${wallet.id}/simple`" class="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                                        {{ t('overview.viewTransactions') }} →
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
+                                <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
+                                <td class="px-4 py-3 text-right font-mono" :class="cashFlowClass(simpleTotals.current_balance)">{{ fmt(simpleTotals.current_balance, true) }}</td>
+                                <td />
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div v-if="wallets.length === 0" class="bg-surface border border-base/60 rounded-xl flex items-center justify-center py-16 text-secondary">
+                <p class="text-sm">{{ t('overview.noWallets') }}</p>
             </div>
         </div>
         <AppModal :show="showTrendModal" max-width="max-w-4xl" v-on:close="showTrendModal = false">
