@@ -148,6 +148,20 @@ jobs:
       - name: PHPStan
         run: make stan
 
+      # —— Test database 🗄️ ——————————————————————————————————————————————————
+      - name: Create test database
+        env:
+          PGPASSWORD: "!ChangeMe!"
+        run: psql -h 127.0.0.1 -U app -d spendly -c "CREATE DATABASE spendly_test;"
+
+      - name: Run migrations on test database
+        run: php artisan migrate --force
+        env:
+          DB_DATABASE: spendly_test
+
       # —— Tests 🧪 —————————————————————————————————————————————————————————————
-      - name: Run tests
-        run: make test
+      - name: Run unit tests
+        run: make test-unit
+
+      - name: Run feature tests
+        run: make test-feature
