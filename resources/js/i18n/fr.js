@@ -434,7 +434,7 @@ export default {
             fieldConfirm: 'Confirmer le mot de passe',
         },
         delete: {
-            title: 'Supprimer le compte',
+            title: 'Zone de danger',
             subtitle: 'Une fois votre compte supprimé, toutes les données associées seront définitivement effacées.',
             openBtn: 'Supprimer mon compte',
             modalTitle: 'Supprimer le compte',

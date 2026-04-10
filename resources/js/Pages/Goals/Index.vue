@@ -102,7 +102,7 @@ const depositGoal = ref(null);
                     <div v-if="goal.progress < 100">
                         <div v-if="goal.category_id" class="flex items-center gap-1.5 text-xs text-indigo-400">
                             <Zap class="w-3.5 h-3.5 shrink-0" />
-                            {{ t('goals.autoSync', { category: goal.category.name }) }}
+                            {{ t('goals.autoSync', { category: goal.category?.name }) }}
                         </div>
                         <button
                             v-else

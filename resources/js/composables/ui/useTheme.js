@@ -10,7 +10,9 @@ function getInitial() {
 }
 
 function apply(t) {
+    document.documentElement.classList.add('theme-switching');
     document.documentElement.classList.toggle('dark', t === Theme.Dark);
+    window.setTimeout(() => document.documentElement.classList.remove('theme-switching'), 300);
 }
 
 // Singleton state — shared across all composable calls

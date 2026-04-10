@@ -171,7 +171,7 @@ const devNavItem = computed(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-bg transition-colors duration-200">
+    <div class="min-h-screen bg-bg">
         <aside
             class="hidden lg:flex flex-col fixed inset-y-0 left-0 bg-surface border-r border-base z-30 transition-all duration-200"
             :class="collapsed ? 'w-16' : 'w-60'"
