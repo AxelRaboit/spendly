@@ -102,6 +102,7 @@ class DashboardService
         return $wallets->map(fn (Wallet $wallet) => [
             'id' => $wallet->id,
             'name' => $wallet->name,
+            'mode' => $wallet->mode->value,
             'current_balance' => round((float) $wallet->start_balance + (float) ($wallet->income_sum ?? 0) - (float) ($wallet->expense_sum ?? 0), 2),
         ]);
     }

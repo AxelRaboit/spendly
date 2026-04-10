@@ -12,6 +12,7 @@ import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
+import { WalletMode } from '@/enums/WalletMode';
 
 const { t } = useI18n();
 const { fmtDayLong: fmtDay } = useFmtDate();
@@ -115,7 +116,7 @@ const topCategoryMax = computed(() => {
                 <Link
                     v-for="wallet in pinnedWallets"
                     :key="wallet.id"
-                    :href="`/wallets/${wallet.id}/budget`"
+                    :href="wallet.mode === WalletMode.Simple ? `/wallets/${wallet.id}/simple` : `/wallets/${wallet.id}/budget`"
                     class="flex items-center justify-between bg-surface border border-base/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
                 >
                     <div class="flex items-center gap-2 min-w-0">
