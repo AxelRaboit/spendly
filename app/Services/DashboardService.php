@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\TransactionType;
+use App\Enums\WalletMode;
 use App\Models\Goal;
 use App\Models\RecurringTransaction;
 use App\Models\Transaction;
@@ -99,12 +100,17 @@ class DashboardService
             ->withSum(['transactions as expense_sum' => fn ($query) => $query->where('type', TransactionType::Expense)], 'amount')
             ->get();
 
-        return $wallets->map(fn (Wallet $wallet) => [
-            'id' => $wallet->id,
-            'name' => $wallet->name,
-            'mode' => $wallet->mode->value,
-            'current_balance' => round((float) $wallet->start_balance + (float) ($wallet->income_sum ?? 0) - (float) ($wallet->expense_sum ?? 0), 2),
-        ]);
+        return $wallets->map(function (Wallet $wallet) {
+            /** @var WalletMode $mode */
+            $mode = $wallet->mode;
+
+            return [
+                'id' => $wallet->id,
+                'name' => $wallet->name,
+                'mode' => $mode->value,
+                'current_balance' => round((float) $wallet->start_balance + (float) ($wallet->income_sum ?? 0) - (float) ($wallet->expense_sum ?? 0), 2),
+            ];
+        });
     }
 
     public function activeGoals(User $user, int $limit = 3): Collection
