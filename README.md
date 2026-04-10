@@ -1,58 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Spendly
 
-## About Laravel
+**Application de gestion financiere personnelle**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org)
+[![Inertia.js](https://img.shields.io/badge/Inertia.js-3-9553E9?style=flat-square)](https://inertiajs.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+[**Visiter l'application**](https://spendly.axelraboit.fr) — spendly.axelraboit.fr
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Presentation
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Spendly est une application web de gestion financiere personnelle qui vous permet de suivre vos depenses, gerer plusieurs portefeuilles, definir des objectifs d'epargne et analyser vos habitudes financieres mois par mois.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Concu avec une interface sombre moderne, Spendly centralise toutes vos finances en un seul endroit.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Fonctionnalites
+
+- **Tableau de bord** — Vue d'ensemble de vos finances du mois en cours : depenses, remboursements, evolution mensuelle, et derniere transaction enregistree
+- **Vue globale** — Synthese multi-portefeuilles avec graphiques de revenus/depenses et repartition par categorie
+- **Portefeuilles** — Gestion de plusieurs comptes independants (compte courant, livret, assurance vie…) avec suivi des objectifs budgetaires
+- **Transactions** — Liste complete et filtrable de toutes vos transactions, organisees par categorie et par type (depense, revenu, virement)
+- **Transactions automatiques** — Gestion des abonnements et transactions recurrentes (streaming, salle de sport, mutuelle…)
+- **Objectifs d'epargne** — Suivi de la progression vers vos objectifs financiers avec indicateurs visuels
+- **Statistiques** — Analyse graphique de vos habitudes de depenses sur la duree avec projections et evolution multi-mois
+- **Categories** — Gestion personnalisee des categories de depenses et de revenus
+- **Notes** — Prise de notes enrichie (Markdown) associee a vos finances
+- **Export** — Export de vos donnees en Excel
+- **Auto-configuration** — Parametrage personnalise des regles de gestion
+
+---
+
+## Apercu
+
+### Tableau de bord
+
+![Tableau de bord](docs/screenshots/tableau-de-bord.png)
+
+> Vue d'ensemble du mois : depenses totales, nombre de remboursements, evolution du budget, derniere transaction et top categories.
+
+---
+
+### Vue globale
+
+![Vue globale](docs/screenshots/vue-globale.png)
+
+> Synthese de tous vos portefeuilles avec graphiques de revenus/depenses par mois et donut de repartition par categorie.
+
+---
+
+### Portefeuille
+
+![Portefeuille](docs/screenshots/portefeuille.png)
+
+> Detail d'un portefeuille : solde, objectifs en cours avec progression, et recapitulatif des transactions du mois.
+
+---
+
+### Transactions
+
+![Transactions](docs/screenshots/transactions.png)
+
+> Detail des transactions d'un portefeuille, par categorie, avec types, montants et statuts.
+
+---
+
+### Liste des transactions
+
+![Liste des transactions](docs/screenshots/transactions-liste.png)
+
+> Vue complete et filtrable de toutes les transactions (categorie, portefeuille, mois).
+
+---
+
+### Transactions automatiques
+
+![Transactions automatiques](docs/screenshots/automatiques.png)
+
+> Gestion des abonnements et paiements recurrents : streaming, sport, mutuelle, salaire…
+
+---
+
+### Objectifs d'epargne
+
+![Objectifs d'epargne](docs/screenshots/objectifs.png)
+
+> Suivi visuel de la progression vers chaque objectif financier (voyage, fonds d'urgence, immobilier…).
+
+---
+
+### Statistiques
+
+![Statistiques](docs/screenshots/statistiques.png)
+
+> Tableaux de bord analytiques : depenses par categorie, evolution sur 6 mois, projections et budget cible.
+
+---
+
+### Categories
+
+![Categories](docs/screenshots/categories.png)
+
+> Gestion des categories personnalisees avec sous-categories et types (depense / revenu).
+
+---
+
+### Notes
+
+![Notes](docs/screenshots/notes.png)
+
+> Editeur de notes Markdown pour accompagner vos objectifs et reflexions financieres.
+
+---
+
+## Stack technique
+
+| Couche | Technologie |
+|--------|-------------|
+| Backend | Laravel 13, PHP 8.4+ |
+| Frontend | Vue.js 3, Inertia.js 3 |
+| Style | Tailwind CSS 4 |
+| Graphiques | Chart.js 4 + vue-chartjs |
+| Auth & permissions | Laravel Sanctum, Spatie Permissions |
+| Export | PhpSpreadsheet, xlsx-js-style |
+| Emails | Resend |
+| Build | Vite 8 |
+
+---
+
+## Installation
+
+### Prerequis
+
+- PHP >= 8.4
+- Composer >= 2
+- Node.js >= 20
+- PostgreSQL
+
+### Mise en place
 
 ```bash
-composer require laravel/boost --dev
+# Cloner le depot
+git clone https://github.com/AxelRaboit/spendly.git
+cd spendly
 
-php artisan boost:install
+# Installer toutes les dependances (composer + tools + pnpm)
+make install
+
+# Copier le fichier d'environnement et configurer
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Demarrage en developpement
 
-## Contributing
+**Demarrer le mailer (Mailpit via Docker) :**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker compose up -d
+```
 
-## Code of Conduct
+**Lancer les serveurs de developpement :**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+make dev
+```
 
-## Security Vulnerabilities
+Lance en parallele : le serveur PHP, la queue, les logs Pail et Vite.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Licence
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
