@@ -334,9 +334,9 @@ const topCategoryMax = computed(() => {
                                 <div class="flex flex-col gap-1 min-w-0">
                                     <span class="text-sm text-primary font-medium truncate">{{ transaction.description ?? '—' }}</span>
                                     <div class="flex items-center gap-2">
-                                        <span class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ transaction.category.name }}</span>
+                                        <span v-if="transaction.category" class="rounded-full bg-badge-primary-bg px-2 py-0.5 text-xs font-medium text-badge-primary-text">{{ transaction.category.name }}</span>
                                         <span class="text-xs text-muted">{{ fmtDay(transaction.date) }}</span>
-                                        <span class="text-xs text-muted">· {{ transaction.wallet.name }}</span>
+                                        <span class="text-xs text-muted">· {{ transaction.wallet?.name }}</span>
                                     </div>
                                 </div>
                                 <span class="text-sm font-semibold text-primary shrink-0 font-mono">{{ fmt(transaction.amount) }}</span>
@@ -359,11 +359,12 @@ const topCategoryMax = computed(() => {
                                         <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
                                         <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
                                         <td class="px-6 py-4">
-                                            <span class="rounded-full bg-badge-primary-bg px-3 py-1 text-xs font-medium text-badge-primary-text">
+                                            <span v-if="transaction.category" class="rounded-full bg-badge-primary-bg px-3 py-1 text-xs font-medium text-badge-primary-text">
                                                 {{ transaction.category.name }}
                                             </span>
+                                            <span v-else class="text-muted">—</span>
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-secondary">{{ transaction.wallet.name }}</td>
+                                        <td class="px-6 py-4 text-sm text-secondary">{{ transaction.wallet?.name ?? '—' }}</td>
                                         <td class="px-6 py-4 text-right text-sm font-semibold text-primary">{{ fmt(transaction.amount) }}</td>
                                     </tr>
                                 </tbody>
