@@ -253,6 +253,7 @@ deploy-prod: ## Deploy to production (requires git tag on HEAD, use FORCE=1 to b
 			echo "❌ Deployment blocked: no release tag on current commit. Create a GitHub release first."; \
 			exit 1; \
 		fi; \
+		echo "🚀 Deploying $$APP_VERSION..."; \
 		echo "$$APP_VERSION" > VERSION; \
 		$(COMPOSER) install --no-dev --optimize-autoloader; \
 		make cc-prod; \
@@ -265,7 +266,8 @@ deploy-prod: ## Deploy to production (requires git tag on HEAD, use FORCE=1 to b
 	echo "Restarting Queue worker to use new code..." | tee -a $$LOG_FILE; \
 	sudo systemctl restart spendly-queue 2>/dev/null || echo "⚠️  Queue worker not restarted (may not exist)" | tee -a $$LOG_FILE; \
 	if [ $$DEPLOY_EXIT -eq 0 ]; then \
-		echo "✅ Deployment completed! Check worker status with: sudo systemctl status spendly-queue" | tee -a $$LOG_FILE; \
+		APP_VERSION=$$(cat VERSION 2>/dev/null || echo "unknown"); \
+		echo "✅ Deployed $$APP_VERSION successfully. Check worker status with: sudo systemctl status spendly-queue" | tee -a $$LOG_FILE; \
 		echo "=== Deployment completed on $$(date) ===" | tee -a $$LOG_FILE; \
 	else \
 		echo "❌ Deployment failed with exit code $$DEPLOY_EXIT" | tee -a $$LOG_FILE; \
