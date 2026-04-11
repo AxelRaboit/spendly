@@ -9,6 +9,7 @@
 [![Inertia.js](https://img.shields.io/badge/Inertia.js-3-9553E9?style=flat-square)](https://inertiajs.com)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38BDF8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![PHP](https://img.shields.io/badge/PHP-8.4+-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 
 [**Visiter l'application**](https://spendly.axelraboit.fr) — spendly.axelraboit.fr
 
@@ -20,71 +21,113 @@
 
 Spendly est une application web de gestion financière personnelle qui vous permet de suivre vos dépenses, gérer plusieurs portefeuilles, définir des objectifs d'épargne et analyser vos habitudes financières mois par mois.
 
-Conçu avec une interface sombre moderne, Spendly centralise toutes vos finances en un seul endroit.
+Disponible en thème sombre et clair, entièrement responsive, Spendly centralise toutes vos finances en un seul endroit.
 
 ---
 
 ## Fonctionnalités
 
-- **Tableau de bord** — Vue d'ensemble de vos finances du mois en cours : dépenses, remboursements, évolution mensuelle, et dernière transaction enregistrée
+- **Tableau de bord** — Vue d'ensemble du mois en cours : dépenses, remboursements, évolution mensuelle, objectifs en cours et dernières transactions
 - **Vue globale** — Synthèse multi-portefeuilles avec graphiques de revenus/dépenses et répartition par catégorie
-- **Portefeuilles** — Gestion de plusieurs comptes indépendants (compte courant, livret, assurance vie…) avec suivi des objectifs budgétaires
-- **Transactions** — Liste complète et filtrable de toutes vos transactions, organisées par catégorie et par type (dépense, revenu, virement)
-- **Transactions automatiques** — Gestion des abonnements et transactions récurrentes (streaming, salle de sport, mutuelle…)
-- **Objectifs d'épargne** — Suivi de la progression vers vos objectifs financiers avec indicateurs visuels
-- **Statistiques** — Analyse graphique de vos habitudes de dépenses sur la durée avec projections et évolution multi-mois
-- **Catégories** — Gestion personnalisée des catégories de dépenses et de revenus
-- **Notes** — Prise de notes enrichie (Markdown) associée à vos finances
-- **Export** — Export de vos données en Excel
-- **Auto-configuration** — Paramétrage personnalisé des règles de gestion
+- **Portefeuilles** — Gestion de plusieurs comptes indépendants (compte courant, livret, assurance vie…) avec virements entre comptes
+- **Transactions** — Liste complète et filtrable de toutes vos transactions, avec support des transactions planifiées
+- **Transactions automatiques** — Gestion des abonnements et transactions récurrentes (streaming, sport, mutuelle…)
+- **Objectifs d'épargne** — Suivi visuel de la progression vers vos objectifs financiers
+- **Statistiques** — Analyse graphique sur la durée avec projections, taux d'épargne et tendances par catégorie
+- **Catégories** — Gestion personnalisée des catégories avec auto-catégorisation intelligente
+- **Notes** — Éditeur Markdown avec arborescence et aperçu en temps réel
+- **Import** — Import de transactions depuis un fichier Excel (modèle fourni)
+- **Export** — Export des données budgétaires en Excel
+- **Formules & Tarifs** — Offres Free et Pro avec gestion de l'abonnement
+- **Administration** — Dashboard admin avec statistiques globales, gestion des utilisateurs et invitations
 
 ---
 
 ## Aperçu
 
+### Connexion
+
+![Connexion](docs/readme/screenshots/login.jpg)
+
+> Page de connexion avec accès démo intégré pour tester l'application sans créer de compte.
+
+---
+
+### Inscription
+
+![Inscription](docs/readme/screenshots/registration.jpg)
+
+> Formulaire d'inscription : nom, e-mail, mot de passe et confirmation.
+
+---
+
 ### Tableau de bord
 
-![Tableau de bord](docs/screenshots/tableau-de-bord.png)
+![Tableau de bord](docs/readme/screenshots/tableau-de-bord.jpg)
 
-> Vue d'ensemble du mois : dépenses totales, nombre de remboursements, évolution du budget, dernière transaction et top catégories.
+> Vue d'ensemble du mois : dépenses totales, remboursements, évolution du budget, objectifs en cours, dernières transactions et top catégories.
 
 ---
 
 ### Vue globale
 
-![Vue globale](docs/screenshots/vue-globale.png)
+![Vue globale](docs/readme/screenshots/vue-globale.jpg)
 
 > Synthèse de tous vos portefeuilles avec graphiques de revenus/dépenses par mois et donut de répartition par catégorie.
 
 ---
 
-### Portefeuille
+### Portefeuilles
 
-![Portefeuille](docs/screenshots/portefeuille.png)
+![Portefeuilles](docs/readme/screenshots/portefeuilles.jpg)
 
-> Détail d'un portefeuille : solde, objectifs en cours avec progression, et récapitulatif des transactions du mois.
+> Liste de vos portefeuilles avec soldes actuels et accès rapide au budget de chacun.
+
+---
+
+### Virement entre portefeuilles
+
+![Virement](docs/readme/screenshots/virement.jpg)
+
+> Modale de virement : transfert d'un montant entre deux portefeuilles en quelques clics.
+
+---
+
+### Budget d'un portefeuille
+
+![Budget portefeuille](docs/readme/screenshots/budget-portefeuille.jpg)
+
+> Vue budget d'un portefeuille : lignes budgétaires par catégorie avec montants planifiés, réels et écarts visuels.
+
+---
+
+### Nouvelle transaction
+
+![Nouvelle transaction](docs/readme/screenshots/nouvelle-transaction.jpg)
+
+> Formulaire de saisie rapide : type (dépense/revenu/virement), montant, catégorie, date, description, tags et pièces jointes.
 
 ---
 
 ### Transactions
 
-![Transactions](docs/screenshots/transactions.png)
+![Transactions](docs/readme/screenshots/transactions.jpg)
 
-> Détail des transactions d'un portefeuille, par catégorie, avec types, montants et statuts.
+> Liste complète et filtrable de toutes les transactions (catégorie, portefeuille, mois, type).
 
 ---
 
-### Liste des transactions
+### Transactions planifiées
 
-![Liste des transactions](docs/screenshots/transactions-liste.png)
+![Transactions planifiées](docs/readme/screenshots/transactions-planifiees.jpg)
 
-> Vue complète et filtrable de toutes les transactions (catégorie, portefeuille, mois).
+> Suivi des transactions planifiées : dépenses annuelles, primes et échéances futures.
 
 ---
 
 ### Transactions automatiques
 
-![Transactions automatiques](docs/screenshots/automatiques.png)
+![Transactions automatiques](docs/readme/screenshots/transactions-auto.jpg)
 
 > Gestion des abonnements et paiements récurrents : streaming, sport, mutuelle, salaire…
 
@@ -92,7 +135,7 @@ Conçu avec une interface sombre moderne, Spendly centralise toutes vos finances
 
 ### Objectifs d'épargne
 
-![Objectifs d'épargne](docs/screenshots/objectifs.png)
+![Objectifs d'épargne](docs/readme/screenshots/objectifs.jpg)
 
 > Suivi visuel de la progression vers chaque objectif financier (voyage, fonds d'urgence, immobilier…).
 
@@ -100,25 +143,73 @@ Conçu avec une interface sombre moderne, Spendly centralise toutes vos finances
 
 ### Statistiques
 
-![Statistiques](docs/screenshots/statistiques.png)
+![Statistiques](docs/readme/screenshots/statistiques.jpg)
 
-> Tableaux de bord analytiques : dépenses par catégorie, évolution sur 6 mois, projections et budget cible.
+> Tableaux de bord analytiques : dépenses par catégorie, taux d'épargne, évolution sur 6 mois, projections et tendances par catégorie.
 
 ---
 
 ### Catégories
 
-![Catégories](docs/screenshots/categories.png)
+![Catégories](docs/readme/screenshots/categories.jpg)
 
 > Gestion des catégories personnalisées avec sous-catégories et types (dépense / revenu).
 
 ---
 
-### Notes
+### Auto-catégorisation
 
-![Notes](docs/screenshots/notes.png)
+![Auto-catégorisation](docs/readme/screenshots/auto-categorisation.jpg)
 
-> Éditeur de notes Markdown pour accompagner vos objectifs et réflexions financières.
+> Règles apprises automatiquement à partir de vos habitudes pour catégoriser vos transactions sans effort.
+
+---
+
+### Notes — Éditeur Markdown
+
+![Notes - Éditeur](docs/readme/screenshots/notes-edition.jpg)
+
+> Éditeur Markdown avec arborescence hiérarchique, tags et sauvegarde automatique.
+
+---
+
+### Notes — Aperçu rendu
+
+![Notes - Aperçu](docs/readme/screenshots/notes-apercu.jpg)
+
+> Mode aperçu : rendu HTML du Markdown avec tableaux, listes et mise en forme.
+
+---
+
+### Importer des transactions
+
+![Import](docs/readme/screenshots/import.jpg)
+
+> Import de transactions depuis un fichier Excel en suivant le modèle téléchargeable.
+
+---
+
+### Formules & Tarifs
+
+![Plan](docs/readme/screenshots/plan.jpg)
+
+> Offres Free et Pro avec comparatif des fonctionnalités et gestion de l'abonnement via Stripe.
+
+---
+
+### Profil
+
+![Profil](docs/readme/screenshots/profil.png)
+
+> Gestion du profil : langue, informations personnelles, devise, lignes budgétaires par défaut et mot de passe.
+
+---
+
+### Administration
+
+![Administration](docs/readme/screenshots/admin.jpg)
+
+> Dashboard admin : inscriptions, transactions, croissance cumulée, langues utilisées, répartition des formules et statistiques en temps réel.
 
 ---
 
