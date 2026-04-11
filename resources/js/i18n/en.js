@@ -854,7 +854,7 @@ export default {
             email: 'Email address',
             emailPlaceholder: "example{'@'}domain.com",
             message: 'Custom message',
-            messagePlaceholder: 'Write a message that will appear in the body of the email…',
+            messagePlaceholder: 'A custom message to accompany the invitation…',
             credentialEmail: 'Login email',
             credentialPassword: 'Password',
             credentialsHint: 'If filled in, credentials will appear in the email body.',
