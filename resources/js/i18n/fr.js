@@ -858,7 +858,7 @@ export default {
             email: 'Adresse e-mail',
             emailPlaceholder: "exemple{'@'}domaine.com",
             message: 'Message personnalisé',
-            messagePlaceholder: "Rédigez un message qui apparaîtra dans le corps de l'e-mail…",
+            messagePlaceholder: "Un message personnalisé pour accompagner l'invitation…",
             credentialEmail: 'E-mail de connexion',
             credentialPassword: 'Mot de passe',
             credentialsHint: 'Si renseignés, les identifiants apparaîtront dans le corps du mail.',

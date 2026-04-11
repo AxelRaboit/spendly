@@ -23,7 +23,7 @@ const { form, submit } = useCategoryForm(props.category ?? undefined);
             <AppPageHeader :title="isEdit ? t('categories.editTitle') : t('categories.createTitle')" />
         </template>
 
-        <div class="max-w-lg">
+        <div class="max-w-lg mx-auto">
             <FormSection>
                 <form class="space-y-4" v-on:submit.prevent="submit">
                     <div>

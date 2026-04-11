@@ -850,7 +850,7 @@ export default {
             email: 'E-Mail-Adresse',
             emailPlaceholder: "beispiel{'@'}domain.de",
             message: 'Persönliche Nachricht',
-            messagePlaceholder: 'Schreiben Sie eine Nachricht, die im E-Mail-Text erscheinen soll…',
+            messagePlaceholder: 'Eine persönliche Nachricht zur Einladung…',
             credentialEmail: 'Login-E-Mail',
             credentialPassword: 'Passwort',
             credentialsHint: 'Wenn ausgefüllt, erscheinen die Zugangsdaten im E-Mail-Text.',

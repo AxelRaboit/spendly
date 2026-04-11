@@ -849,7 +849,7 @@ export default {
             email: 'Dirección de correo electrónico',
             emailPlaceholder: "ejemplo{'@'}dominio.com",
             message: 'Mensaje personalizado',
-            messagePlaceholder: 'Escriba un mensaje que aparecerá en el cuerpo del correo…',
+            messagePlaceholder: 'Un mensaje personalizado para acompañar la invitación…',
             credentialEmail: 'Correo de acceso',
             credentialPassword: 'Contraseña',
             credentialsHint: 'Si se rellenan, las credenciales aparecerán en el cuerpo del correo.',

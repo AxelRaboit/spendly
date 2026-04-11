@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import axios from 'axios';
-import { Check, Loader2, Plus, Trash2, Eye, Pencil, X, FilePlus, Search } from 'lucide-vue-next';
+import { Check, Loader2, Plus, Trash2, Eye, Pencil, X, FilePlus, Search, ChevronLeft } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
@@ -45,6 +45,13 @@ provide('onDragStart', onDragStart);
 provide('onDragEnd',   onDragEnd);
 provide('onDragOver',  onDragOver);
 provide('onDrop',      onDrop);
+
+// ── Mobile panel state ────────────────────────────────────────────────────────
+const mobilePanel = ref('list'); // 'list' | 'editor'
+
+watch(selectedNoteId, (id) => {
+    if (id) mobilePanel.value = 'editor';
+});
 
 // ── Editor state ──────────────────────────────────────────────────────────────
 const editTitle   = ref('');
@@ -142,7 +149,10 @@ async function confirmDelete() {
         <!-- Two-panel layout: editor left + tree sidebar right -->
         <div class="flex h-[calc(100vh-10rem)] rounded-xl overflow-hidden border border-base/60 bg-surface">
             <!-- ── Editor (left) ───────────────────────────────────────────── -->
-            <div class="flex-1 flex flex-col min-w-0">
+            <div
+                class="flex-1 flex-col min-w-0"
+                :class="mobilePanel === 'editor' ? 'flex' : 'hidden md:flex'"
+            >
                 <!-- Empty state -->
                 <div
                     v-if="!selectedNoteId"
@@ -166,15 +176,25 @@ async function confirmDelete() {
                 <!-- Note editor -->
                 <template v-else-if="loadedNote">
                     <!-- Editor toolbar -->
-                    <div class="flex items-center justify-between gap-3 border-b border-base/60 px-6 py-2.5 shrink-0">
-                        <span
-                            class="text-xs text-muted flex items-center gap-1.5 transition-opacity"
-                            :class="saveStatus === 'idle' ? 'opacity-0' : 'opacity-100'"
-                        >
-                            <Loader2 v-if="saveStatus === 'saving'" class="w-3.5 h-3.5 animate-spin" />
-                            <Check v-else class="w-3.5 h-3.5 text-emerald-500" />
-                            {{ saveStatus === 'saving' ? t('notepad.saving') : t('notepad.saved') }}
-                        </span>
+                    <div class="flex items-center justify-between gap-3 border-b border-base/60 px-4 py-2.5 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <!-- Back to list (mobile only) -->
+                            <button
+                                class="md:hidden flex items-center justify-center w-7 h-7 rounded-md hover:bg-surface-2 text-muted transition-colors"
+                                v-on:click="mobilePanel = 'list'"
+                            >
+                                <ChevronLeft class="w-4 h-4" />
+                            </button>
+
+                            <span
+                                class="text-xs text-muted flex items-center gap-1.5 transition-opacity"
+                                :class="saveStatus === 'idle' ? 'opacity-0' : 'opacity-100'"
+                            >
+                                <Loader2 v-if="saveStatus === 'saving'" class="w-3.5 h-3.5 animate-spin" />
+                                <Check v-else class="w-3.5 h-3.5 text-emerald-500" />
+                                <span class="hidden sm:inline">{{ saveStatus === 'saving' ? t('notepad.saving') : t('notepad.saved') }}</span>
+                            </span>
+                        </div>
 
                         <div class="flex items-center gap-2">
                             <!-- Edit / Preview toggle -->
@@ -185,7 +205,7 @@ async function confirmDelete() {
                                     v-on:click="isPreview = false"
                                 >
                                     <Pencil class="w-3.5 h-3.5" />
-                                    {{ t('notepad.edit') }}
+                                    <span class="hidden sm:inline">{{ t('notepad.edit') }}</span>
                                 </button>
                                 <button
                                     class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
@@ -193,7 +213,7 @@ async function confirmDelete() {
                                     v-on:click="isPreview = true"
                                 >
                                     <Eye class="w-3.5 h-3.5" />
-                                    {{ t('notepad.preview') }}
+                                    <span class="hidden sm:inline">{{ t('notepad.preview') }}</span>
                                 </button>
                             </div>
 
@@ -258,7 +278,10 @@ async function confirmDelete() {
             </div>
 
             <!-- ── Sidebar (right) ─────────────────────────────────────────── -->
-            <div class="w-60 border-l border-base/60 flex flex-col shrink-0 bg-surface">
+            <div
+                class="flex-col shrink-0 bg-surface md:border-l border-base/60 w-full md:w-60"
+                :class="mobilePanel === 'list' ? 'flex' : 'hidden md:flex'"
+            >
                 <!-- Sidebar header -->
                 <div class="flex items-center justify-between px-3 py-2.5 border-b border-base/60 shrink-0">
                     <span class="text-xs font-medium text-muted uppercase tracking-wide">
