@@ -84,7 +84,11 @@ fixtures: ## Drop all tables, re-run migrations and seed
 	$(ARTISAN) migrate:fresh --seed
 
 # === Tests ===
-test: ## Run all PHPUnit tests
+db-test: ## Create the test database and run migrations
+	@psql -h 127.0.0.1 -c "CREATE DATABASE spendly_test;" 2>/dev/null || true
+	DB_DATABASE=spendly_test $(ARTISAN) migrate --force
+
+test: db-test ## Run all PHPUnit tests
 	$(ARTISAN) test
 
 test-feature: ## Run feature tests only
@@ -120,6 +124,9 @@ fix: ## Run all fixers then static analysis
 	make fix-php
 	make fix-js
 	make stan
+
+ft: ## Fix code and run all tests
+	make fix && make test
 
 # === Laravel Cache ===
 cc: ## Clear all caches (dev)

@@ -3,9 +3,9 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createApp, h } from 'vue';
+import { createApp } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
-
+import { createRootApp } from '@/RootApp';
 import components from '@/plugins/components';
 import { createI18nInstance } from '@/i18n/index';
 
@@ -18,12 +18,7 @@ createInertiaApp({
         const locale = props.initialPage.props.locale ?? 'fr';
         const i18n = createI18nInstance(locale);
 
-        return createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue)
-            .use(components)
-            .use(i18n)
-            .mount(el);
+        return createApp(createRootApp(App, props)).use(plugin).use(ZiggyVue).use(components).use(i18n).mount(el);
     },
     progress: {
         color: '#4B5563',

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import AppToast from '@/components/ui/AppToast.vue';
+import { toast } from 'vue-sonner';
 import ConfirmModal from '@/components/ui/ConfirmModal.vue';
 import CopyBudgetModal from '@/components/ui/CopyBudgetModal.vue';
 import AppLink from '@/components/ui/AppLink.vue';
@@ -236,14 +236,24 @@ const overageGoodCount = computed(() =>
 );
 
 // ─── Overage toast ──────────────────────────────────────────────────────────
-const overageToast = ref(null);
 let prevOverageCount = overageCount.value;
 
 watch(overageCount, (newVal) => {
     if (newVal > prevOverageCount) {
-        overageToast.value = t('budgets.overageToast', newVal, { count: newVal });
+        toast.warning(t('budgets.overageToast', newVal, { count: newVal }), { duration: 4000 });
     }
     prevOverageCount = newVal;
+});
+
+watch(deletingItem, (item) => {
+    if (item) {
+        toast(t('budgets.toast.deleted', { label: item.label }), {
+            action: { label: t('budgets.toast.undo'), onClick: () => undoDelete() },
+            onDismiss: () => undoDelete(),
+            onAutoClose: () => undoDelete(),
+            duration: 5000,
+        });
+    }
 });
 
 // ─── Goal deposit modal ───────────────────────────────────────────────────────
@@ -1793,32 +1803,5 @@ onUnmounted(() => {
             v-on:confirm="confirmClear"
             v-on:cancel="showClearModal = false"
         />
-
-        <Transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="opacity-0 translate-y-2"
-            enter-to-class="opacity-100 translate-y-0"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="opacity-100 translate-y-0"
-            leave-to-class="opacity-0 translate-y-2"
-        >
-            <AppToast
-                v-if="deletingItem"
-                :message="t('budgets.toast.deleted', { label: deletingItem.label })"
-                :action="t('budgets.toast.undo')"
-                :duration="5000"
-                :offset="3.5"
-                v-on:action="undoDelete"
-                v-on:dismiss="undoDelete"
-            />
-            <AppToast
-                v-else-if="overageToast"
-                :message="overageToast"
-                type="warning"
-                :duration="4000"
-                :offset="3.5"
-                v-on:dismiss="overageToast = null"
-            />
-        </Transition>
     </AuthenticatedLayout>
 </template>
