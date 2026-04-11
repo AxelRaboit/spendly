@@ -41,7 +41,7 @@ const modes = [
             <AppPageHeader :title="isEdit ? t('wallets.editTitle') : t('wallets.createTitle')" />
         </template>
 
-        <div class="max-w-lg">
+        <div class="max-w-lg mx-auto">
             <FormSection>
                 <form class="space-y-5" v-on:submit.prevent="submit">
                     <div v-if="!isEdit" class="space-y-2">
