@@ -21,12 +21,12 @@ const pageLinks = computed(() => props.meta.links?.slice(1, -1) ?? []);
 </script>
 
 <template>
-    <div v-if="meta.last_page > 1" class="mt-6 space-y-3">
+    <div v-if="meta.last_page > 1" class="mt-6 space-y-3 flex flex-col items-center">
         <p class="text-sm text-secondary">
             {{ t('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
         </p>
 
-        <div class="flex flex-wrap gap-1 items-center">
+        <div class="flex flex-wrap gap-1 items-center justify-center">
             <component
                 :is="prevLink?.url ? Link : 'span'"
                 :href="prevLink?.url ?? undefined"

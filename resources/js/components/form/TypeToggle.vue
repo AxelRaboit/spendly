@@ -9,16 +9,15 @@ defineProps({ disabled: { type: Boolean, default: false } });
 </script>
 
 <template>
-    <div class="flex w-full rounded-lg border border-base overflow-hidden" :class="disabled ? 'opacity-60' : ''">
+    <div class="flex w-full rounded-lg border border-base overflow-hidden">
         <button
             type="button"
             :disabled="disabled"
             :class="[
-                'flex-1 px-3 py-2 text-sm font-medium transition-colors',
+                'flex-1 px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                 model === TransactionType.Expense
                     ? 'bg-rose-500/20 text-rose-400 border-r border-base'
                     : 'text-secondary hover:text-primary border-r border-base',
-                disabled ? 'cursor-not-allowed' : '',
             ]"
             v-on:click="model = TransactionType.Expense"
         >
@@ -28,11 +27,10 @@ defineProps({ disabled: { type: Boolean, default: false } });
             type="button"
             :disabled="disabled"
             :class="[
-                'flex-1 px-3 py-2 text-sm font-medium transition-colors',
+                'flex-1 px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                 model === TransactionType.Income
                     ? 'bg-emerald-500/20 text-emerald-400'
                     : 'text-secondary hover:text-primary',
-                disabled ? 'cursor-not-allowed' : '',
             ]"
             v-on:click="model = TransactionType.Income"
         >

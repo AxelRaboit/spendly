@@ -197,6 +197,11 @@ const devNavItem = computed(() => {
                 </button>
             </div>
 
+            <div v-if="!collapsed" class="border-b border-base px-4 py-3 shrink-0">
+                <p class="text-sm font-medium text-primary truncate">{{ $page.props.auth.user.name }}</p>
+                <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
+            </div>
+
             <nav class="flex-1 py-4 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3 overflow-y-auto'">
                 <template v-for="item in navItems" :key="item.key">
                     <span
@@ -349,12 +354,12 @@ const devNavItem = computed(() => {
                     ]"
                 >
                     <User class="w-5 h-5 shrink-0 text-muted" />
-                    <span v-if="!collapsed" class="truncate">{{ $page.props.auth.user.name }}</span>
+                    <span v-if="!collapsed" class="truncate">{{ t('nav.profile') }}</span>
                     <span
                         v-if="collapsed"
                         class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
-                        {{ $page.props.auth.user.name }}
+                        {{ t('nav.profile') }}
                     </span>
                 </Link>
 
@@ -408,18 +413,23 @@ const devNavItem = computed(() => {
                     leave-from-class="translate-x-0"
                     leave-to-class="-translate-x-full"
                 >
-                    <div v-if="showMobileMenu" class="relative w-72 max-w-[85vw] bg-surface h-full flex flex-col shadow-2xl">
-                        <div class="flex items-center justify-between px-5 h-14 border-b border-base shrink-0">
-                            <div class="flex items-center gap-2">
-                                <AppLogo :size="28" />
-                                <div class="flex flex-col">
-                                    <span class="text-primary font-bold text-base leading-tight">Spendly</span>
+                    <div v-if="showMobileMenu" class="relative w-60 max-w-[85vw] bg-surface h-full flex flex-col shadow-2xl">
+                        <div class="flex items-center justify-between px-4 h-16 border-b border-base shrink-0">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <AppLogo :size="32" class="shrink-0" />
+                                <div class="flex flex-col min-w-0">
+                                    <span class="text-primary font-bold text-lg tracking-tight truncate leading-tight">Spendly</span>
                                     <span class="text-xs text-muted/50 leading-none">{{ $page.props.appVersion }}</span>
                                 </div>
                             </div>
                             <button class="p-1.5 text-muted hover:text-primary" v-on:click="showMobileMenu = false">
                                 <X class="w-5 h-5" />
                             </button>
+                        </div>
+
+                        <div class="px-4 py-3 border-b border-base shrink-0">
+                            <p class="text-sm font-medium text-primary">{{ $page.props.auth.user.name }}</p>
+                            <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
                         </div>
 
                         <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
@@ -453,13 +463,26 @@ const devNavItem = computed(() => {
                                     {{ t('nav.' + item.key) }}
                                 </Link>
                             </template>
+
+                            <Link
+                                v-if="devNavItem"
+                                :href="route(devNavItem.route)"
+                                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                                :class="route().current(devNavItem.match)
+                                    ? 'bg-rose-600/15 text-rose-400'
+                                    : 'text-secondary hover:text-primary hover:bg-surface-2'"
+                                v-on:click="showMobileMenu = false"
+                            >
+                                <component
+                                    :is="devNavItem.icon"
+                                    class="w-5 h-5 shrink-0"
+                                    :class="route().current(devNavItem.match) ? 'text-rose-400' : 'text-muted'"
+                                />
+                                {{ t('nav.dev-dashboard') }}
+                            </Link>
                         </nav>
 
                         <div class="shrink-0 border-t border-base px-3 py-3 space-y-1">
-                            <div class="px-3 py-2 mb-1">
-                                <p class="text-sm font-medium text-primary">{{ $page.props.auth.user.name }}</p>
-                                <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
-                            </div>
                             <button
                                 class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
                                 v-on:click="showTourModal = true; showMobileMenu = false"

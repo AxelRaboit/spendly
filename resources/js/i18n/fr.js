@@ -12,7 +12,7 @@ export default {
         recurring: 'Automatiques',
         import: 'Importer',
         plan: 'Formule',
-        profile: 'Profil',
+        profile: 'Mon profil',
         logout: 'Déconnexion',
         lightMode: 'Mode clair',
         darkMode: 'Mode sombre',
@@ -263,7 +263,6 @@ export default {
             noSectionCategories: 'Aucune catégorie liée à cette section.',
             date: 'Date',
             descLabel: 'Description',
-            descOptional: '(optionnel)',
             descPlaceholder: "Ex : Lidl, plein d'essence…",
             tagsLabel: 'Tags',
             tagsPlaceholder: 'voyage, courses…',
@@ -298,7 +297,7 @@ export default {
         },
         editRow: {
             labelPlaceholder: 'Libellé',
-            notePlaceholder: 'Note (optionnelle)…',
+            notePlaceholder: 'Note…',
             confirm: 'Valider',
             cancel: 'Annuler',
             section: 'Section :',
@@ -410,7 +409,7 @@ export default {
     },
 
     profile: {
-        title: 'Profil',
+        title: 'Mon profil',
         locale: {
             title: 'Langue',
             subtitle: "Choisissez la langue d'affichage de l'application.",
@@ -501,7 +500,7 @@ export default {
         newGoal: 'Nouvel objectif',
         editGoal: "Modifier l'objectif",
         fieldName: 'Nom',
-        fieldWallet: 'Portefeuille lié (optionnel)',
+        fieldWallet: 'Portefeuille lié',
         noWallet: 'Aucun',
         fieldCategory: 'Catégorie liée (auto-sync)',
         noCategory: 'Aucune',
@@ -509,7 +508,7 @@ export default {
         autoSync: 'Synchronisé via {category}',
         fieldTarget: 'Montant cible ({symbol})',
         fieldSaved: 'Déjà épargné ({symbol})',
-        fieldDeadline: 'Date limite (optionnelle)',
+        fieldDeadline: 'Date limite',
         fieldColor: 'Couleur',
         deposit: 'Ajouter',
         depositAmount: 'Montant à ajouter',
@@ -675,7 +674,7 @@ export default {
         to: 'Vers',
         amount: 'Montant',
         date: 'Date',
-        description: 'Description (optionnelle)',
+        description: 'Description',
         descPlaceholder: 'Ex : Épargne mensuelle…',
         submit: 'Effectuer le virement',
         submitting: 'En cours…',
@@ -800,9 +799,10 @@ export default {
     trial: {
         bannerLink: 'Voir les formules',
         countdown: {
-            days: 'Essai Pro : {days} jour restant | Essai Pro : {days} jours restants',
-            hours: 'Essai Pro : {hours}h{minutes}min restantes',
-            minutes: 'Essai Pro : {minutes} minute restante | Essai Pro : {minutes} minutes restantes',
+            days: "Votre période d'essai Pro se termine dans {days} jour | Votre période d'essai Pro se termine dans {days} jours",
+            hours: "Votre période d'essai Pro se termine dans {hours}h{minutes}min",
+            minutes:
+                "Votre période d'essai Pro se termine dans {minutes} minute | Votre période d'essai Pro se termine dans {minutes} minutes",
         },
     },
     admin: {
@@ -859,8 +859,8 @@ export default {
             emailPlaceholder: "exemple{'@'}domaine.com",
             message: 'Message personnalisé',
             messagePlaceholder: "Rédigez un message qui apparaîtra dans le corps de l'e-mail…",
-            credentialEmail: 'E-mail de connexion (optionnel)',
-            credentialPassword: 'Mot de passe (optionnel)',
+            credentialEmail: 'E-mail de connexion',
+            credentialPassword: 'Mot de passe',
             credentialsHint: 'Si renseignés, les identifiants apparaîtront dans le corps du mail.',
             send: "Envoyer l'invitation",
             sending: 'Envoi en cours…',

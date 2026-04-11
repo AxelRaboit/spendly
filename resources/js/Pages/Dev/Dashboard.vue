@@ -5,7 +5,7 @@ import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Check, LogIn, Mail, Pencil, Shield, Trash2, UserRound, Wallet, X } from 'lucide-vue-next';
+import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Shield, Trash2, TrendingUp, UserRound, Wallet, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { PlanType } from '@/enums/PlanType';
 import { computed, ref } from 'vue';
@@ -219,34 +219,34 @@ const submitInvitation = () => {
             />
         </template>
 
-        <div class="space-y-6 p-4 sm:p-6">
+        <div class="space-y-6">
             <div class="border-b border-base overflow-x-auto">
                 <nav class="flex gap-6 sm:gap-8 whitespace-nowrap min-w-max">
                     <Link
                         :href="route('dev.dashboard.stats')"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
-                        :class="tab === 'stats' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        :class="tab === 'stats' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.stats.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.users')"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
-                        :class="tab === 'users' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        :class="tab === 'users' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.users.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.invitations')"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
-                        :class="tab === 'invitations' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        :class="tab === 'invitations' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.invitations.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.parameters')"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
-                        :class="tab === 'parameters' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        :class="tab === 'parameters' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.parameters.title') }}
                     </Link>
@@ -256,35 +256,77 @@ const submitInvitation = () => {
             <!-- Stats tab -->
             <div v-if="tab === 'stats' && stats" class="space-y-6">
                 <!-- KPI cards -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-surface border border-base/60 rounded-xl p-4">
-                        <p class="text-xs text-secondary mb-1">{{ t('admin.stats.usersTotal') }}</p>
-                        <p class="text-2xl font-bold text-primary">{{ stats.users.total }}</p>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-surface border border-base rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersTotal') }}</span>
+                            <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
+                                <UserRound class="w-4 h-4 text-indigo-400" :stroke-width="2" />
+                            </div>
+                        </div>
+                        <p class="text-2xl font-bold text-indigo-400">{{ stats.users.total }}</p>
+                        <p class="text-xs text-muted mt-0.5">{{ t('admin.stats.users') }}</p>
+                        <p class="text-xs text-secondary mt-1.5">
+                            <span class="text-indigo-400 font-medium">+{{ stats.users.newThisMonth }}</span>
+                            {{ t('admin.stats.usersNewThisMonth').toLowerCase() }}
+                        </p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-xl p-4">
-                        <p class="text-xs text-secondary mb-1">{{ t('admin.stats.usersPro') }}</p>
+                    <div class="bg-surface border border-base rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersPro') }}</span>
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                                <BadgeCheck class="w-4 h-4 text-amber-400" :stroke-width="2" />
+                            </div>
+                        </div>
                         <p class="text-2xl font-bold text-amber-400">{{ stats.users.pro }}</p>
+                        <p class="text-xs text-muted mt-0.5">abonnés payants</p>
+                        <p class="text-xs text-secondary mt-1.5">
+                            <span class="text-amber-400 font-medium">{{ stats.users.total > 0 ? Math.round(stats.users.pro / stats.users.total * 100) : 0 }}%</span>
+                            des utilisateurs
+                        </p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-xl p-4">
-                        <p class="text-xs text-secondary mb-1">{{ t('admin.stats.transactionsTotal') }}</p>
-                        <p class="text-2xl font-bold text-primary">{{ stats.transactions.total.toLocaleString() }}</p>
+                    <div class="bg-surface border border-base rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.transactions') }}</span>
+                            <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
+                                <Activity class="w-4 h-4 text-indigo-400" :stroke-width="2" />
+                            </div>
+                        </div>
+                        <p class="text-2xl font-bold text-indigo-400">{{ stats.transactions.total.toLocaleString() }}</p>
+                        <p class="text-xs text-muted mt-0.5">depuis le début</p>
+                        <p class="text-xs text-secondary mt-1.5">
+                            <span class="text-indigo-400 font-medium">{{ stats.transactions.thisMonth.toLocaleString() }}</span>
+                            {{ t('admin.stats.transactionsThisMonth').toLowerCase() }}
+                        </p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-xl p-4">
-                        <p class="text-xs text-secondary mb-1">{{ t('admin.stats.usersNewThisMonth') }}</p>
-                        <p class="text-2xl font-bold text-indigo-400">{{ stats.users.newThisMonth }}</p>
+                    <div class="bg-surface border border-base rounded-xl p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersNewThisMonth') }}</span>
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                <TrendingUp class="w-4 h-4 text-emerald-400" :stroke-width="2" />
+                            </div>
+                        </div>
+                        <p class="text-2xl font-bold text-emerald-400">{{ stats.users.newThisMonth }}</p>
+                        <p class="text-xs text-muted mt-0.5">inscriptions ce mois</p>
+                        <p class="text-xs text-secondary mt-1.5">
+                            <span class="text-emerald-400 font-medium">{{ stats.users.pro }}</span>
+                            Pro ·
+                            <span class="text-emerald-400 font-medium">{{ stats.users.total - stats.users.pro }}</span>
+                            Free
+                        </p>
                     </div>
                 </div>
 
                 <!-- Row 1: inscriptions + transactions par mois -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-surface border border-base/60 rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.usersPerMonth') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.usersPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="usersLineData" :options="lineOptions" />
                         </div>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.transactionsPerMonth') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.transactionsPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <BarChart :data="transactionsBarData" :options="barOptions" />
                         </div>
@@ -293,14 +335,14 @@ const submitInvitation = () => {
 
                 <!-- Row 2: croissance cumulée + langues -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-surface border border-base/60 rounded-xl p-5 lg:col-span-2">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.cumulativeGrowth') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5 lg:col-span-2">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.cumulativeGrowth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="cumulativeLineData" :options="lineOptions" />
                         </div>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.localeDistribution') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.localeDistribution') }}</h3>
                         <div class="h-48 sm:h-64">
                             <DoughnutChart :data="localeDonutData" :options="donutOptions" />
                         </div>
@@ -309,24 +351,24 @@ const submitInvitation = () => {
 
                 <!-- Row 3: plan + activité + wallets/autres -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-surface border border-base/60 rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.planDistribution') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.planDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="planDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
-                    <div class="bg-surface border border-base/60 rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('admin.stats.activityDistribution') }}</h3>
+                    <div class="bg-surface border border-base rounded-xl p-5">
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.activityDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="activityDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
-                    <div class="bg-surface border border-base/60 rounded-xl p-5 flex flex-col gap-4">
+                    <div class="bg-surface border border-base rounded-xl p-5 flex flex-col gap-4">
                         <div class="flex flex-col justify-between gap-3">
                             <div class="flex items-center justify-between">
-                                <h3 class="text-sm font-semibold text-secondary">{{ t('admin.stats.wallets') }}</h3>
+                                <h3 class="text-sm font-semibold text-primary">{{ t('admin.stats.wallets') }}</h3>
                                 <div class="p-2 rounded-lg bg-indigo-600/10">
                                     <Wallet class="w-4 h-4 text-indigo-400" />
                                 </div>
@@ -448,9 +490,6 @@ const submitInvitation = () => {
             <!-- Parameters tab -->
             <div v-if="tab === 'parameters'">
                 <div class="bg-surface border border-base rounded-xl overflow-hidden">
-                    <div class="px-5 py-3 border-b border-base bg-surface-2">
-                        <p class="text-sm font-semibold text-primary">{{ t('admin.parameters.title') }}</p>
-                    </div>
                     <table class="w-full">
                         <thead class="bg-surface-2 border-b border-base">
                             <tr>
@@ -471,7 +510,7 @@ const submitInvitation = () => {
                                     <template v-if="editingKey === param.key">
                                         <input
                                             v-model="editingValue"
-                                            class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1 text-sm text-primary focus:outline-none focus:border-indigo-500"
+                                            class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             autofocus
                                             v-on:keydown.enter="saveParameter(param)"
                                             v-on:keydown.esc="cancelEdit"
@@ -485,7 +524,7 @@ const submitInvitation = () => {
                                         <template v-if="editingKey === param.key">
                                             <button
                                                 :disabled="editSaving"
-                                                class="p-1.5 text-muted hover:text-emerald-400 transition-colors"
+                                                class="p-1.5 text-muted hover:text-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 v-on:click="saveParameter(param)"
                                             >
                                                 <Check class="w-3.5 h-3.5" />
@@ -566,8 +605,8 @@ const submitInvitation = () => {
 
                     <button
                         type="submit"
-                        :disabled="invitationForm.processing"
-                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+                        :disabled="invitationForm.processing || !invitationForm.email"
+                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm font-medium"
                     >
                         <Mail class="w-4 h-4" />
                         {{ invitationForm.processing ? t('admin.invitations.sending') : t('admin.invitations.send') }}
