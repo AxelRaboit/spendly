@@ -30,7 +30,8 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 - **Tableau de bord** — Vue d'ensemble du mois en cours : dépenses, remboursements, évolution mensuelle, objectifs en cours et dernières transactions
 - **Vue globale** — Synthèse multi-portefeuilles avec graphiques de revenus/dépenses et répartition par catégorie
 - **Portefeuilles** — Gestion de plusieurs comptes indépendants (compte courant, livret, assurance vie…) avec virements entre comptes
-- **Transactions** — Liste complète et filtrable de toutes vos transactions, avec support des transactions planifiées
+- **Transactions** — Liste complète et filtrable de toutes vos transactions
+- **Transactions planifiées** — Suivi des dépenses annuelles, primes et échéances futures
 - **Transactions automatiques** — Gestion des abonnements et transactions récurrentes (streaming, sport, mutuelle…)
 - **Objectifs d'épargne** — Suivi visuel de la progression vers vos objectifs financiers
 - **Statistiques** — Analyse graphique sur la durée avec projections, taux d'épargne et tendances par catégorie
@@ -39,6 +40,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 - **Import** — Import de transactions depuis un fichier Excel (modèle fourni)
 - **Export** — Export des données budgétaires en Excel
 - **Formules & Tarifs** — Offres Free et Pro avec gestion de l'abonnement
+- **Profil** — Gestion du profil : langue, informations personnelles, devise, lignes budgétaires par défaut et mot de passe
 - **Administration** — Dashboard admin avec statistiques globales, gestion des utilisateurs et invitations
 
 ---
@@ -93,11 +95,11 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
-### Budget d'un portefeuille
+### Transactions d'une ligne budgétaire
 
 ![Budget portefeuille](docs/readme/screenshots/budget-portefeuille.jpg)
 
-> Vue budget d'un portefeuille : lignes budgétaires par catégorie avec montants planifiés, réels et écarts visuels.
+> Détail des transactions d'une ligne budgétaire : liste des dépenses associées à une catégorie en cliquant sur une ligne du budget.
 
 ---
 
