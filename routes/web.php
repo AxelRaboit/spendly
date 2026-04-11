@@ -56,6 +56,8 @@ Route::middleware(['auth', 'role:ROLE_DEV'])->group(function () {
     Route::post('/dev/dashboard/users/{user}/impersonate', [DevDashboardController::class, 'impersonate'])->name('dev.dashboard.users.impersonate');
     Route::get('/dev/dashboard/invitations', [DevDashboardController::class, 'invitations'])->name('dev.dashboard.invitations');
     Route::post('/dev/dashboard/invitations', [DevDashboardController::class, 'sendInvitation'])->name('dev.dashboard.invitations.send');
+    Route::get('/dev/dashboard/parameters', [DevDashboardController::class, 'parameters'])->name('dev.dashboard.parameters');
+    Route::patch('/dev/dashboard/parameters/{key}', [DevDashboardController::class, 'updateParameter'])->name('dev.dashboard.parameters.update');
 });
 
 Route::middleware('auth')->group(function () {

@@ -12,7 +12,10 @@ use Inertia\Response;
 
 class SearchController extends Controller
 {
-    public function __construct(private readonly SearchService $searchService) {}
+    public function __construct(
+        private readonly SearchService $searchService,
+        private readonly PlanService $planService,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -27,7 +30,7 @@ class SearchController extends Controller
             'wallets' => $user->walletOptions(),
             'filters' => $filters,
             'isFreeLimited' => $result['isFreeLimited'],
-            'freeLimitDays' => PlanService::FREE_TRANSACTION_HISTORY_DAYS,
+            'freeLimitDays' => $this->planService->freeTransactionHistoryDays(),
         ]);
     }
 }

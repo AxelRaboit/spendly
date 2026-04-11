@@ -17,7 +17,10 @@ use Inertia\Response;
 
 class RecurringTransactionController extends Controller
 {
-    public function __construct(private readonly RecurringTransactionService $recurringService) {}
+    public function __construct(
+        private readonly RecurringTransactionService $recurringService,
+        private readonly PlanService $planService,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -40,7 +43,7 @@ class RecurringTransactionController extends Controller
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
-                ->with('plan_error_limit', PlanService::FREE_RECURRING_LIMIT);
+                ->with('plan_error_limit', $this->planService->freeRecurringLimit());
         }
     }
 

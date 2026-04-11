@@ -862,6 +862,16 @@ export default {
             send: 'Send invitation',
             sending: 'Sending…',
         },
+        parameters: {
+            title: 'Parameters',
+            key: 'Key',
+            value: 'Value',
+            description: 'Description',
+            actions: 'Actions',
+            edit: 'Edit',
+            save: 'Save',
+            cancel: 'Cancel',
+        },
     },
     impersonation: {
         banner: 'You are logged in as {name}',

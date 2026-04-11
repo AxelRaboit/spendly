@@ -2,7 +2,7 @@
 
 # Spendly
 
-**Application de gestion financiere personnelle**
+**Application de gestion financière personnelle**
 
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org)
@@ -16,37 +16,37 @@
 
 ---
 
-## Presentation
+## Présentation
 
-Spendly est une application web de gestion financiere personnelle qui vous permet de suivre vos depenses, gerer plusieurs portefeuilles, definir des objectifs d'epargne et analyser vos habitudes financieres mois par mois.
+Spendly est une application web de gestion financière personnelle qui vous permet de suivre vos dépenses, gérer plusieurs portefeuilles, définir des objectifs d'épargne et analyser vos habitudes financières mois par mois.
 
-Concu avec une interface sombre moderne, Spendly centralise toutes vos finances en un seul endroit.
-
----
-
-## Fonctionnalites
-
-- **Tableau de bord** — Vue d'ensemble de vos finances du mois en cours : depenses, remboursements, evolution mensuelle, et derniere transaction enregistree
-- **Vue globale** — Synthese multi-portefeuilles avec graphiques de revenus/depenses et repartition par categorie
-- **Portefeuilles** — Gestion de plusieurs comptes independants (compte courant, livret, assurance vie…) avec suivi des objectifs budgetaires
-- **Transactions** — Liste complete et filtrable de toutes vos transactions, organisees par categorie et par type (depense, revenu, virement)
-- **Transactions automatiques** — Gestion des abonnements et transactions recurrentes (streaming, salle de sport, mutuelle…)
-- **Objectifs d'epargne** — Suivi de la progression vers vos objectifs financiers avec indicateurs visuels
-- **Statistiques** — Analyse graphique de vos habitudes de depenses sur la duree avec projections et evolution multi-mois
-- **Categories** — Gestion personnalisee des categories de depenses et de revenus
-- **Notes** — Prise de notes enrichie (Markdown) associee a vos finances
-- **Export** — Export de vos donnees en Excel
-- **Auto-configuration** — Parametrage personnalise des regles de gestion
+Conçu avec une interface sombre moderne, Spendly centralise toutes vos finances en un seul endroit.
 
 ---
 
-## Apercu
+## Fonctionnalités
+
+- **Tableau de bord** — Vue d'ensemble de vos finances du mois en cours : dépenses, remboursements, évolution mensuelle, et dernière transaction enregistrée
+- **Vue globale** — Synthèse multi-portefeuilles avec graphiques de revenus/dépenses et répartition par catégorie
+- **Portefeuilles** — Gestion de plusieurs comptes indépendants (compte courant, livret, assurance vie…) avec suivi des objectifs budgétaires
+- **Transactions** — Liste complète et filtrable de toutes vos transactions, organisées par catégorie et par type (dépense, revenu, virement)
+- **Transactions automatiques** — Gestion des abonnements et transactions récurrentes (streaming, salle de sport, mutuelle…)
+- **Objectifs d'épargne** — Suivi de la progression vers vos objectifs financiers avec indicateurs visuels
+- **Statistiques** — Analyse graphique de vos habitudes de dépenses sur la durée avec projections et évolution multi-mois
+- **Catégories** — Gestion personnalisée des catégories de dépenses et de revenus
+- **Notes** — Prise de notes enrichie (Markdown) associée à vos finances
+- **Export** — Export de vos données en Excel
+- **Auto-configuration** — Paramétrage personnalisé des règles de gestion
+
+---
+
+## Aperçu
 
 ### Tableau de bord
 
 ![Tableau de bord](docs/screenshots/tableau-de-bord.png)
 
-> Vue d'ensemble du mois : depenses totales, nombre de remboursements, evolution du budget, derniere transaction et top categories.
+> Vue d'ensemble du mois : dépenses totales, nombre de remboursements, évolution du budget, dernière transaction et top catégories.
 
 ---
 
@@ -54,7 +54,7 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Vue globale](docs/screenshots/vue-globale.png)
 
-> Synthese de tous vos portefeuilles avec graphiques de revenus/depenses par mois et donut de repartition par categorie.
+> Synthèse de tous vos portefeuilles avec graphiques de revenus/dépenses par mois et donut de répartition par catégorie.
 
 ---
 
@@ -62,7 +62,7 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Portefeuille](docs/screenshots/portefeuille.png)
 
-> Detail d'un portefeuille : solde, objectifs en cours avec progression, et recapitulatif des transactions du mois.
+> Détail d'un portefeuille : solde, objectifs en cours avec progression, et récapitulatif des transactions du mois.
 
 ---
 
@@ -70,7 +70,7 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Transactions](docs/screenshots/transactions.png)
 
-> Detail des transactions d'un portefeuille, par categorie, avec types, montants et statuts.
+> Détail des transactions d'un portefeuille, par catégorie, avec types, montants et statuts.
 
 ---
 
@@ -78,7 +78,7 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Liste des transactions](docs/screenshots/transactions-liste.png)
 
-> Vue complete et filtrable de toutes les transactions (categorie, portefeuille, mois).
+> Vue complète et filtrable de toutes les transactions (catégorie, portefeuille, mois).
 
 ---
 
@@ -86,13 +86,13 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Transactions automatiques](docs/screenshots/automatiques.png)
 
-> Gestion des abonnements et paiements recurrents : streaming, sport, mutuelle, salaire…
+> Gestion des abonnements et paiements récurrents : streaming, sport, mutuelle, salaire…
 
 ---
 
-### Objectifs d'epargne
+### Objectifs d'épargne
 
-![Objectifs d'epargne](docs/screenshots/objectifs.png)
+![Objectifs d'épargne](docs/screenshots/objectifs.png)
 
 > Suivi visuel de la progression vers chaque objectif financier (voyage, fonds d'urgence, immobilier…).
 
@@ -102,15 +102,15 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Statistiques](docs/screenshots/statistiques.png)
 
-> Tableaux de bord analytiques : depenses par categorie, evolution sur 6 mois, projections et budget cible.
+> Tableaux de bord analytiques : dépenses par catégorie, évolution sur 6 mois, projections et budget cible.
 
 ---
 
-### Categories
+### Catégories
 
-![Categories](docs/screenshots/categories.png)
+![Catégories](docs/screenshots/categories.png)
 
-> Gestion des categories personnalisees avec sous-categories et types (depense / revenu).
+> Gestion des catégories personnalisées avec sous-catégories et types (dépense / revenu).
 
 ---
 
@@ -118,7 +118,40 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ![Notes](docs/screenshots/notes.png)
 
-> Editeur de notes Markdown pour accompagner vos objectifs et reflexions financieres.
+> Éditeur de notes Markdown pour accompagner vos objectifs et réflexions financières.
+
+---
+
+## Architecture — SPA sans API REST
+
+Spendly est une SPA (Single Page Application) mais sans API REST exposée. C'est le choix technique central du projet.
+
+### Inertia.js : le pont Laravel ↔ Vue
+
+Sans Inertia, construire une SPA nécessite soit une API REST dédiée (et donc dupliquer la logique métier), soit du rendu serveur classique (et perdre la fluidité du frontend). Inertia résout ce dilemme en servant de pont entre les deux mondes.
+
+```
+[Browser]                           [Laravel server]
+     │                                      │
+     │  Initial request (HTML)              │  Render layout + page component
+     │ ◄──────────────────────────────────  │  + JSON data injected
+     │                                      │
+     │  Navigation (Inertia visit)          │
+     │  ──────────────────────────────────► │  Controller → Inertia::render('Page', $data)
+     │ ◄──────────────────────────────────  │  JSON response {component, props, url}
+     │                                      │
+     │  Vue swaps the component             │
+     │  (no full page reload)               │
+```
+
+- Le contrôleur retourne `Inertia::render('Wallets/Index', ['wallets' => $wallets])` — pas de serialisation manuelle, pas de route API
+- Vue reçoit les données comme des props directement typées
+- La navigation est fluide (SPA) sans écrire une seule ligne de fetch/axios pour les données de page
+- Les règles d'autorisation, la validation, les redirections restent dans Laravel — la seule source de vérité
+
+### Transactions automatiques et queue Laravel
+
+Les transactions récurrentes (abonnements, salaire…) sont générées automatiquement via la queue Laravel. Plutôt qu'un cron qui bloque et rejoue tout en cas d'échec, chaque génération est un job indépendant : si l'un échoue, les autres continuent, et Laravel gère les retries automatiquement.
 
 ---
 
@@ -139,7 +172,7 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 
 ## Installation
 
-### Prerequis
+### Prérequis
 
 - PHP >= 8.4
 - Composer >= 2
@@ -149,11 +182,11 @@ Concu avec une interface sombre moderne, Spendly centralise toutes vos finances 
 ### Mise en place
 
 ```bash
-# Cloner le depot
+# Cloner le dépôt
 git clone https://github.com/AxelRaboit/spendly.git
 cd spendly
 
-# Installer toutes les dependances (composer + tools + pnpm)
+# Installer toutes les dépendances (composer + tools + pnpm)
 make install
 
 # Copier le fichier d'environnement et configurer
@@ -162,21 +195,45 @@ php artisan key:generate
 php artisan migrate
 ```
 
-### Demarrage en developpement
+### Démarrage en développement
 
-**Demarrer le mailer (Mailpit via Docker) :**
+**Démarrer le mailer (Mailpit via Docker) :**
 
 ```bash
 docker compose up -d
 ```
 
-**Lancer les serveurs de developpement :**
+**Lancer les serveurs de développement :**
 
 ```bash
 make dev
 ```
 
-Lance en parallele : le serveur PHP, la queue, les logs Pail et Vite.
+Lance en parallèle : le serveur PHP, la queue, les logs Pail et Vite.
+
+---
+
+## Commandes utiles
+
+```bash
+# Tests
+make test              # suite complète
+make test-unit         # tests unitaires uniquement
+make test-feature      # tests de fonctionnalité uniquement
+
+# Qualité du code
+make fix               # auto-correction (Pint, Rector, ESLint) + PHPStan
+make stan              # PHPStan seul
+
+# Base de données
+make migrate           # exécuter les migrations
+make migrate-fresh     # repartir de zéro (drop + migrate)
+make fixtures          # migrate-fresh + seeders
+
+# Utilisateurs
+make demo-seed         # créer/réinitialiser l'utilisateur démo (EMAIL= optionnel)
+make role-dev EMAIL=user@example.com   # passer un utilisateur en ROLE_DEV
+```
 
 ---
 

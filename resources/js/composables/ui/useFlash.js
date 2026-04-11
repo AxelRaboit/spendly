@@ -1,38 +1,22 @@
-import { ref, onMounted, onUnmounted } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 
 export function useFlash() {
     const page = usePage();
-    const message = ref(null);
-    const type = ref('success');
 
-    function readFlash() {
-        const flash = page.props.flash ?? {};
-        if (flash.success) {
-            message.value = flash.success;
-            type.value = 'success';
-        } else if (flash.error) {
-            message.value = flash.error;
-            type.value = 'error';
-        } else if (flash.warning) {
-            message.value = flash.warning;
-            type.value = 'warning';
-        } else if (flash.info) {
-            message.value = flash.info;
-            type.value = 'info';
+    watch(
+        () => {
+            const f = page.props?.flash;
+            return f?.success || f?.error || f?.warning || f?.info || null;
+        },
+        (message) => {
+            if (!message) return;
+            const f = page.props?.flash;
+            if (f?.success) toast.success(f.success);
+            else if (f?.error) toast.error(f.error);
+            else if (f?.warning) toast.warning(f.warning);
+            else if (f?.info) toast.info(f.info);
         }
-    }
-
-    readFlash();
-
-    onMounted(() => {
-        const off = router.on('finish', readFlash);
-        onUnmounted(off);
-    });
-
-    function dismiss() {
-        message.value = null;
-    }
-
-    return { message, type, dismiss };
+    );
 }

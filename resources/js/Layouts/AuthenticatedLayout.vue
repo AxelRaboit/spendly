@@ -1,10 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import AppLogo from '@/components/ui/AppLogo.vue';
-import AppToast from '@/components/ui/AppToast.vue';
 import TourSelectionModal from '@/components/ui/TourSelectionModal.vue';
 import UpgradePrompt from '@/components/ui/UpgradePrompt.vue';
-import { useFlash } from '@/composables/ui/useFlash';
 import { useTheme } from '@/composables/ui/useTheme';
 import { Theme } from '@/enums/Theme';
 import { useTrialCountdown } from '@/composables/ui/useTrialCountdown';
@@ -41,7 +39,6 @@ import { useTour } from '@/composables/ui/useTour';
 const { t } = useI18n();
 const showMobileMenu = ref(false);
 const showTourModal = ref(false);
-const { message: flashMessage, type: flashType, dismiss: dismissFlash } = useFlash();
 const { theme, toggle: toggleTheme } = useTheme();
 const page = usePage();
 
@@ -549,23 +546,6 @@ const devNavItem = computed(() => {
                 </div>
             </main>
         </div>
-
-        <Transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="opacity-0 translate-y-2"
-            enter-to-class="opacity-100 translate-y-0"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="opacity-100 translate-y-0"
-            leave-to-class="opacity-0 translate-y-2"
-        >
-            <AppToast
-                v-if="flashMessage"
-                :message="flashMessage"
-                :type="flashType"
-                :duration="4000"
-                v-on:dismiss="dismissFlash"
-            />
-        </Transition>
 
         <UpgradePrompt
             :show="showUpgradePrompt"

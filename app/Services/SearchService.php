@@ -55,7 +55,7 @@ class SearchService
 
         $isFreeLimited = false;
         if (! $this->planService->isPro($user)) {
-            $cutoffDate = now()->subDays(PlanService::FREE_TRANSACTION_HISTORY_DAYS)->toDateString();
+            $cutoffDate = now()->subDays($this->planService->freeTransactionHistoryDays())->toDateString();
             $query->whereDate('date', '>=', $cutoffDate);
             $isFreeLimited = true;
         }

@@ -20,6 +20,7 @@ class GoalController extends Controller
 {
     public function __construct(
         private readonly GoalService $goalService,
+        private readonly PlanService $planService,
     ) {}
 
     public function index(Request $request): Response
@@ -42,7 +43,7 @@ class GoalController extends Controller
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
-                ->with('plan_error_limit', PlanService::FREE_GOAL_LIMIT);
+                ->with('plan_error_limit', $this->planService->freeGoalLimit());
         }
     }
 

@@ -82,9 +82,14 @@ migrate-fresh: ## Drop all tables and re-run all migrations
 
 fixtures: ## Drop all tables, re-run migrations and seed
 	$(ARTISAN) migrate:fresh --seed
+	$(ARTISAN) spendly:application-parameter
 
 # === Tests ===
-test: ## Run all PHPUnit tests
+db-test: ## Create the test database and run migrations
+	@psql -c "CREATE DATABASE spendly_test;" 2>/dev/null || true
+	DB_DATABASE=spendly_test $(ARTISAN) migrate --force
+
+test: db-test ## Run all PHPUnit tests
 	$(ARTISAN) test
 
 test-feature: ## Run feature tests only
@@ -121,6 +126,9 @@ fix: ## Run all fixers then static analysis
 	make fix-js
 	make stan
 
+ft: ## Fix code and run all tests
+	make fix && make test
+
 # === Laravel Cache ===
 cc: ## Clear all caches (dev)
 	$(ARTISAN) cache:clear
@@ -138,36 +146,34 @@ cc-prod: ## Clear and regenerate all production caches
 	@echo "✅ Production caches regenerated successfully"
 
 # === Queue Worker ===
-# TODO: create the systemd service file /etc/systemd/system/spendly-queue.service on the production server
-#       it should run: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
 queue-start: ## Start the Queue worker via systemctl
-	@sudo systemctl start spendly-queue 2>/dev/null && echo "✅ Queue worker started" || echo "❌ Failed to start Queue worker (service may not exist)"
+	@sudo systemctl start spendly-worker 2>/dev/null && echo "✅ Queue worker started" || echo "❌ Failed to start Queue worker (service may not exist)"
 
 queue-stop: ## Stop the Queue worker via systemctl
-	@sudo systemctl stop spendly-queue 2>/dev/null && echo "✅ Queue worker stopped" || echo "⚠️  Queue worker not stopped (service may not exist)"
+	@sudo systemctl stop spendly-worker 2>/dev/null && echo "✅ Queue worker stopped" || echo "⚠️  Queue worker not stopped (service may not exist)"
 
 queue-restart: ## Restart the Queue worker via systemctl
-	@sudo systemctl restart spendly-queue 2>/dev/null && echo "✅ Queue worker restarted" || echo "❌ Failed to restart Queue worker (service may not exist)"
+	@sudo systemctl restart spendly-worker 2>/dev/null && echo "✅ Queue worker restarted" || echo "❌ Failed to restart Queue worker (service may not exist)"
 
 queue-status: ## Show the status of the Queue worker via systemctl
-	@sudo systemctl status spendly-queue 2>/dev/null || echo "⚠️  Queue worker service not found"
+	@sudo systemctl status spendly-worker 2>/dev/null || echo "⚠️  Queue worker service not found"
 
 queue-logs: ## Show the last 50 lines of Queue worker logs
-	@sudo journalctl -u spendly-queue -n 50 --no-pager || echo "⚠️  Could not retrieve logs"
+	@sudo journalctl -u spendly-worker -n 50 --no-pager || echo "⚠️  Could not retrieve logs"
 
 stop-and-wait-queue: ## Stop Queue worker and wait until fully stopped (max 30s)
 	@echo "Stopping Queue worker..."; \
 	$(ARTISAN) queue:restart 2>/dev/null || true; \
-	sudo systemctl stop spendly-queue 2>/dev/null || true; \
-	echo "Waiting for spendly-queue to fully stop..."; \
+	sudo systemctl stop spendly-worker 2>/dev/null || true; \
+	echo "Waiting for spendly-worker to fully stop..."; \
 	i=0; \
-	while [ "$$(systemctl is-active spendly-queue 2>/dev/null)" = "active" ] && [ $$i -lt 30 ]; do \
+	while [ "$$(systemctl is-active spendly-worker 2>/dev/null)" = "active" ] && [ $$i -lt 30 ]; do \
 		sleep 1; i=$$((i+1)); \
 	done; \
 	if [ $$i -ge 30 ]; then \
-		echo "⚠️  spendly-queue still active after 30s, continuing anyway"; \
+		echo "⚠️  spendly-worker still active after 30s, continuing anyway"; \
 	else \
-		echo "✅ spendly-queue stopped"; \
+		echo "✅ spendly-worker stopped"; \
 	fi
 
 setup-perms: ## Fix storage and cache permissions (usage: FULL_PERMS=1 make setup-perms)
@@ -258,16 +264,17 @@ deploy-prod: ## Deploy to production (requires git tag on HEAD, use FORCE=1 to b
 		$(COMPOSER) install --no-dev --optimize-autoloader; \
 		make cc-prod; \
 		$(ARTISAN) migrate --force; \
+		$(ARTISAN) spendly:application-parameter; \
 		$(ARTISAN) storage:link --force; \
 		$(PNPM) install --frozen-lockfile; \
 		$(PNPM) build; \
 	} 2>&1 | tee -a $$LOG_FILE; \
 	DEPLOY_EXIT=$$?; \
 	echo "Restarting Queue worker to use new code..." | tee -a $$LOG_FILE; \
-	sudo systemctl restart spendly-queue 2>/dev/null || echo "⚠️  Queue worker not restarted (may not exist)" | tee -a $$LOG_FILE; \
+	sudo systemctl restart spendly-worker 2>/dev/null || echo "⚠️  Queue worker not restarted (may not exist)" | tee -a $$LOG_FILE; \
 	if [ $$DEPLOY_EXIT -eq 0 ]; then \
 		APP_VERSION=$$(cat VERSION 2>/dev/null || echo "unknown"); \
-		echo "✅ Deployed $$APP_VERSION successfully. Check worker status with: sudo systemctl status spendly-queue" | tee -a $$LOG_FILE; \
+		echo "✅ Deployed $$APP_VERSION successfully. Check worker status with: sudo systemctl status spendly-worker" | tee -a $$LOG_FILE; \
 		echo "=== Deployment completed on $$(date) ===" | tee -a $$LOG_FILE; \
 	else \
 		echo "❌ Deployment failed with exit code $$DEPLOY_EXIT" | tee -a $$LOG_FILE; \
