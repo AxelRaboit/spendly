@@ -233,7 +233,6 @@ function toggleSplit() {
                     <div data-tour="tx-description">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.descLabel') }}
-                            <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
                         </label>
                         <input
                             v-model="txForm.description"
@@ -247,7 +246,6 @@ function toggleSplit() {
                     <div data-tour="tx-tags">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.tagsLabel') }}
-                            <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
                         </label>
                         <div class="flex flex-wrap gap-1.5 p-2 bg-surface-2 border border-base rounded-lg focus-within:border-indigo-500 min-h-[2.75rem]">
                             <span

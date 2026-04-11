@@ -6,7 +6,7 @@ const appVersion = usePage().props.appVersion;
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col items-center bg-bg pt-6 px-4 sm:justify-center sm:pt-0 transition-colors duration-200">
+    <div class="flex min-h-screen flex-col items-center justify-center bg-bg px-4 py-12 transition-colors duration-200">
         <div>
             <Link href="/" class="flex flex-col items-center gap-2">
                 <AppLogo :size="64" />
