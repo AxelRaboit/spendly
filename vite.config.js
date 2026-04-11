@@ -17,4 +17,17 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-vue': ['vue', '@inertiajs/vue3', 'vue-i18n', 'vue-sonner'],
+                    'vendor-charts': ['chart.js', 'vue-chartjs'],
+                    'vendor-xlsx': ['xlsx-js-style'],
+                    'vendor-utils': ['date-fns', 'marked', 'dompurify', 'driver.js'],
+                    'vendor-icons': ['lucide-vue-next'],
+                },
+            },
+        },
+    },
 });
