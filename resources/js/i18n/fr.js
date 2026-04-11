@@ -865,6 +865,16 @@ export default {
             send: "Envoyer l'invitation",
             sending: 'Envoi en cours…',
         },
+        parameters: {
+            title: 'Paramètres',
+            key: 'Clé',
+            value: 'Valeur',
+            description: 'Description',
+            actions: 'Actions',
+            edit: 'Modifier',
+            save: 'Enregistrer',
+            cancel: 'Annuler',
+        },
     },
     impersonation: {
         banner: 'Vous êtes connecté en tant que {name}',

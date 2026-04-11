@@ -48,13 +48,13 @@ class HandleInertiaRequests extends Middleware
             ],
             'locale' => $user !== null ? $user->locale : config('app.fallback_locale', 'fr'),
             'planLimits' => [
-                'wallet' => PlanService::FREE_WALLET_LIMIT,
-                'goal' => PlanService::FREE_GOAL_LIMIT,
-                'recurring' => PlanService::FREE_RECURRING_LIMIT,
-                'transactionHistoryDays' => PlanService::FREE_TRANSACTION_HISTORY_DAYS,
+                'wallet' => app(PlanService::class)->freeWalletLimit(),
+                'goal' => app(PlanService::class)->freeGoalLimit(),
+                'recurring' => app(PlanService::class)->freeRecurringLimit(),
+                'transactionHistoryDays' => app(PlanService::class)->freeTransactionHistoryDays(),
                 'canExportImport' => $user !== null && app(PlanService::class)->canExportImport($user),
                 'canNotes' => $user !== null && app(PlanService::class)->canNotes($user),
-                'proPrice' => PlanService::PRO_PRICE,
+                'proPrice' => app(PlanService::class)->proPrice(),
             ],
             'pendingInvitations' => $user !== null
                 ? Inertia::defer(fn () => WalletInvitation::where('email', $user->email)->pending()->count())

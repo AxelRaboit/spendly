@@ -4,22 +4,69 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\ApplicationParameter\SpendlyApplicationParameterEnum;
 use App\Enums\PlanType;
 use App\Models\User;
 
 class PlanService
 {
-    public const FREE_WALLET_LIMIT = 1;
+    public function __construct(private readonly ApplicationParameterService $applicationParameterService) {}
 
-    public const FREE_GOAL_LIMIT = 2;
+    public function freeWalletLimit(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::WalletLimitFree->value,
+            SpendlyApplicationParameterEnum::WalletLimitFree->getIntValue(),
+        );
+    }
 
-    public const FREE_RECURRING_LIMIT = 5;
+    public function freeGoalLimit(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::GoalLimitFree->value,
+            SpendlyApplicationParameterEnum::GoalLimitFree->getIntValue(),
+        );
+    }
 
-    public const FREE_STATS_MONTHS = 1;
+    public function freeRecurringLimit(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::RecurringLimitFree->value,
+            SpendlyApplicationParameterEnum::RecurringLimitFree->getIntValue(),
+        );
+    }
 
-    public const FREE_TRANSACTION_HISTORY_DAYS = 90;
+    public function freeStatsMonths(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::StatsMonthsFree->value,
+            SpendlyApplicationParameterEnum::StatsMonthsFree->getIntValue(),
+        );
+    }
 
-    public const PRO_PRICE = 9.99;
+    public function proStatsMonths(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::StatsMonthsPro->value,
+            SpendlyApplicationParameterEnum::StatsMonthsPro->getIntValue(),
+        );
+    }
+
+    public function freeTransactionHistoryDays(): int
+    {
+        return $this->applicationParameterService->getInt(
+            SpendlyApplicationParameterEnum::TransactionHistoryDaysFree->value,
+            SpendlyApplicationParameterEnum::TransactionHistoryDaysFree->getIntValue(),
+        );
+    }
+
+    public function proPrice(): float
+    {
+        return $this->applicationParameterService->getFloat(
+            SpendlyApplicationParameterEnum::ProPrice->value,
+            SpendlyApplicationParameterEnum::ProPrice->getFloatValue(),
+        );
+    }
 
     public function isPro(User $user): bool
     {
@@ -49,7 +96,7 @@ class PlanService
             return true;
         }
 
-        return $user->wallets()->where('is_demo', false)->count() < self::FREE_WALLET_LIMIT;
+        return $user->wallets()->where('is_demo', false)->count() < $this->freeWalletLimit();
     }
 
     public function canCreateGoal(User $user): bool
@@ -58,7 +105,7 @@ class PlanService
             return true;
         }
 
-        return $user->goals()->count() < self::FREE_GOAL_LIMIT;
+        return $user->goals()->count() < $this->freeGoalLimit();
     }
 
     public function canCreateRecurring(User $user): bool
@@ -67,7 +114,7 @@ class PlanService
             return true;
         }
 
-        return $user->recurringTransactions()->count() < self::FREE_RECURRING_LIMIT;
+        return $user->recurringTransactions()->count() < $this->freeRecurringLimit();
     }
 
     public function canEditBudget(User $user): bool
@@ -87,7 +134,7 @@ class PlanService
 
     public function statsMonthLimit(User $user): int
     {
-        return $this->isPro($user) ? 6 : self::FREE_STATS_MONTHS;
+        return $this->isPro($user) ? $this->proStatsMonths() : $this->freeStatsMonths();
     }
 
     public function isTrialing(User $user): bool

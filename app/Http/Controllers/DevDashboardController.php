@@ -9,8 +9,10 @@ use App\Http\Requests\SendAppInvitationRequest;
 use App\Models\User;
 use App\Services\AdminStatsService;
 use App\Services\AppInvitationService;
+use App\Services\ApplicationParameterService;
 use App\Services\ImpersonationService;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -23,6 +25,7 @@ class DevDashboardController extends Controller
         private readonly AdminStatsService $adminStatsService,
         private readonly ImpersonationService $impersonationService,
         private readonly AppInvitationService $invitationService,
+        private readonly ApplicationParameterService $applicationParameterService,
     ) {}
 
     public function stats(): Response
@@ -92,5 +95,22 @@ class DevDashboardController extends Controller
         );
 
         return back()->with('success', __('admin.invitations.sent', ['email' => $request->input('email')]));
+    }
+
+    public function parameters(): Response
+    {
+        return Inertia::render('Dev/Dashboard', [
+            'tab' => 'parameters',
+            'parameters' => $this->applicationParameterService->all(),
+            'parameterUpdatePath' => route('dev.dashboard.parameters.update', ['key' => '__key__']),
+        ]);
+    }
+
+    public function updateParameter(string $key, Request $request): JsonResponse
+    {
+        $value = $request->input('value');
+        $this->applicationParameterService->set($key, $value !== null ? (string) $value : null);
+
+        return response()->json(['key' => $key, 'value' => $value]);
     }
 }

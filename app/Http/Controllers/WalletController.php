@@ -19,7 +19,10 @@ use Inertia\Response;
 
 class WalletController extends Controller
 {
-    public function __construct(private readonly WalletService $walletService) {}
+    public function __construct(
+        private readonly WalletService $walletService,
+        private readonly PlanService $planService,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -46,7 +49,7 @@ class WalletController extends Controller
         } catch (PlanLimitException $planLimitException) {
             return back()
                 ->with('plan_error', $planLimitException->limitKey->value)
-                ->with('plan_error_limit', PlanService::FREE_WALLET_LIMIT);
+                ->with('plan_error_limit', $this->planService->freeWalletLimit());
         }
     }
 

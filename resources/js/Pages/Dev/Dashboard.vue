@@ -5,7 +5,7 @@ import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { LogIn, Mail, Shield, Trash2, UserRound, Wallet } from 'lucide-vue-next';
+import { Check, LogIn, Mail, Pencil, Shield, Trash2, UserRound, Wallet, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { PlanType } from '@/enums/PlanType';
 import { computed, ref } from 'vue';
@@ -22,6 +22,8 @@ const props = defineProps({
     stats: { type: Object, default: null },
     users: { type: Object, default: null },
     search: { type: String, default: '' },
+    parameters: { type: Array, default: () => [] },
+    parameterUpdatePath: { type: String, default: '' },
 });
 
 // ── Shared options ──────────────────────────────────────────────────────────
@@ -154,6 +156,40 @@ const doDeleteUser = () => {
     pendingDeleteUser.value = null;
 };
 
+// ── Parameters tab ──────────────────────────────────────────────────────────
+
+const editingKey = ref(null);
+const editingValue = ref('');
+const editSaving = ref(false);
+
+const startEdit = (param) => {
+    editingKey.value = param.key;
+    editingValue.value = param.value ?? '';
+};
+
+const cancelEdit = () => {
+    editingKey.value = null;
+};
+
+const saveParameter = async (param) => {
+    if (editSaving.value) return;
+    editSaving.value = true;
+    const url = props.parameterUpdatePath.replace('__key__', encodeURIComponent(param.key));
+    try {
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '' },
+            body: JSON.stringify({ value: editingValue.value }),
+        });
+        if (res.ok) {
+            param.value = editingValue.value || null;
+            editingKey.value = null;
+        }
+    } finally {
+        editSaving.value = false;
+    }
+};
+
 // ── Invitations tab ─────────────────────────────────────────────────────────
 
 const invitationForm = useForm({
@@ -178,7 +214,7 @@ const submitInvitation = () => {
             <AppPageHeader
                 :crumbs="[
                     { label: t('admin.title'), href: route('dev.dashboard.stats') },
-                    { label: tab === 'stats' ? t('admin.stats.title') : tab === 'users' ? t('admin.users.title') : t('admin.invitations.title') },
+                    { label: tab === 'stats' ? t('admin.stats.title') : tab === 'users' ? t('admin.users.title') : tab === 'parameters' ? t('admin.parameters.title') : t('admin.invitations.title') },
                 ]"
             />
         </template>
@@ -206,6 +242,13 @@ const submitInvitation = () => {
                         :class="tab === 'invitations' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         {{ t('admin.invitations.title') }}
+                    </Link>
+                    <Link
+                        :href="route('dev.dashboard.parameters')"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base"
+                        :class="tab === 'parameters' ? 'border-primary text-primary font-medium' : 'border-transparent text-secondary hover:text-primary'"
+                    >
+                        {{ t('admin.parameters.title') }}
                     </Link>
                 </nav>
             </div>
@@ -400,6 +443,73 @@ const submitInvitation = () => {
                 </div>
 
                 <AppPagination :meta="users" />
+            </div>
+
+            <!-- Parameters tab -->
+            <div v-if="tab === 'parameters'">
+                <div class="bg-surface border border-base rounded-xl overflow-hidden">
+                    <div class="px-5 py-3 border-b border-base bg-surface-2">
+                        <p class="text-sm font-semibold text-primary">{{ t('admin.parameters.title') }}</p>
+                    </div>
+                    <table class="w-full">
+                        <thead class="bg-surface-2 border-b border-base">
+                            <tr>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/3">{{ t('admin.parameters.key') }}</th>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/4">{{ t('admin.parameters.value') }}</th>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.parameters.description') }}</th>
+                                <th class="px-4 py-3 w-16" />
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-base">
+                            <tr
+                                v-for="param in parameters"
+                                :key="param.key"
+                                class="group hover:bg-surface-2/50 transition-colors"
+                            >
+                                <td class="px-5 py-3 font-mono text-sm text-indigo-500 font-medium w-1/3">{{ param.key }}</td>
+                                <td class="px-5 py-3 w-1/4">
+                                    <template v-if="editingKey === param.key">
+                                        <input
+                                            v-model="editingValue"
+                                            class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1 text-sm text-primary focus:outline-none focus:border-indigo-500"
+                                            autofocus
+                                            v-on:keydown.enter="saveParameter(param)"
+                                            v-on:keydown.esc="cancelEdit"
+                                        >
+                                    </template>
+                                    <span v-else class="text-sm font-medium text-primary">{{ param.value ?? '—' }}</span>
+                                </td>
+                                <td class="px-5 py-3 text-sm text-secondary">{{ param.description ?? '' }}</td>
+                                <td class="px-4 py-3 w-16">
+                                    <div class="flex items-center gap-1 justify-end">
+                                        <template v-if="editingKey === param.key">
+                                            <button
+                                                :disabled="editSaving"
+                                                class="p-1.5 text-muted hover:text-emerald-400 transition-colors"
+                                                v-on:click="saveParameter(param)"
+                                            >
+                                                <Check class="w-3.5 h-3.5" />
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-muted hover:text-rose-400 transition-colors"
+                                                v-on:click="cancelEdit"
+                                            >
+                                                <X class="w-3.5 h-3.5" />
+                                            </button>
+                                        </template>
+                                        <button
+                                            v-else
+                                            class="p-1.5 text-muted hover:text-primary transition-colors opacity-0 group-hover:opacity-100"
+                                            v-on:click="startEdit(param)"
+                                        >
+                                            <Pencil class="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Invitations tab -->
