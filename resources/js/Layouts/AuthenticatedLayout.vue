@@ -370,7 +370,7 @@ const devNavItem = computed(() => {
                     class="flex items-center rounded-lg text-sm font-medium text-secondary hover:text-rose-400 hover:bg-rose-500/10 transition-colors w-full group relative"
                     :class="collapsed ? 'justify-center py-2.5' : 'gap-3 px-3 py-2.5'"
                 >
-                    <LogOut class="w-5 h-5 shrink-0 text-muted" />
+                    <LogOut class="w-5 h-5 shrink-0 text-muted group-hover:text-rose-400 transition-colors" />
                     <span v-if="!collapsed">{{ t('nav.logout') }}</span>
                     <span
                         v-if="collapsed"
@@ -529,7 +529,7 @@ const devNavItem = computed(() => {
                                 as="button"
                                 class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                             >
-                                <LogOut class="w-5 h-5 text-muted shrink-0" />
+                                <LogOut class="w-5 h-5 text-muted shrink-0 group-hover:text-rose-400 transition-colors" />
                                 {{ t('nav.logout') }}
                             </Link>
                         </div>
