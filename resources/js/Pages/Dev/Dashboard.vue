@@ -8,7 +8,7 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Shield, Trash2, TrendingUp, UserRound, Wallet, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { PlanType } from '@/enums/PlanType';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
 
@@ -190,6 +190,14 @@ const saveParameter = async (param) => {
     }
 };
 
+// ── Tab nav scroll ───────────────────────────────────────────────────────────
+
+const tabNav = ref(null);
+onMounted(() => {
+    const active = tabNav.value?.querySelector('[aria-current="page"]');
+    active?.scrollIntoView({ block: 'nearest', inline: 'center' });
+});
+
 // ── Invitations tab ─────────────────────────────────────────────────────────
 
 const invitationForm = useForm({
@@ -221,9 +229,10 @@ const submitInvitation = () => {
 
         <div class="space-y-6">
             <div class="border-b border-base overflow-x-auto">
-                <nav class="flex gap-6 sm:gap-8 whitespace-nowrap min-w-max">
+                <nav ref="tabNav" class="flex gap-6 sm:gap-8 whitespace-nowrap min-w-max">
                     <Link
                         :href="route('dev.dashboard.stats')"
+                        :aria-current="tab === 'stats' ? 'page' : undefined"
                         class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
                         :class="tab === 'stats' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
@@ -231,6 +240,7 @@ const submitInvitation = () => {
                     </Link>
                     <Link
                         :href="route('dev.dashboard.users')"
+                        :aria-current="tab === 'users' ? 'page' : undefined"
                         class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
                         :class="tab === 'users' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
@@ -238,6 +248,7 @@ const submitInvitation = () => {
                     </Link>
                     <Link
                         :href="route('dev.dashboard.invitations')"
+                        :aria-current="tab === 'invitations' ? 'page' : undefined"
                         class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
                         :class="tab === 'invitations' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
@@ -245,6 +256,7 @@ const submitInvitation = () => {
                     </Link>
                     <Link
                         :href="route('dev.dashboard.parameters')"
+                        :aria-current="tab === 'parameters' ? 'page' : undefined"
                         class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
                         :class="tab === 'parameters' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
@@ -256,7 +268,7 @@ const submitInvitation = () => {
             <!-- Stats tab -->
             <div v-if="tab === 'stats' && stats" class="space-y-6">
                 <!-- KPI cards -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-surface border border-base rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersTotal') }}</span>
@@ -405,7 +417,7 @@ const submitInvitation = () => {
 
             <!-- Users tab -->
             <div v-if="tab === 'users' && users" class="space-y-4">
-                <div class="flex gap-2">
+                <div class="flex flex-col sm:flex-row gap-2">
                     <input
                         v-model="searchInput"
                         type="text"
@@ -414,14 +426,51 @@ const submitInvitation = () => {
                         v-on:keyup.enter="performSearch"
                     >
                     <button
-                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                        class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                         v-on:click="performSearch"
                     >
                         {{ t('admin.users.search') }}
                     </button>
                 </div>
 
-                <div class="bg-surface border border-base rounded-lg overflow-x-auto">
+                <!-- Mobile cards -->
+                <div class="sm:hidden space-y-3">
+                    <div v-for="user in users.data" :key="user.id" class="bg-surface border border-base rounded-lg p-4 space-y-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                                    <p class="font-medium text-primary truncate">{{ user.name }}</p>
+                                    <AppBadge v-if="user.is_demo" variant="indigo">Demo</AppBadge>
+                                </div>
+                                <p class="text-xs text-secondary truncate">{{ user.email }}</p>
+                            </div>
+                            <AppBadge :variant="user.plan === PlanType.Pro ? 'amber' : 'default'" class="shrink-0">
+                                {{ t('plan.' + user.plan + '.name') }}
+                            </AppBadge>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-base">
+                            <p class="text-xs text-muted">{{ new Date(user.created_at).toLocaleDateString() }}</p>
+                            <div class="flex items-center gap-1">
+                                <button class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors" v-on:click="confirmImpersonate(user)">
+                                    <LogIn class="w-4 h-4" />
+                                </button>
+                                <button
+                                    class="p-1.5 rounded text-muted transition-colors"
+                                    :class="user.roles.some(r => r.name === 'ROLE_DEV') ? 'hover:text-indigo-400' : 'hover:text-rose-400'"
+                                    v-on:click="confirmToggleRole(user)"
+                                >
+                                    <component :is="user.roles.some(r => r.name === 'ROLE_DEV') ? UserRound : Shield" class="w-4 h-4" />
+                                </button>
+                                <button class="p-1.5 rounded text-muted hover:text-red-400 transition-colors" v-on:click="confirmDeleteUser(user)">
+                                    <Trash2 class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop table -->
+                <div class="hidden sm:block bg-surface border border-base rounded-lg overflow-x-auto">
                     <table class="w-full min-w-[560px]">
                         <thead class="bg-surface-2 border-b border-base">
                             <tr>
@@ -439,7 +488,6 @@ const submitInvitation = () => {
                                         <span class="font-medium">{{ user.name }}</span>
                                         <AppBadge v-if="user.is_demo" variant="indigo">Demo</AppBadge>
                                     </div>
-                                    <div class="text-xs text-secondary sm:hidden">{{ user.email }}</div>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm hidden md:table-cell">
@@ -488,8 +536,40 @@ const submitInvitation = () => {
             </div>
 
             <!-- Parameters tab -->
-            <div v-if="tab === 'parameters'">
-                <div class="bg-surface border border-base rounded-xl overflow-hidden">
+            <div v-if="tab === 'parameters'" class="space-y-3">
+                <!-- Mobile cards -->
+                <div class="sm:hidden space-y-3">
+                    <div v-for="param in parameters" :key="param.key" class="bg-surface border border-base rounded-lg p-4 space-y-2">
+                        <div class="flex items-start justify-between gap-3">
+                            <p class="font-mono text-sm text-indigo-400 font-medium break-all">{{ param.key }}</p>
+                            <button v-if="editingKey !== param.key" class="p-1.5 text-muted hover:text-primary transition-colors shrink-0" v-on:click="startEdit(param)">
+                                <Pencil class="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+                        <template v-if="editingKey === param.key">
+                            <input
+                                v-model="editingValue"
+                                class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1.5 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                autofocus
+                                v-on:keydown.enter="saveParameter(param)"
+                                v-on:keydown.esc="cancelEdit"
+                            >
+                            <div class="flex gap-2">
+                                <button :disabled="editSaving" class="flex-1 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors" v-on:click="saveParameter(param)">
+                                    {{ t('common.save') }}
+                                </button>
+                                <button class="flex-1 py-1.5 text-sm text-secondary hover:text-primary border border-base rounded-lg transition-colors" v-on:click="cancelEdit">
+                                    {{ t('common.cancel') }}
+                                </button>
+                            </div>
+                        </template>
+                        <p v-else class="text-sm font-medium text-primary">{{ param.value ?? '—' }}</p>
+                        <p v-if="param.description" class="text-xs text-secondary">{{ param.description }}</p>
+                    </div>
+                </div>
+
+                <!-- Desktop table -->
+                <div class="hidden sm:block bg-surface border border-base rounded-xl overflow-hidden">
                     <table class="w-full">
                         <thead class="bg-surface-2 border-b border-base">
                             <tr>
@@ -606,7 +686,7 @@ const submitInvitation = () => {
                     <button
                         type="submit"
                         :disabled="invitationForm.processing || !invitationForm.email"
-                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm font-medium"
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm font-medium"
                     >
                         <Mail class="w-4 h-4" />
                         {{ invitationForm.processing ? t('admin.invitations.sending') : t('admin.invitations.send') }}
