@@ -118,23 +118,27 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
         </template>
 
         <div class="space-y-4">
+            <div v-if="canEdit" class="flex justify-end">
+                <button
+                    class="flex w-full sm:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                    v-on:click="openCreate"
+                >
+                    <Plus class="w-4 h-4 shrink-0" />
+                    {{ t('simple.addTransaction') }}
+                </button>
+            </div>
+
             <!-- Balance card -->
             <div class="bg-surface border border-base/60 rounded-2xl p-5 space-y-4">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('wallets.colBalance') }}</p>
-                        <p
-                            class="text-3xl font-bold font-mono"
-                            :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'"
-                        >
-                            {{ fmt(wallet.current_balance) }}
-                        </p>
-                        <p class="text-xs text-muted mt-1">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
-                    </div>
-                    <AppButton v-if="canEdit" class="shrink-0" v-on:click="openCreate">
-                        <Plus class="w-4 h-4 mr-1.5" />
-                        {{ t('simple.addTransaction') }}
-                    </AppButton>
+                <div>
+                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('wallets.colBalance') }}</p>
+                    <p
+                        class="text-3xl font-bold font-mono"
+                        :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'"
+                    >
+                        {{ fmt(wallet.current_balance) }}
+                    </p>
+                    <p class="text-xs text-muted mt-1">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 pt-1 border-t border-base/40">
@@ -165,7 +169,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     v-for="filter in FILTERS"
                     :key="filter"
                     type="button"
-                    class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
+                    class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
                     :class="activeFilter === filter
                         ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
                         : 'bg-surface border-base/60 text-muted hover:border-indigo-500/40'"
