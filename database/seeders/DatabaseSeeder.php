@@ -10,7 +10,6 @@ use App\Models\BudgetItem;
 use App\Models\Category;
 use App\Models\Goal;
 use App\Models\BudgetPreset;
-use App\Models\Note;
 use App\Models\RecurringTransaction;
 use App\Models\ScheduledTransaction;
 use App\Models\Transaction;
@@ -96,7 +95,6 @@ class DatabaseSeeder extends Seeder
             $this->createRecurringTransactions($user, $wallet, $categories);
             $this->createScheduledTransactions($user, $wallet, $categories);
             $this->createBudgetPresets($user);
-            $this->createNotes($user);
         }
     }
 
@@ -348,143 +346,6 @@ class DatabaseSeeder extends Seeder
                 ...$preset,
             ]);
         }
-    }
-
-    private function createNotes(User $user): void
-    {
-        $today = now()->format('d/m/Y');
-
-        // ── Root: Administratif (parent avec enfants) ────────────────────────
-        $admin = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Administratif',
-            'content'   => "# Administratif\n\nInfos importantes et documents administratifs.\n\nVoir aussi [[Finances]] pour le suivi financier.",
-            'tags'      => ['admin'],
-            'position'  => 0,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $admin->id,
-            'title'     => 'Infos compte bancaire',
-            'content'   => "# Infos compte bancaire\n\nIBAN : FR76 3000 4028 3798 7654 3210 943\nBIC : BNPAFRPP\n\n> [!warning] Confidentiel\n> Ne jamais partager ces informations par email.\n\nLié à [[Objectifs financiers]].",
-            'tags'      => ['banque', 'confidentiel'],
-            'position'  => 0,
-        ]);
-
-        // ── Root: Finances (wiki-links, callouts, headings, checkboxes) ──────
-        $finances = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Finances',
-            'content'   => "# Finances personnelles\n\nObjectifs et suivi financier.\n\n## Liens rapides\n\n- [[Objectifs financiers]]\n- [[Budget vacances]]\n- [[Infos compte bancaire]]\n\n## Notes\n\n> [!tip] Astuce\n> Penser à revoir le budget chaque début de mois.\n\n> [!info] Rappel\n> Les virements automatiques sont configurés le 2 de chaque mois.",
-            'tags'      => ['finances'],
-            'position'  => 1,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $finances->id,
-            'title'     => 'Objectifs financiers',
-            'content'   => "# Objectifs financiers\n\n## Court terme\n\n- [x] Ouvrir un Livret A\n- [ ] Atteindre **5 000 €** sur le fonds d'urgence\n- [ ] Rembourser la dette carte de crédit\n\n## Long terme\n\n- [ ] Apport immobilier : objectif **20 000 €** d'ici 3 ans\n- [ ] Investir en ETF monde via le PEA\n- [ ] Préparer la retraite complémentaire\n\n> [!success] Progrès\n> Le fonds d'urgence est à 75% de l'objectif !\n\n> [!quote] Citation\n> \"Ne mets pas tous tes œufs dans le même panier.\"\n\nVoir [[Budget vacances]] pour le prochain gros poste de dépense.\nRetour aux [[Finances]] pour la vue d'ensemble.",
-            'tags'      => ['objectifs', 'épargne'],
-            'position'  => 0,
-        ]);
-
-        $vacances = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $finances->id,
-            'title'     => 'Budget vacances',
-            'content'   => "# Vacances — Budget prévisionnel\n\n> [!note] Destination\n> Japon — Été prochain, 2 semaines.\n\n## Estimation des coûts\n\n| Poste | Estimation |\n|---|---|\n| Vols A/R | 500 € |\n| Hébergement | 700 € |\n| Nourriture | 400 € |\n| Transport | 200 € |\n| **Total** | **1 800 €** |\n\n## Checklist\n\n- [x] Faire le passeport\n- [ ] Réserver les vols\n- [ ] Réserver les hôtels\n- [ ] Souscrire une assurance voyage\n\nDétails dans [[Check-list départ]].\nObjectifs liés : [[Objectifs financiers#Long terme]].",
-            'tags'      => ['vacances', 'budget', 'japon'],
-            'position'  => 1,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $vacances->id,
-            'title'     => 'Check-list départ',
-            'content'   => "# Check-list départ\n\n## Avant le départ\n\n- [x] Vérifier la validité du passeport\n- [ ] Réserver les vols\n- [ ] Souscrire une assurance voyage\n- [ ] Prévenir la banque\n- [ ] Acheter un adaptateur de prise\n\n## Dans la valise\n\n- [ ] Passeport + copies\n- [ ] Médicaments\n- [ ] Chargeurs\n- [ ] Guide de voyage\n\n> [!danger] Important\n> Vérifier les conditions d'entrée et les vaccins obligatoires !\n\n> [!question] FAQ\n> Faut-il un visa pour le Japon ? Non, séjour touristique < 90 jours.\n\nRetour au [[Budget vacances]].",
-            'tags'      => ['checklist', 'vacances'],
-            'position'  => 0,
-        ]);
-
-        // ── Root: Projets (code blocks, embeds, callouts variés) ─────────────
-        $projets = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Projets',
-            'content'   => "# Projets en cours\n\n## Actifs\n\n- [[Projet Spendly]] — App de gestion financière\n- [[Idées features]] — Brainstorm\n\n## En attente\n\n- Refonte du portfolio personnel\n- Contribution open source\n\n> [!abstract] Résumé\n> Focus sur Spendly pour les 3 prochains mois.",
-            'tags'      => ['projets'],
-            'position'  => 2,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $projets->id,
-            'title'     => 'Projet Spendly',
-            'content'   => "# Projet Spendly\n\n## Stack technique\n\n```php\n// Backend — Laravel\nRoute::get('/notes', [NoteController::class, 'index']);\nRoute::post('/notes', [NoteController::class, 'store']);\n```\n\n```js\n// Frontend — Vue 3 + Inertia\nimport { useNoteTree } from '@/composables/notes/useNoteTree';\n\nconst { tree, selectNote } = useNoteTree(props.notes);\n```\n\n```sql\n-- Requête de stats\nSELECT type, SUM(amount) as total\nFROM transactions\nWHERE user_id = 1\nGROUP BY type;\n```\n\n## Fonctionnalités récentes\n\n- [x] Wiki-links style Obsidian\n- [x] Callouts\n- [x] Syntax highlighting\n- [ ] Mode sombre amélioré\n- [ ] Export PDF\n\n> [!bug] Bug connu\n> Le drag & drop ne fonctionne pas sur mobile Safari.\n\n> [!example] Exemple de callout\n> On peut imbriquer du **markdown** dans les callouts, avec des `backticks` et des [liens](https://example.com).\n\nVoir aussi [[Idées features]] pour la roadmap.",
-            'tags'      => ['dev', 'laravel', 'vue'],
-            'position'  => 0,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $projets->id,
-            'title'     => 'Idées features',
-            'content'   => "# Idées features\n\n## Priorité haute\n\n- [ ] Notifications push pour les transactions récurrentes\n- [ ] Widget dashboard personnalisable\n- [ ] Export CSV / Excel amélioré\n\n## Priorité moyenne\n\n- [ ] Thèmes personnalisés\n- [ ] Partage de budget en famille\n- [ ] Graphiques interactifs\n\n## Plus tard\n\n- [ ] App mobile native\n- [ ] Intégration bancaire open banking\n- [ ] IA pour la catégorisation automatique\n\n> [!todo] À faire cette semaine\n> Implémenter le système de templates pour les notes.\n\n> [!failure] Abandonné\n> L'idée d'un chat intégré a été abandonnée — trop complexe pour le MVP.\n\nRéférence : [[Projet Spendly]] pour le contexte technique.",
-            'tags'      => ['features', 'roadmap'],
-            'position'  => 1,
-        ]);
-
-        // ── Root: Recettes (embed test, headings multiples) ──────────────────
-        $recettes = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Recettes',
-            'content'   => "# Mes recettes\n\nCollection de recettes testées et approuvées.\n\n## Préférées\n\n![[Pâtes carbonara]]\n\n![[Tiramisu]]\n\n## À tester\n\n- Ramen maison\n- Pain au levain\n- Curry thaï",
-            'tags'      => ['cuisine', 'recettes'],
-            'position'  => 3,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $recettes->id,
-            'title'     => 'Pâtes carbonara',
-            'content'   => "# Pâtes carbonara\n\n## Ingrédients\n\n- 400g de spaghetti\n- 200g de guanciale\n- 4 jaunes d'œufs\n- 100g de pecorino romano\n- Poivre noir\n\n## Préparation\n\n1. Cuire les pâtes al dente\n2. Faire revenir le guanciale\n3. Mélanger jaunes + pecorino\n4. Hors du feu, mélanger le tout\n\n> [!tip] Astuce\n> Ne jamais ajouter de crème ! La sauce est faite uniquement avec les œufs et le fromage.\n\n> [!warning] Attention\n> Bien mélanger hors du feu pour ne pas faire des œufs brouillés.",
-            'tags'      => ['recette', 'italien', 'pâtes'],
-            'position'  => 0,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $recettes->id,
-            'title'     => 'Tiramisu',
-            'content'   => "# Tiramisu\n\n## Ingrédients\n\n- 500g de mascarpone\n- 4 œufs\n- 100g de sucre\n- Biscuits cuillère\n- Café espresso fort\n- Cacao amer\n\n## Étapes\n\n- [x] Séparer les blancs des jaunes\n- [x] Fouetter jaunes + sucre\n- [ ] Incorporer le mascarpone\n- [ ] Monter les blancs en neige\n- [ ] Tremper les biscuits dans le café\n- [ ] Alterner couches de crème et biscuits\n- [ ] Réfrigérer 4h minimum\n\n> [!note] Note\n> Meilleur après 24h au frigo.",
-            'tags'      => ['recette', 'dessert', 'italien'],
-            'position'  => 1,
-        ]);
-
-        // ── Root: Daily note (date du jour) ──────────────────────────────────
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => $today,
-            'content'   => "# {$today}\n\n## Tâches du jour\n\n- [ ] Revoir le budget mensuel\n- [ ] Tester les wiki-links dans [[Finances]]\n- [ ] Lire la note [[Projet Spendly]]\n- [x] Créer les fixtures de test\n\n## Notes rapides\n\nPenser à regarder les [[Objectifs financiers#Court terme]] ce soir.\n\n> [!info] Rappel\n> Réunion à 14h — préparer la démo.\n\n## Journal\n\nBonne journée productive. Les nouvelles features Obsidian-like fonctionnent bien.\n\n```bash\nphp artisan db:seed\npnpm dev\n```",
-            'tags'      => ['daily', 'journal'],
-            'position'  => 4,
-        ]);
-
-        // ── Root: Note showcase (toutes les features en un seul endroit) ─────
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Showcase features',
-            'content'   => "# Showcase — Toutes les features\n\nCette note démontre toutes les fonctionnalités Obsidian-like.\n\n## Wiki-links\n\nLien vers une note : [[Finances]]\nLien vers un heading : [[Objectifs financiers#Court terme]]\nLien interne : [[#Callouts]]\n\n## Embeds\n\nContenu embarqué d'une autre note :\n\n![[Pâtes carbonara]]\n\n## Callouts\n\n> [!note] Note\n> Ceci est une note simple.\n\n> [!tip] Astuce\n> Un conseil utile.\n\n> [!info] Information\n> Pour votre information.\n\n> [!warning] Attention\n> Quelque chose à surveiller.\n\n> [!danger] Danger\n> Action critique !\n\n> [!bug] Bug\n> Un problème identifié.\n\n> [!example] Exemple\n> Voici un exemple concret.\n\n> [!quote] Citation\n> \"La simplicité est la sophistication suprême.\" — Léonard de Vinci\n\n> [!success] Succès\n> Opération réussie !\n\n> [!question] Question\n> Comment ça marche ?\n\n> [!abstract] Résumé\n> En quelques mots...\n\n> [!todo] À faire\n> Ne pas oublier.\n\n> [!failure] Échec\n> Cela n'a pas fonctionné.\n\n## Checkboxes interactifs\n\n- [x] Feature implémentée\n- [x] Tests passés\n- [ ] Review de code\n- [ ] Mise en production\n\n## Code blocks\n\n```js\nconst greeting = 'Hello, Obsidian!';\nconsole.log(greeting);\n```\n\n```php\n<?php\n\$notes = Note::where('user_id', auth()->id())->get();\nforeach (\$notes as \$note) {\n    echo \$note->title;\n}\n```\n\n```python\ndef fibonacci(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n\nprint(fibonacci(10))\n```\n\n```sql\nSELECT n.title, COUNT(b.id) as backlinks\nFROM notes n\nLEFT JOIN notes b ON b.content LIKE CONCAT('%[[', n.title, ']]%')\nGROUP BY n.id\nORDER BY backlinks DESC;\n```\n\n```yaml\napp:\n  name: Spendly\n  version: 2.0\n  features:\n    - wiki-links\n    - callouts\n    - graph-view\n```\n\n```bash\nphp artisan migrate:fresh --seed\npnpm dev\ncurl http://localhost:8000/notes\n```\n\n## Tableau\n\n| Feature | Status | Priorité |\n|---|---|---|\n| Wiki-links | ✅ Done | Haute |\n| Callouts | ✅ Done | Haute |\n| Embeds | ✅ Done | Moyenne |\n| Checkboxes | ✅ Done | Moyenne |\n| Syntax highlight | ✅ Done | Moyenne |\n| Graph view | ✅ Done | Basse |\n\n## Markdown classique\n\n**Gras**, *italique*, ~~barré~~, `code inline`\n\n---\n\n1. Premier élément\n2. Deuxième élément\n3. Troisième élément\n\n- Puce 1\n- Puce 2\n  - Sous-puce\n  - Autre sous-puce\n\n> Blockquote classique sans callout.\n\n[Lien externe](https://example.com)",
-            'tags'      => ['showcase', 'test', 'demo'],
-            'position'  => 5,
-        ]);
     }
 
     private function createScheduledTransactions(User $user, Wallet $wallet, array $categories): void

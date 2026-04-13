@@ -108,13 +108,6 @@ const navItems = [
         icon: BadgeCheck,
     },
     {
-        key: 'notepad',
-        route: 'notes.index',
-        match: 'notes.*',
-        icon: NotebookPen,
-        pro: true,
-    },
-    {
         key: 'recurring',
         route: 'recurring.index',
         match: 'recurring.*',

@@ -91,12 +91,6 @@ class User extends Authenticatable
         return $this->hasMany(Goal::class);
     }
 
-    /** @return HasMany<Note, $this> */
-    public function notes(): HasMany
-    {
-        return $this->hasMany(Note::class);
-    }
-
     public function categorizationRules(): HasMany
     {
         return $this->hasMany(CategorizationRule::class);
