@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(DevPasswordController::class)->prefix('dev-access')->name('dev.password.')->group(function () {
     Route::get('/', 'show')->name('show');
+
     Route::post('/', 'check')->name('check')->middleware('throttle:5,15');
 });
 

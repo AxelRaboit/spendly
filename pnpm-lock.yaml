@@ -32,9 +32,6 @@ importers:
       vue-chartjs:
         specifier: ^5.3.3
         version: 5.3.3(chart.js@4.5.1)(vue@3.4.38(typescript@5.9.3))
-      vue-i18n:
-        specifier: ^11.3.2
-        version: 11.3.2(vue@3.4.38(typescript@5.9.3))
       vue-sonner:
         specifier: ^2.0.9
         version: 2.0.9
@@ -99,6 +96,9 @@ importers:
       vue:
         specifier: ^3.4.0
         version: 3.4.38(typescript@5.9.3)
+      vue-i18n:
+        specifier: ^11.3.2
+        version: 11.3.2(vue@3.4.38(typescript@5.9.3))
 
 packages:
 

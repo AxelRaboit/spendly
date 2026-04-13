@@ -433,7 +433,7 @@ onUnmounted(() => {
         <div class="space-y-3">
             <div class="flex justify-end">
                 <button
-                    class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                    class="flex w-full sm:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                     data-tour="new-transaction"
                     v-on:click="openTxPanel(null, '', TransactionType.Expense, { cancelEditing, cancelAdding })"
                 >
