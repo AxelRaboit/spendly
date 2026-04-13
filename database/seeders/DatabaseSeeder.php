@@ -10,7 +10,6 @@ use App\Models\BudgetItem;
 use App\Models\Category;
 use App\Models\Goal;
 use App\Models\BudgetPreset;
-use App\Models\Note;
 use App\Models\RecurringTransaction;
 use App\Models\ScheduledTransaction;
 use App\Models\Transaction;
@@ -96,7 +95,6 @@ class DatabaseSeeder extends Seeder
             $this->createRecurringTransactions($user, $wallet, $categories);
             $this->createScheduledTransactions($user, $wallet, $categories);
             $this->createBudgetPresets($user);
-            $this->createNotes($user);
         }
     }
 
@@ -106,7 +104,6 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user->id,
             'name' => $name,
             'start_balance' => $startBalance,
-            'is_favorite' => $isFavorite,
         ]);
 
         WalletMember::create([
@@ -349,63 +346,6 @@ class DatabaseSeeder extends Seeder
                 ...$preset,
             ]);
         }
-    }
-
-    private function createNotes(User $user): void
-    {
-        $admin = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Administratif',
-            'content'   => "Infos importantes et documents administratifs.",
-            'tags'      => ['admin'],
-            'position'  => 0,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $admin->id,
-            'title'     => 'Infos compte bancaire',
-            'content'   => "IBAN : FR76 3000 4028 3798 7654 3210 943\nBIC : BNPAFRPP",
-            'tags'      => ['banque'],
-            'position'  => 0,
-        ]);
-
-        $finances = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => null,
-            'title'     => 'Finances',
-            'content'   => "# Finances personnelles\n\nObjectifs et suivi financier.",
-            'tags'      => ['finances'],
-            'position'  => 1,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $finances->id,
-            'title'     => 'Objectifs financiers',
-            'content'   => "# Objectifs financiers\n\n## Court terme\n- [ ] Atteindre **5 000 €** sur le fonds d'urgence\n- [ ] Rembourser la dette carte de crédit\n\n## Long terme\n- [ ] Apport immobilier : objectif **20 000 €** d'ici 3 ans\n- [ ] Investir en ETF monde via le PEA\n\n> Revoir ces objectifs chaque trimestre.",
-            'tags'      => ['objectifs', 'épargne'],
-            'position'  => 0,
-        ]);
-
-        $vacances = Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $finances->id,
-            'title'     => 'Budget vacances',
-            'content'   => "# Vacances — Budget prévisionnel\n\n| Poste | Estimation |\n|---|---|\n| Vols A/R | 500 € |\n| Hébergement | 700 € |\n| Nourriture | 400 € |\n| Transport | 200 € |\n| **Total** | **1 800 €** |",
-            'tags'      => ['vacances', 'budget'],
-            'position'  => 1,
-        ]);
-
-        Note::create([
-            'user_id'   => $user->id,
-            'parent_id' => $vacances->id,
-            'title'     => 'Check-list départ',
-            'content'   => "- [ ] Réserver les vols\n- [ ] Souscrire une assurance voyage\n- [ ] Prévenir la banque",
-            'tags'      => ['checklist'],
-            'position'  => 0,
-        ]);
     }
 
     private function createScheduledTransactions(User $user, Wallet $wallet, array $categories): void

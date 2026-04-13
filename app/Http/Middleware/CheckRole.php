@@ -23,7 +23,10 @@ class CheckRole
             abort(HttpResponse::HTTP_INTERNAL_SERVER_ERROR, 'Invalid role configuration');
         }
 
-        if (! auth()->user()->hasRole($role->value)) {
+        $user = auth()->user();
+        $implied = $role === UserRole::User && $user->hasRole(UserRole::Dev->value);
+
+        if (! $implied && ! $user->hasRole($role->value)) {
             abort(HttpResponse::HTTP_FORBIDDEN, 'Unauthorized - insufficient role');
         }
 
