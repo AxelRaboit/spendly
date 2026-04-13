@@ -536,6 +536,16 @@ export default {
         tagPlaceholder: 'Añadir etiqueta…',
         edit: 'Editar',
         preview: 'Vista previa',
+        backlinks: 'Enlaces entrantes',
+        noBacklinks: 'No se encontraron enlaces entrantes.',
+        unlinkedMentions: 'Menciones sin enlace',
+        noUnlinkedMentions: 'No se encontraron menciones sin enlace.',
+        outline: 'Esquema',
+        graph: 'Grafo',
+        templates: 'Plantillas',
+        saveAsTemplate: 'Guardar como plantilla',
+        noTemplates: 'Sin plantillas.',
+        dailyNote: 'Nota diaria',
     },
 
     recurring: {

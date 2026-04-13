@@ -1,0 +1,59 @@
+/* ── Obsidian-style callout blocks ───────────────────────────────────────── */
+.callout {
+    border-left: 4px solid var(--callout-color, #818cf8);
+    border-radius: 0.5rem;
+    background-color: var(--callout-bg, rgba(129, 140, 248, 0.08));
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--callout-color, #818cf8);
+}
+
+.callout-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.callout-title {
+    line-height: 1.4;
+}
+
+.callout-body {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: rgb(var(--color-text-secondary));
+    line-height: 1.6;
+}
+
+.callout-body > *:first-child { margin-top: 0; }
+.callout-body > *:last-child  { margin-bottom: 0; }
+
+/* ── Type colors ────────────────────────────────────────────────────────── */
+.callout-note      { --callout-color: #818cf8; --callout-bg: rgba(129, 140, 248, 0.08); }
+.callout-info      { --callout-color: #38bdf8; --callout-bg: rgba(56, 189, 248, 0.08); }
+.callout-tip,
+.callout-hint      { --callout-color: #34d399; --callout-bg: rgba(52, 211, 153, 0.08); }
+.callout-success   { --callout-color: #4ade80; --callout-bg: rgba(74, 222, 128, 0.08); }
+.callout-warning,
+.callout-caution   { --callout-color: #fbbf24; --callout-bg: rgba(251, 191, 36, 0.08); }
+.callout-danger     { --callout-color: #f87171; --callout-bg: rgba(248, 113, 113, 0.08); }
+.callout-bug        { --callout-color: #fb923c; --callout-bg: rgba(251, 146, 60, 0.08); }
+.callout-example    { --callout-color: #a78bfa; --callout-bg: rgba(167, 139, 250, 0.08); }
+.callout-quote,
+.callout-cite       { --callout-color: #94a3b8; --callout-bg: rgba(148, 163, 184, 0.08); }
+.callout-question,
+.callout-faq        { --callout-color: #facc15; --callout-bg: rgba(250, 204, 21, 0.08); }
+.callout-abstract,
+.callout-summary    { --callout-color: #38bdf8; --callout-bg: rgba(56, 189, 248, 0.08); }
+.callout-todo       { --callout-color: #818cf8; --callout-bg: rgba(129, 140, 248, 0.08); }
+.callout-failure,
+.callout-fail,
+.callout-missing    { --callout-color: #f87171; --callout-bg: rgba(248, 113, 113, 0.08); }

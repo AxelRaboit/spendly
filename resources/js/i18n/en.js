@@ -542,6 +542,16 @@ export default {
         tagPlaceholder: 'Add a tag…',
         edit: 'Edit',
         preview: 'Preview',
+        backlinks: 'Backlinks',
+        noBacklinks: 'No backlinks found.',
+        unlinkedMentions: 'Unlinked mentions',
+        noUnlinkedMentions: 'No unlinked mentions.',
+        outline: 'Outline',
+        graph: 'Graph',
+        templates: 'Templates',
+        saveAsTemplate: 'Save as template',
+        noTemplates: 'No templates yet.',
+        dailyNote: 'Daily note',
     },
 
     recurring: {

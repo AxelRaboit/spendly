@@ -82,6 +82,27 @@ class NoteController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    public function backlinks(Request $request, Note $note): JsonResponse
+    {
+        $this->authorize(PolicyAction::View->value, $note);
+
+        return response()->json($this->noteService->backlinks($request->user(), $note));
+    }
+
+    public function graph(Request $request): JsonResponse
+    {
+        abort_if(! $this->planService->canNotes($request->user()), HttpStatus::Forbidden->value);
+
+        return response()->json($this->noteService->graph($request->user()));
+    }
+
+    public function unlinkedMentions(Request $request, Note $note): JsonResponse
+    {
+        $this->authorize(PolicyAction::View->value, $note);
+
+        return response()->json($this->noteService->unlinkedMentions($request->user(), $note));
+    }
+
     public function destroy(Note $note): JsonResponse
     {
         $this->authorize(PolicyAction::Delete->value, $note);

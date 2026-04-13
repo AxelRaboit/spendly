@@ -1,0 +1,12 @@
+/* ── Wiki-links (Obsidian-style [[note]] links) ─────────────────────────── */
+.wiki-link-preview .wiki-link {
+    color: #818cf8;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 150ms ease;
+}
+.wiki-link-preview .wiki-link:hover {
+    color: #6366f1;
+}

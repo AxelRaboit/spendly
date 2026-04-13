@@ -537,6 +537,16 @@ export default {
         tagPlaceholder: 'Tag hinzufügen…',
         edit: 'Bearbeiten',
         preview: 'Vorschau',
+        backlinks: 'Rückverweise',
+        noBacklinks: 'Keine Rückverweise gefunden.',
+        unlinkedMentions: 'Nicht verlinkte Erwähnungen',
+        noUnlinkedMentions: 'Keine nicht verlinkten Erwähnungen.',
+        outline: 'Gliederung',
+        graph: 'Graph',
+        templates: 'Vorlagen',
+        saveAsTemplate: 'Als Vorlage speichern',
+        noTemplates: 'Noch keine Vorlagen.',
+        dailyNote: 'Tagesnotiz',
     },
 
     recurring: {

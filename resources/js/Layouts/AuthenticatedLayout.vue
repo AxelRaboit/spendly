@@ -35,6 +35,7 @@ import {
     Map,
 } from 'lucide-vue-next';
 import { useTour } from '@/composables/ui/useTour';
+import '@css/tour/driver.css';
 
 const { t } = useI18n();
 const showMobileMenu = ref(false);

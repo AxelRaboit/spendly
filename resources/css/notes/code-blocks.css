@@ -1,0 +1,72 @@
+/* ── Syntax-highlighted code blocks ──────────────────────────────────────── */
+.code-block {
+    position: relative;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid rgb(var(--color-border));
+}
+
+.code-block-lang {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(var(--color-text-muted));
+    background-color: rgb(var(--color-surface-2));
+    border-bottom-left-radius: 0.375rem;
+    border-left: 1px solid rgb(var(--color-border));
+    border-bottom: 1px solid rgb(var(--color-border));
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background-color: rgb(var(--color-surface-2));
+}
+
+.code-block code {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+/* ── highlight.js theme (dark-friendly) ─────────────────────────────────── */
+.hljs { color: rgb(var(--color-text-primary)); background: transparent; }
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name { color: #c678dd; }
+.hljs-string,
+.hljs-attr,
+.hljs-template-tag { color: #98c379; }
+.hljs-number,
+.hljs-literal { color: #d19a66; }
+.hljs-comment,
+.hljs-doctag { color: #5c6370; font-style: italic; }
+.hljs-title,
+.hljs-section,
+.hljs-selector-id { color: #61afef; }
+.hljs-function { color: #61afef; }
+.hljs-type,
+.hljs-class { color: #e5c07b; }
+.hljs-variable,
+.hljs-template-variable { color: #e06c75; }
+.hljs-attribute { color: #d19a66; }
+.hljs-symbol,
+.hljs-bullet { color: #56b6c2; }
+.hljs-subst { color: rgb(var(--color-text-primary)); }
+.hljs-meta { color: #61afef; }
+.hljs-addition { color: #98c379; background-color: rgba(152, 195, 121, 0.1); }
+.hljs-deletion { color: #e06c75; background-color: rgba(224, 108, 117, 0.1); }
+.hljs-regexp { color: #56b6c2; }
+.hljs-selector-class { color: #d19a66; }
+.hljs-selector-attr,
+.hljs-selector-pseudo { color: #c678dd; }
+.hljs-tag { color: #e06c75; }
+.hljs-params { color: rgb(var(--color-text-primary)); }
