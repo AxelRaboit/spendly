@@ -257,6 +257,7 @@ export default {
             noSectionCategories: 'Sin categorías vinculadas a esta sección.',
             date: 'Fecha',
             descLabel: 'Descripción',
+            descOptional: 'Opcional',
             descPlaceholder: 'Ej: Supermercado, gasolina…',
             tagsLabel: 'Etiquetas',
             tagsPlaceholder: 'viaje, compras…',

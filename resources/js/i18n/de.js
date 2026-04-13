@@ -258,6 +258,7 @@ export default {
             noSectionCategories: 'Keine Kategorien mit diesem Bereich verknüpft.',
             date: 'Datum',
             descLabel: 'Beschreibung',
+            descOptional: 'Optional',
             descPlaceholder: 'Z.B. Supermarkt, Tankstelle…',
             tagsLabel: 'Tags',
             tagsPlaceholder: 'reise, einkauf…',

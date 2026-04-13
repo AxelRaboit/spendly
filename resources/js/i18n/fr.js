@@ -263,6 +263,7 @@ export default {
             noSectionCategories: 'Aucune catégorie liée à cette section.',
             date: 'Date',
             descLabel: 'Description',
+            descOptional: 'Optionnel',
             descPlaceholder: "Ex : Lidl, plein d'essence…",
             tagsLabel: 'Tags',
             tagsPlaceholder: 'voyage, courses…',

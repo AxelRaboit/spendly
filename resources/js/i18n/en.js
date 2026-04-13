@@ -263,6 +263,7 @@ export default {
             noSectionCategories: 'No categories linked to this section.',
             date: 'Date',
             descLabel: 'Description',
+            descOptional: 'Optional',
             descPlaceholder: 'E.g. Grocery, gas station…',
             tagsLabel: 'Tags',
             tagsPlaceholder: 'travel, groceries…',

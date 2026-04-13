@@ -139,8 +139,6 @@
     "flash.scheduled.deleted": "Transaction planifiée supprimée.",
     "flash.import.created": ":created transaction(s) importée(s).",
     "flash.import.created_with_errors": ":created transaction(s) importée(s), :errors ignorée(s).",
-    "flash.note.updated": "Note enregistrée.",
-    "flash.note.deleted": "Note supprimée.",
     "flash.notes.proRequired": "Les notes sont réservées au plan Pro.",
     "budgets.errors.categoryUsed": "Cette catégorie est déjà utilisée dans ce budget.",
     "admin.invitations.sent": "Invitation envoyée à :email.",
