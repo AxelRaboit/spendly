@@ -3,6 +3,7 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant hover (&:hover);
 
 @layer base {
     button, [role="button"], [type="button"], [type="submit"], [type="reset"] {
