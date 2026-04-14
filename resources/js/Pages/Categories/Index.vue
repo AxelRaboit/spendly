@@ -47,12 +47,12 @@ function filterByWallet(walletId) {
                 <div
                     v-for="category in categories.data"
                     :key="category.id"
-                    class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+                    class="relative overflow-hidden bg-surface border border-line/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
                 >
                     <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/10" />
                     <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
 
-                    <div class="pb-3 border-b border-base/40">
+                    <div class="pb-3 border-b border-line/40">
                         <p class="text-base font-semibold text-primary truncate">{{ category.name }}</p>
                         <div class="flex items-center justify-between mt-2">
                             <p v-if="category.wallet" class="flex items-center gap-1 text-xs text-muted">

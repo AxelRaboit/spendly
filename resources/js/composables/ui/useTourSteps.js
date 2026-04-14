@@ -112,7 +112,7 @@ export function useTourSteps() {
             field.classList.add('tour-field-lifted');
             field.style.position = 'relative';
             field.style.zIndex = '2';
-            field.style.backgroundColor = 'rgb(var(--color-surface))';
+            field.style.backgroundColor = 'var(--th-surface)';
             field.style.borderRadius = '0.5rem';
             field.style.padding = '0.75rem';
             field.style.margin = '-0.75rem';

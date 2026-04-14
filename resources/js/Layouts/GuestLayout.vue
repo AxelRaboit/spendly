@@ -15,7 +15,7 @@ const appVersion = usePage().props.appVersion;
             </Link>
         </div>
 
-        <div class="mt-6 w-full overflow-hidden bg-surface border border-base px-6 py-4 shadow-md rounded-lg sm:max-w-md">
+        <div class="mt-6 w-full overflow-hidden bg-surface border border-line px-6 py-4 shadow-md rounded-lg sm:max-w-md">
             <slot />
         </div>
     </div>

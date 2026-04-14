@@ -228,7 +228,7 @@ const submitInvitation = () => {
         </template>
 
         <div class="space-y-6">
-            <div class="border-b border-base overflow-x-auto">
+            <div class="border-b border-line overflow-x-auto">
                 <nav ref="tabNav" class="flex gap-6 sm:gap-8 whitespace-nowrap min-w-max">
                     <Link
                         :href="route('dev.dashboard.stats')"
@@ -269,7 +269,7 @@ const submitInvitation = () => {
             <div v-if="tab === 'stats' && stats" class="space-y-6">
                 <!-- KPI cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-surface border border-base rounded-xl p-4">
+                    <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersTotal') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
@@ -283,7 +283,7 @@ const submitInvitation = () => {
                             {{ t('admin.stats.usersNewThisMonth').toLowerCase() }}
                         </p>
                     </div>
-                    <div class="bg-surface border border-base rounded-xl p-4">
+                    <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersPro') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
@@ -297,7 +297,7 @@ const submitInvitation = () => {
                             des utilisateurs
                         </p>
                     </div>
-                    <div class="bg-surface border border-base rounded-xl p-4">
+                    <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.transactions') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
@@ -311,7 +311,7 @@ const submitInvitation = () => {
                             {{ t('admin.stats.transactionsThisMonth').toLowerCase() }}
                         </p>
                     </div>
-                    <div class="bg-surface border border-base rounded-xl p-4">
+                    <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
                             <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersNewThisMonth') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
@@ -331,13 +331,13 @@ const submitInvitation = () => {
 
                 <!-- Row 1: inscriptions + transactions par mois -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-surface border border-base rounded-xl p-5">
+                    <div class="bg-surface border border-line rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.usersPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="usersLineData" :options="lineOptions" />
                         </div>
                     </div>
-                    <div class="bg-surface border border-base rounded-xl p-5">
+                    <div class="bg-surface border border-line rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.transactionsPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <BarChart :data="transactionsBarData" :options="barOptions" />
@@ -347,13 +347,13 @@ const submitInvitation = () => {
 
                 <!-- Row 2: croissance cumulée + langues -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-surface border border-base rounded-xl p-5 lg:col-span-2">
+                    <div class="bg-surface border border-line rounded-xl p-5 lg:col-span-2">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.cumulativeGrowth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="cumulativeLineData" :options="lineOptions" />
                         </div>
                     </div>
-                    <div class="bg-surface border border-base rounded-xl p-5">
+                    <div class="bg-surface border border-line rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.localeDistribution') }}</h3>
                         <div class="h-48 sm:h-64">
                             <DoughnutChart :data="localeDonutData" :options="donutOptions" />
@@ -363,21 +363,21 @@ const submitInvitation = () => {
 
                 <!-- Row 3: plan + activité + wallets/autres -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-surface border border-base rounded-xl p-5">
+                    <div class="bg-surface border border-line rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.planDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="planDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
-                    <div class="bg-surface border border-base rounded-xl p-5">
+                    <div class="bg-surface border border-line rounded-xl p-5">
                         <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.activityDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="activityDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
-                    <div class="bg-surface border border-base rounded-xl p-5 flex flex-col gap-4">
+                    <div class="bg-surface border border-line rounded-xl p-5 flex flex-col gap-4">
                         <div class="flex flex-col justify-between gap-3">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-sm font-semibold text-primary">{{ t('admin.stats.wallets') }}</h3>
@@ -389,7 +389,7 @@ const submitInvitation = () => {
                                 <p class="text-3xl font-bold text-primary">{{ stats.wallets }}</p>
                                 <p class="text-xs text-muted mt-0.5">{{ t('admin.stats.walletsTotal') }}</p>
                             </div>
-                            <p class="text-xs text-secondary border-t border-base pt-3">
+                            <p class="text-xs text-secondary border-t border-line pt-3">
                                 {{ t('admin.stats.avgPerUser') }}
                                 <span class="font-semibold text-primary ml-1">
                                     {{ stats.users.total > 0 ? (stats.wallets / stats.users.total).toFixed(1) : '—' }}
@@ -397,7 +397,7 @@ const submitInvitation = () => {
                             </p>
                         </div>
 
-                        <div class="border-t border-base pt-3 space-y-2.5">
+                        <div class="border-t border-line pt-3 space-y-2.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs text-secondary">{{ t('admin.stats.goals') }}</span>
                                 <span class="text-sm font-bold text-primary">{{ stats.goals }}</span>
@@ -422,7 +422,7 @@ const submitInvitation = () => {
                         v-model="searchInput"
                         type="text"
                         :placeholder="t('admin.users.searchPlaceholder')"
-                        class="flex-1 px-4 py-2 rounded-lg bg-surface-2 border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        class="flex-1 px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         v-on:keyup.enter="performSearch"
                     >
                     <button
@@ -435,7 +435,7 @@ const submitInvitation = () => {
 
                 <!-- Mobile cards -->
                 <div class="sm:hidden space-y-3">
-                    <div v-for="user in users.data" :key="user.id" class="bg-surface border border-base rounded-lg p-4 space-y-3">
+                    <div v-for="user in users.data" :key="user.id" class="bg-surface border border-line rounded-lg p-4 space-y-3">
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap mb-0.5">
@@ -448,7 +448,7 @@ const submitInvitation = () => {
                                 {{ t('plan.' + user.plan + '.name') }}
                             </AppBadge>
                         </div>
-                        <div class="flex items-center justify-between pt-1 border-t border-base">
+                        <div class="flex items-center justify-between pt-1 border-t border-line">
                             <p class="text-xs text-muted">{{ new Date(user.created_at).toLocaleDateString() }}</p>
                             <div class="flex items-center gap-1">
                                 <button class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors" v-on:click="confirmImpersonate(user)">
@@ -470,9 +470,9 @@ const submitInvitation = () => {
                 </div>
 
                 <!-- Desktop table -->
-                <div class="hidden sm:block bg-surface border border-base rounded-lg overflow-x-auto">
+                <div class="hidden sm:block bg-surface border border-line rounded-lg overflow-x-auto">
                     <table class="w-full min-w-[560px]">
-                        <thead class="bg-surface-2 border-b border-base">
+                        <thead class="bg-surface-2 border-b border-line">
                             <tr>
                                 <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.name') }}</th>
                                 <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden sm:table-cell">{{ t('admin.users.email') }}</th>
@@ -481,7 +481,7 @@ const submitInvitation = () => {
                                 <th class="px-4 sm:px-6 py-3 text-right text-sm font-semibold text-primary">{{ t('admin.users.actions') }}</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-base">
+                        <tbody class="divide-y divide-line">
                             <tr v-for="user in users.data" :key="user.id" class="hover:bg-surface-2/50 transition-colors">
                                 <td class="px-4 sm:px-6 py-3 text-sm text-primary">
                                     <div class="flex items-center gap-2">
@@ -539,7 +539,7 @@ const submitInvitation = () => {
             <div v-if="tab === 'parameters'" class="space-y-3">
                 <!-- Mobile cards -->
                 <div class="sm:hidden space-y-3">
-                    <div v-for="param in parameters" :key="param.key" class="bg-surface border border-base rounded-lg p-4 space-y-2">
+                    <div v-for="param in parameters" :key="param.key" class="bg-surface border border-line rounded-lg p-4 space-y-2">
                         <div class="flex items-start justify-between gap-3">
                             <p class="font-mono text-sm text-indigo-400 font-medium break-all">{{ param.key }}</p>
                             <button v-if="editingKey !== param.key" class="p-1.5 text-muted hover:text-primary transition-colors shrink-0" v-on:click="startEdit(param)">
@@ -549,7 +549,7 @@ const submitInvitation = () => {
                         <template v-if="editingKey === param.key">
                             <input
                                 v-model="editingValue"
-                                class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1.5 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                class="w-full bg-surface-2 border border-line rounded-lg px-2.5 py-1.5 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 autofocus
                                 v-on:keydown.enter="saveParameter(param)"
                                 v-on:keydown.esc="cancelEdit"
@@ -558,7 +558,7 @@ const submitInvitation = () => {
                                 <button :disabled="editSaving" class="flex-1 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors" v-on:click="saveParameter(param)">
                                     {{ t('common.save') }}
                                 </button>
-                                <button class="flex-1 py-1.5 text-sm text-secondary hover:text-primary border border-base rounded-lg transition-colors" v-on:click="cancelEdit">
+                                <button class="flex-1 py-1.5 text-sm text-secondary hover:text-primary border border-line rounded-lg transition-colors" v-on:click="cancelEdit">
                                     {{ t('common.cancel') }}
                                 </button>
                             </div>
@@ -569,9 +569,9 @@ const submitInvitation = () => {
                 </div>
 
                 <!-- Desktop table -->
-                <div class="hidden sm:block bg-surface border border-base rounded-xl overflow-hidden">
+                <div class="hidden sm:block bg-surface border border-line rounded-xl overflow-hidden">
                     <table class="w-full">
-                        <thead class="bg-surface-2 border-b border-base">
+                        <thead class="bg-surface-2 border-b border-line">
                             <tr>
                                 <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/3">{{ t('admin.parameters.key') }}</th>
                                 <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/4">{{ t('admin.parameters.value') }}</th>
@@ -579,7 +579,7 @@ const submitInvitation = () => {
                                 <th class="px-4 py-3 w-16" />
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-base">
+                        <tbody class="divide-y divide-line">
                             <tr
                                 v-for="param in parameters"
                                 :key="param.key"
@@ -590,7 +590,7 @@ const submitInvitation = () => {
                                     <template v-if="editingKey === param.key">
                                         <input
                                             v-model="editingValue"
-                                            class="w-full bg-surface-2 border border-base rounded-lg px-2.5 py-1 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            class="w-full bg-surface-2 border border-line rounded-lg px-2.5 py-1 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             autofocus
                                             v-on:keydown.enter="saveParameter(param)"
                                             v-on:keydown.esc="cancelEdit"
@@ -642,7 +642,7 @@ const submitInvitation = () => {
                             v-model="invitationForm.email"
                             type="email"
                             :placeholder="t('admin.invitations.emailPlaceholder')"
-                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                         <p v-if="invitationForm.errors.email" class="text-xs text-red-400">{{ invitationForm.errors.email }}</p>
                     </div>
@@ -653,12 +653,12 @@ const submitInvitation = () => {
                             v-model="invitationForm.message"
                             rows="5"
                             :placeholder="t('admin.invitations.messagePlaceholder')"
-                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                            class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                         />
                         <p v-if="invitationForm.errors.message" class="text-xs text-red-400">{{ invitationForm.errors.message }}</p>
                     </div>
 
-                    <div class="border border-base rounded-lg p-4 space-y-3 bg-surface-2/50">
+                    <div class="border border-line rounded-lg p-4 space-y-3 bg-surface-2/50">
                         <p class="text-xs text-secondary">{{ t('admin.invitations.credentialsHint') }}</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="space-y-1">
@@ -667,7 +667,7 @@ const submitInvitation = () => {
                                     v-model="invitationForm.credential_email"
                                     type="email"
                                     :placeholder="t('admin.invitations.emailPlaceholder')"
-                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 >
                                 <p v-if="invitationForm.errors.credential_email" class="text-xs text-red-400">{{ invitationForm.errors.credential_email }}</p>
                             </div>
@@ -676,7 +676,7 @@ const submitInvitation = () => {
                                 <input
                                     v-model="invitationForm.credential_password"
                                     type="text"
-                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-base text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="w-full px-4 py-2 rounded-lg bg-surface border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 >
                                 <p v-if="invitationForm.errors.credential_password" class="text-xs text-red-400">{{ invitationForm.errors.credential_password }}</p>
                             </div>

@@ -33,7 +33,7 @@ watch(search, (value) => {
             v-model="search"
             type="text"
             :placeholder="placeholder"
-            class="w-full px-3 py-2 pl-9 border border-base rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+            class="w-full px-3 py-2 pl-9 border border-line rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         >
         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted pointer-events-none" />
     </div>

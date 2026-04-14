@@ -95,10 +95,10 @@ function toggleSplit() {
 
             <div
                 data-tour="tx-panel"
-                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-line shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
-                <div class="flex items-center justify-between px-6 py-4 border-b border-base">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-line">
                     <div>
                         <h3 data-tour="tx-panel-header" class="font-semibold text-primary">{{ editing ? t('budgets.txPanel.titleEdit') : t('budgets.txPanel.title') }}</h3>
                         <p v-if="prefillLabel" class="text-xs text-secondary mt-0.5">{{ prefillLabel }}</p>
@@ -119,7 +119,7 @@ function toggleSplit() {
                                 class="px-2.5 py-1 rounded text-xs font-medium border transition-colors"
                                 :class="txSection === stype
                                     ? [meta.bg, meta.border, meta.color]
-                                    : 'bg-surface-2 border-base text-muted hover:text-secondary'"
+                                    : 'bg-surface-2 border-line text-muted hover:text-secondary'"
                                 v-on:click="emit('section-change', txSection === stype ? null : stype)"
                             >
                                 {{ meta.label }}
@@ -155,7 +155,7 @@ function toggleSplit() {
                                 inputmode="decimal"
                                 placeholder="0,00"
                                 required
-                                class="w-full bg-surface-2 text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-base focus:border-indigo-500 focus:outline-none text-right"
+                                class="w-full bg-surface-2 text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-line focus:border-indigo-500 focus:outline-none text-right"
                                 v-on:blur="() => { const r = evalMath(String(txForm.amount)); if (r !== null) txForm.amount = r; }"
                             >
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-xl font-bold">{{ symbol }}</span>
@@ -198,7 +198,7 @@ function toggleSplit() {
                                     type="text"
                                     inputmode="decimal"
                                     placeholder="0,00"
-                                    class="w-full bg-surface-2 text-primary font-mono rounded-lg px-3 py-2.5 pr-7 border border-base focus:border-indigo-500 focus:outline-none text-right text-sm"
+                                    class="w-full bg-surface-2 text-primary font-mono rounded-lg px-3 py-2.5 pr-7 border border-line focus:border-indigo-500 focus:outline-none text-right text-sm"
                                     v-on:blur="() => { const r = evalMath(String(split.amount)); if (r !== null) split.amount = r; }"
                                 >
                                 <span class="absolute right-2 top-1/2 -translate-y-1/2 text-muted text-xs">{{ symbol }}</span>
@@ -238,7 +238,7 @@ function toggleSplit() {
                             v-model="txForm.description"
                             type="text"
                             :placeholder="t('budgets.txPanel.descPlaceholder')"
-                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                         >
                         <FormHint>{{ t('budgets.txPanel.descHint') }}</FormHint>
                     </div>
@@ -247,7 +247,7 @@ function toggleSplit() {
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.tagsLabel') }}
                         </label>
-                        <div class="flex flex-wrap gap-1.5 p-2 bg-surface-2 border border-base rounded-lg focus-within:border-indigo-500 min-h-[2.75rem]">
+                        <div class="flex flex-wrap gap-1.5 p-2 bg-surface-2 border border-line rounded-lg focus-within:border-indigo-500 min-h-[2.75rem]">
                             <span
                                 v-for="tag in txForm.tags"
                                 :key="tag"
@@ -275,14 +275,14 @@ function toggleSplit() {
                             {{ t('budgets.txPanel.attachment') }}
                             <span class="normal-case text-subtle">{{ t('budgets.txPanel.descOptional') }}</span>
                         </label>
-                        <div v-if="txForm.attachment" class="flex items-center gap-2 bg-surface-2 border border-base rounded-lg px-3 py-2">
+                        <div v-if="txForm.attachment" class="flex items-center gap-2 bg-surface-2 border border-line rounded-lg px-3 py-2">
                             <Paperclip class="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                             <span class="text-sm text-primary truncate flex-1">{{ txForm.attachment.name }}</span>
                             <button type="button" class="text-muted hover:text-rose-400 transition-colors" v-on:click="txForm.attachment = null">
                                 <Trash2 class="w-3.5 h-3.5" />
                             </button>
                         </div>
-                        <label v-else class="flex items-center gap-2 bg-surface-2 border border-dashed border-base rounded-lg px-3 py-2.5 cursor-pointer hover:border-indigo-500/50 transition-colors">
+                        <label v-else class="flex items-center gap-2 bg-surface-2 border border-dashed border-line rounded-lg px-3 py-2.5 cursor-pointer hover:border-indigo-500/50 transition-colors">
                             <Paperclip class="w-3.5 h-3.5 text-muted" />
                             <span class="text-sm text-muted">{{ t('budgets.txPanel.attachmentHint') }}</span>
                             <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" v-on:change="txForm.attachment = $event.target.files[0]">
@@ -291,7 +291,7 @@ function toggleSplit() {
                     </div>
                 </form>
 
-                <div class="px-6 py-4 border-t border-base flex gap-3">
+                <div class="px-6 py-4 border-t border-line flex gap-3">
                     <AppButton class="flex-1" :disabled="txForm.processing" v-on:click="splitMode ? emit('submit-split', splits) : emit('submit')">
                         {{ txForm.processing ? t('budgets.txPanel.submitting') : (editing ? t('budgets.txPanel.submitEdit') : t('budgets.txPanel.submit')) }}
                     </AppButton>

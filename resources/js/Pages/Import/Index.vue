@@ -53,7 +53,7 @@ function uploadAndPreview() {
                 </template>
             </div>
 
-            <div v-if="step === 1" class="bg-surface border border-base/60 rounded-xl p-6 space-y-4">
+            <div v-if="step === 1" class="bg-surface border border-line/60 rounded-xl p-6 space-y-4">
                 <div class="flex items-center justify-between bg-indigo-500/5 border border-indigo-500/20 rounded-lg px-4 py-3">
                     <div>
                         <p class="text-sm font-medium text-primary">{{ t('import.templateTitle') }}</p>
@@ -70,7 +70,7 @@ function uploadAndPreview() {
 
                 <label
                     class="block cursor-pointer border-2 border-dashed rounded-xl p-10 text-center transition-colors"
-                    :class="isDragging ? 'border-indigo-500 bg-indigo-500/5' : 'border-base hover:border-indigo-500/50'"
+                    :class="isDragging ? 'border-indigo-500 bg-indigo-500/5' : 'border-line hover:border-indigo-500/50'"
                     v-on:dragover.prevent="isDragging = true"
                     v-on:dragleave="isDragging = false"
                     v-on:drop.prevent="onDrop"
@@ -125,11 +125,11 @@ function uploadAndPreview() {
                     </div>
                 </div>
 
-                <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
+                <div class="bg-surface border border-line/60 rounded-xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-xs">
                             <thead>
-                                <tr class="bg-surface-2/60 border-b border-base/40">
+                                <tr class="bg-surface-2/60 border-b border-line/40">
                                     <th class="px-3 py-2 text-left font-medium text-muted">{{ t('common.date') }}</th>
                                     <th class="px-3 py-2 text-left font-medium text-muted">{{ t('common.amount') }}</th>
                                     <th class="px-3 py-2 text-left font-medium text-muted">Type</th>
@@ -139,7 +139,7 @@ function uploadAndPreview() {
                                     <th class="w-8" />
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-base/30">
+                            <tbody class="divide-y divide-line/30">
                                 <tr v-for="row in rows" :key="row._id" class="group hover:bg-surface-2/20">
                                     <td class="px-2 py-1.5">
                                         <input

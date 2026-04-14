@@ -36,7 +36,7 @@ const invitationUrl = `/wallet-invitations/${props.invitation.token}`;
     <Head :title="t('invitation.title')" />
 
     <component :is="isAuthenticated ? AuthenticatedLayout : GuestLayout">
-        <div :class="isAuthenticated ? 'mx-auto max-w-md mt-12 bg-surface border border-base/60 rounded-2xl p-8 text-center space-y-6' : 'text-center space-y-6 py-4'">
+        <div :class="isAuthenticated ? 'mx-auto max-w-md mt-12 bg-surface border border-line/60 rounded-2xl p-8 text-center space-y-6' : 'text-center space-y-6 py-4'">
             <h2 class="text-xl font-bold text-primary">{{ t('invitation.title') }}</h2>
 
             <p class="text-secondary">
@@ -76,7 +76,7 @@ const invitationUrl = `/wallet-invitations/${props.invitation.token}`;
                     </Link>
                     <Link
                         :href="`/register?redirect=${encodeURIComponent(invitationUrl)}&email=${encodeURIComponent(invitation.email)}`"
-                        class="inline-flex items-center justify-center gap-2 bg-surface-3 hover:bg-surface-2 text-primary font-bold py-2 px-4 rounded border border-base transition"
+                        class="inline-flex items-center justify-center gap-2 bg-surface-3 hover:bg-surface-2 text-primary font-bold py-2 px-4 rounded border border-line transition"
                     >
                         <UserPlus class="w-4 h-4" />
                         {{ t('invitation.register') }}

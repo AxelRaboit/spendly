@@ -149,7 +149,7 @@ const donutOptions = computed(() => ({
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="bg-surface border border-base/60 rounded-xl p-4">
+                <div class="bg-surface border border-line/60 rounded-xl p-4">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-sm font-semibold text-secondary">{{ t('overview.trend') }}</h3>
                         <div class="flex items-center gap-2">
@@ -179,7 +179,7 @@ const donutOptions = computed(() => ({
                     </div>
                 </div>
 
-                <div class="bg-surface border border-base/60 rounded-xl p-4">
+                <div class="bg-surface border border-line/60 rounded-xl p-4">
                     <h3 class="text-sm font-semibold text-secondary mb-4">{{ t('overview.byCategory') }}</h3>
                     <div v-if="byCategory.length" class="h-52">
                         <DoughnutChart :data="donutData" :options="donutOptions" />
@@ -189,13 +189,13 @@ const donutOptions = computed(() => ({
             </div>
 
             <!-- Budget wallets -->
-            <div v-if="budgetWallets.length > 0" class="bg-surface border border-base/60 rounded-xl overflow-hidden">
-                <div class="px-4 py-3 border-b border-base/40 bg-surface-2/30">
+            <div v-if="budgetWallets.length > 0" class="bg-surface border border-line/60 rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-line/40 bg-surface-2/30">
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">{{ t('overview.sectionBudget') }}</h3>
                 </div>
 
                 <!-- Mobile -->
-                <div class="sm:hidden divide-y divide-base/40">
+                <div class="sm:hidden divide-y divide-line/40">
                     <div v-for="wallet in budgetWallets" :key="wallet.id" class="p-4 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-primary">{{ wallet.name }}</span>
@@ -224,7 +224,7 @@ const donutOptions = computed(() => ({
                 <div class="hidden sm:block overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
-                            <tr class="bg-surface-2/50 border-b border-base/40">
+                            <tr class="bg-surface-2/50 border-b border-line/40">
                                 <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.incomeTip')"><span class="cursor-help">{{ t('overview.income') }}</span></AppTooltip></th>
                                 <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted"><AppTooltip :text="t('overview.expensesTip')"><span class="cursor-help">{{ t('overview.expenses') }}</span></AppTooltip></th>
@@ -232,7 +232,7 @@ const donutOptions = computed(() => ({
                                 <th class="px-4 py-3" />
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-base/40">
+                        <tbody class="divide-y divide-line/40">
                             <tr v-for="wallet in budgetWallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
                                 <td class="px-4 py-3 font-medium text-primary">{{ wallet.name }}</td>
                                 <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(wallet.income) }}</td>
@@ -244,7 +244,7 @@ const donutOptions = computed(() => ({
                                     </Link>
                                 </td>
                             </tr>
-                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
+                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-line/60">
                                 <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
                                 <td class="px-4 py-3 text-right font-mono text-emerald-400">{{ fmt(budgetTotals.income) }}</td>
                                 <td class="px-4 py-3 text-right font-mono text-rose-400">{{ fmt(budgetTotals.expenses) }}</td>
@@ -257,13 +257,13 @@ const donutOptions = computed(() => ({
             </div>
 
             <!-- Simple wallets -->
-            <div v-if="simpleWallets.length > 0" class="bg-surface border border-base/60 rounded-xl overflow-hidden">
-                <div class="px-4 py-3 border-b border-base/40 bg-surface-2/30">
+            <div v-if="simpleWallets.length > 0" class="bg-surface border border-line/60 rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-line/40 bg-surface-2/30">
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">{{ t('overview.sectionSimple') }}</h3>
                 </div>
 
                 <!-- Mobile -->
-                <div class="sm:hidden divide-y divide-base/40">
+                <div class="sm:hidden divide-y divide-line/40">
                     <div v-for="wallet in simpleWallets" :key="wallet.id" class="p-4 flex items-center justify-between">
                         <div>
                             <p class="font-medium text-primary">{{ wallet.name }}</p>
@@ -279,13 +279,13 @@ const donutOptions = computed(() => ({
                 <div class="hidden sm:block overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
-                            <tr class="bg-surface-2/50 border-b border-base/40">
+                            <tr class="bg-surface-2/50 border-b border-line/40">
                                 <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.wallet') }}</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted">{{ t('overview.currentBalance') }}</th>
                                 <th class="px-4 py-3" />
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-base/40">
+                        <tbody class="divide-y divide-line/40">
                             <tr v-for="wallet in simpleWallets" :key="wallet.id" class="hover:bg-surface-2/40 transition-colors">
                                 <td class="px-4 py-3 font-medium text-primary">{{ wallet.name }}</td>
                                 <td class="px-4 py-3 text-right font-mono font-semibold" :class="cashFlowClass(wallet.current_balance)">{{ fmt(wallet.current_balance, true) }}</td>
@@ -295,7 +295,7 @@ const donutOptions = computed(() => ({
                                     </Link>
                                 </td>
                             </tr>
-                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-base/60">
+                            <tr class="bg-surface-2/30 font-semibold border-t-2 border-line/60">
                                 <td class="px-4 py-3 text-sm text-primary uppercase tracking-wide">{{ t('overview.total') }}</td>
                                 <td class="px-4 py-3 text-right font-mono" :class="cashFlowClass(simpleTotals.current_balance)">{{ fmt(simpleTotals.current_balance, true) }}</td>
                                 <td />
@@ -305,7 +305,7 @@ const donutOptions = computed(() => ({
                 </div>
             </div>
 
-            <div v-if="wallets.length === 0" class="bg-surface border border-base/60 rounded-xl flex items-center justify-center py-16 text-secondary">
+            <div v-if="wallets.length === 0" class="bg-surface border border-line/60 rounded-xl flex items-center justify-center py-16 text-secondary">
                 <p class="text-sm">{{ t('overview.noWallets') }}</p>
             </div>
         </div>

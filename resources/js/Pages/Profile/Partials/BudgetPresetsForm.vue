@@ -106,7 +106,7 @@ function onKeydown(e, submitFn) {
             <div
                 v-for="item in items"
                 :key="item.id"
-                class="flex items-center gap-3 px-3 py-2.5 bg-surface-2 rounded-lg border border-base/40 transition-all select-none"
+                class="flex items-center gap-3 px-3 py-2.5 bg-surface-2 rounded-lg border border-line/40 transition-all select-none"
                 :class="{
                     'opacity-50 scale-95': draggingId === item.id,
                     'ring-2 ring-indigo-500/50 border-indigo-500/50': dragOverId === item.id,
@@ -122,12 +122,12 @@ function onKeydown(e, submitFn) {
                     <input
                         v-model="editLabel"
                         type="text"
-                        class="flex-1 bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                        class="flex-1 bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                         v-on:keydown="onKeydown($event, () => saveEdit(item))"
                     >
                     <select
                         v-model="editType"
-                        class="bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                        class="bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                     >
                         <option v-for="s in SECTION_TYPES" :key="s" :value="s">{{ t(`budgets.sections.${s}`) }}</option>
                     </select>
@@ -136,7 +136,7 @@ function onKeydown(e, submitFn) {
                         type="number"
                         step="0.01"
                         min="0"
-                        class="w-24 bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm font-mono text-right focus:border-indigo-500 focus:outline-none"
+                        class="w-24 bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm font-mono text-right focus:border-indigo-500 focus:outline-none"
                         v-on:keydown="onKeydown($event, () => saveEdit(item))"
                     >
                     <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="saveEdit(item)">
@@ -178,13 +178,13 @@ function onKeydown(e, submitFn) {
                     v-model="newLabel"
                     type="text"
                     :placeholder="t('profile.presets.labelPlaceholder')"
-                    class="flex-1 bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                    class="flex-1 bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                     autofocus
                     v-on:keydown="onKeydown($event, addPreset)"
                 >
                 <select
                     v-model="newType"
-                    class="bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                    class="bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                 >
                     <option v-for="s in SECTION_TYPES" :key="s" :value="s">{{ t(`budgets.sections.${s}`) }}</option>
                 </select>
@@ -194,7 +194,7 @@ function onKeydown(e, submitFn) {
                     step="0.01"
                     min="0"
                     :placeholder="t('profile.presets.amountPlaceholder')"
-                    class="w-24 bg-surface text-primary rounded px-2 py-1.5 border border-base text-sm font-mono text-right focus:border-indigo-500 focus:outline-none"
+                    class="w-24 bg-surface text-primary rounded px-2 py-1.5 border border-line text-sm font-mono text-right focus:border-indigo-500 focus:outline-none"
                     v-on:keydown="onKeydown($event, addPreset)"
                 >
                 <button class="text-emerald-400 hover:text-emerald-300 transition-colors" v-on:click="addPreset">

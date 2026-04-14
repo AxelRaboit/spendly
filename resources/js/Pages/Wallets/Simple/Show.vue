@@ -129,7 +129,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             </div>
 
             <!-- Balance card -->
-            <div class="bg-surface border border-base/60 rounded-2xl p-5 space-y-4">
+            <div class="bg-surface border border-line/60 rounded-2xl p-5 space-y-4">
                 <div>
                     <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('wallets.colBalance') }}</p>
                     <p
@@ -141,7 +141,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     <p class="text-xs text-muted mt-1">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-base/40">
+                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40">
                     <div class="flex items-center gap-2">
                         <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15">
                             <TrendingUp class="w-3.5 h-3.5 text-emerald-400" />
@@ -172,7 +172,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
                     :class="activeFilter === filter
                         ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
-                        : 'bg-surface border-base/60 text-muted hover:border-indigo-500/40'"
+                        : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
                     v-on:click="activeFilter = filter"
                 >
                     {{ t(`simple.filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`) }}
@@ -186,7 +186,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     <div
                         v-for="transaction in group.items"
                         :key="transaction.id"
-                        class="flex items-center gap-3 bg-surface border border-base/60 rounded-xl px-4 py-3"
+                        class="flex items-center gap-3 bg-surface border border-line/60 rounded-xl px-4 py-3"
                     >
                         <div
                             class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
@@ -238,7 +238,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     class="flex-1 rounded-lg border-2 py-2 text-sm font-medium transition-all"
                     :class="form.type === TransactionType.Expense
                         ? 'border-rose-500 bg-rose-500/10 text-rose-400'
-                        : 'border-base/60 text-muted hover:border-rose-500/40'"
+                        : 'border-line/60 text-muted hover:border-rose-500/40'"
                     v-on:click="form.type = TransactionType.Expense"
                 >
                     {{ t('simple.typeExpense') }}
@@ -248,7 +248,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     class="flex-1 rounded-lg border-2 py-2 text-sm font-medium transition-all"
                     :class="form.type === TransactionType.Income
                         ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
-                        : 'border-base/60 text-muted hover:border-emerald-500/40'"
+                        : 'border-line/60 text-muted hover:border-emerald-500/40'"
                     v-on:click="form.type = TransactionType.Income"
                 >
                     {{ t('simple.typeIncome') }}

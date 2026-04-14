@@ -109,7 +109,7 @@ function deleteNote() {
                         {{ saveStatus === 'saving' ? t('notepad.saving') : t('notepad.saved') }}
                     </span>
 
-                    <div class="flex items-center rounded-lg border border-base overflow-hidden text-xs">
+                    <div class="flex items-center rounded-lg border border-line overflow-hidden text-xs">
                         <button
                             class="flex items-center gap-1.5 px-2.5 py-1.5 transition-colors"
                             :class="!isPreview ? 'bg-indigo-600/20 text-indigo-400' : 'text-muted hover:text-primary'"
@@ -139,7 +139,7 @@ function deleteNote() {
         </template>
 
         <div class="w-full">
-            <div class="bg-surface border border-base rounded-2xl overflow-hidden">
+            <div class="bg-surface border border-line rounded-2xl overflow-hidden">
                 <div class="p-8 sm:p-12 space-y-4">
                     <input
                         v-model="title"
@@ -170,7 +170,7 @@ function deleteNote() {
                         >
                     </div>
 
-                    <div class="border-t border-base/40" />
+                    <div class="border-t border-line/40" />
 
                     <textarea
                         v-if="!isPreview"

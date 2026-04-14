@@ -44,7 +44,7 @@ function choosePro() {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Free -->
-            <div class="bg-surface-2 border border-base rounded-xl p-5 flex flex-col">
+            <div class="bg-surface-2 border border-line rounded-xl p-5 flex flex-col">
                 <h3 class="text-lg font-bold text-primary">{{ t('plan.free.name') }}</h3>
                 <p class="text-2xl font-extrabold text-primary mt-1">
                     {{ t('plan.free.price') }}

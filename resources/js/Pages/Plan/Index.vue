@@ -48,7 +48,7 @@ function downgrade() {
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-surface border border-base/60 rounded-xl p-6 flex flex-col relative">
+                <div class="bg-surface border border-line/60 rounded-xl p-6 flex flex-col relative">
                     <span
                         v-if="!isPro"
                         class="absolute top-4 right-4 text-xs font-bold bg-indigo-600/15 text-indigo-400 px-2 py-0.5 rounded-full"

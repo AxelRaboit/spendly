@@ -36,7 +36,7 @@ const form = useForm({
                     required
                     autofocus
                     autocomplete="name"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.name" class="mt-1 text-xs text-rose-400">{{ form.errors.name }}</p>
             </div>
@@ -49,7 +49,7 @@ const form = useForm({
                     type="email"
                     required
                     autocomplete="username"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.email" class="mt-1 text-xs text-rose-400">{{ form.errors.email }}</p>
             </div>
@@ -59,7 +59,7 @@ const form = useForm({
                 <select
                     id="currency"
                     v-model="form.currency"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-base focus:border-indigo-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                 >
                     <option v-for="c in CURRENCIES" :key="c.code" :value="c.code">{{ c.label }}</option>
                 </select>

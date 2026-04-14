@@ -41,7 +41,7 @@ const color = computed(() => {
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="rgb(var(--color-surface-3))"
+                stroke="var(--th-surface-3)"
                 :stroke-width="sw"
                 :stroke-dasharray="`${arcLen} ${C - arcLen}`"
                 stroke-linecap="round"
@@ -53,7 +53,7 @@ const color = computed(() => {
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="rgb(var(--color-border))"
+                stroke="var(--color-border)"
                 :stroke-width="sw * 0.15"
                 :stroke-dasharray="`${arcLen} ${C - arcLen}`"
                 stroke-linecap="round"
@@ -81,7 +81,7 @@ const color = computed(() => {
                 dominant-baseline="middle"
                 :font-size="size * 0.13"
                 font-weight="700"
-                fill="rgb(var(--color-text-primary))"
+                fill="var(--color-primary)"
                 font-family="ui-monospace, monospace"
             >{{ center }}</text>
 
@@ -91,7 +91,7 @@ const color = computed(() => {
                 text-anchor="middle"
                 dominant-baseline="middle"
                 :font-size="size * 0.072"
-                fill="rgb(var(--color-text-muted))"
+                fill="var(--color-muted)"
                 letter-spacing="0.5"
             >{{ sublabel }}</text>
 

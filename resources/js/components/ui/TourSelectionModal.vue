@@ -56,7 +56,7 @@ function launch(guide) {
             <button
                 v-for="guide in guides"
                 :key="guide.key"
-                class="w-full flex items-start gap-4 p-4 rounded-xl border border-base hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-colors text-left group"
+                class="w-full flex items-start gap-4 p-4 rounded-xl border border-line hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-colors text-left group"
                 v-on:click="launch(guide)"
             >
                 <div class="shrink-0 w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center">

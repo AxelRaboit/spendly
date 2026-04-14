@@ -30,7 +30,7 @@ defineExpose({ focus: () => input.value.focus() });
             ref="input"
             v-model="model"
             v-bind="{ ...$attrs, class: undefined, type: inputType }"
-            class="w-full px-3 py-2 pr-10 border border-base rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-full px-3 py-2 pr-10 border border-line rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         >
         <button
             type="button"
@@ -63,7 +63,7 @@ defineExpose({ focus: () => input.value.focus() });
         v-else
         ref="input"
         v-model="model"
-        class="w-full px-3 py-2 border border-base rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        class="w-full px-3 py-2 border border-line rounded-md bg-surface-2 text-primary placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         v-bind="$attrs"
     >
 </template>

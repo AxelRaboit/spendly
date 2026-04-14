@@ -80,18 +80,18 @@ function confirm() {
         <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
             <div class="absolute inset-0 bg-black/60" v-on:click="$emit('cancel')" />
 
-            <div class="relative z-10 w-full max-w-lg rounded-xl bg-surface-2 border border-base shadow-xl flex flex-col max-h-[80vh]">
-                <div class="px-6 py-4 border-b border-base">
+            <div class="relative z-10 w-full max-w-lg rounded-xl bg-surface-2 border border-line shadow-xl flex flex-col max-h-[80vh]">
+                <div class="px-6 py-4 border-b border-line">
                     <h3 class="text-base font-semibold text-primary">{{ title }}</h3>
                     <p class="text-sm text-secondary mt-0.5">{{ message }}</p>
                 </div>
 
-                <div class="px-6 py-2.5 border-b border-base flex items-center justify-between">
+                <div class="px-6 py-2.5 border-b border-line flex items-center justify-between">
                     <label class="flex items-center gap-2 text-xs text-secondary cursor-pointer select-none">
                         <input
                             type="checkbox"
                             :checked="allSelected"
-                            class="rounded border-base accent-indigo-500"
+                            class="rounded border-line accent-indigo-500"
                             v-on:change="toggleAll"
                         >
                         {{ allSelected ? t('common.deselectAll') : t('common.selectAll') }}
@@ -114,7 +114,7 @@ function confirm() {
                                 <input
                                     type="checkbox"
                                     :checked="selected.includes(item.id)"
-                                    class="rounded border-base accent-indigo-500 shrink-0"
+                                    class="rounded border-line accent-indigo-500 shrink-0"
                                     v-on:change="toggleItem(item.id)"
                                 >
                                 <span class="flex-1 min-w-0">
@@ -132,7 +132,7 @@ function confirm() {
                     </p>
                 </div>
 
-                <div class="px-6 py-4 border-t border-base flex justify-end gap-3">
+                <div class="px-6 py-4 border-t border-line flex justify-end gap-3">
                     <AppButton variant="secondary" v-on:click="$emit('cancel')">
                         {{ t('common.cancel') }}
                     </AppButton>

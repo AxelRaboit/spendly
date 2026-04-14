@@ -56,7 +56,7 @@ const depositGoal = ref(null);
                 <div
                     v-for="goal in goals"
                     :key="goal.id"
-                    class="bg-surface border border-base/60 rounded-2xl p-5 space-y-4"
+                    class="bg-surface border border-line/60 rounded-2xl p-5 space-y-4"
                 >
                     <div class="flex items-start justify-between gap-2">
                         <div class="flex items-center gap-2 min-w-0">
@@ -106,7 +106,7 @@ const depositGoal = ref(null);
                         </div>
                         <button
                             v-else
-                            class="w-full text-sm border border-dashed border-base/60 hover:border-indigo-500/50 text-muted hover:text-primary rounded-lg py-1.5 transition-colors"
+                            class="w-full text-sm border border-dashed border-line/60 hover:border-indigo-500/50 text-muted hover:text-primary rounded-lg py-1.5 transition-colors"
                             v-on:click="depositGoal = goal"
                         >
                             + {{ t('goals.deposit') }}
@@ -122,7 +122,7 @@ const depositGoal = ref(null);
             <h3 class="text-base font-semibold text-primary">{{ editingGoal ? t('goals.editGoal') : t('goals.newGoal') }}</h3>
 
             <FormField :label="t('goals.fieldName')">
-                <input v-model="form.name" type="text" class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none" required>
+                <input v-model="form.name" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none" required>
             </FormField>
             <div class="grid grid-cols-2 gap-3">
                 <FormField :label="t('goals.fieldWallet')">
@@ -148,7 +148,7 @@ const depositGoal = ref(null);
                         type="number"
                         step="0.01"
                         min="0.01"
-                        class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
+                        class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
                         required
                     >
                 </FormField>
@@ -158,7 +158,7 @@ const depositGoal = ref(null);
                         type="number"
                         step="0.01"
                         min="0"
-                        class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
+                        class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
                     >
                 </FormField>
             </div>

@@ -105,7 +105,7 @@ function cancelConfirm() {
                     <template v-if="isOwner && member.role !== WalletRole.Owner">
                         <select
                             :value="member.role"
-                            class="bg-surface text-primary rounded px-2 py-1 border border-base text-xs focus:border-indigo-500 focus:outline-none"
+                            class="bg-surface text-primary rounded px-2 py-1 border border-line text-xs focus:border-indigo-500 focus:outline-none"
                             v-on:change="updateRole(member, $event.target.value)"
                         >
                             <option :value="WalletRole.Editor">{{ t('sharing.editor') }}</option>
@@ -158,16 +158,16 @@ function cancelConfirm() {
 
             <p v-if="memberError" class="text-rose-400 text-xs">{{ memberError }}</p>
 
-            <div v-if="isOwner && isPro" class="border-t border-base pt-4">
+            <div v-if="isOwner && isPro" class="border-t border-line pt-4">
                 <p class="text-xs text-secondary uppercase tracking-wide mb-3">{{ t('sharing.invite') }}</p>
                 <div class="flex flex-col gap-3">
-                    <div v-for="(row, index) in inviteRows" :key="index" class="flex flex-col gap-2 border border-base rounded-lg p-3 bg-surface-2">
+                    <div v-for="(row, index) in inviteRows" :key="index" class="flex flex-col gap-2 border border-line rounded-lg p-3 bg-surface-2">
                         <div class="flex items-center gap-2">
                             <input
                                 v-model="row.email"
                                 type="email"
                                 :placeholder="t('sharing.emailPlaceholder')"
-                                class="flex-1 bg-surface text-primary rounded-lg px-3 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                                class="flex-1 bg-surface text-primary rounded-lg px-3 py-2 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                                 v-on:keydown.enter="invite"
                             >
                             <button
@@ -180,7 +180,7 @@ function cancelConfirm() {
                         </div>
                         <select
                             v-model="row.role"
-                            class="w-full bg-surface text-primary rounded-lg px-2 py-2 border border-base text-sm focus:border-indigo-500 focus:outline-none"
+                            class="w-full bg-surface text-primary rounded-lg px-2 py-2 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                         >
                             <option value="editor">{{ t('sharing.editor') }}</option>
                             <option value="viewer">{{ t('sharing.viewer') }}</option>

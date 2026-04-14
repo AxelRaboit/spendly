@@ -76,10 +76,10 @@ function submit() {
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" v-on:click="emit('close')" />
 
             <div
-                class="relative z-10 w-full max-w-sm bg-surface-2 border border-base rounded-2xl shadow-2xl"
+                class="relative z-10 w-full max-w-sm bg-surface-2 border border-line rounded-2xl shadow-2xl"
                 v-on:keydown.esc="emit('close')"
             >
-                <div class="px-6 pt-6 pb-4 border-b border-base">
+                <div class="px-6 pt-6 pb-4 border-b border-line">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: goal.color }" />
@@ -133,7 +133,7 @@ function submit() {
                                 min="0.01"
                                 placeholder="0,00"
                                 required
-                                class="w-full bg-surface text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-base focus:border-indigo-500 focus:outline-none text-right"
+                                class="w-full bg-surface text-primary text-2xl font-bold font-mono rounded-lg px-4 py-4 pr-10 border border-line focus:border-indigo-500 focus:outline-none text-right"
                             >
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-secondary text-xl font-bold">{{ symbol }}</span>
                         </div>

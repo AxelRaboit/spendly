@@ -74,7 +74,7 @@ function toggleGroup(id) {
         </template>
 
         <div class="space-y-4">
-            <div class="flex items-center gap-1 bg-surface border border-base/60 rounded-lg p-1 w-fit">
+            <div class="flex items-center gap-1 bg-surface border border-line/60 rounded-lg p-1 w-fit">
                 <button
                     class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
                     :class="activeTab === 'recurring' ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary'"
@@ -111,7 +111,7 @@ function toggleGroup(id) {
                 </div>
 
                 <div v-if="recurring.length > 0" class="space-y-4">
-                    <div v-for="group in byWallet" :key="group.wallet.id" class="bg-surface border border-base/60 rounded-2xl overflow-hidden">
+                    <div v-for="group in byWallet" :key="group.wallet.id" class="bg-surface border border-line/60 rounded-2xl overflow-hidden">
                         <button
                             class="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-2 transition-colors"
                             v-on:click="toggleGroup(group.wallet.id)"
@@ -125,7 +125,7 @@ function toggleGroup(id) {
                                 />
                             </div>
                         </button>
-                        <div v-show="!collapsed[group.wallet.id]" class="border-t border-base/60 divide-y divide-base/40">
+                        <div v-show="!collapsed[group.wallet.id]" class="border-t border-line/60 divide-y divide-line/40">
                             <div
                                 v-for="item in group.items"
                                 :key="item.id"
@@ -167,7 +167,7 @@ function toggleGroup(id) {
                                                 class="text-xs px-2 py-1 rounded-full border transition-colors"
                                                 :class="item.active
                                                     ? 'border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10'
-                                                    : 'border-base text-muted hover:border-indigo-500/40 hover:text-indigo-400'"
+                                                    : 'border-line text-muted hover:border-indigo-500/40 hover:text-indigo-400'"
                                                 v-on:click="toggleActive(item)"
                                             >
                                                 {{ item.active ? t('recurring.active') : t('recurring.inactive') }}
@@ -201,7 +201,7 @@ function toggleGroup(id) {
                     </AppButton>
                 </div>
 
-                <div v-if="scheduled.length > 0" class="bg-surface border border-base/60 rounded-2xl overflow-hidden divide-y divide-base/40">
+                <div v-if="scheduled.length > 0" class="bg-surface border border-line/60 rounded-2xl overflow-hidden divide-y divide-line/40">
                     <div
                         v-for="item in scheduled"
                         :key="item.id"
@@ -249,7 +249,7 @@ function toggleGroup(id) {
             <h3 class="text-base font-semibold text-primary">{{ t('scheduled.new') }}</h3>
 
             <FormField :label="t('scheduled.fieldDesc')">
-                <input v-model="scheduledForm.description" type="text" class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
+                <input v-model="scheduledForm.description" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
             <FormField :label="t('scheduled.fieldAmount', { symbol })">
@@ -259,7 +259,7 @@ function toggleGroup(id) {
                     step="0.01"
                     min="0.01"
                     required
-                    class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono text-right"
+                    class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono text-right"
                 >
             </FormField>
 
@@ -268,7 +268,7 @@ function toggleGroup(id) {
             </FormField>
 
             <FormField :label="t('scheduled.date')">
-                <input v-model="scheduledForm.scheduled_date" type="date" required class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
+                <input v-model="scheduledForm.scheduled_date" type="date" required class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
             <FormField :label="t('scheduled.fieldWallet')">
@@ -303,7 +303,7 @@ function toggleGroup(id) {
             </h3>
 
             <FormField :label="t('recurring.fieldDesc')">
-                <input v-model="form.description" type="text" class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none" required>
+                <input v-model="form.description" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none" required>
             </FormField>
 
             <div class="grid grid-cols-2 gap-3">
@@ -313,7 +313,7 @@ function toggleGroup(id) {
                         type="number"
                         step="0.01"
                         min="0.01"
-                        class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
+                        class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
                         required
                     >
                 </FormField>
@@ -331,7 +331,7 @@ function toggleGroup(id) {
                     type="number"
                     min="1"
                     max="28"
-                    class="w-full bg-surface-2 text-primary border border-base rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
+                    class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none font-mono"
                     required
                 >
                 <p class="mt-1 text-xs text-muted">{{ ordinalDay(form.day_of_month || 1) }}</p>

@@ -103,7 +103,7 @@ function quickCreate(name) {
                 <div
                     v-for="wallet in localWallets"
                     :key="wallet.id"
-                    class="relative overflow-hidden bg-surface border border-base/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none"
+                    class="relative overflow-hidden bg-surface border border-line/60 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing select-none"
                     :class="{
                         'opacity-50 scale-95': draggingId === wallet.id,
                         'ring-2 ring-indigo-500/50 border-indigo-500/50': dragOverId === wallet.id,
@@ -121,7 +121,7 @@ function quickCreate(name) {
                         <GripVertical class="w-4 h-4" />
                     </div>
 
-                    <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
+                    <div class="flex flex-col gap-3 pb-3 border-b border-line/40">
                         <div class="flex items-center gap-2">
                             <Link
                                 :href="walletLink(wallet)"
