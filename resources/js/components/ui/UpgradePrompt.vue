@@ -28,7 +28,7 @@ const message = computed(() => {
 
 <template>
     <Modal :show="show" max-width="md" v-on:close="emit('close')">
-        <div class="px-6 py-4 border-b border-base">
+        <div class="px-6 py-4 border-b border-line">
             <div class="flex items-center gap-3">
                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-badge-warning-bg">
                     <Lightbulb class="h-5 w-5 text-badge-warning-text" :stroke-width="1.5" />
@@ -44,7 +44,7 @@ const message = computed(() => {
             <p class="text-sm text-muted mb-6">{{ t('upgrade.callToAction') }}</p>
         </div>
 
-        <div class="px-6 py-4 border-t border-base flex justify-end gap-3">
+        <div class="px-6 py-4 border-t border-line flex justify-end gap-3">
             <AppButton variant="secondary" v-on:click="emit('close')">
                 {{ t('common.notNow') }}
             </AppButton>

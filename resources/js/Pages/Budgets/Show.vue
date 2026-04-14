@@ -469,17 +469,17 @@ onUnmounted(() => {
 
             <div class="space-y-3" data-tour="kpi-section">
                 <div class="hidden md:grid grid-cols-3 gap-3" data-tour="budget-kpi">
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <div class="bg-surface border border-line/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <div class="bg-surface border border-line/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                     </div>
-                    <div class="bg-surface border border-base/60 rounded-lg p-4">
+                    <div class="bg-surface border border-line/60 rounded-lg p-4">
                         <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
                         <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
                         <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
@@ -488,17 +488,17 @@ onUnmounted(() => {
 
                 <div class="md:hidden">
                     <div :ref="el => trackCarousel(el, 0)" class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.incomeTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.income') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="totalIncome.actual > 0 ? 'text-emerald-400' : 'text-muted'">{{ fmt(totalIncome.actual) }}</p>
                             <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalIncome.planned) }} {{ t('budgets.kpi.planned') }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.expensesTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.expenses') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="totalExpenses.actual > 0 ? 'text-rose-400' : 'text-muted'">{{ fmt(totalExpenses.actual) }}</p>
                             <p class="text-xs text-muted mt-0.5">/ {{ fmt(totalExpenses.planned) }} {{ t('budgets.kpi.planned') }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.leftToSpendTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.leftToSpend') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="leftToSpend.actual < 0 ? 'text-rose-400' : 'text-emerald-400'">{{ fmt(leftToSpend.actual) }}</p>
                             <p class="text-xs text-muted mt-0.5">/ {{ fmt(leftToSpend.planned) }} {{ t('budgets.kpi.planned') }}</p>
@@ -528,18 +528,18 @@ onUnmounted(() => {
 
                 <div v-if="showMoreKpi" class="space-y-3">
                     <div class="hidden md:grid grid-cols-3 gap-3">
-                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4">
                             <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
                             <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4">
                             <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
                                 {{ fmt(cashFlow.actual, true) }}
                             </p>
                             <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4">
                             <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                                 {{ savingsRate !== null ? savingsRate + '%' : '—' }}
@@ -549,18 +549,18 @@ onUnmounted(() => {
                     </div>
 
                     <div :ref="el => trackCarousel(el, 1)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.startBalanceTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.startBalance') }}</p></AppTooltip>
                             <p class="text-lg font-bold text-primary font-mono">{{ fmt(startBalance) }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.cashFlowTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.cashFlow') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="cashFlow.actual !== 0 ? (cashFlow.actual >= 0 ? 'text-emerald-400' : 'text-rose-400') : 'text-muted'">
                                 {{ fmt(cashFlow.actual, true) }}
                             </p>
                             <p class="text-xs text-muted mt-0.5">/ {{ fmt(cashFlow.planned, true) }} {{ t('budgets.kpi.planned') }}</p>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.savingsRateTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.savingsRate') }}</p></AppTooltip>
                             <p class="text-lg font-bold font-mono" :class="savingsRate === null ? 'text-subtle' : savingsRate >= 20 ? 'text-emerald-400' : savingsRate >= 10 ? 'text-amber-400' : 'text-rose-400'">
                                 {{ savingsRate !== null ? savingsRate + '%' : '—' }}
@@ -573,12 +573,12 @@ onUnmounted(() => {
                     </div>
 
                     <div class="hidden md:grid grid-cols-3 gap-3">
-                        <div class="bg-surface border border-base/60 rounded-lg p-4">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4">
                             <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                             <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
                             <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between gap-4">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 flex flex-col justify-between gap-4">
                             <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
                             <div>
                                 <div class="flex items-end justify-between mb-2">
@@ -608,7 +608,7 @@ onUnmounted(() => {
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 flex flex-col justify-between">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 flex flex-col justify-between">
                             <div>
                                 <AppTooltip :text="t('budgets.kpi.projectionTip')">
                                     <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
@@ -631,12 +631,12 @@ onUnmounted(() => {
                     </div>
 
                     <div :ref="el => trackCarousel(el, 2)" class="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.distributionTip')"><p class="text-xs text-muted uppercase tracking-wide mb-3 cursor-help">{{ t('budgets.kpi.distribution') }}</p></AppTooltip>
                             <DonutChart v-if="donutSegments.length" :segments="donutSegments" :size="120" />
                             <EmptyState v-else :message="t('budgets.noneThisMonth')" icon="chart" compact />
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.spendProgressTip')"><p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">{{ t('budgets.kpi.spendProgress') }}</p></AppTooltip>
                             <div class="mt-3">
                                 <div class="flex items-end justify-between mb-2">
@@ -661,7 +661,7 @@ onUnmounted(() => {
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-surface border border-base/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
+                        <div class="bg-surface border border-line/60 rounded-lg p-4 min-w-[75%] snap-center shrink-0">
                             <AppTooltip :text="t('budgets.kpi.projectionTip')">
                                 <p class="text-xs text-muted uppercase tracking-wide mb-1 cursor-help">
                                     {{ t('budgets.kpi.projection') }}
@@ -695,10 +695,10 @@ onUnmounted(() => {
                 </button>
             </div>
 
-            <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-base rounded-lg p-8 text-center">
+            <div v-if="isBudgetEmpty" class="bg-surface border border-dashed border-line rounded-lg p-8 text-center">
                 <p class="text-secondary mb-4">{{ t('budgets.emptyBudget') }}</p>
                 <button
-                    class="inline-flex items-center gap-2 bg-surface-2 hover:bg-surface-3 text-primary text-sm font-medium px-4 py-2 rounded-lg border border-base transition-colors"
+                    class="inline-flex items-center gap-2 bg-surface-2 hover:bg-surface-3 text-primary text-sm font-medium px-4 py-2 rounded-lg border border-line transition-colors"
                     v-on:click="copyFromPrevious"
                 >
                     <Copy class="w-4 h-4" />
@@ -732,7 +732,7 @@ onUnmounted(() => {
                     <button
                         v-for="suggestion in quickStartSuggestions"
                         :key="suggestion.label"
-                        class="border-2 border-dashed border-base/60 rounded-xl px-4 py-3 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 group"
+                        class="border-2 border-dashed border-line/60 rounded-xl px-4 py-3 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 group"
                         :disabled="quickStartForm.processing"
                         v-on:click="quickStart(suggestion)"
                     >
@@ -749,7 +749,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-lg relative" data-tour="budget-notes">
+            <div class="bg-surface border border-line/60 rounded-lg relative" data-tour="budget-notes">
                 <button
                     class="flex items-center justify-between w-full px-4 py-3 text-xs transition-colors text-muted hover:text-secondary cursor-pointer"
                     v-on:click="budgetNotesOpen = !budgetNotesOpen"
@@ -771,7 +771,7 @@ onUnmounted(() => {
                         v-model="budgetNotesText"
                         :placeholder="t('budgets.notes.placeholder')"
                         rows="3"
-                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2 text-sm border border-base focus:border-indigo-500 focus:outline-none resize-none"
+                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2 text-sm border border-line focus:border-indigo-500 focus:outline-none resize-none"
                         v-on:blur="saveBudgetNotes"
                         v-on:keydown.esc="saveBudgetNotes"
                     />
@@ -787,7 +787,7 @@ onUnmounted(() => {
                     <div
                         v-for="goal in goals"
                         :key="`goal-card-${goal.id}`"
-                        class="bg-surface-2 border border-base rounded-xl p-4 flex flex-col gap-3"
+                        class="bg-surface-2 border border-line rounded-xl p-4 flex flex-col gap-3"
                     >
                         <div class="flex items-start justify-between gap-2">
                             <div class="flex items-center gap-2 min-w-0">
@@ -869,8 +869,8 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-lg overflow-clip" data-tour="budget-table">
-                <div class="md:hidden divide-y divide-base/40">
+            <div class="bg-surface border border-line/60 rounded-lg overflow-clip" data-tour="budget-table">
+                <div class="md:hidden divide-y divide-line/40">
                     <template v-for="(items, type) in sections" :key="`mob-${type}`">
                         <div
                             :data-tour-section="type"
@@ -943,10 +943,10 @@ onUnmounted(() => {
                                         v-model="editForm.notes"
                                         :placeholder="t('budgets.editRow.notePlaceholder')"
                                         rows="2"
-                                        class="w-full bg-surface-3 text-secondary rounded px-2 py-1.5 text-sm border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                        class="w-full bg-surface-3 text-secondary rounded px-2 py-1.5 text-sm border border-line-strong focus:border-indigo-500 focus:outline-none resize-none"
                                     />
 
-                                    <div class="pt-2 border-t border-base space-y-2">
+                                    <div class="pt-2 border-t border-line space-y-2">
                                         <div class="grid grid-cols-2 gap-2">
                                             <BudgetSelect v-model="editForm.type" class="text-xs">
                                                 <option v-for="(meta, stype) in SECTION_META" :key="stype" :value="stype">{{ meta.label }}</option>
@@ -975,7 +975,7 @@ onUnmounted(() => {
                                         </div>
                                     </div>
 
-                                    <div class="flex gap-2 pt-4 border-t border-base">
+                                    <div class="flex gap-2 pt-4 border-t border-line">
                                         <button
                                             class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors"
                                             v-on:click="submitEdit(item)"
@@ -984,7 +984,7 @@ onUnmounted(() => {
                                             {{ t('budgets.editRow.confirm') }}
                                         </button>
                                         <button
-                                            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-base text-muted hover:text-primary hover:border-primary text-sm font-medium transition-colors"
+                                            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-line text-muted hover:text-primary hover:border-primary text-sm font-medium transition-colors"
                                             v-on:click="cancelEditing"
                                         >
                                             <X class="w-4 h-4" />
@@ -1050,7 +1050,7 @@ onUnmounted(() => {
                                                 </button>
                                                 <div
                                                     v-if="mobileMenuOpenId === item.id"
-                                                    class="absolute right-0 top-6 z-20 w-44 bg-surface border border-base rounded-lg shadow-xl overflow-hidden"
+                                                    class="absolute right-0 top-6 z-20 w-44 bg-surface border border-line rounded-lg shadow-xl overflow-hidden"
                                                     v-on:click.stop
                                                 >
                                                     <button
@@ -1075,7 +1075,7 @@ onUnmounted(() => {
                                         </div>
                                     </div>
                                     <div class="flex items-center justify-between text-xs">
-                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center rounded px-2 py-0.5 border text-xs">
+                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-line'" class="inline-flex items-center rounded px-2 py-0.5 border text-xs">
                                             {{ item.category.name }}
                                         </span>
                                         <span v-else class="text-subtle">—</span>
@@ -1242,7 +1242,7 @@ onUnmounted(() => {
 
                 <table class="hidden md:table w-full text-sm">
                     <thead>
-                        <tr class="border-b border-base/60 text-xs text-muted uppercase tracking-wider sticky top-0 z-10 bg-surface">
+                        <tr class="border-b border-line/60 text-xs text-muted uppercase tracking-wider sticky top-0 z-10 bg-surface">
                             <th class="text-left px-4 py-3 font-medium w-[34%]">{{ t('budgets.table.label') }}</th>
                             <th class="text-left px-4 py-3 font-medium w-[20%]">{{ t('budgets.table.category') }}</th>
                             <th class="text-right px-4 py-3 font-medium w-[13%]">{{ t('budgets.table.planned') }}</th>
@@ -1294,7 +1294,7 @@ onUnmounted(() => {
                         <template v-if="!collapsedSections[type]">
                             <template v-for="item in items" :key="item.id">
                                 <template v-if="editingId === item.id">
-                                    <tr class="bg-surface-2 border-b border-base/40" data-editing>
+                                    <tr class="bg-surface-2 border-b border-line/40" data-editing>
                                         <td class="pl-8 pr-2 py-1.5">
                                             <BudgetInput
                                                 :id="`edit-label-${item.id}`"
@@ -1372,7 +1372,7 @@ onUnmounted(() => {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="bg-surface-2 border-b border-base/40" data-editing>
+                                    <tr class="bg-surface-2 border-b border-line/40" data-editing>
                                         <td colspan="6" class="pl-8 pr-3 py-2">
                                             <div class="flex gap-4">
                                                 <textarea
@@ -1380,7 +1380,7 @@ onUnmounted(() => {
                                                     :placeholder="t('budgets.editRow.notePlaceholder')"
                                                     rows="2"
                                                     tabindex="4"
-                                                    class="flex-1 bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-strong focus:border-indigo-500 focus:outline-none resize-none"
+                                                    class="flex-1 bg-surface-3 text-secondary rounded px-2 py-1 text-xs border border-line-strong focus:border-indigo-500 focus:outline-none resize-none"
                                                     v-on:keydown="onNotesKeydown($event, item)"
                                                 />
                                                 <div class="w-56 space-y-2">
@@ -1426,7 +1426,7 @@ onUnmounted(() => {
                                     v-else
                                     draggable="true"
                                     :data-tour-item="item.id"
-                                    class="border-b border-subtle/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
+                                    class="border-b border-surface-2/60 group hover:bg-surface-2/40 cursor-pointer transition-colors"
                                     :class="[
                                         item.planned_amount > 0 && item.actual_amount > item.planned_amount
                                             ? SECTION_META[type]?.positiveIsGood ? 'border-l-2 border-l-emerald-500/60' : 'border-l-2 border-l-rose-500/60'
@@ -1472,7 +1472,7 @@ onUnmounted(() => {
                                         </div>
                                     </td>
                                     <td class="px-4 py-2.5">
-                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-base'" class="inline-flex items-center text-xs rounded px-2 py-0.5 border">
+                                        <span v-if="item.category" :class="item.category.is_system ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' : 'bg-surface-2 text-secondary border-line'" class="inline-flex items-center text-xs rounded px-2 py-0.5 border">
                                             {{ item.category.name }}
                                         </span>
                                         <span v-else class="text-subtle">—</span>
@@ -1550,7 +1550,7 @@ onUnmounted(() => {
                                 </tr>
                             </template>
 
-                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding data-tour="add-line-form">
+                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-line/40" data-adding data-tour="add-line-form">
                                 <td class="pl-8 pr-2 py-1.5 align-top" data-tour="add-field-label">
                                     <BudgetInput
                                         :id="`add-label-${type}`"
@@ -1631,7 +1631,7 @@ onUnmounted(() => {
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-base/40" data-adding>
+                            <tr v-if="addingType === type" class="bg-surface-2/60 border-b border-line/40" data-adding>
                                 <td colspan="6" class="pl-8 pr-3 py-2" data-tour="add-field-target">
                                     <div class="flex items-center gap-3">
                                         <BudgetSelect v-model="addForm.target_type" class="w-auto">
@@ -1659,7 +1659,7 @@ onUnmounted(() => {
                                 </td>
                             </tr>
 
-                            <tr v-if="addingType !== type" class="border-b border-subtle/60">
+                            <tr v-if="addingType !== type" class="border-b border-surface-2/60">
                                 <td colspan="6" class="pl-8 py-1.5">
                                     <AppLink :data-tour-add-line="type" v-on:click="startAddingItem(type)">
                                         <Plus class="w-3 h-3" />
@@ -1687,7 +1687,7 @@ onUnmounted(() => {
                             <td colspan="2" />
                         </tr>
 
-                        <tr class="border-t-2 border-strong bg-surface-2/30">
+                        <tr class="border-t-2 border-line-strong bg-surface-2/30">
                             <td class="px-4 py-3 font-semibold text-secondary text-xs uppercase tracking-wide" colspan="2">{{ t('budgets.table.cashFlow') }}</td>
                             <td class="px-4 py-3 text-right font-mono text-secondary text-sm">{{ fmt(cashFlow.planned, true) }}</td>
                             <td

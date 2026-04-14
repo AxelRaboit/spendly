@@ -77,7 +77,7 @@ const paths = computed(() => {
                 :cy="cy"
                 :r="r"
                 fill="none"
-                stroke="rgb(var(--color-surface-3))"
+                stroke="var(--th-surface-3)"
                 :stroke-width="innerR"
             />
         </svg>

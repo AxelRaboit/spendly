@@ -16,14 +16,14 @@ const { fmt } = useCurrency();
 
 <template>
     <button
-        class="relative overflow-hidden border-2 border-dashed border-base/60 rounded-2xl p-5 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 group"
+        class="relative overflow-hidden border-2 border-dashed border-line/60 rounded-2xl p-5 text-left transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 group"
         :disabled="disabled"
         v-on:click="$emit('create', name)"
     >
         <div class="pointer-events-none absolute -top-3 -right-3 h-16 w-16 rounded-full bg-indigo-500/5" />
         <div class="pointer-events-none absolute -bottom-4 -left-4 h-20 w-20 rounded-full bg-indigo-500/5" />
 
-        <div class="flex flex-col gap-3 pb-3 border-b border-base/40">
+        <div class="flex flex-col gap-3 pb-3 border-b border-line/40">
             <span class="text-base font-semibold text-muted group-hover:text-indigo-400 transition-colors">
                 {{ name }}
             </span>

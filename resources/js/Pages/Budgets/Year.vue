@@ -69,7 +69,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                     :key="key"
                     :href="`/wallets/${wallet.id}/budget?month=${key}`"
                     class="bg-surface border rounded-lg p-4 transition-colors hover:border-indigo-500/50 hover:bg-surface-2/60"
-                    :class="month.has_budget ? 'border-base/60' : 'border-dashed border-base/40'"
+                    :class="month.has_budget ? 'border-line/60' : 'border-dashed border-line/40'"
                 >
                     <p class="text-sm font-semibold text-secondary capitalize mb-3">
                         {{ fmtMonth(key, { month: 'long' }) }}
@@ -85,7 +85,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                                 <span class="text-muted">{{ t('budgets.sections.expenses') }}</span>
                                 <span class="font-mono text-rose-400">{{ fmt(month.expenses_actual) }}</span>
                             </div>
-                            <div class="border-t border-base/60 pt-2 flex items-center justify-between text-xs">
+                            <div class="border-t border-line/60 pt-2 flex items-center justify-between text-xs">
                                 <span class="text-muted">{{ t('budgets.table.cashFlow') }}</span>
                                 <span
                                     class="font-mono font-semibold"

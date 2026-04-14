@@ -26,7 +26,7 @@ defineEmits(['confirm', 'cancel']);
         <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
             <div class="absolute inset-0 bg-black/60" v-on:click="$emit('cancel')" />
 
-            <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-base p-4 sm:p-6 shadow-xl">
+            <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-line p-4 sm:p-6 shadow-xl">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-badge-danger-bg">
                         <AlertTriangle class="h-5 w-5 text-badge-danger-text" :stroke-width="1.5" />

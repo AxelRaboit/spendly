@@ -34,7 +34,7 @@ function onMouseEnter() {
             <span
                 v-if="show"
                 :style="{ position: 'absolute', top: (pos.top - 8) + 'px', left: pos.left + 'px', transform: 'translate(-50%, -100%)', zIndex: 9999 }"
-                class="pointer-events-none w-56 rounded-lg border border-base bg-surface-2 px-3 py-2 text-xs text-primary shadow-xl whitespace-pre-wrap"
+                class="pointer-events-none w-56 rounded-lg border border-line bg-surface-2 px-3 py-2 text-xs text-primary shadow-xl whitespace-pre-wrap"
             >
                 {{ note }}
                 <span class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-base" />

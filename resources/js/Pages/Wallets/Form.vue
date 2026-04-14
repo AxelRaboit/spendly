@@ -54,7 +54,7 @@ const modes = [
                                 class="flex flex-col items-start gap-2 rounded-xl border-2 p-4 text-left transition-all"
                                 :class="form.mode === mode.key
                                     ? 'border-indigo-500 bg-indigo-500/10'
-                                    : 'border-base/60 bg-surface hover:border-indigo-500/40'"
+                                    : 'border-line/60 bg-surface hover:border-indigo-500/40'"
                                 v-on:click="form.mode = mode.key"
                             >
                                 <div class="flex items-center gap-2">

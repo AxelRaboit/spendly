@@ -103,14 +103,14 @@ function submitEdit() {
         </template>
 
         <div class="space-y-4">
-            <div class="bg-surface border border-base/60 rounded-xl p-4 space-y-3">
+            <div class="bg-surface border border-line/60 rounded-xl p-4 space-y-3">
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <input
                             v-model="form.q"
                             type="text"
                             :placeholder="t('search.placeholder')"
-                            class="w-full pl-9 pr-3 py-2 bg-surface-2 text-primary border border-base rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
+                            class="w-full pl-9 pr-3 py-2 bg-surface-2 text-primary border border-line rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
                             v-on:input="search"
                         >
                         <Search class="absolute left-2.5 top-2.5 h-4 w-4 text-muted pointer-events-none" />
@@ -142,7 +142,7 @@ function submitEdit() {
                             v-model="form.tag"
                             type="text"
                             :placeholder="t('search.tagPlaceholder')"
-                            class="w-full pl-7 pr-3 py-2 bg-surface-2 text-primary border border-base rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
+                            class="w-full pl-7 pr-3 py-2 bg-surface-2 text-primary border border-line rounded-lg text-sm focus:border-indigo-500 focus:outline-none"
                             :class="form.tag ? 'border-indigo-500/60' : ''"
                             v-on:input="search"
                         >
@@ -161,9 +161,9 @@ function submitEdit() {
                 <p class="text-sm text-amber-200">{{ t('search.freeLimitWarning', { days: freeLimitDays }) }}</p>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-xl overflow-hidden">
+            <div class="bg-surface border border-line/60 rounded-xl overflow-hidden">
                 <template v-if="transactions.data.length > 0">
-                    <div class="sm:hidden divide-y divide-base/40">
+                    <div class="sm:hidden divide-y divide-line/40">
                         <div
                             v-for="tx in transactions.data"
                             :key="tx.id"
@@ -220,7 +220,7 @@ function submitEdit() {
                     <div class="hidden sm:block overflow-x-auto">
                         <table class="min-w-full">
                             <thead>
-                                <tr class="bg-surface-2/50 border-b border-base/40">
+                                <tr class="bg-surface-2/50 border-b border-line/40">
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.date') }}</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.description') }}</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted">{{ t('common.category') }}</th>
@@ -230,7 +230,7 @@ function submitEdit() {
                                     <th class="w-10" />
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-base/40">
+                            <tbody class="divide-y divide-line/40">
                                 <tr v-for="tx in transactions.data" :key="tx.id" class="group hover:bg-surface-2/40 transition-colors">
                                     <td class="px-4 py-3 text-sm text-secondary whitespace-nowrap">{{ fmtDay(tx.date) }}</td>
                                     <td class="px-4 py-3 text-sm text-primary">{{ tx.description ?? '—' }}</td>

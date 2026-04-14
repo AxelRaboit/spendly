@@ -6,7 +6,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="bg-surface border border-base/60 rounded-xl p-4">
+    <div class="bg-surface border border-line/60 rounded-xl p-4">
         <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ label }}</p>
         <p class="text-xl font-bold font-mono" :class="valueClass">
             <slot />

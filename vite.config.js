@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
@@ -10,6 +11,7 @@ export default defineConfig({
         },
     },
     plugins: [
+        tailwindcss(),
         laravel({
             input: 'resources/js/app.js',
             refresh: true,
@@ -23,6 +25,11 @@ export default defineConfig({
             },
         }),
     ],
+    css: {
+        postcss: {
+            plugins: [],
+        },
+    },
     build: {
         chunkSizeWarningLimit: 1000,
         rolldownOptions: {

@@ -26,7 +26,7 @@ function onBlur() {
         :class="[
             'w-full bg-surface-3 text-primary rounded px-2 py-1.5 text-sm border focus:border-indigo-500 focus:outline-none',
             variant === 'mono' ? 'text-right font-mono' : '',
-            error ? 'border-rose-500' : (variant === 'focus' ? 'border-indigo-500/50' : 'border-strong'),
+            error ? 'border-rose-500' : (variant === 'focus' ? 'border-indigo-500/50' : 'border-line-strong'),
         ]"
         v-on:blur="onBlur"
     >

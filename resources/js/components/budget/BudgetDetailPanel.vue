@@ -40,10 +40,10 @@ const previewUrl = ref(null);
 
             <div
                 data-tour="detail-panel"
-                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-base shadow-2xl flex flex-col"
+                class="relative ml-auto w-full sm:max-w-sm bg-surface border-l border-line shadow-2xl flex flex-col"
                 v-on:keydown.esc="emit('close')"
             >
-                <div class="px-6 pt-4 pb-3 border-b border-base space-y-3">
+                <div class="px-6 pt-4 pb-3 border-b border-line space-y-3">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 data-tour="detail-panel-header" class="font-semibold text-primary">{{ item?.label }}</h3>
@@ -70,7 +70,7 @@ const previewUrl = ref(null);
                         <div
                             v-for="tx in transactions"
                             :key="tx.id"
-                            class="group flex items-center justify-between py-3 border-b border-subtle last:border-0"
+                            class="group flex items-center justify-between py-3 border-b border-surface-2 last:border-0"
                         >
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2">
@@ -109,7 +109,7 @@ const previewUrl = ref(null);
                     <EmptyState v-else :message="t('budgets.detailPanel.none')" icon="receipt" />
                 </div>
 
-                <div class="px-6 py-4 border-t border-base flex items-center justify-between">
+                <div class="px-6 py-4 border-t border-line flex items-center justify-between">
                     <span class="text-sm text-secondary">{{ t('budgets.detailPanel.total') }}</span>
                     <span class="font-mono font-bold text-primary">{{ fmt(total) }}</span>
                 </div>

@@ -114,9 +114,9 @@ const openDemo = (demoAccessProtected) => {
             </AppButton>
 
             <div class="mt-6 flex items-center gap-4">
-                <div class="flex-1 border-t border-base" />
+                <div class="flex-1 border-t border-line" />
                 <span class="text-sm text-secondary">{{ t('common.or') }}</span>
-                <div class="flex-1 border-t border-base" />
+                <div class="flex-1 border-t border-line" />
             </div>
 
             <div class="mt-4 text-center">
@@ -130,9 +130,9 @@ const openDemo = (demoAccessProtected) => {
 
             <template v-if="demoEnabled">
                 <div class="mt-6 flex items-center gap-4">
-                    <div class="flex-1 border-t border-base" />
+                    <div class="flex-1 border-t border-line" />
                     <span class="text-sm text-secondary">{{ t('common.or') }}</span>
-                    <div class="flex-1 border-t border-base" />
+                    <div class="flex-1 border-t border-line" />
                 </div>
 
                 <AppButton

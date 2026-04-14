@@ -164,11 +164,11 @@ const devNavItem = computed(() => {
 <template>
     <div class="min-h-screen bg-bg">
         <aside
-            class="hidden lg:flex flex-col fixed inset-y-0 left-0 bg-surface border-r border-base z-30 transition-all duration-200"
+            class="hidden lg:flex flex-col fixed inset-y-0 left-0 bg-surface border-r border-line z-30 transition-all duration-200"
             :class="collapsed ? 'w-16' : 'w-60'"
         >
             <div
-                class="flex items-center h-16 border-b border-base shrink-0 transition-all duration-200"
+                class="flex items-center h-16 border-b border-line shrink-0 transition-all duration-200"
                 :class="collapsed ? 'justify-center px-0' : 'justify-between px-4'"
             >
                 <Link v-if="!collapsed" :href="route('dashboard')" class="flex items-center gap-2.5 min-w-0">
@@ -191,7 +191,7 @@ const devNavItem = computed(() => {
                 </button>
             </div>
 
-            <div v-if="!collapsed" class="border-b border-base px-4 py-3 shrink-0">
+            <div v-if="!collapsed" class="border-b border-line px-4 py-3 shrink-0">
                 <p class="text-sm font-medium text-primary truncate">{{ $page.props.auth.user.name }}</p>
                 <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
             </div>
@@ -211,7 +211,7 @@ const devNavItem = computed(() => {
                         <span v-if="!collapsed" class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
                         <span
                             v-if="collapsed"
-                            class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg flex items-center gap-1.5"
+                            class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg flex items-center gap-1.5"
                         >
                             {{ t('nav.' + item.key) }}
                             <span class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none">Pro</span>
@@ -238,7 +238,7 @@ const devNavItem = computed(() => {
 
                         <span
                             v-if="collapsed"
-                            class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                            class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                         >
                             {{ t('nav.' + item.key) }}
                         </span>
@@ -265,14 +265,14 @@ const devNavItem = computed(() => {
 
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ t('nav.dev-dashboard') }}
                     </span>
                 </Link>
             </nav>
 
-            <div class="shrink-0 border-t border-base py-3 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3'">
+            <div class="shrink-0 border-t border-line py-3 space-y-0.5" :class="collapsed ? 'px-2' : 'px-3'">
                 <button
                     v-if="collapsed"
                     class="flex items-center justify-center w-full py-2.5 rounded-lg text-muted hover:text-primary hover:bg-surface-2 transition-colors"
@@ -290,7 +290,7 @@ const devNavItem = computed(() => {
                     <span v-if="!collapsed">{{ t('nav.tour') }}</span>
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ t('nav.tour') }}
                     </span>
@@ -312,7 +312,7 @@ const devNavItem = computed(() => {
                     <span v-if="!collapsed">{{ theme === Theme.Dark ? t('nav.lightMode') : t('nav.darkMode') }}</span>
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ theme === Theme.Dark ? t('nav.lightMode') : t('nav.darkMode') }}
                     </span>
@@ -333,7 +333,7 @@ const devNavItem = computed(() => {
                     <span v-if="!collapsed && !isPro" class="text-xs font-bold bg-amber-500 text-white px-1.5 py-0.5 rounded-full leading-none shrink-0">Pro</span>
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ t('nav.plan') }}
                     </span>
@@ -351,7 +351,7 @@ const devNavItem = computed(() => {
                     <span v-if="!collapsed" class="truncate">{{ t('nav.profile') }}</span>
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ t('nav.profile') }}
                     </span>
@@ -368,7 +368,7 @@ const devNavItem = computed(() => {
                     <span v-if="!collapsed">{{ t('nav.logout') }}</span>
                     <span
                         v-if="collapsed"
-                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-base text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
+                        class="absolute left-full ml-3 px-2.5 py-1.5 rounded-md bg-surface-3 border border-line text-xs font-medium text-primary whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-lg"
                     >
                         {{ t('nav.logout') }}
                     </span>
@@ -376,7 +376,7 @@ const devNavItem = computed(() => {
             </div>
         </aside>
 
-        <div class="lg:hidden fixed top-0 inset-x-0 h-14 bg-surface border-b border-base z-30 flex items-center justify-between px-4">
+        <div class="lg:hidden fixed top-0 inset-x-0 h-14 bg-surface border-b border-line z-30 flex items-center justify-between px-4">
             <Link :href="route('dashboard')" class="flex items-center gap-2">
                 <AppLogo :size="28" />
                 <span class="text-primary font-bold text-base tracking-tight">Spendly</span>
@@ -408,7 +408,7 @@ const devNavItem = computed(() => {
                     leave-to-class="-translate-x-full"
                 >
                     <div v-if="showMobileMenu" class="relative w-60 max-w-[85vw] bg-surface h-full flex flex-col shadow-2xl">
-                        <div class="flex items-center justify-between px-4 h-16 border-b border-base shrink-0">
+                        <div class="flex items-center justify-between px-4 h-16 border-b border-line shrink-0">
                             <div class="flex items-center gap-2.5 min-w-0">
                                 <AppLogo :size="32" class="shrink-0" />
                                 <div class="flex flex-col min-w-0">
@@ -421,7 +421,7 @@ const devNavItem = computed(() => {
                             </button>
                         </div>
 
-                        <div class="px-4 py-3 border-b border-base shrink-0">
+                        <div class="px-4 py-3 border-b border-line shrink-0">
                             <p class="text-sm font-medium text-primary">{{ $page.props.auth.user.name }}</p>
                             <p class="text-xs text-muted truncate">{{ $page.props.auth.user.email }}</p>
                         </div>
@@ -476,7 +476,7 @@ const devNavItem = computed(() => {
                             </Link>
                         </nav>
 
-                        <div class="shrink-0 border-t border-base px-3 py-3 space-y-1">
+                        <div class="shrink-0 border-t border-line px-3 py-3 space-y-1">
                             <button
                                 class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-secondary hover:text-primary hover:bg-surface-2 transition-colors"
                                 v-on:click="showTourModal = true; showMobileMenu = false"
@@ -536,7 +536,7 @@ const devNavItem = computed(() => {
             class="transition-all duration-200 pt-14 lg:pt-0"
             :class="collapsed ? 'lg:pl-16' : 'lg:pl-60'"
         >
-            <header v-if="$slots.header" class="bg-surface border-b border-base h-16 flex items-center lg:sticky lg:top-0 lg:z-20">
+            <header v-if="$slots.header" class="bg-surface border-b border-line h-16 flex items-center lg:sticky lg:top-0 lg:z-20">
                 <div class="px-4 sm:px-6 lg:px-8 w-full">
                     <slot name="header" />
                 </div>

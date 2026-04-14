@@ -70,8 +70,8 @@ function close() {
         <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
             <div class="absolute inset-0 bg-black/60" v-on:click="close" />
 
-            <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-base shadow-xl">
-                <div class="px-6 py-4 border-b border-base">
+            <div class="relative z-10 w-full max-w-md rounded-xl bg-surface-2 border border-line shadow-xl">
+                <div class="px-6 py-4 border-b border-line">
                     <h3 class="text-base font-semibold text-primary">
                         {{ isEditing ? t('transfers.editTitle') : t('transfers.title') }}
                     </h3>
@@ -128,7 +128,7 @@ function close() {
                     </div>
                 </div>
 
-                <div class="px-6 py-4 border-t border-base flex justify-end gap-3">
+                <div class="px-6 py-4 border-t border-line flex justify-end gap-3">
                     <AppButton variant="secondary" v-on:click="close">{{ t('common.cancel') }}</AppButton>
                     <AppButton
                         :disabled="form.processing || (!isEditing && (!form.from_wallet_id || !form.to_wallet_id)) || !form.amount"

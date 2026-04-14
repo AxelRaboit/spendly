@@ -28,7 +28,7 @@ function onChange(event) {
 <template>
     <select
         :value="modelValue || ''"
-        class="px-3 py-2 border border-base rounded-md bg-surface-2 text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+        class="px-3 py-2 border border-line rounded-md bg-surface-2 text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
         v-on:change="onChange"
     >
         <option value="">{{ placeholder }}</option>

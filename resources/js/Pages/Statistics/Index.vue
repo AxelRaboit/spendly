@@ -173,7 +173,7 @@ const trendLineOptions = computed(() => ({
 
         <div class="space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.thisMonthTip')"><p class="text-sm text-secondary mb-1 cursor-help">{{ t('statistics.thisMonth') }}</p></AppTooltip>
                     <p class="text-3xl font-bold text-primary font-mono">{{ fmt(currentMonth) }}</p>
                     <AppTooltip v-if="evolution !== null" :text="t('statistics.vsLastTip')">
@@ -182,13 +182,13 @@ const trendLineOptions = computed(() => ({
                         </p>
                     </AppTooltip>
                 </div>
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.lastMonthTip')"><p class="text-sm text-secondary mb-1 cursor-help">{{ t('statistics.lastMonth') }}</p></AppTooltip>
                     <p class="text-3xl font-bold text-primary font-mono">{{ fmt(previousMonth) }}</p>
                 </div>
             </div>
 
-            <div class="bg-surface border border-base/60 rounded-xl p-5">
+            <div class="bg-surface border border-line/60 rounded-xl p-5">
                 <AppTooltip :text="t('statistics.yearProjectionTip')">
                     <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4 cursor-help">
                         {{ t('statistics.yearProjection', { year: currentYear }) }}
@@ -216,14 +216,14 @@ const trendLineOptions = computed(() => ({
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.byCategoryTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.byCategory') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <DoughnutChart :data="donutData" :options="chartOptions" />
                     </div>
                 </div>
 
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.evolutionTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.evolution') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <BarChart :data="barData" :options="barOptions" />
@@ -232,21 +232,21 @@ const trendLineOptions = computed(() => ({
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.savingsRateTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.savingsRate') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <LineChart :data="savingsLineData" :options="savingsLineOptions" />
                     </div>
                 </div>
 
-                <div class="bg-surface border border-base/60 rounded-xl p-5">
+                <div class="bg-surface border border-line/60 rounded-xl p-5">
                     <AppTooltip :text="t('statistics.budgetVsActualTip')"><h3 class="text-sm font-semibold text-secondary mb-4 cursor-help">{{ t('statistics.budgetVsActual') }}</h3></AppTooltip>
                     <div class="h-48 sm:h-64">
                         <BarChart :data="budgetBarData" :options="barOptions" />
                     </div>
                 </div>
             </div>
-            <div class="bg-surface border border-base/60 rounded-xl p-5">
+            <div class="bg-surface border border-line/60 rounded-xl p-5">
                 <AppTooltip :text="t('statistics.categoryTrendsTip')">
                     <h3 class="text-sm font-semibold text-secondary uppercase tracking-wide mb-4 cursor-help">
                         {{ t('statistics.categoryTrends') }}
@@ -263,7 +263,7 @@ const trendLineOptions = computed(() => ({
                             class="text-xs px-3 py-1 rounded-full border transition-colors"
                             :class="selectedCategoryIds.includes(cat.id)
                                 ? 'bg-indigo-600 text-white border-indigo-600'
-                                : 'bg-transparent text-secondary border-base hover:border-indigo-400'"
+                                : 'bg-transparent text-secondary border-line hover:border-indigo-400'"
                             v-on:click="toggleCategory(cat.id)"
                         >
                             {{ cat.name }}

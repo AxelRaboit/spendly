@@ -117,7 +117,7 @@ const topCategoryMax = computed(() => {
                     v-for="wallet in pinnedWallets"
                     :key="wallet.id"
                     :href="wallet.mode === WalletMode.Simple ? `/wallets/${wallet.id}/simple` : `/wallets/${wallet.id}/budget`"
-                    class="flex items-center justify-between bg-surface border border-base/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
+                    class="flex items-center justify-between bg-surface border border-line/60 rounded-xl px-4 py-3 hover:border-indigo-500/50 hover:bg-surface-2/60 transition-colors group"
                 >
                     <div class="flex items-center gap-2 min-w-0">
                         <LayoutDashboard class="w-3.5 h-3.5 text-indigo-400 shrink-0" />
@@ -325,7 +325,7 @@ const topCategoryMax = computed(() => {
                 </div>
 
                 <div class="overflow-hidden rounded-2xl bg-surface shadow-lg">
-                    <div class="flex items-center justify-between border-b border-subtle px-6 py-4">
+                    <div class="flex items-center justify-between border-b border-surface-2 px-6 py-4">
                         <AppTooltip :text="t('dashboard.recentExpensesTip')"><h3 class="text-base font-semibold text-primary cursor-help">{{ t('dashboard.recentExpenses') }}</h3></AppTooltip>
                     </div>
 

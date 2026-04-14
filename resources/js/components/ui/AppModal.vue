@@ -20,7 +20,7 @@ defineEmits(['close']);
         <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center px-4">
             <div class="absolute inset-0 bg-black/60" v-on:click="$emit('close')" />
             <div
-                class="relative z-10 w-full bg-surface border border-base rounded-xl p-4 sm:p-6 shadow-2xl space-y-4"
+                class="relative z-10 w-full bg-surface border border-line rounded-xl p-4 sm:p-6 shadow-2xl space-y-4"
                 :class="[maxWidth, scrollable ? 'max-h-[90vh] overflow-y-auto' : '']"
                 v-on:keydown.esc="$emit('close')"
             >

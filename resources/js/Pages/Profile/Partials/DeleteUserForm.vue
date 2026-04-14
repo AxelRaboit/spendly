@@ -71,7 +71,7 @@ function deleteUser() {
                     v-model="form.password"
                     :type="showPassword ? 'text' : 'password'"
                     :placeholder="t('profile.delete.fieldPassword')"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-base focus:border-rose-500 focus:outline-none"
+                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-rose-500 focus:outline-none"
                     v-on:keyup.enter="deleteUser"
                 >
                 <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showPassword = !showPassword">
@@ -85,7 +85,7 @@ function deleteUser() {
         <div class="flex justify-end gap-3 mt-6">
             <button
                 type="button"
-                class="px-4 py-2 text-sm text-secondary hover:text-primary border border-base rounded-lg transition-colors"
+                class="px-4 py-2 text-sm text-secondary hover:text-primary border border-line rounded-lg transition-colors"
                 v-on:click="closeModal"
             >
                 {{ t('common.cancel') }}

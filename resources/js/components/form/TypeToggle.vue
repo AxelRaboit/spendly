@@ -9,15 +9,15 @@ defineProps({ disabled: { type: Boolean, default: false } });
 </script>
 
 <template>
-    <div class="flex w-full rounded-lg border border-base overflow-hidden">
+    <div class="flex w-full rounded-lg border border-line overflow-hidden">
         <button
             type="button"
             :disabled="disabled"
             :class="[
                 'flex-1 px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                 model === TransactionType.Expense
-                    ? 'bg-rose-500/20 text-rose-400 border-r border-base'
-                    : 'text-secondary hover:text-primary border-r border-base',
+                    ? 'bg-rose-500/20 text-rose-400 border-r border-line'
+                    : 'text-secondary hover:text-primary border-r border-line',
             ]"
             v-on:click="model = TransactionType.Expense"
         >

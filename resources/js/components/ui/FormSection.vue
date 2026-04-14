@@ -1,6 +1,6 @@
 <script setup>
 defineProps({
-    borderClass: { type: String, default: 'border-base/60' },
+    borderClass: { type: String, default: 'border-line/60' },
 });
 </script>
 
