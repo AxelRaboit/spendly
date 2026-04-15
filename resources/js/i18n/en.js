@@ -70,6 +70,8 @@ export default {
             alreadyAccount: 'Already registered?',
             emailMismatch: 'The invitation was sent to {email}. Use this address to accept it.',
             submit: 'Register',
+            closedTitle: 'Registration is closed',
+            closedDesc: 'Registrations are not open at the moment. Come back later or contact the administrator.',
         },
         forgotPassword: {
             title: 'Forgot Password',

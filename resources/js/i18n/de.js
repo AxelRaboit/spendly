@@ -63,6 +63,9 @@ export default {
             alreadyAccount: 'Bereits registriert?',
             emailMismatch: 'Die Einladung wurde an {email} gesendet. Verwenden Sie diese Adresse, um sie anzunehmen.',
             submit: 'Registrieren',
+            closedTitle: 'Registrierung geschlossen',
+            closedDesc:
+                'Die Registrierung ist derzeit nicht geöffnet. Versuchen Sie es später oder kontaktieren Sie den Administrator.',
         },
         forgotPassword: {
             title: 'Passwort vergessen',

@@ -11,6 +11,13 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
+const props = defineProps({
+    registrationEnabled: {
+        type: Boolean,
+        default: true,
+    },
+});
+
 const urlParams = new URLSearchParams(window.location.search);
 const expectedEmail = urlParams.get('email');
 const redirectUrl = urlParams.get('redirect');
@@ -38,7 +45,16 @@ const submit = () => {
     <GuestLayout>
         <Head :title="t('auth.register.title')" />
 
-        <form v-on:submit.prevent="submit">
+        <div v-if="!props.registrationEnabled" class="rounded-lg border border-line bg-surface p-6 text-center space-y-2">
+            <p class="text-primary font-semibold">{{ t('auth.register.closedTitle') }}</p>
+            <p class="text-secondary text-sm">{{ t('auth.register.closedDesc') }}</p>
+            <p class="mt-4 text-center text-sm text-secondary">
+                {{ t('auth.register.alreadyAccount') }}
+                <Link :href="route('login')" class="text-link hover:text-link-hover underline font-medium transition-colors">{{ t('auth.login.submit') }}</Link>
+            </p>
+        </div>
+
+        <form v-else v-on:submit.prevent="submit">
             <div>
                 <InputLabel for="name" :value="t('auth.register.name')" />
 

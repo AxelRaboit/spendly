@@ -827,7 +827,7 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div v-if="showProFeatures || !isBudgetEmpty" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 -mb-1">
+            <div v-if="showProFeatures || !isBudgetEmpty" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <p class="hidden sm:block text-xs text-subtle">{{ showProFeatures ? t('budgets.hint') : '' }}</p>
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <AppButton

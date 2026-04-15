@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\WalletInvitation;
+use App\Services\ApplicationParameterService;
 use App\Services\UserService;
 use App\Services\WalletInvitationService;
 use Illuminate\Auth\Events\Registered;
@@ -20,11 +21,14 @@ class RegisteredUserController extends Controller
     public function __construct(
         private readonly UserService $userService,
         private readonly WalletInvitationService $invitationService,
+        private readonly ApplicationParameterService $params,
     ) {}
 
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'registrationEnabled' => $this->params->getBool('registration_enabled'),
+        ]);
     }
 
     public function store(RegisterRequest $request): RedirectResponse
