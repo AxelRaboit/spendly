@@ -70,6 +70,9 @@ export default {
             alreadyAccount: 'Déjà inscrit ?',
             emailMismatch: "L'invitation a été envoyée à {email}. Utilisez cette adresse pour pouvoir l'accepter.",
             submit: "S'inscrire",
+            closedTitle: 'Les inscriptions sont fermées',
+            closedDesc:
+                "Les inscriptions ne sont pas ouvertes pour le moment. Revenez plus tard ou contactez l'administrateur.",
         },
         forgotPassword: {
             title: 'Mot de passe oublié',

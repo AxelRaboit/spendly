@@ -63,6 +63,9 @@ export default {
             alreadyAccount: '¿Ya tienes cuenta?',
             emailMismatch: 'La invitación fue enviada a {email}. Usa esta dirección para aceptarla.',
             submit: 'Registrarse',
+            closedTitle: 'Las inscripciones están cerradas',
+            closedDesc:
+                'Las inscripciones no están abiertas por el momento. Vuelve más tarde o contacta al administrador.',
         },
         forgotPassword: {
             title: 'Contraseña olvidada',
