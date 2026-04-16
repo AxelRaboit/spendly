@@ -42,10 +42,10 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
+    <GuestLayout :bare="!props.registrationEnabled">
         <Head :title="t('auth.register.title')" />
 
-        <div v-if="!props.registrationEnabled" class="rounded-lg border border-line bg-surface p-6 text-center space-y-2">
+        <div v-if="!props.registrationEnabled" class="mt-6 w-full rounded-lg border border-line bg-surface p-6 text-center space-y-2 sm:max-w-md">
             <p class="text-primary font-semibold">{{ t('auth.register.closedTitle') }}</p>
             <p class="text-secondary text-sm">{{ t('auth.register.closedDesc') }}</p>
             <p class="mt-4 text-center text-sm text-secondary">
