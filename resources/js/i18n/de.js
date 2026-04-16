@@ -172,6 +172,7 @@ export default {
         fieldDescription: 'Bezeichnung',
         fieldDate: 'Datum',
         descriptionPlaceholder: 'Z.B. Brot, Transport…',
+        amountHint: 'Tipp: Sie können Berechnungen eingeben (z.B. 10+10)',
         today: 'Heute',
         yesterday: 'Gestern',
         filterAll: 'Alle',

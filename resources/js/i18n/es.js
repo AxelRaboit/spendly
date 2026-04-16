@@ -172,6 +172,7 @@ export default {
         fieldDescription: 'Descripción',
         fieldDate: 'Fecha',
         descriptionPlaceholder: 'Ej: Pan, transporte…',
+        amountHint: 'Consejo: puedes introducir cálculos (ej: 10+10)',
         today: 'Hoy',
         yesterday: 'Ayer',
         filterAll: 'Todo',

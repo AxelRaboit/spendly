@@ -178,6 +178,7 @@ export default {
         fieldDescription: 'Label',
         fieldDate: 'Date',
         descriptionPlaceholder: 'E.g. Bread, transport…',
+        amountHint: 'Tip: you can enter calculations (e.g. 10+10)',
         today: 'Today',
         yesterday: 'Yesterday',
         filterAll: 'All',
