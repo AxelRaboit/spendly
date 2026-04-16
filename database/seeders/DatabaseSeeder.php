@@ -21,6 +21,8 @@ use App\Services\BudgetService;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,14 +48,29 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        $roleDev  = Role::firstOrCreate(['name' => 'ROLE_DEV',  'guard_name' => 'web']);
+        $roleUser = Role::firstOrCreate(['name' => 'ROLE_USER', 'guard_name' => 'web']);
+
+        $axel = User::firstOrCreate(
+            ['email' => 'axel.raboit@gmail.com'],
+            [
+                'name'              => 'Axel',
+                'password'          => Hash::make('password'),
+                'email_verified_at' => now(),
+                'plan'              => PlanType::Pro,
+            ]
+        );
+        $axel->syncRoles([$roleDev]);
+
         $users = collect([
             ['name' => 'Alice Dupont', 'email' => 'alice@example.com', 'plan' => PlanType::Pro,  'trial_ends_at' => null],
             ['name' => 'Bob Martin',   'email' => 'bob@example.com',   'plan' => PlanType::Free, 'trial_ends_at' => null],
             ['name' => 'Test User',    'email' => 'test@example.com',  'plan' => PlanType::Pro,  'trial_ends_at' => now()->addDays(15)],
-        ])->map(fn ($data) => User::factory()->create([
-            ...$data,
-            'password' => bcrypt('password'),
-        ]));
+        ])->map(function ($data) use ($roleUser) {
+            $user = User::factory()->create([...$data, 'password' => Hash::make('password')]);
+            $user->syncRoles([$roleUser]);
+            return $user;
+        });
 
         $budgetService = app(BudgetService::class);
 
