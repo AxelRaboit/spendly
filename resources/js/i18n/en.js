@@ -188,6 +188,21 @@ export default {
         totalExpense: 'Total expenses',
     },
 
+    balanceAdjustment: {
+        button: 'Adjust balance',
+        title: 'Balance correction',
+        currentBalance: 'Current balance',
+        newBalance: 'Correct balance',
+        newBalancePlaceholder: '0.00',
+        newBalanceHint: 'Tip: you can enter calculations (e.g. 1250+15)',
+        day: 'Day of month',
+        dayHint: 'Select the adjustment day',
+        description: 'Label (optional)',
+        descriptionPlaceholder: 'E.g. Bank fees',
+        diff: 'Difference',
+        submit: 'Adjust',
+    },
+
     categories: {
         title: 'Categories',
         createBtn: 'Create category',

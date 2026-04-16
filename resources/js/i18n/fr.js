@@ -189,6 +189,21 @@ export default {
         totalExpense: 'Total dépenses',
     },
 
+    balanceAdjustment: {
+        button: 'Ajuster le solde',
+        title: 'Correction de solde',
+        currentBalance: 'Solde actuel',
+        newBalance: 'Nouveau solde correct',
+        newBalancePlaceholder: '0.00',
+        newBalanceHint: 'Astuce : vous pouvez saisir des calculs (ex : 1250+15)',
+        day: 'Jour du mois',
+        dayHint: 'Sélectionnez le jour de la régularisation',
+        description: 'Libellé (optionnel)',
+        descriptionPlaceholder: 'Ex : Frais bancaires',
+        diff: 'Écart',
+        submit: 'Ajuster',
+    },
+
     categories: {
         title: 'Catégories',
         createBtn: 'Créer une catégorie',

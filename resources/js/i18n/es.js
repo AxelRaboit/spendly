@@ -182,6 +182,21 @@ export default {
         totalExpense: 'Total gastos',
     },
 
+    balanceAdjustment: {
+        button: 'Ajustar saldo',
+        title: 'Corrección de saldo',
+        currentBalance: 'Saldo actual',
+        newBalance: 'Saldo correcto',
+        newBalancePlaceholder: '0.00',
+        newBalanceHint: 'Consejo: puedes introducir cálculos (ej: 1250+15)',
+        day: 'Día del mes',
+        dayHint: 'Selecciona el día del ajuste',
+        description: 'Descripción (opcional)',
+        descriptionPlaceholder: 'Ej: Comisiones bancarias',
+        diff: 'Diferencia',
+        submit: 'Ajustar',
+    },
+
     categories: {
         title: 'Categorías',
         createBtn: 'Crear categoría',

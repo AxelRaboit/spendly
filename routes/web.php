@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\BalanceAdjustmentController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BudgetPresetController;
 use App\Http\Controllers\CategorizationRuleController;
@@ -131,6 +132,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/wallets/{wallet}/simple', [SimpleWalletController::class, 'show'])->name('wallets.simple.show');
     Route::post('/wallets/{wallet}/simple/transactions', [SimpleWalletController::class, 'store'])->name('wallets.simple.transactions.store');
     Route::put('/wallets/{wallet}/simple/transactions/{transaction}', [SimpleWalletController::class, 'update'])->name('wallets.simple.transactions.update');
+
+    // Balance adjustment (works for both simple and budget wallets)
+    Route::post('/wallets/{wallet}/balance-adjustment', [BalanceAdjustmentController::class, 'store'])->name('wallets.balance-adjustment.store');
 
     // Budget routes (nested under wallet)
     Route::get('/wallets/{wallet}/budget', [BudgetController::class, 'show'])->name('wallets.budget.show');
