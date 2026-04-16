@@ -11,7 +11,8 @@ class InstallCommand extends Command
 {
     protected $signature = 'spendly:install
                             {--fresh : Drop all tables before migrating}
-                            {--seed : Run database seeders}';
+                            {--seed : Run database seeders}
+                            {--demo : Seed the demo user}';
 
     protected $description = 'Install the application for local development (migrations, seeders, application parameters).';
 
@@ -25,6 +26,10 @@ class InstallCommand extends Command
 
         if ($this->option('seed')) {
             $this->runSeeders();
+        }
+
+        if ($this->option('demo')) {
+            $this->runDemoSeeder();
         }
 
         $this->newLine();
@@ -58,5 +63,11 @@ class InstallCommand extends Command
     {
         $this->line('  Syncing application parameters...');
         Artisan::call('spendly:application-parameter', [], $this->output);
+    }
+
+    private function runDemoSeeder(): void
+    {
+        $this->line('  Seeding demo user...');
+        Artisan::call('demo:seed', ['--force' => true], $this->output);
     }
 }

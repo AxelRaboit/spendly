@@ -81,7 +81,7 @@ migrate-fresh: ## Drop all tables and re-run all migrations
 	$(ARTISAN) migrate:fresh
 
 fixtures: ## Drop all tables, re-run migrations, seed and sync application parameters
-	$(ARTISAN) spendly:install --fresh --seed
+	$(ARTISAN) spendly:install --fresh --seed --demo
 
 # === Tests ===
 db-test: ## Create the test database and run migrations
