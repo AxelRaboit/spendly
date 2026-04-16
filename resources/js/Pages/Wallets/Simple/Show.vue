@@ -280,7 +280,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     inputmode="decimal"
                     placeholder="0.00"
                     autofocus
-                    @blur="handleAmountBlur"
+                    v-on:blur="handleAmountBlur"
                 />
                 <FormHint>{{ t('simple.amountHint') }}</FormHint>
                 <InputError :message="form.errors.amount" />
