@@ -2,10 +2,6 @@
 import AppLogo from '@/components/ui/AppLogo.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
-defineProps({
-    bare: { type: Boolean, default: false },
-});
-
 const appVersion = usePage().props.appVersion;
 </script>
 
@@ -19,9 +15,8 @@ const appVersion = usePage().props.appVersion;
             </Link>
         </div>
 
-        <div v-if="!bare" class="mt-6 w-full overflow-hidden bg-surface border border-line px-6 py-4 shadow-md rounded-lg sm:max-w-md">
+        <div class="mt-6 w-full overflow-hidden bg-surface border border-line px-6 py-4 shadow-md rounded-lg sm:max-w-md">
             <slot />
         </div>
-        <slot v-else />
     </div>
 </template>
