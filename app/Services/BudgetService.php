@@ -21,7 +21,11 @@ use InvalidArgumentException;
 
 class BudgetService
 {
-    /** Returns non-system categories for the given wallet. */
+    public function __construct(
+        private readonly TransactionService $transactionService,
+        private readonly PlanService $planService,
+    ) {}
+
     public function userCategories(User $user, Wallet $wallet): Collection
     {
         return Category::where('wallet_id', $wallet->id)
@@ -573,7 +577,6 @@ class BudgetService
                 ->all();
         }
 
-        // Transactions not covered by any budget item category
         $budgetedCategoryIds = $allItems->whereNotNull('category_id')->pluck('category_id');
 
         $unbudgetedQuery = DB::table('transactions')
@@ -637,5 +640,112 @@ class BudgetService
                 'attachment_url' => $tx->attachment_path ? route('transactions.attachment', $tx->id) : null,
             ])
             ->all();
+    }
+
+    public function createAdjustmentBudgetItem(Wallet $wallet, User $user, Carbon $month): Category
+    {
+        $category = Category::firstOrCreate(
+            ['wallet_id' => $wallet->id, 'name' => 'Ajustements'],
+            ['user_id' => $user->id, 'is_system' => false]
+        );
+
+        $budget = $this->getOrCreate($wallet, $month);
+
+        if (! BudgetItem::where('budget_id', $budget->id)->where('category_id', $category->id)->exists()) {
+            try {
+                $this->addItem($budget, [
+                    'type' => 'expenses',
+                    'label' => 'Ajustements',
+                    'planned_amount' => 0,
+                    'category_id' => $category->id,
+                ]);
+            } catch (InvalidArgumentException) {
+                //
+            }
+        }
+
+        return $category;
+    }
+
+    public function calculateAdjustment(Wallet $wallet, float $newBalance): array
+    {
+        $incomeSum = (float) $wallet->transactions()->where('type', TransactionType::Income->value)->sum('amount');
+        $expenseSum = (float) $wallet->transactions()->where('type', TransactionType::Expense->value)->sum('amount');
+        $currentBalance = round((float) $wallet->start_balance + $incomeSum - $expenseSum, 2);
+        $diff = round($newBalance - $currentBalance, 2);
+
+        return ['current' => $currentBalance, 'diff' => $diff];
+    }
+
+    public function needsAdjustment(float $diff): bool
+    {
+        return bccomp((string) $diff, '0', 2) !== 0;
+    }
+
+    public function getNewBalance(array $data): float
+    {
+        return round((float) $data['new_balance'], 2);
+    }
+
+    public function createAdjustmentTransaction(User $user, Wallet $wallet, float $diff, string $date, ?string $description): void
+    {
+        $transactionData = [
+            'wallet_id' => $wallet->id,
+            'type' => $diff > 0 ? TransactionType::Income->value : TransactionType::Expense->value,
+            'amount' => abs($diff),
+            'date' => $date,
+            'description' => $description ?? 'Ajustement',
+        ];
+
+        if (! $wallet->isSimpleMode()) {
+            $month = Carbon::parse($date)->startOfMonth();
+            $category = $this->createAdjustmentBudgetItem($wallet, $user, $month);
+            $transactionData['category_id'] = $category->id;
+        }
+
+        $this->transactionService->create($user, $transactionData);
+    }
+
+    public function getMonthBalance(Wallet $wallet, Carbon $month): float
+    {
+        $startBalanceOfMonth = $this->computeRollingStartBalance($wallet, $month);
+        $incomeInMonth = (float) $wallet->transactions()
+            ->where('type', TransactionType::Income->value)
+            ->whereYear('date', $month->year)
+            ->whereMonth('date', $month->month)
+            ->sum('amount');
+        $expenseInMonth = (float) $wallet->transactions()
+            ->where('type', TransactionType::Expense->value)
+            ->whereYear('date', $month->year)
+            ->whereMonth('date', $month->month)
+            ->sum('amount');
+
+        return round($startBalanceOfMonth + $incomeInMonth - $expenseInMonth, 2);
+    }
+
+    public function getMonthFromRequest(array $data): Carbon
+    {
+        $monthParam = $data['month'] ?? null;
+
+        return $monthParam ? Carbon::createFromFormat('Y-m', $monthParam) : now();
+    }
+
+    public function filterPlanRestrictedData(User $user, array $data): array
+    {
+        if (! $this->planService->canEditBudget($user)) {
+            unset($data['repeat_next_month']);
+        }
+
+        return $data;
+    }
+
+    public function parseMonth(string $monthStr): Carbon
+    {
+        return Carbon::createFromFormat('Y-m', $monthStr);
+    }
+
+    public function getYearFromRequest(array $data): int
+    {
+        return (int) ($data['year'] ?? now()->year);
     }
 }

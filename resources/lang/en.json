@@ -139,6 +139,8 @@
     "flash.scheduled.deleted": "Scheduled transaction deleted.",
     "flash.import.created": ":created transaction(s) imported.",
     "flash.import.created_with_errors": ":created transaction(s) imported, :errors skipped.",
+    "flash.balance_adjustment.created": "Balance adjusted successfully.",
+    "flash.balance_adjustment.no_diff": "Balance is already correct.",
     "flash.notes.proRequired": "Notes are available on the Pro plan only.",
     "budgets.errors.categoryUsed": "This category is already used in this budget.",
     "admin.invitations.sent": "Invitation sent to :email.",
@@ -148,5 +150,6 @@
     "mail.app_invitation.credentials_intro": "Here are your login credentials:",
     "mail.app_invitation.credential_email": "Email: **:email**",
     "mail.app_invitation.credential_password": "Password: **:password**",
-    "mail.app_invitation.footer": "If you think you received this email by mistake, you can ignore it."
+    "mail.app_invitation.footer": "If you think you received this email by mistake, you can ignore it.",
+    "validation.date_in_month": "The date must be within :month."
 }

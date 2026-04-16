@@ -28,7 +28,7 @@ class RecurringTransactionRequest extends FormRequest
             }
         }
 
-        return true;
+        return $this->user() !== null;
     }
 
     public function rules(): array

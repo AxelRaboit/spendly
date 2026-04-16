@@ -139,6 +139,8 @@
     "flash.scheduled.deleted": "Transaction planifiée supprimée.",
     "flash.import.created": ":created transaction(s) importée(s).",
     "flash.import.created_with_errors": ":created transaction(s) importée(s), :errors ignorée(s).",
+    "flash.balance_adjustment.created": "Solde ajusté avec succès.",
+    "flash.balance_adjustment.no_diff": "Le solde est déjà correct.",
     "flash.notes.proRequired": "Les notes sont réservées au plan Pro.",
     "budgets.errors.categoryUsed": "Cette catégorie est déjà utilisée dans ce budget.",
     "admin.invitations.sent": "Invitation envoyée à :email.",
@@ -148,5 +150,6 @@
     "mail.app_invitation.credentials_intro": "Voici vos identifiants de connexion :",
     "mail.app_invitation.credential_email": "E-mail : **:email**",
     "mail.app_invitation.credential_password": "Mot de passe : **:password**",
-    "mail.app_invitation.footer": "Si vous pensez avoir reçu cet e-mail par erreur, vous pouvez l'ignorer."
+    "mail.app_invitation.footer": "Si vous pensez avoir reçu cet e-mail par erreur, vous pouvez l'ignorer.",
+    "validation.date_in_month": "La date doit être dans le mois de :month."
 }

@@ -14,6 +14,7 @@ import BudgetSelect from '@/components/budget/BudgetSelect.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import FormHint from '@/components/form/FormHint.vue';
 import GoalDepositModal from '@/components/budget/GoalDepositModal.vue';
+import BalanceAdjustmentModal from '@/components/wallet/BalanceAdjustmentModal.vue';
 import { useBudgetTotals }   from '@/composables/budget/useBudgetTotals';
 import { useBudgetItems }    from '@/composables/budget/useBudgetItems';
 import { useCopyPrevious }   from '@/composables/budget/useCopyPrevious';
@@ -74,6 +75,7 @@ const unbudgeted   = toRef(props, 'unbudgeted');
 const startBalance = toRef(props, 'startBalance');
 const prevMonth    = toRef(props, 'prevMonth');
 const localCategories = ref([...props.categories]);
+const showAdjustment = ref(false);
 
 const usedCategoryIds = computed(() => {
     const used = new Set();
@@ -449,8 +451,17 @@ onUnmounted(() => {
                     <ChevronLeft class="w-4 h-4 shrink-0" />
                     <span class="hidden sm:inline">{{ fmtMonth(prevMonth) }}</span>
                 </Link>
-                <div class="flex flex-col items-center gap-1">
-                    <h2 class="text-xl font-bold text-primary capitalize">{{ fmtMonth(budget.month) }}</h2>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xl font-bold text-primary capitalize">{{ fmtMonth(budget.month) }}</h2>
+                        <button
+                            class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-400 transition-colors shrink-0"
+                            :title="t('balanceAdjustment.button')"
+                            v-on:click="showAdjustment = true"
+                        >
+                            <Settings class="w-4 h-4" />
+                        </button>
+                    </div>
                     <Link
                         :href="`/wallets/${wallet.id}/budget/year?year=${budget.month.slice(0, 4)}`"
                         class="text-xs text-subtle hover:text-secondary transition-colors"
@@ -1802,6 +1813,13 @@ onUnmounted(() => {
             :message="t('budgets.confirmClear')"
             v-on:confirm="confirmClear"
             v-on:cancel="showClearModal = false"
+        />
+
+        <BalanceAdjustmentModal
+            :show="showAdjustment"
+            :wallet="wallet"
+            :budget-month="budget.month"
+            v-on:close="showAdjustment = false"
         />
     </AuthenticatedLayout>
 </template>

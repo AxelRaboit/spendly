@@ -182,6 +182,21 @@ export default {
         totalExpense: 'Gesamtausgaben',
     },
 
+    balanceAdjustment: {
+        button: 'Saldo anpassen',
+        title: 'Saldokorrektur',
+        currentBalance: 'Aktueller Saldo',
+        newBalance: 'Korrekter Saldo',
+        newBalancePlaceholder: '0.00',
+        newBalanceHint: 'Tipp: Sie können Berechnungen eingeben (z.B. 1250+15)',
+        day: 'Monatstag',
+        dayHint: 'Wählen Sie den Tag der Anpassung',
+        description: 'Beschreibung (optional)',
+        descriptionPlaceholder: 'Z.B. Bankgebühren',
+        diff: 'Differenz',
+        submit: 'Anpassen',
+    },
+
     categories: {
         title: 'Kategorien',
         createBtn: 'Kategorie erstellen',

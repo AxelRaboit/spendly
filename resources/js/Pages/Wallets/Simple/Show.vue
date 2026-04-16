@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList } from 'lucide-vue-next';
+import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
@@ -11,6 +11,7 @@ import { TransactionType } from '@/enums/TransactionType';
 import { WalletRole } from '@/enums/WalletRole';
 import { evalMath } from '@/utils/evalMath';
 import FormHint from '@/components/form/FormHint.vue';
+import BalanceAdjustmentModal from '@/components/wallet/BalanceAdjustmentModal.vue';
 
 const { t }       = useI18n();
 const { fmt }     = useCurrency();
@@ -54,6 +55,7 @@ const groupedTransactions = computed(() => {
 // ── Form (create / edit) ──────────────────────────────────────────────────
 const showForm            = ref(false);
 const editingTransaction  = ref(null);
+const showAdjustment      = ref(false);
 
 const form = useForm({
     wallet_id:   props.wallet.id,
@@ -146,17 +148,26 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </button>
             </div>
 
-            <!-- Balance card -->
             <div class="bg-surface border border-line/60 rounded-2xl p-5 space-y-4">
-                <div>
-                    <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('wallets.colBalance') }}</p>
-                    <p
-                        class="text-3xl font-bold font-mono"
-                        :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'"
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs text-muted uppercase tracking-wide mb-1">{{ t('wallets.colBalance') }}</p>
+                        <p
+                            class="text-3xl font-bold font-mono"
+                            :class="wallet.current_balance >= 0 ? 'text-primary' : 'text-rose-400'"
+                        >
+                            {{ fmt(wallet.current_balance) }}
+                        </p>
+                        <p class="text-xs text-muted mt-1">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
+                    </div>
+                    <button
+                        v-if="canEdit"
+                        class="flex items-center justify-center w-10 h-10 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-400 transition-colors shrink-0"
+                        :title="t('balanceAdjustment.button')"
+                        v-on:click="showAdjustment = true"
                     >
-                        {{ fmt(wallet.current_balance) }}
-                    </p>
-                    <p class="text-xs text-muted mt-1">{{ t('wallets.startBalance') }} {{ fmt(wallet.start_balance) }}</p>
+                        <Settings class="w-5 h-5" />
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40">
@@ -181,7 +192,6 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </div>
             </div>
 
-            <!-- Filter -->
             <div v-if="transactions.length > 0" class="flex gap-2">
                 <button
                     v-for="filter in FILTERS"
@@ -197,7 +207,6 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </button>
             </div>
 
-            <!-- Transactions grouped by date -->
             <div v-if="groupedTransactions.length > 0" class="space-y-4">
                 <div v-for="group in groupedTransactions" :key="group.date" class="space-y-1.5">
                     <p class="text-xs font-medium text-muted uppercase tracking-wide px-1">{{ group.label }}</p>
@@ -244,7 +253,6 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             <EmptyState v-else :message="t('simple.none')" icon="wallet" />
         </div>
 
-        <!-- Create / Edit modal -->
         <AppModal :show="showForm" v-on:close="showForm = false">
             <h3 class="text-base font-semibold text-primary">
                 {{ editingTransaction ? t('simple.editTransaction') : t('simple.addTransaction') }}
@@ -313,6 +321,12 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             :message="message"
             v-on:confirm="onConfirm"
             v-on:cancel="onCancel"
+        />
+
+        <BalanceAdjustmentModal
+            :show="showAdjustment"
+            :wallet="wallet"
+            v-on:close="showAdjustment = false"
         />
     </AuthenticatedLayout>
 </template>

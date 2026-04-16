@@ -16,7 +16,7 @@ class GoalDepositRequest extends FormRequest
             return false;
         }
 
-        return true;
+        return $this->user() !== null;
     }
 
     public function rules(): array
