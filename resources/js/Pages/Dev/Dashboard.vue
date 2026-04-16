@@ -5,7 +5,7 @@ import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Shield, Trash2, TrendingUp, UserRound, Wallet, X } from 'lucide-vue-next';
+import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Shield, Trash2, TrendingUp, UserRound, Users, Wallet, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
 import { PlanType } from '@/enums/PlanType';
 import { computed, onMounted, ref } from 'vue';
@@ -233,33 +233,37 @@ const submitInvitation = () => {
                     <Link
                         :href="route('dev.dashboard.stats')"
                         :aria-current="tab === 'stats' ? 'page' : undefined"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium flex items-center gap-1.5"
                         :class="tab === 'stats' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
+                        <Activity class="w-3.5 h-3.5" :stroke-width="2" />
                         {{ t('admin.stats.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.users')"
                         :aria-current="tab === 'users' ? 'page' : undefined"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium flex items-center gap-1.5"
                         :class="tab === 'users' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
+                        <Users class="w-3.5 h-3.5" :stroke-width="2" />
                         {{ t('admin.users.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.invitations')"
                         :aria-current="tab === 'invitations' ? 'page' : undefined"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium flex items-center gap-1.5"
                         :class="tab === 'invitations' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
+                        <Mail class="w-3.5 h-3.5" :stroke-width="2" />
                         {{ t('admin.invitations.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.parameters')"
                         :aria-current="tab === 'parameters' ? 'page' : undefined"
-                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium"
+                        class="py-3 px-1 border-b-2 transition-colors text-sm sm:text-base font-medium flex items-center gap-1.5"
                         :class="tab === 'parameters' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
+                        <Shield class="w-3.5 h-3.5" :stroke-width="2" />
                         {{ t('admin.parameters.title') }}
                     </Link>
                 </nav>
