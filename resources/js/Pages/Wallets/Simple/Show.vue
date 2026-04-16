@@ -9,6 +9,8 @@ import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
 import { WalletRole } from '@/enums/WalletRole';
+import { evalMath } from '@/utils/evalMath';
+import FormHint from '@/components/form/FormHint.vue';
 
 const { t }       = useI18n();
 const { fmt }     = useCurrency();
@@ -80,7 +82,23 @@ function openEdit(transaction) {
     showForm.value   = true;
 }
 
+function handleAmountBlur() {
+    const result = evalMath(form.amount);
+    if (result !== null) {
+        form.amount = String(result);
+    }
+}
+
 function submit() {
+    // Ensure amount is evaluated before submitting
+    const result = evalMath(form.amount);
+    if (result !== null) {
+        form.amount = String(result);
+    } else if (!form.amount) {
+        // If empty or invalid, leave as is (validation will catch it)
+        return;
+    }
+
     if (editingTransaction.value) {
         form.put(route('wallets.simple.transactions.update', [props.wallet.id, editingTransaction.value.id]), {
             onSuccess: () => {
@@ -258,12 +276,13 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             <FormField :label="t('simple.fieldAmount')">
                 <TextInput
                     v-model="form.amount"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
+                    type="text"
+                    inputmode="decimal"
                     placeholder="0.00"
                     autofocus
+                    @blur="handleAmountBlur"
                 />
+                <FormHint>{{ t('simple.amountHint') }}</FormHint>
                 <InputError :message="form.errors.amount" />
             </FormField>
 

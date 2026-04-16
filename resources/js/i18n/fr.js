@@ -179,6 +179,7 @@ export default {
         fieldDescription: 'Libellé',
         fieldDate: 'Date',
         descriptionPlaceholder: 'Ex : Pain, transport…',
+        amountHint: 'Astuce : vous pouvez saisir des calculs (ex : 10+10)',
         today: "Aujourd'hui",
         yesterday: 'Hier',
         filterAll: 'Tout',
