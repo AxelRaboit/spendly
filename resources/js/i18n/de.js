@@ -181,6 +181,8 @@ export default {
         totalIncome: 'Gesamteinnahmen',
         totalExpense: 'Gesamtausgaben',
         noneThisMonth: 'Keine Transaktionen diesen Monat.',
+        noneSearch: 'Keine Transaktionen entsprechen Ihrer Suche.',
+        searchPlaceholder: 'Bezeichnung suchen…',
     },
 
     balanceAdjustment: {

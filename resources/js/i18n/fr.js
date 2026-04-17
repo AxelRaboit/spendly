@@ -188,6 +188,8 @@ export default {
         totalIncome: 'Total entrées',
         totalExpense: 'Total dépenses',
         noneThisMonth: 'Aucune transaction ce mois-ci.',
+        noneSearch: 'Aucune transaction ne correspond à votre recherche.',
+        searchPlaceholder: 'Rechercher un libellé…',
     },
 
     balanceAdjustment: {

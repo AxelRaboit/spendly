@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings, ChevronLeft, ChevronRight, Search, X } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -38,10 +38,18 @@ function goToMonth(month) {
 const FILTERS = ['all', TransactionType.Income, TransactionType.Expense];
 
 const activeFilter = ref('all');
+const search = ref('');
 
 const filteredTransactions = computed(() => {
-    if (activeFilter.value === 'all') return props.transactions;
-    return props.transactions.filter(transaction => transaction.type === activeFilter.value);
+    let result = props.transactions;
+    if (activeFilter.value !== 'all') {
+        result = result.filter(t => t.type === activeFilter.value);
+    }
+    if (search.value.trim()) {
+        const needle = search.value.trim().toLowerCase();
+        result = result.filter(t => (t.description ?? '').toLowerCase().includes(needle));
+    }
+    return result;
 });
 
 // ── Group by date ─────────────────────────────────────────────────────────
@@ -202,6 +210,24 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </div>
             </div>
 
+            <div class="relative">
+                <Search class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+                <input
+                    v-model="search"
+                    type="text"
+                    :placeholder="t('simple.searchPlaceholder')"
+                    class="w-full rounded-lg border border-line/60 bg-surface py-2 pl-9 pr-9 text-sm text-primary placeholder:text-muted focus:border-indigo-500/60 focus:outline-none"
+                />
+                <button
+                    v-if="search"
+                    type="button"
+                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                    v-on:click="search = ''"
+                >
+                    <X class="w-4 h-4" />
+                </button>
+            </div>
+
             <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1">
                     <button
@@ -282,6 +308,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             </div>
 
             <EmptyState v-else-if="transactions.length === 0" :message="t('simple.none')" icon="wallet" />
+            <EmptyState v-else-if="search" :message="t('simple.noneSearch')" icon="wallet" />
             <EmptyState v-else :message="t('simple.noneThisMonth')" icon="wallet" />
         </div>
 
