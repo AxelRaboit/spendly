@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings, ChevronLeft, ChevronRight, Search, X } from 'lucide-vue-next';
+import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, Copy, LayoutList, Settings, ChevronLeft, ChevronRight, Search, X } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
@@ -88,6 +88,17 @@ function openCreate() {
     form.reset();
     form.wallet_id   = props.wallet.id;
     form.type        = TransactionType.Expense;
+    form.date        = new Date().toISOString().slice(0, 10);
+    showForm.value   = true;
+}
+
+function openDuplicate(transaction) {
+    editingTransaction.value = null;
+    form.reset();
+    form.wallet_id   = props.wallet.id;
+    form.type        = transaction.type;
+    form.amount      = String(transaction.amount);
+    form.description = transaction.description ?? '';
     form.date        = new Date().toISOString().slice(0, 10);
     showForm.value   = true;
 }
@@ -295,6 +306,9 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                 {{ transaction.type === TransactionType.Income ? '+' : '−' }}{{ fmt(transaction.amount) }}
                             </span>
                             <template v-if="canEdit">
+                                <button class="text-muted hover:text-indigo-400 transition-colors" :title="t('simple.duplicate')" v-on:click="openDuplicate(transaction)">
+                                    <Copy class="w-4 h-4" />
+                                </button>
                                 <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="openEdit(transaction)">
                                     <Pencil class="w-4 h-4" />
                                 </button>

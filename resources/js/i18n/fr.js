@@ -187,6 +187,7 @@ export default {
         filterExpense: 'Dépenses',
         totalIncome: 'Total entrées',
         totalExpense: 'Total dépenses',
+        duplicate: 'Dupliquer',
         noneThisMonth: 'Aucune transaction ce mois-ci.',
         noneSearch: 'Aucune transaction ne correspond à votre recherche.',
         searchPlaceholder: 'Rechercher un libellé…',
