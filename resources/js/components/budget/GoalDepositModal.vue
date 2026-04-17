@@ -140,7 +140,7 @@ function submit() {
                         <p v-if="form.errors.amount" class="text-rose-400 text-xs mt-1">{{ form.errors.amount }}</p>
                     </div>
 
-                    <div>
+                    <div v-if="goal?.wallet_id">
                         <label class="block text-xs text-secondary uppercase tracking-wide mb-2">
                             {{ t('budgets.txPanel.category') }}
                             <span v-if="categoryRequired" class="text-rose-400 ml-0.5">*</span>
@@ -154,7 +154,7 @@ function submit() {
                 </form>
 
                 <div class="px-6 pb-6 flex gap-3">
-                    <AppButton class="flex-1" :disabled="form.processing || !form.category_id" v-on:click="submit">
+                    <AppButton class="flex-1" :disabled="form.processing || (goal?.wallet_id && !form.category_id)" v-on:click="submit">
                         {{ form.processing ? t('budgets.txPanel.submitting') : t('goals.deposit') }}
                     </AppButton>
                     <AppButton variant="secondary" v-on:click="emit('close')">
