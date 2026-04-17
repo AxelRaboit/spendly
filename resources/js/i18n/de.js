@@ -180,6 +180,7 @@ export default {
         filterExpense: 'Ausgaben',
         totalIncome: 'Gesamteinnahmen',
         totalExpense: 'Gesamtausgaben',
+        avgPerDay: 'Ø {amount}/Tag',
         duplicate: 'Duplizieren',
         noneThisMonth: 'Keine Transaktionen diesen Monat.',
         noneSearch: 'Keine Transaktionen entsprechen Ihrer Suche.',

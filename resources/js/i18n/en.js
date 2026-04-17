@@ -186,6 +186,7 @@ export default {
         filterExpense: 'Expenses',
         totalIncome: 'Total income',
         totalExpense: 'Total expenses',
+        avgPerDay: '{amount}/day avg.',
         duplicate: 'Duplicate',
         noneThisMonth: 'No transactions this month.',
         noneSearch: 'No transactions match your search.',

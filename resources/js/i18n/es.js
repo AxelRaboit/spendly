@@ -180,6 +180,7 @@ export default {
         filterExpense: 'Gastos',
         totalIncome: 'Total ingresos',
         totalExpense: 'Total gastos',
+        avgPerDay: '{amount}/día de media',
         duplicate: 'Duplicar',
         noneThisMonth: 'Sin transacciones este mes.',
         noneSearch: 'Ninguna transacción coincide con tu búsqueda.',

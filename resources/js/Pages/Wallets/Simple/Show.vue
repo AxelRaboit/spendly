@@ -35,6 +35,17 @@ function goToMonth(month) {
 }
 
 // ── Filter ────────────────────────────────────────────────────────────────
+// ── Average daily expense ─────────────────────────────────────────────────
+const avgDailyExpense = computed(() => {
+    if (!props.wallet.expense_sum) return null;
+    const [year, mon] = props.month.split('-').map(Number);
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === mon;
+    const days = isCurrentMonth ? today.getDate() : new Date(year, mon, 0).getDate();
+    return Math.round((props.wallet.expense_sum / days) * 100) / 100;
+});
+
+// ── Filter ────────────────────────────────────────────────────────────────
 const FILTERS = ['all', TransactionType.Income, TransactionType.Expense];
 
 const activeFilter = ref('all');
@@ -199,7 +210,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40">
+                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40 items-end">
                     <div class="flex items-center gap-2">
                         <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15">
                             <TrendingUp class="w-3.5 h-3.5 text-emerald-400" />
@@ -216,6 +227,9 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                         <div>
                             <p class="text-xs text-muted">{{ t('simple.totalExpense') }}</p>
                             <p class="text-sm font-semibold font-mono text-rose-400">−{{ fmt(wallet.expense_sum) }}</p>
+                            <p v-if="avgDailyExpense" class="text-xs text-muted mt-0.5">
+                                {{ t('simple.avgPerDay', { amount: fmt(avgDailyExpense) }) }}
+                            </p>
                         </div>
                     </div>
                 </div>
