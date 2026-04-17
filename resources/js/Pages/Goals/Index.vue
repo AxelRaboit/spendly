@@ -135,11 +135,22 @@ function monthlyContribution(goal) {
                             />
                         </div>
                         <div class="flex justify-between items-center mt-1.5">
-                            <span class="text-xs font-semibold" :style="{ color: goal.color }">
-                                {{ goal.progress >= 100 ? t('goals.completed') : t('goals.progress', { pct: goal.progress }) }}
-                            </span>
+                            <div>
+                                <span class="text-xs font-semibold" :style="{ color: goal.color }">
+                                    {{ goal.progress >= 100 ? t('goals.completed') : t('goals.progress', { pct: goal.progress }) }}
+                                </span>
+                                <span v-if="goal.progress < 100" class="text-xs text-muted block">
+                                    {{ t('goals.remaining', { amount: fmt(goal.target_amount - goal.saved_amount) }) }}
+                                </span>
+                            </div>
                             <div class="text-right">
-                                <span v-if="goal.deadline" class="text-xs text-muted block">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
+                                <span
+                                    v-if="goal.deadline"
+                                    class="text-xs block"
+                                    :class="goal.progress < 100 && new Date(goal.deadline) < new Date() ? 'text-rose-400 font-medium' : 'text-muted'"
+                                >
+                                    {{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}
+                                </span>
                                 <span v-if="monthlyContribution(goal)" class="text-xs text-indigo-400">
                                     {{ t('goals.monthlyContribution', { amount: fmt(monthlyContribution(goal)) }) }}
                                 </span>
