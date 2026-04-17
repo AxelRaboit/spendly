@@ -180,6 +180,7 @@ export default {
         filterExpense: 'Gastos',
         totalIncome: 'Total ingresos',
         totalExpense: 'Total gastos',
+        noneThisMonth: 'Sin transacciones este mes.',
     },
 
     balanceAdjustment: {

@@ -1,10 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings } from 'lucide-vue-next';
+import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings, ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
+import { useFmtMonth } from '@/composables/core/useFmtMonth';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
@@ -13,16 +14,25 @@ import { evalMath } from '@/utils/evalMath';
 import FormHint from '@/components/form/FormHint.vue';
 import BalanceAdjustmentModal from '@/components/wallet/BalanceAdjustmentModal.vue';
 
-const { t }       = useI18n();
-const { fmt }     = useCurrency();
-const { fmtDate } = useFmtDate();
+const { t }        = useI18n();
+const { fmt }      = useCurrency();
+const { fmtDate }  = useFmtDate();
+const { fmtMonth } = useFmtMonth();
 
 const props = defineProps({
     wallet:       { type: Object, required: true },
     transactions: { type: Array,  required: true },
+    month:        { type: String, required: true },
+    prevMonth:    { type: String, required: true },
+    nextMonth:    { type: String, required: true },
 });
 
 const canEdit = computed(() => [WalletRole.Owner, WalletRole.Editor].includes(props.wallet.user_role));
+
+// ── Month navigation ──────────────────────────────────────────────────────
+function goToMonth(month) {
+    router.visit(route('wallets.simple.show', props.wallet.id) + '?month=' + month, { preserveScroll: true });
+}
 
 // ── Filter ────────────────────────────────────────────────────────────────
 const FILTERS = ['all', TransactionType.Income, TransactionType.Expense];
@@ -192,19 +202,41 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </div>
             </div>
 
-            <div v-if="transactions.length > 0" class="flex gap-2">
-                <button
-                    v-for="filter in FILTERS"
-                    :key="filter"
-                    type="button"
-                    class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
-                    :class="activeFilter === filter
-                        ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
-                        : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
-                    v-on:click="activeFilter = filter"
-                >
-                    {{ t(`simple.filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`) }}
-                </button>
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1">
+                    <button
+                        type="button"
+                        class="flex h-7 w-7 items-center justify-center rounded-lg border border-line/60 bg-surface text-muted transition-colors hover:border-indigo-500/40 hover:text-indigo-400"
+                        v-on:click="goToMonth(prevMonth)"
+                    >
+                        <ChevronLeft class="w-4 h-4" />
+                    </button>
+                    <span class="min-w-32 text-center text-sm font-medium text-primary capitalize">
+                        {{ fmtMonth(month) }}
+                    </span>
+                    <button
+                        type="button"
+                        class="flex h-7 w-7 items-center justify-center rounded-lg border border-line/60 bg-surface text-muted transition-colors hover:border-indigo-500/40 hover:text-indigo-400"
+                        v-on:click="goToMonth(nextMonth)"
+                    >
+                        <ChevronRight class="w-4 h-4" />
+                    </button>
+                </div>
+
+                <div class="flex gap-2">
+                    <button
+                        v-for="filter in FILTERS"
+                        :key="filter"
+                        type="button"
+                        class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
+                        :class="activeFilter === filter
+                            ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
+                            : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
+                        v-on:click="activeFilter = filter"
+                    >
+                        {{ t(`simple.filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`) }}
+                    </button>
+                </div>
             </div>
 
             <div v-if="groupedTransactions.length > 0" class="space-y-4">
@@ -250,7 +282,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             </div>
 
             <EmptyState v-else-if="transactions.length === 0" :message="t('simple.none')" icon="wallet" />
-            <EmptyState v-else :message="t('simple.none')" icon="wallet" />
+            <EmptyState v-else :message="t('simple.noneThisMonth')" icon="wallet" />
         </div>
 
         <AppModal :show="showForm" v-on:close="showForm = false">

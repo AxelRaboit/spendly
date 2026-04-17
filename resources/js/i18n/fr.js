@@ -187,6 +187,7 @@ export default {
         filterExpense: 'Dépenses',
         totalIncome: 'Total entrées',
         totalExpense: 'Total dépenses',
+        noneThisMonth: 'Aucune transaction ce mois-ci.',
     },
 
     balanceAdjustment: {
