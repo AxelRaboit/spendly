@@ -534,6 +534,7 @@ export default {
         remaining: '{amount} restantes',
         completed: '¡Objetivo alcanzado!',
         deadline: 'Vence {date}',
+        monthlyContribution: '≈ {amount}/mes',
         none: 'Sin objetivos todavía.',
         confirmDelete: '¿Eliminar este objetivo?',
         editTip: 'Editar este objetivo',

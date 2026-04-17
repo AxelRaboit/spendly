@@ -539,6 +539,7 @@ export default {
         remaining: '{amount} remaining',
         completed: 'Goal reached!',
         deadline: 'Due {date}',
+        monthlyContribution: '≈ {amount}/mo',
         none: 'No goals yet.',
         confirmDelete: 'Delete this goal?',
         editTip: 'Edit this goal',

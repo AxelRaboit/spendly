@@ -25,6 +25,17 @@ const COLORS = ['#6366f1', '#8b5cf6', '#34d399', '#f59e0b', '#f43f5e', '#38bdf8'
 const { editingGoal, showForm, form, openCreate, openEdit, submit, goalToDelete, confirmDelete, executeDelete } = useGoalForm();
 
 const depositGoal = ref(null);
+
+function monthlyContribution(goal) {
+    if (!goal.deadline || goal.progress >= 100) return null;
+    const remaining = goal.target_amount - goal.saved_amount;
+    if (remaining <= 0) return null;
+    const today = new Date();
+    const deadline = new Date(goal.deadline);
+    if (deadline <= today) return null;
+    const months = (deadline.getFullYear() - today.getFullYear()) * 12 + (deadline.getMonth() - today.getMonth());
+    return Math.ceil((remaining / Math.max(1, months)) * 100) / 100;
+}
 </script>
 
 <template>
@@ -95,7 +106,12 @@ const depositGoal = ref(null);
                             <span class="text-xs font-semibold" :style="{ color: goal.color }">
                                 {{ goal.progress >= 100 ? t('goals.completed') : t('goals.progress', { pct: goal.progress }) }}
                             </span>
-                            <span v-if="goal.deadline" class="text-xs text-muted">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
+                            <div class="text-right">
+                                <span v-if="goal.deadline" class="text-xs text-muted block">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
+                                <span v-if="monthlyContribution(goal)" class="text-xs text-indigo-400">
+                                    {{ t('goals.monthlyContribution', { amount: fmt(monthlyContribution(goal)) }) }}
+                                </span>
+                            </div>
                         </div>
                     </div>
 

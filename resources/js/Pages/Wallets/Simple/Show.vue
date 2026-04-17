@@ -242,7 +242,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     type="text"
                     :placeholder="t('simple.searchPlaceholder')"
                     class="w-full rounded-lg border border-line/60 bg-surface py-2 pl-9 pr-9 text-sm text-primary placeholder:text-muted focus:border-indigo-500/60 focus:outline-none"
-                />
+                >
                 <button
                     v-if="search"
                     type="button"
