@@ -61,6 +61,12 @@ class GoalController extends Controller
 
         $this->goalService->deposit($goalDepositRequest->user(), $goal, $goalDepositRequest->validated());
 
+        $goal->refresh();
+
+        if ((float) $goal->saved_amount >= (float) $goal->target_amount) {
+            return back()->with('success', __('flash.goal.reached'));
+        }
+
         return back()->with('success', __('flash.goal.deposit'));
     }
 

@@ -23,7 +23,10 @@ class GoalDepositRequest extends FormRequest
     {
         return [
             'amount' => 'required|numeric|min:0.01',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => [
+                $this->route('goal')?->wallet_id ? 'required' : 'nullable',
+                'exists:categories,id',
+            ],
             'date' => 'required|date',
             'description' => 'nullable|string|max:255',
         ];

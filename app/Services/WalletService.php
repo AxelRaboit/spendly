@@ -13,6 +13,7 @@ use App\Models\Wallet;
 use App\Models\WalletMember;
 use App\Support\Text;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -41,10 +42,18 @@ class WalletService
             ]));
     }
 
-    /** @return array{ wallet: array<string, mixed>, transactions: EloquentCollection } */
-    public function getSimpleWalletData(Wallet $wallet, User $user): array
+    /** @return array{ wallet: array<string, mixed>, transactions: EloquentCollection, month: string, prevMonth: string, nextMonth: string } */
+    public function getSimpleWalletData(Wallet $wallet, User $user, string $month): array
     {
+        $allTransactions = $wallet->transactions()->get(['type', 'amount']);
+        $totalIncome = round((float) $allTransactions->where('type', TransactionType::Income)->sum('amount'), 2);
+        $totalExpense = round((float) $allTransactions->where('type', TransactionType::Expense)->sum('amount'), 2);
+
+        $monthDate = Carbon::parse($month.'-01');
+
         $transactions = $wallet->transactions()
+            ->whereYear('date', $monthDate->year)
+            ->whereMonth('date', $monthDate->month)
             ->orderBy('date', 'desc')
             ->orderBy('created_at', 'desc')
             ->get(['id', 'type', 'amount', 'description', 'date']);
@@ -55,11 +64,14 @@ class WalletService
         return [
             'wallet' => array_merge($wallet->toArray(), [
                 'user_role' => $wallet->roleFor($user)?->value,
-                'current_balance' => round((float) $wallet->start_balance + $incomeSum - $expenseSum, 2),
+                'current_balance' => round((float) $wallet->start_balance + $totalIncome - $totalExpense, 2),
                 'income_sum' => $incomeSum,
                 'expense_sum' => $expenseSum,
             ]),
             'transactions' => $transactions,
+            'month' => $month,
+            'prevMonth' => $monthDate->copy()->subMonth()->format('Y-m'),
+            'nextMonth' => $monthDate->copy()->addMonth()->format('Y-m'),
         ];
     }
 

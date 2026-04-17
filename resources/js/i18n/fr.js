@@ -187,6 +187,11 @@ export default {
         filterExpense: 'Dépenses',
         totalIncome: 'Total entrées',
         totalExpense: 'Total dépenses',
+        avgPerDay: '{amount}/jour en moy.',
+        duplicate: 'Dupliquer',
+        noneThisMonth: 'Aucune transaction ce mois-ci.',
+        noneSearch: 'Aucune transaction ne correspond à votre recherche.',
+        searchPlaceholder: 'Rechercher un libellé…',
     },
 
     balanceAdjustment: {
@@ -535,6 +540,10 @@ export default {
         remaining: '{amount} restants',
         completed: 'Objectif atteint !',
         deadline: 'Échéance {date}',
+        monthlyContribution: '≈ {amount}/mois',
+        sortProgress: 'Progression',
+        sortDeadline: 'Échéance',
+        sortAmount: 'Montant',
         none: "Aucun objectif pour l'instant.",
         confirmDelete: 'Supprimer cet objectif ?',
         editTip: 'Modifier cet objectif',

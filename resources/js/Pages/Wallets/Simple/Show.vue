@@ -1,10 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
-import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, LayoutList, Settings } from 'lucide-vue-next';
+import { Plus, Trash2, TrendingUp, TrendingDown, Pencil, Copy, LayoutList, Settings, ChevronLeft, ChevronRight, Search, X } from 'lucide-vue-next';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { useFmtDate } from '@/composables/core/useFmtDate';
+import { useFmtMonth } from '@/composables/core/useFmtMonth';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
@@ -13,25 +14,53 @@ import { evalMath } from '@/utils/evalMath';
 import FormHint from '@/components/form/FormHint.vue';
 import BalanceAdjustmentModal from '@/components/wallet/BalanceAdjustmentModal.vue';
 
-const { t }       = useI18n();
-const { fmt }     = useCurrency();
-const { fmtDate } = useFmtDate();
+const { t }        = useI18n();
+const { fmt }      = useCurrency();
+const { fmtDate }  = useFmtDate();
+const { fmtMonth } = useFmtMonth();
 
 const props = defineProps({
     wallet:       { type: Object, required: true },
     transactions: { type: Array,  required: true },
+    month:        { type: String, required: true },
+    prevMonth:    { type: String, required: true },
+    nextMonth:    { type: String, required: true },
 });
 
 const canEdit = computed(() => [WalletRole.Owner, WalletRole.Editor].includes(props.wallet.user_role));
+
+// ── Month navigation ──────────────────────────────────────────────────────
+function goToMonth(month) {
+    router.visit(route('wallets.simple.show', props.wallet.id) + '?month=' + month, { preserveScroll: true });
+}
+
+// ── Filter ────────────────────────────────────────────────────────────────
+// ── Average daily expense ─────────────────────────────────────────────────
+const avgDailyExpense = computed(() => {
+    if (!props.wallet.expense_sum) return null;
+    const [year, mon] = props.month.split('-').map(Number);
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === mon;
+    const days = isCurrentMonth ? today.getDate() : new Date(year, mon, 0).getDate();
+    return Math.round((props.wallet.expense_sum / days) * 100) / 100;
+});
 
 // ── Filter ────────────────────────────────────────────────────────────────
 const FILTERS = ['all', TransactionType.Income, TransactionType.Expense];
 
 const activeFilter = ref('all');
+const search = ref('');
 
 const filteredTransactions = computed(() => {
-    if (activeFilter.value === 'all') return props.transactions;
-    return props.transactions.filter(transaction => transaction.type === activeFilter.value);
+    let result = props.transactions;
+    if (activeFilter.value !== 'all') {
+        result = result.filter(t => t.type === activeFilter.value);
+    }
+    if (search.value.trim()) {
+        const needle = search.value.trim().toLowerCase();
+        result = result.filter(t => (t.description ?? '').toLowerCase().includes(needle));
+    }
+    return result;
 });
 
 // ── Group by date ─────────────────────────────────────────────────────────
@@ -70,6 +99,17 @@ function openCreate() {
     form.reset();
     form.wallet_id   = props.wallet.id;
     form.type        = TransactionType.Expense;
+    form.date        = new Date().toISOString().slice(0, 10);
+    showForm.value   = true;
+}
+
+function openDuplicate(transaction) {
+    editingTransaction.value = null;
+    form.reset();
+    form.wallet_id   = props.wallet.id;
+    form.type        = transaction.type;
+    form.amount      = String(transaction.amount);
+    form.description = transaction.description ?? '';
     form.date        = new Date().toISOString().slice(0, 10);
     showForm.value   = true;
 }
@@ -170,7 +210,7 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                     </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40">
+                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-line/40 items-end">
                     <div class="flex items-center gap-2">
                         <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15">
                             <TrendingUp class="w-3.5 h-3.5 text-emerald-400" />
@@ -187,24 +227,67 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                         <div>
                             <p class="text-xs text-muted">{{ t('simple.totalExpense') }}</p>
                             <p class="text-sm font-semibold font-mono text-rose-400">−{{ fmt(wallet.expense_sum) }}</p>
+                            <p v-if="avgDailyExpense" class="text-xs text-muted mt-0.5">
+                                {{ t('simple.avgPerDay', { amount: fmt(avgDailyExpense) }) }}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="transactions.length > 0" class="flex gap-2">
-                <button
-                    v-for="filter in FILTERS"
-                    :key="filter"
-                    type="button"
-                    class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
-                    :class="activeFilter === filter
-                        ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
-                        : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
-                    v-on:click="activeFilter = filter"
+            <div class="relative">
+                <Search class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+                <input
+                    v-model="search"
+                    type="text"
+                    :placeholder="t('simple.searchPlaceholder')"
+                    class="w-full rounded-lg border border-line/60 bg-surface py-2 pl-9 pr-9 text-sm text-primary placeholder:text-muted focus:border-indigo-500/60 focus:outline-none"
                 >
-                    {{ t(`simple.filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`) }}
+                <button
+                    v-if="search"
+                    type="button"
+                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                    v-on:click="search = ''"
+                >
+                    <X class="w-4 h-4" />
                 </button>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1">
+                    <button
+                        type="button"
+                        class="flex h-7 w-7 items-center justify-center rounded-lg border border-line/60 bg-surface text-muted transition-colors hover:border-indigo-500/40 hover:text-indigo-400"
+                        v-on:click="goToMonth(prevMonth)"
+                    >
+                        <ChevronLeft class="w-4 h-4" />
+                    </button>
+                    <span class="min-w-32 text-center text-sm font-medium text-primary capitalize">
+                        {{ fmtMonth(month) }}
+                    </span>
+                    <button
+                        type="button"
+                        class="flex h-7 w-7 items-center justify-center rounded-lg border border-line/60 bg-surface text-muted transition-colors hover:border-indigo-500/40 hover:text-indigo-400"
+                        v-on:click="goToMonth(nextMonth)"
+                    >
+                        <ChevronRight class="w-4 h-4" />
+                    </button>
+                </div>
+
+                <div class="flex gap-2">
+                    <button
+                        v-for="filter in FILTERS"
+                        :key="filter"
+                        type="button"
+                        class="flex-1 sm:flex-none rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
+                        :class="activeFilter === filter
+                            ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
+                            : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
+                        v-on:click="activeFilter = filter"
+                    >
+                        {{ t(`simple.filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`) }}
+                    </button>
+                </div>
             </div>
 
             <div v-if="groupedTransactions.length > 0" class="space-y-4">
@@ -237,6 +320,9 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                                 {{ transaction.type === TransactionType.Income ? '+' : '−' }}{{ fmt(transaction.amount) }}
                             </span>
                             <template v-if="canEdit">
+                                <button class="text-muted hover:text-indigo-400 transition-colors" :title="t('simple.duplicate')" v-on:click="openDuplicate(transaction)">
+                                    <Copy class="w-4 h-4" />
+                                </button>
                                 <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="openEdit(transaction)">
                                     <Pencil class="w-4 h-4" />
                                 </button>
@@ -250,7 +336,8 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
             </div>
 
             <EmptyState v-else-if="transactions.length === 0" :message="t('simple.none')" icon="wallet" />
-            <EmptyState v-else :message="t('simple.none')" icon="wallet" />
+            <EmptyState v-else-if="search" :message="t('simple.noneSearch')" icon="wallet" />
+            <EmptyState v-else :message="t('simple.noneThisMonth')" icon="wallet" />
         </div>
 
         <AppModal :show="showForm" v-on:close="showForm = false">

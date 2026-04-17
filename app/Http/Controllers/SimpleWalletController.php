@@ -26,7 +26,9 @@ class SimpleWalletController extends Controller
         $this->authorize(PolicyAction::View->value, $wallet);
         abort_if($wallet->isBudgetMode(), HttpStatus::NotFound->value);
 
-        return Inertia::render('Wallets/Simple/Show', $this->walletService->getSimpleWalletData($wallet, $request->user()));
+        $month = $request->query('month', now()->format('Y-m'));
+
+        return Inertia::render('Wallets/Simple/Show', $this->walletService->getSimpleWalletData($wallet, $request->user(), $month));
     }
 
     public function store(StoreSimpleTransactionRequest $request, Wallet $wallet, TransactionService $transactionService): RedirectResponse

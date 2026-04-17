@@ -131,6 +131,7 @@
     "flash.goal.updated": "Ziel aktualisiert.",
     "flash.goal.deposit": "Einzahlung erfolgt.",
     "flash.goal.deleted": "Ziel gelöscht.",
+    "flash.goal.reached": "🎉 Ziel erreicht! Herzlichen Glückwunsch!",
     "flash.transfer.created": "Überweisung durchgeführt.",
     "flash.transfer.deleted": "Überweisung gelöscht.",
     "flash.transfer.updated": "Überweisung aktualisiert.",

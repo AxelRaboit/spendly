@@ -25,6 +25,35 @@ const COLORS = ['#6366f1', '#8b5cf6', '#34d399', '#f59e0b', '#f43f5e', '#38bdf8'
 const { editingGoal, showForm, form, openCreate, openEdit, submit, goalToDelete, confirmDelete, executeDelete } = useGoalForm();
 
 const depositGoal = ref(null);
+
+// ── Sort ──────────────────────────────────────────────────────────────────
+const SORTS = ['progress', 'deadline', 'amount'];
+const sortBy = ref('progress');
+
+const sortedGoals = computed(() => {
+    return [...props.goals].sort((a, b) => {
+        if (sortBy.value === 'progress') return a.progress - b.progress;
+        if (sortBy.value === 'amount')   return b.target_amount - a.target_amount;
+        if (sortBy.value === 'deadline') {
+            if (!a.deadline && !b.deadline) return 0;
+            if (!a.deadline) return 1;
+            if (!b.deadline) return -1;
+            return new Date(a.deadline) - new Date(b.deadline);
+        }
+        return 0;
+    });
+});
+
+function monthlyContribution(goal) {
+    if (!goal.deadline || goal.progress >= 100) return null;
+    const remaining = goal.target_amount - goal.saved_amount;
+    if (remaining <= 0) return null;
+    const today = new Date();
+    const deadline = new Date(goal.deadline);
+    if (deadline <= today) return null;
+    const months = (deadline.getFullYear() - today.getFullYear()) * 12 + (deadline.getMonth() - today.getMonth());
+    return Math.ceil((remaining / Math.max(1, months)) * 100) / 100;
+}
 </script>
 
 <template>
@@ -36,7 +65,21 @@ const depositGoal = ref(null);
         </template>
 
         <div class="space-y-4">
-            <div class="flex justify-end">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex gap-2">
+                    <button
+                        v-for="sort in SORTS"
+                        :key="sort"
+                        type="button"
+                        class="rounded-lg px-3 py-1.5 text-xs font-medium transition-all border"
+                        :class="sortBy === sort
+                            ? 'bg-indigo-500/15 border-indigo-500/60 text-indigo-400'
+                            : 'bg-surface border-line/60 text-muted hover:border-indigo-500/40'"
+                        v-on:click="sortBy = sort"
+                    >
+                        {{ t(`goals.sort${sort.charAt(0).toUpperCase() + sort.slice(1)}`) }}
+                    </button>
+                </div>
                 <div class="relative">
                     <AppButton
                         :disabled="!canCreateGoal"
@@ -54,7 +97,7 @@ const depositGoal = ref(null);
 
             <div v-if="goals.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
-                    v-for="goal in goals"
+                    v-for="goal in sortedGoals"
                     :key="goal.id"
                     class="bg-surface border border-line/60 rounded-2xl p-5 space-y-4"
                 >
@@ -92,10 +135,26 @@ const depositGoal = ref(null);
                             />
                         </div>
                         <div class="flex justify-between items-center mt-1.5">
-                            <span class="text-xs font-semibold" :style="{ color: goal.color }">
-                                {{ goal.progress >= 100 ? t('goals.completed') : t('goals.progress', { pct: goal.progress }) }}
-                            </span>
-                            <span v-if="goal.deadline" class="text-xs text-muted">{{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}</span>
+                            <div>
+                                <span class="text-xs font-semibold" :style="{ color: goal.color }">
+                                    {{ goal.progress >= 100 ? t('goals.completed') : t('goals.progress', { pct: goal.progress }) }}
+                                </span>
+                                <span v-if="goal.progress < 100" class="text-xs text-muted block">
+                                    {{ t('goals.remaining', { amount: fmt(goal.target_amount - goal.saved_amount) }) }}
+                                </span>
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    v-if="goal.deadline"
+                                    class="text-xs block"
+                                    :class="goal.progress < 100 && new Date(goal.deadline) < new Date() ? 'text-rose-400 font-medium' : 'text-muted'"
+                                >
+                                    {{ t('goals.deadline', { date: fmtDate(goal.deadline) }) }}
+                                </span>
+                                <span v-if="monthlyContribution(goal)" class="text-xs text-indigo-400">
+                                    {{ t('goals.monthlyContribution', { amount: fmt(monthlyContribution(goal)) }) }}
+                                </span>
+                            </div>
                         </div>
                     </div>
 

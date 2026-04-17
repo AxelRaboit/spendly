@@ -180,6 +180,11 @@ export default {
         filterExpense: 'Ausgaben',
         totalIncome: 'Gesamteinnahmen',
         totalExpense: 'Gesamtausgaben',
+        avgPerDay: 'Ø {amount}/Tag',
+        duplicate: 'Duplizieren',
+        noneThisMonth: 'Keine Transaktionen diesen Monat.',
+        noneSearch: 'Keine Transaktionen entsprechen Ihrer Suche.',
+        searchPlaceholder: 'Bezeichnung suchen…',
     },
 
     balanceAdjustment: {
@@ -530,6 +535,10 @@ export default {
         remaining: '{amount} verbleibend',
         completed: 'Ziel erreicht!',
         deadline: 'Fällig {date}',
+        monthlyContribution: '≈ {amount}/Monat',
+        sortProgress: 'Fortschritt',
+        sortDeadline: 'Frist',
+        sortAmount: 'Betrag',
         none: 'Noch keine Ziele.',
         confirmDelete: 'Dieses Ziel löschen?',
         editTip: 'Dieses Ziel bearbeiten',

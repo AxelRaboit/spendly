@@ -186,6 +186,11 @@ export default {
         filterExpense: 'Expenses',
         totalIncome: 'Total income',
         totalExpense: 'Total expenses',
+        avgPerDay: '{amount}/day avg.',
+        duplicate: 'Duplicate',
+        noneThisMonth: 'No transactions this month.',
+        noneSearch: 'No transactions match your search.',
+        searchPlaceholder: 'Search by label…',
     },
 
     balanceAdjustment: {
@@ -534,6 +539,10 @@ export default {
         remaining: '{amount} remaining',
         completed: 'Goal reached!',
         deadline: 'Due {date}',
+        monthlyContribution: '≈ {amount}/mo',
+        sortProgress: 'Progress',
+        sortDeadline: 'Deadline',
+        sortAmount: 'Amount',
         none: 'No goals yet.',
         confirmDelete: 'Delete this goal?',
         editTip: 'Edit this goal',

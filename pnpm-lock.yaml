@@ -15,8 +15,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       dompurify:
-        specifier: ^3.3.3
-        version: 3.3.3
+        specifier: ^3.4.0
+        version: 3.4.0
       driver.js:
         specifier: ^1.4.0
         version: 1.4.0
@@ -27,8 +27,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(vue@3.4.38(typescript@5.9.3))
       marked:
-        specifier: ^18.0.0
-        version: 18.0.0
+        specifier: ^18.0.1
+        version: 18.0.1
       vue-chartjs:
         specifier: ^5.3.3
         version: 5.3.3(chart.js@4.5.1)(vue@3.4.38(typescript@5.9.3))
@@ -76,8 +76,8 @@ importers:
         specifier: ^10.8.0
         version: 10.8.0(eslint@10.2.0(jiti@2.6.1))(vue-eslint-parser@10.4.0(eslint@10.2.0(jiti@2.6.1)))
       globals:
-        specifier: ^17.4.0
-        version: 17.4.0
+        specifier: ^17.5.0
+        version: 17.5.0
       laravel-vite-plugin:
         specifier: ^3.0.0
         version: 3.0.1(vite@8.0.8(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1))
@@ -803,8 +803,8 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dompurify@3.3.3:
-    resolution: {integrity: sha512-Oj6pzI2+RqBfFG+qOaOLbFXLQ90ARpcGG6UePL82bJLtdsa6CYJD7nmiU8MW9nQNOtCHV3lZ/Bzq1X0QYbBZCA==}
+  dompurify@3.4.0:
+    resolution: {integrity: sha512-nolgK9JcaUXMSmW+j1yaSvaEaoXYHwWyGJlkoCTghc97KgGDDSnpoU/PlEnw63Ah+TGKFOyY+X5LnxaWbCSfXg==}
 
   driver.js@1.4.0:
     resolution: {integrity: sha512-Gm64jm6PmcU+si21sQhBrTAM1JvUrR0QhNmjkprNLxohOBzul9+pNHXgQaT9lW84gwg9GMLB3NZGuGolsz5uew==}
@@ -1013,8 +1013,8 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  globals@17.4.0:
-    resolution: {integrity: sha512-hjrNztw/VajQwOLsMNT1cbJiH2muO3OROCHnbehc8eY5JyD2gqz4AcMHPqgaOR59DjgUjYAYLeH699g/eWi2jw==}
+  globals@17.5.0:
+    resolution: {integrity: sha512-qoV+HK2yFl/366t2/Cb3+xxPUo5BuMynomoDmiaZBIdbs+0pYbjfZU+twLhGKp4uCZ/+NbtpVepH5bGCxRyy2g==}
     engines: {node: '>=18'}
 
   gopd@1.2.0:
@@ -1184,8 +1184,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  marked@18.0.0:
-    resolution: {integrity: sha512-2e7Qiv/HJSXj8rDEpgTvGKsP8yYtI9xXHKDnrftrmnrJPaFNM7VRb2YCzWaX4BP1iCJ/XPduzDJZMFoqTCcIMA==}
+  marked@18.0.1:
+    resolution: {integrity: sha512-IILJE4Aap/KIGu4ZRCzQcYMxkhumblXnbqfQe+HAD4f982wrRAsJEGKGM653yAioS6g3Yq3yOhjrUebcrtOgRA==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -2117,7 +2117,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  dompurify@3.3.3:
+  dompurify@3.4.0:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -2348,7 +2348,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  globals@17.4.0: {}
+  globals@17.5.0: {}
 
   gopd@1.2.0: {}
 
@@ -2473,7 +2473,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  marked@18.0.0: {}
+  marked@18.0.1: {}
 
   math-intrinsics@1.1.0: {}
 
