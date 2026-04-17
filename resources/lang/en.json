@@ -131,6 +131,7 @@
     "flash.goal.updated": "Goal updated.",
     "flash.goal.deposit": "Deposit made.",
     "flash.goal.deleted": "Goal deleted.",
+    "flash.goal.reached": "🎉 Goal reached! Congratulations!",
     "flash.transfer.created": "Transfer completed.",
     "flash.transfer.deleted": "Transfer deleted.",
     "flash.transfer.updated": "Transfer updated.",

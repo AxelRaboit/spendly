@@ -131,6 +131,7 @@
     "flash.goal.updated": "Objectif mis à jour.",
     "flash.goal.deposit": "Dépôt effectué.",
     "flash.goal.deleted": "Objectif supprimé.",
+    "flash.goal.reached": "🎉 Objectif atteint ! Félicitations !",
     "flash.transfer.created": "Virement effectué.",
     "flash.transfer.deleted": "Virement supprimé.",
     "flash.transfer.updated": "Virement modifié.",
