@@ -63,6 +63,7 @@ const submit = () => {
                     v-model="form.name"
                     type="text"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.register.namePlaceholder')"
                     required
                     autofocus
                     autocomplete="name"
@@ -79,6 +80,7 @@ const submit = () => {
                     v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.register.emailPlaceholder')"
                     required
                     autocomplete="username"
                 />
@@ -98,6 +100,7 @@ const submit = () => {
                     v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.register.passwordPlaceholder')"
                     required
                     autocomplete="new-password"
                 />
@@ -116,6 +119,7 @@ const submit = () => {
                     v-model="form.password_confirmation"
                     type="password"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.register.passwordConfirmPlaceholder')"
                     required
                     autocomplete="new-password"
                 />

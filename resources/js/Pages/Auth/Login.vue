@@ -66,6 +66,7 @@ const openDemo = (demoAccessProtected) => {
                     v-model="form.email"
                     type="email"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.login.emailPlaceholder')"
                     required
                     autofocus
                     autocomplete="username"
@@ -82,6 +83,7 @@ const openDemo = (demoAccessProtected) => {
                     v-model="form.password"
                     type="password"
                     class="mt-1 block w-full"
+                    :placeholder="t('auth.login.passwordPlaceholder')"
                     required
                     autocomplete="current-password"
                 />
