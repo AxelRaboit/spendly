@@ -27,34 +27,25 @@ const form = useForm({
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="form.patch(route('profile.update'))">
-            <div>
-                <label for="name" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldName') }}</label>
-                <input
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    required
-                    autofocus
-                    autocomplete="name"
-                    :placeholder="t('profile.info.fieldNamePlaceholder')"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
-                >
-                <p v-if="form.errors.name" class="mt-1 text-xs text-rose-400">{{ form.errors.name }}</p>
-            </div>
+            <AppInput
+                v-model="form.name"
+                :label="t('profile.info.fieldName')"
+                :placeholder="t('profile.info.fieldNamePlaceholder')"
+                :error="form.errors.name"
+                required
+                autofocus
+                autocomplete="name"
+            />
 
-            <div>
-                <label for="email" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldEmail') }}</label>
-                <input
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    required
-                    autocomplete="username"
-                    :placeholder="t('profile.info.fieldEmailPlaceholder')"
-                    class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
-                >
-                <p v-if="form.errors.email" class="mt-1 text-xs text-rose-400">{{ form.errors.email }}</p>
-            </div>
+            <AppInput
+                v-model="form.email"
+                type="email"
+                :label="t('profile.info.fieldEmail')"
+                :placeholder="t('profile.info.fieldEmailPlaceholder')"
+                :error="form.errors.email"
+                required
+                autocomplete="username"
+            />
 
             <div>
                 <label for="currency" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.info.fieldCurrency') }}</label>

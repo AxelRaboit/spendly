@@ -3,6 +3,7 @@ import BarChart from '@/components/charts/BarChart.vue';
 import LineChart from '@/components/charts/LineChart.vue';
 import DoughnutChart from '@/components/charts/DoughnutChart.vue';
 import AppButton from '@/components/ui/AppButton.vue';
+import AppInput from '@/components/form/AppInput.vue';
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import TextInput from '@/components/form/TextInput.vue';
@@ -24,6 +25,7 @@ import StatCard from '@/components/ui/StatCard.vue';
 export default {
     install(app) {
         app.component('AppButton', AppButton);
+        app.component('AppInput', AppInput);
         app.component('AppModal', AppModal);
         app.component('AppPageHeader', AppPageHeader);
         app.component('TextInput', TextInput);

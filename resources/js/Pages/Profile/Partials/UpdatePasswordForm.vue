@@ -2,16 +2,11 @@
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Eye, EyeOff } from 'lucide-vue-next';
 
 const { t } = useI18n();
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
-
-const showCurrent = ref(false);
-const showNew = ref(false);
-const showConfirm = ref(false);
 
 const form = useForm({
     current_password:      '',
@@ -45,64 +40,37 @@ function updatePassword() {
         </header>
 
         <form class="space-y-5" v-on:submit.prevent="updatePassword">
-            <div>
-                <label for="current_password" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldCurrent') }}</label>
-                <div class="relative">
-                    <input
-                        id="current_password"
-                        ref="currentPasswordInput"
-                        v-model="form.current_password"
-                        :type="showCurrent ? 'text' : 'password'"
-                        autocomplete="current-password"
-                        :placeholder="t('profile.password.fieldPlaceholder')"
-                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
-                    >
-                    <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showCurrent = !showCurrent">
-                        <Eye v-if="!showCurrent" class="w-4 h-4" />
-                        <EyeOff v-else class="w-4 h-4" />
-                    </button>
-                </div>
-                <p v-if="form.errors.current_password" class="mt-1 text-xs text-rose-400">{{ form.errors.current_password }}</p>
-            </div>
+            <AppInput
+                ref="currentPasswordInput"
+                v-model="form.current_password"
+                type="password"
+                :label="t('profile.password.fieldCurrent')"
+                :placeholder="t('profile.password.fieldPlaceholder')"
+                :error="form.errors.current_password"
+                required
+                autocomplete="current-password"
+            />
 
-            <div>
-                <label for="password" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldNew') }}</label>
-                <div class="relative">
-                    <input
-                        id="password"
-                        ref="passwordInput"
-                        v-model="form.password"
-                        :type="showNew ? 'text' : 'password'"
-                        autocomplete="new-password"
-                        :placeholder="t('profile.password.fieldPlaceholder')"
-                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
-                    >
-                    <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showNew = !showNew">
-                        <Eye v-if="!showNew" class="w-4 h-4" />
-                        <EyeOff v-else class="w-4 h-4" />
-                    </button>
-                </div>
-                <p v-if="form.errors.password" class="mt-1 text-xs text-rose-400">{{ form.errors.password }}</p>
-            </div>
+            <AppInput
+                ref="passwordInput"
+                v-model="form.password"
+                type="password"
+                :label="t('profile.password.fieldNew')"
+                :placeholder="t('profile.password.fieldPlaceholder')"
+                :error="form.errors.password"
+                required
+                autocomplete="new-password"
+            />
 
-            <div>
-                <label for="password_confirmation" class="block text-xs text-secondary uppercase tracking-wide mb-1.5">{{ t('profile.password.fieldConfirm') }}</label>
-                <div class="relative">
-                    <input
-                        id="password_confirmation"
-                        v-model="form.password_confirmation"
-                        :type="showConfirm ? 'text' : 'password'"
-                        autocomplete="new-password"
-                        :placeholder="t('profile.password.fieldPlaceholder')"
-                        class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
-                    >
-                    <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showConfirm = !showConfirm">
-                        <Eye v-if="!showConfirm" class="w-4 h-4" />
-                        <EyeOff v-else class="w-4 h-4" />
-                    </button>
-                </div>
-                <p v-if="form.errors.password_confirmation" class="mt-1 text-xs text-rose-400">{{ form.errors.password_confirmation }}</p>
-            </div>
+            <AppInput
+                v-model="form.password_confirmation"
+                type="password"
+                :label="t('profile.password.fieldConfirm')"
+                :placeholder="t('profile.password.fieldPlaceholder')"
+                :error="form.errors.password_confirmation"
+                required
+                autocomplete="new-password"
+            />
 
             <div class="flex items-center gap-3 pt-1">
                 <AppButton type="submit" :disabled="form.processing">{{ t('common.save') }}</AppButton>
