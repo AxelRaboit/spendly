@@ -54,6 +54,7 @@ function updatePassword() {
                         v-model="form.current_password"
                         :type="showCurrent ? 'text' : 'password'"
                         autocomplete="current-password"
+                        :placeholder="t('profile.password.fieldPlaceholder')"
                         class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
                     >
                     <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showCurrent = !showCurrent">
@@ -73,6 +74,7 @@ function updatePassword() {
                         v-model="form.password"
                         :type="showNew ? 'text' : 'password'"
                         autocomplete="new-password"
+                        :placeholder="t('profile.password.fieldPlaceholder')"
                         class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
                     >
                     <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showNew = !showNew">
@@ -91,6 +93,7 @@ function updatePassword() {
                         v-model="form.password_confirmation"
                         :type="showConfirm ? 'text' : 'password'"
                         autocomplete="new-password"
+                        :placeholder="t('profile.password.fieldPlaceholder')"
                         class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 pr-10 border border-line focus:border-indigo-500 focus:outline-none"
                     >
                     <button type="button" tabindex="-1" class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary transition-colors" v-on:click="showConfirm = !showConfirm">

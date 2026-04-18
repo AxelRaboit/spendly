@@ -36,6 +36,7 @@ const form = useForm({
                     required
                     autofocus
                     autocomplete="name"
+                    :placeholder="t('profile.info.fieldNamePlaceholder')"
                     class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.name" class="mt-1 text-xs text-rose-400">{{ form.errors.name }}</p>
@@ -49,6 +50,7 @@ const form = useForm({
                     type="email"
                     required
                     autocomplete="username"
+                    :placeholder="t('profile.info.fieldEmailPlaceholder')"
                     class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                 >
                 <p v-if="form.errors.email" class="mt-1 text-xs text-rose-400">{{ form.errors.email }}</p>
