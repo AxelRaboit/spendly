@@ -29,14 +29,13 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 - **Tableau de bord** — Vue d'ensemble du mois en cours : dépenses, remboursements, évolution mensuelle, objectifs en cours et dernières transactions
 - **Vue globale** — Synthèse multi-portefeuilles avec graphiques de revenus/dépenses et répartition par catégorie
-- **Portefeuilles** — Gestion de plusieurs comptes indépendants (compte courant, livret, assurance vie…) avec virements entre comptes
+- **Portefeuilles** — Gestion de plusieurs comptes indépendants en mode **Budget** (catégories, lignes budgétaires, suivi détaillé) ou **Simplifié** (transactions simples sans catégories, idéal pour l'argent de poche), avec virements entre comptes
 - **Transactions** — Liste complète et filtrable de toutes vos transactions
 - **Transactions planifiées** — Suivi des dépenses annuelles, primes et échéances futures
 - **Transactions automatiques** — Gestion des abonnements et transactions récurrentes (streaming, sport, mutuelle…)
 - **Objectifs d'épargne** — Suivi visuel de la progression vers vos objectifs financiers
 - **Statistiques** — Analyse graphique sur la durée avec projections, taux d'épargne et tendances par catégorie
 - **Catégories** — Gestion personnalisée des catégories avec auto-catégorisation intelligente
-- **Notes** — Éditeur Markdown avec arborescence et aperçu en temps réel
 - **Import** — Import de transactions depuis un fichier Excel (modèle fourni)
 - **Export** — Export des données budgétaires en Excel
 - **Formules & Tarifs** — Offres Free et Pro avec gestion de l'abonnement
@@ -65,7 +64,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Tableau de bord
 
-![Tableau de bord](docs/readme/screenshots/tableau-de-bord.jpg)
+![Tableau de bord](docs/readme/screenshots/tableau-de-bord.png)
 
 > Vue d'ensemble du mois : dépenses totales, remboursements, évolution du budget, objectifs en cours, dernières transactions et top catégories.
 
@@ -87,6 +86,34 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
+### Créer un portefeuille
+
+![Créer un portefeuille](docs/readme/screenshots/portefeuille-creation.jpg)
+
+> Choix du type lors de la création : **Budget** pour un suivi détaillé avec catégories et lignes budgétaires, ou **Simplifié** pour des transactions sans catégories, idéal pour l'argent de poche.
+
+---
+
+### Portefeuille simplifié
+
+![Portefeuille simplifié](docs/readme/screenshots/portefeuille-simplifie.jpg)
+
+> Vue d'un portefeuille simplifié : solde actuel, total entrées/dépenses avec moyenne journalière, et liste chronologique des transactions filtrables (Tout / Entrées / Dépenses).
+
+---
+
+### Portefeuille budget
+
+![Portefeuille budget - Vue générale](docs/readme/screenshots/portefeuille-budget-1.png)
+
+![Portefeuille budget - Lignes budgétaires (1)](docs/readme/screenshots/portefeuille-budget-2.png)
+
+![Portefeuille budget - Lignes budgétaires (2)](docs/readme/screenshots/portefeuille-budget-3.png)
+
+> Vue d'un portefeuille budget : synthèse mensuelle (prévu / dépensé / total), répartition par catégorie, progression du budget, objectifs d'épargne associés et détail complet des lignes budgétaires (charges fixes, épargne, dépenses, non budgétés).
+
+---
+
 ### Virement entre portefeuilles
 
 ![Virement](docs/readme/screenshots/virement.jpg)
@@ -97,7 +124,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Transactions d'une ligne budgétaire
 
-![Budget portefeuille](docs/readme/screenshots/budget-portefeuille.jpg)
+![Budget portefeuille](docs/readme/screenshots/budget-portefeuille.png)
 
 > Détail des transactions d'une ligne budgétaire : liste des dépenses associées à une catégorie en cliquant sur une ligne du budget.
 
@@ -105,7 +132,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Nouvelle transaction
 
-![Nouvelle transaction](docs/readme/screenshots/nouvelle-transaction.jpg)
+![Nouvelle transaction](docs/readme/screenshots/nouvelle-transaction.png)
 
 > Formulaire de saisie rapide : type (dépense/revenu/virement), montant, catégorie, date, description, tags et pièces jointes.
 
@@ -113,7 +140,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Transactions
 
-![Transactions](docs/readme/screenshots/transactions.jpg)
+![Transactions](docs/readme/screenshots/transactions.png)
 
 > Liste complète et filtrable de toutes les transactions (catégorie, portefeuille, mois, type).
 
@@ -127,11 +154,27 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
+### Nouvelle transaction planifiée
+
+![Nouvelle transaction planifiée](docs/readme/screenshots/nouvelle-transactions-planifiees.jpg)
+
+> Formulaire de création d'une transaction planifiée : montant, catégorie, date d'échéance et description.
+
+---
+
 ### Transactions automatiques
 
 ![Transactions automatiques](docs/readme/screenshots/transactions-auto.jpg)
 
 > Gestion des abonnements et paiements récurrents : streaming, sport, mutuelle, salaire…
+
+---
+
+### Nouvelle transaction automatique
+
+![Nouvelle transaction automatique](docs/readme/screenshots/nouvelle-transactions-auto.jpg)
+
+> Formulaire de création d'une transaction automatique : montant, fréquence, catégorie et date de début.
 
 ---
 
@@ -143,9 +186,17 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
+### Nouvel objectif
+
+![Nouvel objectif](docs/readme/screenshots/nouvel-objectif.jpg)
+
+> Formulaire de création d'un objectif d'épargne : nom, montant cible, montant actuel et date limite.
+
+---
+
 ### Statistiques
 
-![Statistiques](docs/readme/screenshots/statistiques.jpg)
+![Statistiques](docs/readme/screenshots/statistiques.png)
 
 > Tableaux de bord analytiques : dépenses par catégorie, taux d'épargne, évolution sur 6 mois, projections et tendances par catégorie.
 
@@ -167,22 +218,6 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
-### Notes — Éditeur Markdown
-
-![Notes - Éditeur](docs/readme/screenshots/notes-edition.jpg)
-
-> Éditeur Markdown avec arborescence hiérarchique, tags et sauvegarde automatique.
-
----
-
-### Notes — Aperçu rendu
-
-![Notes - Aperçu](docs/readme/screenshots/notes-apercu.jpg)
-
-> Mode aperçu : rendu HTML du Markdown avec tableaux, listes et mise en forme.
-
----
-
 ### Importer des transactions
 
 ![Import](docs/readme/screenshots/import.jpg)
@@ -201,7 +236,9 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Profil
 
-![Profil](docs/readme/screenshots/profil.png)
+![Profil 1](docs/readme/screenshots/profil-1.png)
+
+![Profil 2](docs/readme/screenshots/profil-2.png)
 
 > Gestion du profil : langue, informations personnelles, devise, lignes budgétaires par défaut et mot de passe.
 
@@ -209,7 +246,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Administration
 
-![Administration](docs/readme/screenshots/admin.jpg)
+![Administration](docs/readme/screenshots/admin.png)
 
 > Dashboard admin : inscriptions, transactions, croissance cumulée, langues utilisées, répartition des formules et statistiques en temps réel.
 
@@ -290,19 +327,11 @@ php artisan migrate
 
 ### Démarrage en développement
 
-**Démarrer le mailer (Mailpit via Docker) :**
-
 ```bash
-docker compose up -d
+make start
 ```
 
-**Lancer les serveurs de développement :**
-
-```bash
-make dev
-```
-
-Lance en parallèle : le serveur PHP, la queue, les logs Pail et Vite.
+Lance en parallèle : le mailer (Mailpit via Docker), le serveur PHP, la queue, les logs Pail et Vite.
 
 ---
 
