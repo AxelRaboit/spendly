@@ -201,20 +201,20 @@ class TourSeederService
 
     private function blueprint(array $labels): array
     {
-        $l = $labels['transactions'];
+        $transactionLabels = $labels['transactions'];
 
         return [
             // ── Income ──
             [
                 'type' => 'income', 'category' => 'salary', 'label' => $labels['categories']['salary'],
                 'planned' => 2500,
-                'tx_prev' => [['amount' => 2500, 'desc' => $l['salary'], 'day' => 1]],
-                'tx_current' => [['amount' => 2500, 'desc' => $l['salary'], 'day' => 1]],
+                'tx_prev' => [['amount' => 2500, 'desc' => $transactionLabels['salary'], 'day' => 1]],
+                'tx_current' => [['amount' => 2500, 'desc' => $transactionLabels['salary'], 'day' => 1]],
             ],
             [
                 'type' => 'income', 'category' => 'freelance', 'label' => $labels['categories']['freelance'],
                 'planned' => 400,
-                'tx_prev' => [['amount' => 350, 'desc' => $l['freelance_project'], 'day' => 15]],
+                'tx_prev' => [['amount' => 350, 'desc' => $transactionLabels['freelance_project'], 'day' => 15]],
                 'tx_current' => [],
             ],
 
@@ -222,26 +222,26 @@ class TourSeederService
             [
                 'type' => 'bills', 'category' => 'rent', 'label' => $labels['categories']['rent'],
                 'planned' => 800,
-                'tx_prev' => [['amount' => 800, 'desc' => $l['rent'], 'day' => 1]],
-                'tx_current' => [['amount' => 800, 'desc' => $l['rent'], 'day' => 1]],
+                'tx_prev' => [['amount' => 800, 'desc' => $transactionLabels['rent'], 'day' => 1]],
+                'tx_current' => [['amount' => 800, 'desc' => $transactionLabels['rent'], 'day' => 1]],
             ],
             [
                 'type' => 'bills', 'category' => 'electricity', 'label' => $labels['categories']['electricity'],
                 'planned' => 65,
-                'tx_prev' => [['amount' => 58, 'desc' => $l['electricity'], 'day' => 10]],
-                'tx_current' => [['amount' => 62, 'desc' => $l['electricity'], 'day' => 10]],
+                'tx_prev' => [['amount' => 58, 'desc' => $transactionLabels['electricity'], 'day' => 10]],
+                'tx_current' => [['amount' => 62, 'desc' => $transactionLabels['electricity'], 'day' => 10]],
             ],
             [
                 'type' => 'bills', 'category' => 'internet', 'label' => $labels['categories']['internet'],
                 'planned' => 30,
-                'tx_prev' => [['amount' => 30, 'desc' => $l['internet'], 'day' => 5]],
-                'tx_current' => [['amount' => 30, 'desc' => $l['internet'], 'day' => 5]],
+                'tx_prev' => [['amount' => 30, 'desc' => $transactionLabels['internet'], 'day' => 5]],
+                'tx_current' => [['amount' => 30, 'desc' => $transactionLabels['internet'], 'day' => 5]],
             ],
             [
                 'type' => 'bills', 'category' => 'insurance', 'label' => $labels['categories']['insurance'],
                 'planned' => 45,
-                'tx_prev' => [['amount' => 45, 'desc' => $l['insurance'], 'day' => 8]],
-                'tx_current' => [['amount' => 45, 'desc' => $l['insurance'], 'day' => 8]],
+                'tx_prev' => [['amount' => 45, 'desc' => $transactionLabels['insurance'], 'day' => 8]],
+                'tx_current' => [['amount' => 45, 'desc' => $transactionLabels['insurance'], 'day' => 8]],
             ],
 
             // ── Expenses ──
@@ -249,60 +249,60 @@ class TourSeederService
                 'type' => 'expenses', 'category' => 'groceries', 'label' => $labels['categories']['groceries'],
                 'planned' => 400,
                 'tx_prev' => [
-                    ['amount' => 65, 'desc' => $l['supermarket'], 'day' => 2],
-                    ['amount' => 42, 'desc' => $l['supermarket'], 'day' => 6],
-                    ['amount' => 58, 'desc' => $l['market'], 'day' => 9],
-                    ['amount' => 71, 'desc' => $l['supermarket'], 'day' => 13],
-                    ['amount' => 35, 'desc' => $l['bakery'], 'day' => 17],
-                    ['amount' => 55, 'desc' => $l['supermarket'], 'day' => 21],
-                    ['amount' => 54, 'desc' => $l['market'], 'day' => 26],
+                    ['amount' => 65, 'desc' => $transactionLabels['supermarket'], 'day' => 2],
+                    ['amount' => 42, 'desc' => $transactionLabels['supermarket'], 'day' => 6],
+                    ['amount' => 58, 'desc' => $transactionLabels['market'], 'day' => 9],
+                    ['amount' => 71, 'desc' => $transactionLabels['supermarket'], 'day' => 13],
+                    ['amount' => 35, 'desc' => $transactionLabels['bakery'], 'day' => 17],
+                    ['amount' => 55, 'desc' => $transactionLabels['supermarket'], 'day' => 21],
+                    ['amount' => 54, 'desc' => $transactionLabels['market'], 'day' => 26],
                 ],
                 'tx_current' => [
-                    ['amount' => 72, 'desc' => $l['supermarket'], 'day' => 1],
-                    ['amount' => 48, 'desc' => $l['market'], 'day' => 5],
-                    ['amount' => 55, 'desc' => $l['supermarket'], 'day' => 9],
-                    ['amount' => 45, 'desc' => $l['bakery'], 'day' => 12],
+                    ['amount' => 72, 'desc' => $transactionLabels['supermarket'], 'day' => 1],
+                    ['amount' => 48, 'desc' => $transactionLabels['market'], 'day' => 5],
+                    ['amount' => 55, 'desc' => $transactionLabels['supermarket'], 'day' => 9],
+                    ['amount' => 45, 'desc' => $transactionLabels['bakery'], 'day' => 12],
                 ],
             ],
             [
                 'type' => 'expenses', 'category' => 'transport', 'label' => $labels['categories']['transport'],
                 'planned' => 75,
                 'tx_prev' => [
-                    ['amount' => 40, 'desc' => $l['transit_pass'], 'day' => 1],
-                    ['amount' => 15, 'desc' => $l['taxi'], 'day' => 14],
-                    ['amount' => 15, 'desc' => $l['fuel'], 'day' => 22],
+                    ['amount' => 40, 'desc' => $transactionLabels['transit_pass'], 'day' => 1],
+                    ['amount' => 15, 'desc' => $transactionLabels['taxi'], 'day' => 14],
+                    ['amount' => 15, 'desc' => $transactionLabels['fuel'], 'day' => 22],
                 ],
                 'tx_current' => [
-                    ['amount' => 40, 'desc' => $l['transit_pass'], 'day' => 1],
-                    ['amount' => 12, 'desc' => $l['taxi'], 'day' => 8],
+                    ['amount' => 40, 'desc' => $transactionLabels['transit_pass'], 'day' => 1],
+                    ['amount' => 12, 'desc' => $transactionLabels['taxi'], 'day' => 8],
                 ],
             ],
             [
                 'type' => 'expenses', 'category' => 'restaurants', 'label' => $labels['categories']['restaurants'],
                 'planned' => 120,
                 'tx_prev' => [
-                    ['amount' => 32, 'desc' => $l['restaurant'], 'day' => 4],
-                    ['amount' => 28, 'desc' => $l['restaurant'], 'day' => 11],
-                    ['amount' => 45, 'desc' => $l['dinner_friends'], 'day' => 18],
-                    ['amount' => 30, 'desc' => $l['restaurant'], 'day' => 25],
+                    ['amount' => 32, 'desc' => $transactionLabels['restaurant'], 'day' => 4],
+                    ['amount' => 28, 'desc' => $transactionLabels['restaurant'], 'day' => 11],
+                    ['amount' => 45, 'desc' => $transactionLabels['dinner_friends'], 'day' => 18],
+                    ['amount' => 30, 'desc' => $transactionLabels['restaurant'], 'day' => 25],
                 ],
                 'tx_current' => [
-                    ['amount' => 35, 'desc' => $l['restaurant'], 'day' => 3],
-                    ['amount' => 25, 'desc' => $l['restaurant'], 'day' => 10],
+                    ['amount' => 35, 'desc' => $transactionLabels['restaurant'], 'day' => 3],
+                    ['amount' => 25, 'desc' => $transactionLabels['restaurant'], 'day' => 10],
                 ],
             ],
             [
                 'type' => 'expenses', 'category' => 'leisure', 'label' => $labels['categories']['leisure'],
                 'planned' => 100,
                 'tx_prev' => [
-                    ['amount' => 15, 'desc' => $l['cinema'], 'day' => 7],
-                    ['amount' => 12, 'desc' => $l['streaming'], 'day' => 10],
-                    ['amount' => 35, 'desc' => $l['concert'], 'day' => 20],
-                    ['amount' => 23, 'desc' => $l['books'], 'day' => 27],
+                    ['amount' => 15, 'desc' => $transactionLabels['cinema'], 'day' => 7],
+                    ['amount' => 12, 'desc' => $transactionLabels['streaming'], 'day' => 10],
+                    ['amount' => 35, 'desc' => $transactionLabels['concert'], 'day' => 20],
+                    ['amount' => 23, 'desc' => $transactionLabels['books'], 'day' => 27],
                 ],
                 'tx_current' => [
-                    ['amount' => 12, 'desc' => $l['streaming'], 'day' => 1],
-                    ['amount' => 28, 'desc' => $l['cinema'], 'day' => 6],
+                    ['amount' => 12, 'desc' => $transactionLabels['streaming'], 'day' => 1],
+                    ['amount' => 28, 'desc' => $transactionLabels['cinema'], 'day' => 6],
                 ],
             ],
 
@@ -310,16 +310,16 @@ class TourSeederService
             [
                 'type' => 'savings', 'category' => 'savings', 'label' => $labels['categories']['savings'],
                 'planned' => 200,
-                'tx_prev' => [['amount' => 200, 'desc' => $l['savings_transfer'], 'day' => 2]],
-                'tx_current' => [['amount' => 200, 'desc' => $l['savings_transfer'], 'day' => 2]],
+                'tx_prev' => [['amount' => 200, 'desc' => $transactionLabels['savings_transfer'], 'day' => 2]],
+                'tx_current' => [['amount' => 200, 'desc' => $transactionLabels['savings_transfer'], 'day' => 2]],
             ],
 
             // ── Debt ──
             [
                 'type' => 'debt', 'category' => 'student_loan', 'label' => $labels['categories']['student_loan'],
                 'planned' => 150,
-                'tx_prev' => [['amount' => 150, 'desc' => $l['loan_payment'], 'day' => 5]],
-                'tx_current' => [['amount' => 150, 'desc' => $l['loan_payment'], 'day' => 5]],
+                'tx_prev' => [['amount' => 150, 'desc' => $transactionLabels['loan_payment'], 'day' => 5]],
+                'tx_current' => [['amount' => 150, 'desc' => $transactionLabels['loan_payment'], 'day' => 5]],
             ],
         ];
     }

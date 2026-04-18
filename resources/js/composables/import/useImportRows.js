@@ -10,19 +10,19 @@ export function useImportRows(walletId) {
 
     function loadRows(data, defaultCategory) {
         const suggestions = data.suggestions || {};
-        rows.value = data.rows.map((r, i) => {
-            const pattern = (r.description || '').trim().toLowerCase();
+        rows.value = data.rows.map((row, index) => {
+            const pattern = (row.description || '').trim().toLowerCase();
             return {
-                ...r,
-                _id: i,
+                ...row,
+                _id: index,
                 category_id: defaultCategory || suggestions[pattern] || '',
             };
         });
     }
 
     function applyBulkCategory(catId) {
-        rows.value.forEach((r) => {
-            r.category_id = catId;
+        rows.value.forEach((row) => {
+            row.category_id = catId;
         });
     }
 
@@ -39,17 +39,17 @@ export function useImportRows(walletId) {
     }
 
     function removeRow(id) {
-        rows.value = rows.value.filter((r) => r._id !== id);
+        rows.value = rows.value.filter((row) => row._id !== id);
     }
 
-    const allCategorized = computed(() => rows.value.length > 0 && rows.value.every((r) => r.category_id));
+    const allCategorized = computed(() => rows.value.length > 0 && rows.value.every((row) => row.category_id));
 
     function submitImport() {
         processing.value = true;
         router.post(
             '/import/process',
             {
-                rows: rows.value.map(({ _id, ...r }) => r),
+                rows: rows.value.map(({ _id, ...rowData }) => rowData),
                 wallet_id: walletId.value,
             },
             {

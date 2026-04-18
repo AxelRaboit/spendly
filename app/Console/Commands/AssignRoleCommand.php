@@ -31,7 +31,7 @@ class AssignRoleCommand extends Command
         try {
             $role = UserRole::from($roleName);
         } catch (ValueError) {
-            $this->error('Role must be one of: '.implode(', ', array_map(fn ($r) => $r->value, UserRole::cases())));
+            $this->error('Role must be one of: '.implode(', ', array_map(fn ($enumCase) => $enumCase->value, UserRole::cases())));
 
             return 1;
         }

@@ -16,8 +16,8 @@ const props = defineProps({
     },
 });
 
-const closeOnEscape = (e) => {
-    if (open.value && e.key === 'Escape') {
+const closeOnEscape = (event) => {
+    if (open.value && event.key === 'Escape') {
         open.value = false;
     }
 };

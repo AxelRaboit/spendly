@@ -4,21 +4,21 @@ function isDark() {
     return document.documentElement.classList.contains('dark');
 }
 
-function render(btn) {
-    btn.querySelector('.icon-moon').classList.toggle('hidden', isDark());
-    btn.querySelector('.icon-sun').classList.toggle('hidden', !isDark());
+function render(buttonElement) {
+    buttonElement.querySelector('.icon-moon').classList.toggle('hidden', isDark());
+    buttonElement.querySelector('.icon-sun').classList.toggle('hidden', !isDark());
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const btn = document.getElementById('theme-toggle');
-    if (!btn) return;
+    const themeButton = document.getElementById('theme-toggle');
+    if (!themeButton) return;
 
-    btn.addEventListener('click', function () {
+    themeButton.addEventListener('click', function () {
         const dark = !isDark();
         document.documentElement.classList.toggle('dark', dark);
         localStorage.setItem(KEY, dark ? 'dark' : 'light');
-        render(btn);
+        render(themeButton);
     });
 
-    render(btn);
+    render(themeButton);
 });

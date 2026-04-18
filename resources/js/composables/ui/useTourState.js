@@ -14,8 +14,8 @@ const tourActive = ref(false);
 
 function _readActive() {
     try {
-        const s = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') ?? null;
-        return s !== null && !s.completed && !s.skipped;
+        const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') ?? null;
+        return savedState !== null && !savedState.completed && !savedState.skipped;
     } catch {
         return false;
     }
@@ -45,8 +45,8 @@ export function useTourState() {
     }
 
     function isCompleted() {
-        const s = getState();
-        return s?.completed === true || s?.skipped === true;
+        const savedState = getState();
+        return savedState?.completed === true || savedState?.skipped === true;
     }
 
     function startTour() {

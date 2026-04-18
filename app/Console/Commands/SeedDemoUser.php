@@ -349,7 +349,7 @@ class SeedDemoUser extends Command
         $categories = $this->createCategories($user, $wallet);
 
         // 12 months: index 0 = M-11 (oldest), index 11 = M-0 (current)
-        $months = collect(range(11, 0))->map(fn ($n) => now()->subMonths($n)->startOfMonth())->all();
+        $months = collect(range(11, 0))->map(fn ($monthOffset) => now()->subMonths($monthOffset)->startOfMonth())->all();
 
         foreach ($months as $month) {
             $transferService->create($user, [
@@ -469,10 +469,10 @@ class SeedDemoUser extends Command
         array $categories,
         int $monthIndex,
     ): void {
-        $y = $month->year;
-        $m = $month->month;
+        $year = $month->year;
+        $monthNumber = $month->month;
 
-        $createTx = function (string $cat, float $amount, int $day, string $desc, string $type, array $tags) use ($user, $wallet, $categories, $y, $m): void {
+        $createTx = function (string $cat, float $amount, int $day, string $desc, string $type, array $tags) use ($user, $wallet, $categories, $year, $monthNumber): void {
             Transaction::create([
                 'user_id' => $user->id,
                 'wallet_id' => $wallet->id,
@@ -480,7 +480,7 @@ class SeedDemoUser extends Command
                 'type' => $type,
                 'amount' => round($amount, 2),
                 'description' => $desc,
-                'date' => Carbon::create($y, $m, min($day, Carbon::create($y, $m, 1)->endOfMonth()->day))->toDateString(),
+                'date' => Carbon::create($year, $monthNumber, min($day, Carbon::create($year, $monthNumber, 1)->endOfMonth()->day))->toDateString(),
                 'tags' => $tags ?: null,
             ]);
         };

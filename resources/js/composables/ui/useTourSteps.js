@@ -10,7 +10,7 @@ import { BudgetSection } from '@/enums/BudgetSection';
 import { nextTick } from 'vue';
 
 export function useTourSteps() {
-    const { t } = useI18n();
+    const { t: translate } = useI18n();
 
     // ── Utility Helpers ──
     function isMobile() {
@@ -22,25 +22,25 @@ export function useTourSteps() {
      */
     function getVisibleEl(selector) {
         const els = document.querySelectorAll(selector);
-        for (const el of els) {
-            if (el.offsetParent !== null) return el;
+        for (const element of els) {
+            if (element.offsetParent !== null) return element;
         }
         return document.querySelector(selector) ?? undefined;
     }
 
     function showActions(itemId) {
-        const el = document.querySelector(`[data-tour-actions="${itemId}"]`);
-        if (el) {
-            el.classList.remove('opacity-0');
-            el.classList.add('opacity-100');
+        const actionElement = document.querySelector(`[data-tour-actions="${itemId}"]`);
+        if (actionElement) {
+            actionElement.classList.remove('opacity-0');
+            actionElement.classList.add('opacity-100');
         }
     }
 
     function hideActions(itemId) {
-        const el = document.querySelector(`[data-tour-actions="${itemId}"]`);
-        if (el) {
-            el.classList.remove('opacity-100');
-            el.classList.add('opacity-0');
+        const actionElement = document.querySelector(`[data-tour-actions="${itemId}"]`);
+        if (actionElement) {
+            actionElement.classList.remove('opacity-100');
+            actionElement.classList.add('opacity-0');
         }
     }
 
@@ -51,9 +51,9 @@ export function useTourSteps() {
         if (!panel) return null;
         const rect = panel.getBoundingClientRect();
         if (!rect.width) return null;
-        const el = document.createElement('div');
-        el.id = 'tour-panel-anchor';
-        Object.assign(el.style, {
+        const anchorElement = document.createElement('div');
+        anchorElement.id = 'tour-panel-anchor';
+        Object.assign(anchorElement.style, {
             position: 'fixed',
             top: `${Math.round(rect.top + rect.height * 0.3)}px`,
             left: `${rect.left}px`,
@@ -62,8 +62,8 @@ export function useTourSteps() {
             pointerEvents: 'none',
             zIndex: '10002',
         });
-        document.body.appendChild(el);
-        return el;
+        document.body.appendChild(anchorElement);
+        return anchorElement;
     }
 
     function removePanelAnchor() {
@@ -97,14 +97,14 @@ export function useTourSteps() {
             panel.appendChild(overlay);
         }
         // Reset previous lifted field
-        panel.querySelectorAll('.tour-field-lifted').forEach((el) => {
-            el.classList.remove('tour-field-lifted');
-            el.style.position = '';
-            el.style.zIndex = '';
-            el.style.backgroundColor = '';
-            el.style.borderRadius = '';
-            el.style.padding = '';
-            el.style.margin = '';
+        panel.querySelectorAll('.tour-field-lifted').forEach((tourField) => {
+            tourField.classList.remove('tour-field-lifted');
+            tourField.style.position = '';
+            tourField.style.zIndex = '';
+            tourField.style.backgroundColor = '';
+            tourField.style.borderRadius = '';
+            tourField.style.padding = '';
+            tourField.style.margin = '';
         });
         // Lift the active field above the overlay
         const field = panel.querySelector(activeSelector);
@@ -122,14 +122,14 @@ export function useTourSteps() {
     function removePanelOverlay() {
         const overlay = document.getElementById(PANEL_OVERLAY_ID);
         if (overlay) overlay.remove();
-        document.querySelectorAll('.tour-field-lifted').forEach((el) => {
-            el.classList.remove('tour-field-lifted');
-            el.style.position = '';
-            el.style.zIndex = '';
-            el.style.backgroundColor = '';
-            el.style.borderRadius = '';
-            el.style.padding = '';
-            el.style.margin = '';
+        document.querySelectorAll('.tour-field-lifted').forEach((tourField) => {
+            tourField.classList.remove('tour-field-lifted');
+            tourField.style.position = '';
+            tourField.style.zIndex = '';
+            tourField.style.backgroundColor = '';
+            tourField.style.borderRadius = '';
+            tourField.style.padding = '';
+            tourField.style.margin = '';
         });
     }
 
@@ -157,10 +157,10 @@ export function useTourSteps() {
             total = offset + steps.length;
         }
 
-        const ofText = t('tour.progressOf');
-        steps.forEach((step, i) => {
+        const ofText = translate('tour.progressOf');
+        steps.forEach((step, index) => {
             step.popover = step.popover || {};
-            step.popover.progressText = `${offset + i + 1} ${ofText} ${total}`;
+            step.popover.progressText = `${offset + index + 1} ${ofText} ${total}`;
         });
     }
 
@@ -178,8 +178,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="month-nav"]',
                 popover: {
-                    title: t('tour.stepMonthNav.title'),
-                    description: t('tour.stepMonthNav.desc'),
+                    title: translate('tour.stepMonthNav.title'),
+                    description: translate('tour.stepMonthNav.desc'),
                     side: 'bottom',
                     align: 'center',
                 },
@@ -188,8 +188,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="kpi-section"]',
                 popover: {
-                    title: t('tour.stepPrevKpi.title'),
-                    description: t('tour.stepPrevKpi.desc'),
+                    title: translate('tour.stepPrevKpi.title'),
+                    description: translate('tour.stepPrevKpi.desc'),
                     side: 'bottom',
                     align: 'start',
                     onPopoverRender: (_, { driver: d }) => {
@@ -204,8 +204,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="budget-notes"]',
                 popover: {
-                    title: t('tour.stepNotes.title'),
-                    description: t('tour.stepNotes.desc'),
+                    title: translate('tour.stepNotes.title'),
+                    description: translate('tour.stepNotes.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -214,8 +214,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="budget-table"]',
                 popover: {
-                    title: t('tour.stepTable.title'),
-                    description: t('tour.stepTable.desc'),
+                    title: translate('tour.stepTable.title'),
+                    description: translate('tour.stepTable.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -224,8 +224,8 @@ export function useTourSteps() {
             {
                 element: getVisibleEl('[data-tour-section="income"]'),
                 popover: {
-                    title: t('tour.section.income.title'),
-                    description: t('tour.section.income.desc'),
+                    title: translate('tour.section.income.title'),
+                    description: translate('tour.section.income.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -236,8 +236,8 @@ export function useTourSteps() {
                       {
                           element: firstRow,
                           popover: {
-                              title: t('tour.stepRow.title'),
-                              description: t('tour.stepRow.desc'),
+                              title: translate('tour.stepRow.title'),
+                              description: translate('tour.stepRow.desc'),
                               side: 'bottom',
                               align: 'start',
                           },
@@ -250,8 +250,8 @@ export function useTourSteps() {
                       {
                           element: getVisibleEl(`[data-tour-actions="${firstItemId}"]`),
                           popover: {
-                              title: t('tour.stepRowActions.title'),
-                              description: t('tour.stepRowActions.desc'),
+                              title: translate('tour.stepRowActions.title'),
+                              description: translate('tour.stepRowActions.desc'),
                               side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                               onPopoverRender: () => showActions(firstItemId),
@@ -268,8 +268,8 @@ export function useTourSteps() {
                           {
                               element: actualCell,
                               popover: {
-                                  title: t('tour.stepActualAmount.title'),
-                                  description: t('tour.stepActualAmount.desc'),
+                                  title: translate('tour.stepActualAmount.title'),
+                                  description: translate('tour.stepActualAmount.desc'),
                                   side: isMobile() ? 'bottom' : 'left',
                                   align: 'center',
                               },
@@ -285,8 +285,8 @@ export function useTourSteps() {
                     setTimeout(() => createPanelAnchor('[data-tour="detail-panel"]'), 100);
                 },
                 popover: {
-                    title: t('tour.stepDetailPanel.title'),
-                    description: t('tour.stepDetailPanel.desc'),
+                    title: translate('tour.stepDetailPanel.title'),
+                    description: translate('tour.stepDetailPanel.desc'),
                     side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
@@ -302,8 +302,8 @@ export function useTourSteps() {
             {
                 element: getVisibleEl('[data-tour-add-line="income"]'),
                 popover: {
-                    title: t('tour.stepAddLine.title'),
-                    description: t('tour.stepAddLine.desc'),
+                    title: translate('tour.stepAddLine.title'),
+                    description: translate('tour.stepAddLine.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -315,8 +315,8 @@ export function useTourSteps() {
                     if (pageHooks.openAddLine) pageHooks.openAddLine();
                 },
                 popover: {
-                    title: t('tour.stepAddLineForm.title'),
-                    description: t('tour.stepAddLineForm.desc'),
+                    title: translate('tour.stepAddLineForm.title'),
+                    description: translate('tour.stepAddLineForm.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -325,8 +325,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-label"]'),
                 popover: {
-                    title: t('tour.addField.label.title'),
-                    description: t('tour.addField.label.desc'),
+                    title: translate('tour.addField.label.title'),
+                    description: translate('tour.addField.label.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -334,8 +334,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-category"]'),
                 popover: {
-                    title: t('tour.addField.category.title'),
-                    description: t('tour.addField.category.desc'),
+                    title: translate('tour.addField.category.title'),
+                    description: translate('tour.addField.category.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -343,8 +343,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-amount"]'),
                 popover: {
-                    title: t('tour.addField.amount.title'),
-                    description: t('tour.addField.amount.desc'),
+                    title: translate('tour.addField.amount.title'),
+                    description: translate('tour.addField.amount.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -352,8 +352,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-target"]'),
                 popover: {
-                    title: t('tour.addField.target.title'),
-                    description: t('tour.addField.target.desc'),
+                    title: translate('tour.addField.target.title'),
+                    description: translate('tour.addField.target.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -363,12 +363,12 @@ export function useTourSteps() {
             },
             // 16-19. Remaining sections (continue scrolling down)
             ...[BudgetSection.Savings, BudgetSection.Bills, BudgetSection.Expenses, BudgetSection.Debt]
-                .filter((s) => !!getVisibleEl(`[data-tour-section="${s}"]`))
-                .map((s) => ({
-                    element: getVisibleEl(`[data-tour-section="${s}"]`),
+                .filter((section) => !!getVisibleEl(`[data-tour-section="${section}"]`))
+                .map((section) => ({
+                    element: getVisibleEl(`[data-tour-section="${section}"]`),
                     popover: {
-                        title: t(`tour.section.${s}.title`),
-                        description: t(`tour.section.${s}.desc`),
+                        title: translate(`tour.section.${section}.title`),
+                        description: translate(`tour.section.${section}.desc`),
                         side: 'bottom',
                         align: 'start',
                     },
@@ -377,8 +377,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="new-transaction"]',
                 popover: {
-                    title: t('tour.stepTransaction.title'),
-                    description: t('tour.stepTransaction.desc'),
+                    title: translate('tour.stepTransaction.title'),
+                    description: translate('tour.stepTransaction.desc'),
                     side: 'bottom',
                     align: 'end',
                 },
@@ -392,8 +392,8 @@ export function useTourSteps() {
                     setTimeout(() => createPanelAnchor('[data-tour="tx-panel"]'), 100);
                 },
                 popover: {
-                    title: t('tour.stepTxPanel.title'),
-                    description: t('tour.stepTxPanel.desc'),
+                    title: translate('tour.stepTxPanel.title'),
+                    description: translate('tour.stepTxPanel.desc'),
                     side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
@@ -437,8 +437,8 @@ export function useTourSteps() {
                       {
                           element: carriedOverCell,
                           popover: {
-                              title: t('tour.stepCarryOver.title'),
-                              description: t('tour.stepCarryOver.desc'),
+                              title: translate('tour.stepCarryOver.title'),
+                              description: translate('tour.stepCarryOver.desc'),
                               side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                           },

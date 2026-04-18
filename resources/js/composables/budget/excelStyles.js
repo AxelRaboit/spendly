@@ -8,14 +8,14 @@ export const XLSX_COLORS = {
 };
 
 export function xStyle(opts) {
-    const s = {};
-    if (opts.bg) s.fill = { patternType: 'solid', fgColor: { rgb: opts.bg } };
-    if (opts.color) s.font = { ...(s.font ?? {}), color: { rgb: opts.color } };
-    if (opts.bold) s.font = { ...(s.font ?? {}), bold: true };
-    if (opts.sz) s.font = { ...(s.font ?? {}), sz: opts.sz };
-    if (opts.numFmt) s.numFmt = opts.numFmt;
-    s.alignment = { horizontal: opts.align ?? 'left', vertical: 'center' };
-    return s;
+    const styles = {};
+    if (opts.bg) styles.fill = { patternType: 'solid', fgColor: { rgb: opts.bg } };
+    if (opts.color) styles.font = { ...(styles.font ?? {}), color: { rgb: opts.color } };
+    if (opts.bold) styles.font = { ...(styles.font ?? {}), bold: true };
+    if (opts.sz) styles.font = { ...(styles.font ?? {}), sz: opts.sz };
+    if (opts.numFmt) styles.numFmt = opts.numFmt;
+    styles.alignment = { horizontal: opts.align ?? 'left', vertical: 'center' };
+    return styles;
 }
 
 export function diffColor(val, positiveIsGood) {

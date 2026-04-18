@@ -14,7 +14,7 @@ import { useTourState } from './useTourState';
 import { useTourSteps } from './useTourSteps';
 
 export function useTourDriver() {
-    const { t } = useI18n();
+    const { t: translate } = useI18n();
     const { getState, setState, isActive } = useTourState();
     const {
         buildPrevMonthSteps,
@@ -77,25 +77,30 @@ export function useTourDriver() {
      */
     function runPage0() {
         setTimeout(() => {
-            const el = document.querySelector('[data-tour="create-wallet"]');
-            const step = el
+            const tourElement = document.querySelector('[data-tour="create-wallet"]');
+            const step = tourElement
                 ? {
                       element: '[data-tour="create-wallet"]',
                       popover: {
-                          title: t('tour.stepWelcome.title'),
-                          description: t('tour.stepWelcome.desc'),
+                          title: translate('tour.stepWelcome.title'),
+                          description: translate('tour.stepWelcome.desc'),
                           side: 'bottom',
                           align: 'end',
                       },
                   }
-                : { popover: { title: t('tour.stepWelcome.title'), description: t('tour.stepWelcome.desc') } };
+                : {
+                      popover: {
+                          title: translate('tour.stepWelcome.title'),
+                          description: translate('tour.stepWelcome.desc'),
+                      },
+                  };
 
             const driverObj = driver({
                 ...baseDriverConfig(),
                 showProgress: false,
                 showButtons: ['next', 'close'],
-                nextBtnText: t('tour.next'),
-                doneBtnText: t('tour.next'),
+                nextBtnText: translate('tour.next'),
+                doneBtnText: translate('tour.next'),
                 steps: [step],
                 onNextClick: async () => {
                     driverObj.destroy();
@@ -122,8 +127,8 @@ export function useTourDriver() {
             const prevMonth = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, '0')}`;
             setState({ page: 1, walletId });
             window.location.href = route('wallets.budget.show', walletId) + `?month=${prevMonth}`;
-        } catch (e) {
-            console.error('[Tour] seed failed:', e);
+        } catch (exception) {
+            console.error('[Tour] seed failed:', exception);
             setState({ skipped: true });
         }
     }
@@ -147,9 +152,9 @@ export function useTourDriver() {
                 ...baseDriverConfig(),
                 showProgress: true,
                 showButtons: ['next', 'previous', 'close'],
-                nextBtnText: t('tour.next'),
-                prevBtnText: t('tour.prev'),
-                doneBtnText: t('tour.next'),
+                nextBtnText: translate('tour.next'),
+                prevBtnText: translate('tour.prev'),
+                doneBtnText: translate('tour.next'),
                 steps,
                 onNextClick: async () => {
                     if (driverObj.hasNextStep()) {
@@ -232,8 +237,8 @@ export function useTourDriver() {
                 ...baseDriverConfig(),
                 showProgress: true,
                 showButtons: ['next', 'close'],
-                nextBtnText: t('tour.finish'),
-                doneBtnText: t('tour.finish'),
+                nextBtnText: translate('tour.finish'),
+                doneBtnText: translate('tour.finish'),
                 steps,
                 onNextClick: async () => {
                     driverObj.destroy();

@@ -23,16 +23,16 @@ export function useCurrency() {
         () =>
             new Intl.NumberFormat(intlLocale.value, { style: 'currency', currency: currency.value })
                 .formatToParts(0)
-                .find((p) => p.type === 'currency')?.value ?? currency.value
+                .find((part) => part.type === 'currency')?.value ?? currency.value
     );
 
     function fmt(value, sign = false) {
-        const n = Number(value);
+        const numericValue = Number(value);
         return new Intl.NumberFormat(intlLocale.value, {
             style: 'currency',
             currency: currency.value,
             signDisplay: sign ? 'exceptZero' : 'auto',
-        }).format(n);
+        }).format(numericValue);
     }
 
     return { fmt, currency, symbol };

@@ -33,16 +33,18 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
         const result = {};
         for (const [key, items] of Object.entries(sections.value)) {
             result[key] = {
-                planned: items.reduce((s, i) => s + i.planned_amount, 0),
-                carried: items.reduce((s, i) => s + (i.carried_over ?? 0), 0),
-                actual: items.reduce((s, i) => s + i.actual_amount, 0),
-                available: items.reduce((s, i) => s + (i.available ?? 0), 0),
+                planned: items.reduce((sum, item) => sum + item.planned_amount, 0),
+                carried: items.reduce((sum, item) => sum + (item.carried_over ?? 0), 0),
+                actual: items.reduce((sum, item) => sum + item.actual_amount, 0),
+                available: items.reduce((sum, item) => sum + (item.available ?? 0), 0),
             };
         }
         return result;
     });
 
-    const totalCarriedOver = computed(() => ALL_SECTIONS.reduce((s, k) => s + (totals.value[k]?.carried ?? 0), 0));
+    const totalCarriedOver = computed(() =>
+        ALL_SECTIONS.reduce((sum, key) => sum + (totals.value[key]?.carried ?? 0), 0)
+    );
 
     const totalIncome = computed(() => ({
         planned: totals.value[BudgetSection.Income]?.planned ?? 0,
@@ -50,9 +52,9 @@ export function useBudgetTotals(sections, startBalance, budget = null, unbudgete
     }));
 
     const totalExpenses = computed(() => ({
-        planned: EXPENSE_SECTIONS.reduce((s, k) => s + (totals.value[k]?.planned ?? 0), 0),
+        planned: EXPENSE_SECTIONS.reduce((sum, key) => sum + (totals.value[key]?.planned ?? 0), 0),
         actual:
-            EXPENSE_SECTIONS.reduce((s, k) => s + (totals.value[k]?.actual ?? 0), 0) +
+            EXPENSE_SECTIONS.reduce((sum, key) => sum + (totals.value[key]?.actual ?? 0), 0) +
             (unbudgeted?.value?.expenses ?? 0),
     }));
 

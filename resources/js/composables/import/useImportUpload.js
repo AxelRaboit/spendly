@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import axios from 'axios';
 
-export function useImportUpload(wallets, t, onPreviewSuccess) {
+export function useImportUpload(wallets, translate, onPreviewSuccess) {
     const step = ref(1);
     const file = ref(null);
     const isDragging = ref(false);
@@ -11,29 +11,29 @@ export function useImportUpload(wallets, t, onPreviewSuccess) {
 
     const selectedWalletName = computed(() => wallets.find((w) => w.id == walletId.value)?.name ?? '');
 
-    function onFileInput(e) {
-        const f = e.target.files?.[0];
-        if (f) selectFile(f);
+    function onFileInput(event) {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) selectFile(selectedFile);
     }
 
-    function onDrop(e) {
+    function onDrop(event) {
         isDragging.value = false;
-        const f = e.dataTransfer.files?.[0];
-        if (f) selectFile(f);
+        const droppedFile = event.dataTransfer.files?.[0];
+        if (droppedFile) selectFile(droppedFile);
     }
 
-    function selectFile(f) {
-        if (!f.name.match(/\.xlsx$/i)) {
-            uploadError.value = t('import.errorFile');
+    function selectFile(uploadedFile) {
+        if (!uploadedFile.name.match(/\.xlsx$/i)) {
+            uploadError.value = translate('import.errorFile');
             return;
         }
-        file.value = f;
+        file.value = uploadedFile;
         uploadError.value = '';
     }
 
     async function uploadAndPreview(bulkCategory, onRows) {
         if (!file.value) {
-            uploadError.value = t('import.errorFile');
+            uploadError.value = translate('import.errorFile');
             return;
         }
         uploading.value = true;
@@ -43,13 +43,13 @@ export function useImportUpload(wallets, t, onPreviewSuccess) {
         fd.append('file', file.value);
 
         try {
-            const res = await axios.post('/import/preview', fd, {
+            const response = await axios.post('/import/preview', fd, {
                 headers: { 'Content-Type': 'multipart/form-data', 'X-Requested-With': 'XMLHttpRequest' },
             });
-            onRows(res.data, bulkCategory);
+            onRows(response.data, bulkCategory);
             step.value = 2;
         } catch (err) {
-            uploadError.value = err.response?.data?.message ?? t('import.errorParse');
+            uploadError.value = err.response?.data?.message ?? translate('import.errorParse');
         } finally {
             uploading.value = false;
         }

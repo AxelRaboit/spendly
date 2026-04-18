@@ -9,14 +9,14 @@ const props = defineProps({
     size:     { type: Number, default: 180 },
 });
 
-const cx  = computed(() => props.size / 2);
-const cy  = computed(() => props.size / 2);
-const r   = computed(() => props.size * 0.34);
-const sw  = computed(() => props.size * 0.065);
-const C   = computed(() => 2 * Math.PI * r.value);
+const centerX       = computed(() => props.size / 2);
+const centerY       = computed(() => props.size / 2);
+const radius        = computed(() => props.size * 0.34);
+const strokeWidth   = computed(() => props.size * 0.065);
+const circumference = computed(() => 2 * Math.PI * radius.value);
 
 // 270° arc
-const arcLen = computed(() => 0.75 * C.value);
+const arcLen = computed(() => 0.75 * circumference.value);
 
 const pct = computed(() => {
     if (!props.total || props.total <= 0) return 0;
@@ -37,46 +37,46 @@ const color = computed(() => {
     <div class="flex flex-col items-center overflow-hidden" :style="{ height: size * 0.86 + 'px' }">
         <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
             <circle
-                :cx="cx"
-                :cy="cy"
-                :r="r"
+                :cx="centerX"
+                :cy="centerY"
+                :r="radius"
                 fill="none"
                 stroke="var(--th-surface-3)"
-                :stroke-width="sw"
-                :stroke-dasharray="`${arcLen} ${C - arcLen}`"
+                :stroke-width="strokeWidth"
+                :stroke-dasharray="`${arcLen} ${circumference - arcLen}`"
                 stroke-linecap="round"
-                :transform="`rotate(135, ${cx}, ${cy})`"
+                :transform="`rotate(135, ${centerX}, ${centerY})`"
             />
 
             <circle
-                :cx="cx"
-                :cy="cy"
-                :r="r"
+                :cx="centerX"
+                :cy="centerY"
+                :r="radius"
                 fill="none"
                 stroke="var(--color-border)"
                 :stroke-width="sw * 0.15"
-                :stroke-dasharray="`${arcLen} ${C - arcLen}`"
+                :stroke-dasharray="`${arcLen} ${circumference - arcLen}`"
                 stroke-linecap="round"
-                :transform="`rotate(135, ${cx}, ${cy})`"
+                :transform="`rotate(135, ${centerX}, ${centerY})`"
             />
 
             <circle
                 v-if="pct > 0"
-                :cx="cx"
-                :cy="cy"
-                :r="r"
+                :cx="centerX"
+                :cy="centerY"
+                :r="radius"
                 fill="none"
                 :stroke="color"
-                :stroke-width="sw"
-                :stroke-dasharray="`${fillLen} ${C - fillLen}`"
+                :stroke-width="strokeWidth"
+                :stroke-dasharray="`${fillLen} ${circumference - fillLen}`"
                 stroke-linecap="round"
-                :transform="`rotate(135, ${cx}, ${cy})`"
+                :transform="`rotate(135, ${centerX}, ${centerY})`"
                 style="transition: stroke-dasharray 0.6s cubic-bezier(.4,0,.2,1), stroke 0.4s ease"
             />
 
             <text
-                :x="cx"
-                :y="cy - size * 0.06"
+                :x="centerX"
+                :y="centerY - size * 0.06"
                 text-anchor="middle"
                 dominant-baseline="middle"
                 :font-size="size * 0.13"
@@ -86,8 +86,8 @@ const color = computed(() => {
             >{{ center }}</text>
 
             <text
-                :x="cx"
-                :y="cy + size * 0.09"
+                :x="centerX"
+                :y="centerY + size * 0.09"
                 text-anchor="middle"
                 dominant-baseline="middle"
                 :font-size="size * 0.072"
@@ -96,8 +96,8 @@ const color = computed(() => {
             >{{ sublabel }}</text>
 
             <text
-                :x="cx"
-                :y="cy + size * 0.23"
+                :x="centerX"
+                :y="centerY + size * 0.23"
                 text-anchor="middle"
                 dominant-baseline="middle"
                 :font-size="size * 0.09"

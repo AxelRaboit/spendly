@@ -9,7 +9,7 @@ export const ROLE_COLORS = {
 };
 
 export function useWalletMembers(walletId, show) {
-    const { t } = useI18n();
+    const { t: translate } = useI18n();
 
     const members = ref([]);
     const invitations = ref([]);
@@ -24,15 +24,15 @@ export function useWalletMembers(walletId, show) {
     }
 
     function handleError(err) {
-        error.value = err.response?.data?.message || t('common.error');
+        error.value = err.response?.data?.message || translate('common.error');
     }
 
     async function loadMembers() {
         loading.value = true;
         try {
-            const res = await window.axios.get(`/wallets/${walletId.value}/members`);
-            members.value = res.data.members;
-            invitations.value = res.data.invitations;
+            const response = await window.axios.get(`/wallets/${walletId.value}/members`);
+            members.value = response.data.members;
+            invitations.value = response.data.invitations;
         } finally {
             loading.value = false;
         }
@@ -43,7 +43,7 @@ export function useWalletMembers(walletId, show) {
         success.value = '';
         try {
             await window.axios.post(`/wallets/${walletId.value}/invitations`, { email, role });
-            success.value = t('sharing.inviteSent');
+            success.value = translate('sharing.inviteSent');
             await loadMembers();
             clearFlash();
             return true;
@@ -56,7 +56,9 @@ export function useWalletMembers(walletId, show) {
     async function revokeInvitation(invitation) {
         try {
             await window.axios.delete(`/wallets/${walletId.value}/invitations/${invitation.id}`);
-            invitations.value = invitations.value.filter((i) => i.id !== invitation.id);
+            invitations.value = invitations.value.filter(
+                (existingInvitation) => existingInvitation.id !== invitation.id
+            );
         } catch (err) {
             handleError(err);
         }
@@ -65,9 +67,9 @@ export function useWalletMembers(walletId, show) {
     async function resendInvitation(invitation) {
         try {
             const { data } = await window.axios.post(`/wallets/${walletId.value}/invitations/${invitation.id}/resend`);
-            const idx = invitations.value.findIndex((i) => i.id === invitation.id);
+            const idx = invitations.value.findIndex((existingInvitation) => existingInvitation.id === invitation.id);
             if (idx !== -1) invitations.value[idx] = data;
-            success.value = t('sharing.inviteResent');
+            success.value = translate('sharing.inviteResent');
             clearFlash();
         } catch (err) {
             handleError(err);
@@ -97,7 +99,7 @@ export function useWalletMembers(walletId, show) {
     async function removeMember(member) {
         try {
             await window.axios.delete(`/wallets/${walletId.value}/members/${member.id}`);
-            members.value = members.value.filter((m) => m.id !== member.id);
+            members.value = members.value.filter((existingMember) => existingMember.id !== member.id);
         } catch (err) {
             handleError(err);
         }

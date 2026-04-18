@@ -12,12 +12,12 @@ const props = defineProps({
     },
 });
 
-const cx = computed(() => props.size / 2);
-const cy = computed(() => props.size / 2);
-const r  = computed(() => props.size * 0.38);
+const centerX = computed(() => props.size / 2);
+const centerY = computed(() => props.size / 2);
+const radius  = computed(() => props.size * 0.38);
 const innerR = computed(() => props.size * 0.22);
 
-const total = computed(() => props.segments.reduce((s, seg) => s + seg.value, 0));
+const total = computed(() => props.segments.reduce((sum, seg) => sum + seg.value, 0));
 
 const paths = computed(() => {
     if (total.value === 0) return [];
@@ -31,18 +31,18 @@ const paths = computed(() => {
         const endAngle   = startAngle + fraction * 2 * Math.PI;
         const largeArc   = fraction > 0.5 ? 1 : 0;
 
-        const x1 = cx.value + r.value * Math.cos(startAngle);
-        const y1 = cy.value + r.value * Math.sin(startAngle);
-        const x2 = cx.value + r.value * Math.cos(endAngle);
-        const y2 = cy.value + r.value * Math.sin(endAngle);
+        const x1 = centerX.value + radius.value * Math.cos(startAngle);
+        const y1 = centerY.value + radius.value * Math.sin(startAngle);
+        const x2 = centerX.value + radius.value * Math.cos(endAngle);
+        const y2 = centerY.value + radius.value * Math.sin(endAngle);
 
-        const ix1 = cx.value + innerR.value * Math.cos(startAngle);
-        const iy1 = cy.value + innerR.value * Math.sin(startAngle);
-        const ix2 = cx.value + innerR.value * Math.cos(endAngle);
-        const iy2 = cy.value + innerR.value * Math.sin(endAngle);
+        const ix1 = centerX.value + innerR.value * Math.cos(startAngle);
+        const iy1 = centerY.value + innerR.value * Math.sin(startAngle);
+        const ix2 = centerX.value + innerR.value * Math.cos(endAngle);
+        const iy2 = centerY.value + innerR.value * Math.sin(endAngle);
 
         result.push({
-            d: `M ${x1} ${y1} A ${r.value} ${r.value} 0 ${largeArc} 1 ${x2} ${y2}
+            d: `M ${x1} ${y1} A ${radius.value} ${radius.value} 0 ${largeArc} 1 ${x2} ${y2}
                 L ${ix2} ${iy2} A ${innerR.value} ${innerR.value} 0 ${largeArc} 0 ${ix1} ${iy1} Z`,
             color:   seg.color,
             label:   seg.label,
@@ -73,9 +73,9 @@ const paths = computed(() => {
             </g>
             <circle
                 v-else
-                :cx="cx"
-                :cy="cy"
-                :r="r"
+                :cx="centerX"
+                :cy="centerY"
+                :r="radius"
                 fill="none"
                 stroke="var(--th-surface-3)"
                 :stroke-width="innerR"
