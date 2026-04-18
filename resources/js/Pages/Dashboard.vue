@@ -61,9 +61,9 @@ const { fmt } = useCurrency();
 const { labelColor } = useChartTheme();
 
 const sparklineData = computed(() => ({
-    labels: props.sparkline.map((d) => d.day.slice(5)),
+    labels: props.sparkline.map((dayData) => dayData.day.slice(5)),
     datasets: [{
-        data: props.sparkline.map((d) => parseFloat(d.total)),
+        data: props.sparkline.map((dayData) => parseFloat(dayData.total)),
         borderColor: '#a78bfa',
         backgroundColor: 'rgba(167, 139, 250, 0.15)',
         borderWidth: 2,

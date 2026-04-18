@@ -45,9 +45,9 @@ const close = () => {
     }
 };
 
-const closeOnEscape = (e) => {
-    if (e.key === 'Escape') {
-        e.preventDefault();
+const closeOnEscape = (event) => {
+    if (event.key === 'Escape') {
+        event.preventDefault();
 
         if (props.show) {
             close();

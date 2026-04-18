@@ -59,7 +59,7 @@ class AdminStatsService
                 ->groupBy('locale')
                 ->orderByDesc(DB::raw('COUNT(*)'))
                 ->get()
-                ->map(fn ($r) => ['locale' => $r->locale ?? 'fr', 'count' => (int) $r->getAttribute('locale_count')])
+                ->map(fn ($row) => ['locale' => $row->locale ?? 'fr', 'count' => (int) $row->getAttribute('locale_count')])
                 ->all(),
         ];
     }
@@ -75,7 +75,7 @@ class AdminStatsService
     private function buildMonthRange(int $count): Collection
     {
         return collect(range($count - 1, 0))
-            ->map(fn (int $i) => now()->subMonths($i)->format('Y-m'));
+            ->map(fn (int $monthOffset) => now()->subMonths($monthOffset)->format('Y-m'));
     }
 
     /** @return Collection<string, int> */
@@ -118,10 +118,10 @@ class AdminStatsService
 
         $cumulative = $usersBeforeRange;
 
-        return $months->map(function (string $m) use ($newByMonth, &$cumulative) {
-            $cumulative += $newByMonth->get($m, 0);
+        return $months->map(function (string $monthKey) use ($newByMonth, &$cumulative) {
+            $cumulative += $newByMonth->get($monthKey, 0);
 
-            return ['month' => $m, 'count' => $cumulative];
+            return ['month' => $monthKey, 'count' => $cumulative];
         })->values()->all();
     }
 
@@ -133,7 +133,7 @@ class AdminStatsService
     private function fillMonths(Collection $months, Collection $data): array
     {
         return $months
-            ->map(fn (string $m) => ['month' => $m, 'count' => $data->get($m, 0)])
+            ->map(fn (string $monthKey) => ['month' => $monthKey, 'count' => $data->get($monthKey, 0)])
             ->values()
             ->all();
     }

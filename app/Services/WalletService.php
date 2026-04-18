@@ -29,16 +29,16 @@ class WalletService
             ->orderBy('position')
             ->orderBy('name')
             ->withCount('members')
-            ->withSum(['transactions as income_sum' => fn ($q) => $q->where('type', TransactionType::Income)], 'amount')
-            ->withSum(['transactions as expense_sum' => fn ($q) => $q->where('type', TransactionType::Expense)], 'amount')
+            ->withSum(['transactions as income_sum' => fn ($query) => $query->where('type', TransactionType::Income)], 'amount')
+            ->withSum(['transactions as expense_sum' => fn ($query) => $query->where('type', TransactionType::Expense)], 'amount')
             ->get()
-            ->map(fn (Wallet $w) => array_merge($w->toArray(), [/** @phpstan-ignore argument.type */
+            ->map(fn (Wallet $wallet) => array_merge($wallet->toArray(), [/** @phpstan-ignore argument.type */
                 'current_balance' => round(
-                    (float) $w->start_balance + (float) ($w->income_sum ?? 0) - (float) ($w->expense_sum ?? 0),
+                    (float) $wallet->start_balance + (float) ($wallet->income_sum ?? 0) - (float) ($wallet->expense_sum ?? 0),
                     2
                 ),
-                'user_role' => $w->roleFor($user)?->value,
-                'is_shared' => $w->members_count > 1,
+                'user_role' => $wallet->roleFor($user)?->value,
+                'is_shared' => $wallet->members_count > 1,
             ]));
     }
 

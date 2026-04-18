@@ -13,7 +13,7 @@ import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
 
-const { t } = useI18n();
+const { t: translate } = useI18n();
 const { fmt, symbol } = useCurrency();
 const { isPro, canCreate, limit } = usePlanLimits();
 
@@ -36,7 +36,7 @@ const { editingScheduled, showScheduledForm, scheduledForm, openCreateScheduled,
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 const { fmtDate: fmtDateBase } = useFmtDate();
-function fmtDate(d) { return d ? fmtDateBase(d) : t('recurring.never'); }
+function fmtDate(d) { return d ? fmtDateBase(d) : translate('recurring.never'); }
 
 function walletName(id) {
     return props.wallets.find(w => w.id === id)?.name ?? '—';
@@ -47,13 +47,13 @@ function categoryName(id) {
     return props.categories.find(c => c.id === id)?.name ?? '—';
 }
 
-const ordinalDay = (n) => t('recurring.dayLabel', { day: n });
+const ordinalDay = (n) => translate('recurring.dayLabel', { day: n });
 
 // ── Group by wallet ───────────────────────────────────────────────────────
 const byWallet = computed(() => {
     const groups = [];
     for (const wallet of props.wallets) {
-        const items = props.recurring.filter((r) => r.wallet_id === wallet.id);
+        const items = props.recurring.filter((recurringItem) => recurringItem.wallet_id === wallet.id);
         if (items.length) groups.push({ wallet, items });
     }
     return groups;
@@ -66,11 +66,11 @@ function toggleGroup(id) {
 </script>
 
 <template>
-    <Head :title="t('recurring.title')" />
+    <Head :title="translate('recurring.title')" />
 
     <AuthenticatedLayout>
         <template #header>
-            <AppPageHeader :title="t('recurring.title')" />
+            <AppPageHeader :title="translate('recurring.title')" />
         </template>
 
         <div class="space-y-4">
@@ -80,7 +80,7 @@ function toggleGroup(id) {
                     :class="activeTab === 'recurring' ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary'"
                     v-on:click="activeTab = 'recurring'"
                 >
-                    {{ t('scheduled.tab.recurring') }}
+                    {{ translate('scheduled.tab.recurring') }}
                     <TabBadge :count="recurring.length" />
                 </button>
                 <button
@@ -88,7 +88,7 @@ function toggleGroup(id) {
                     :class="activeTab === 'scheduled' ? 'bg-indigo-600/15 text-indigo-400' : 'text-secondary hover:text-primary'"
                     v-on:click="activeTab = 'scheduled'"
                 >
-                    {{ t('scheduled.tab.scheduled') }}
+                    {{ translate('scheduled.tab.scheduled') }}
                     <TabBadge :count="scheduled.length" />
                 </button>
             </div>
@@ -102,7 +102,7 @@ function toggleGroup(id) {
                             v-on:click="openCreate"
                         >
                             <Plus class="w-4 h-4 mr-1.5" />
-                            {{ t('recurring.new') }}
+                            {{ translate('recurring.new') }}
                         </AppButton>
                         <span v-if="!isPro && props.recurring.length >= limit('recurring')" class="absolute -top-2 -right-2 bg-amber-500 text-xs text-white font-bold px-2 py-1 rounded-full">
                             Pro
@@ -118,7 +118,7 @@ function toggleGroup(id) {
                         >
                             <span class="text-sm font-semibold text-primary">{{ group.wallet.name }}</span>
                             <div class="flex items-center gap-3">
-                                <span class="text-xs text-muted">{{ t('recurring.count', group.items.length, { count: group.items.length }) }}</span>
+                                <span class="text-xs text-muted">{{ translate('recurring.count', group.items.length, { count: group.items.length }) }}</span>
                                 <ChevronDown
                                     class="w-4 h-4 text-muted transition-transform duration-200"
                                     :class="collapsed[group.wallet.id] ? '-rotate-90' : ''"
@@ -156,13 +156,13 @@ function toggleGroup(id) {
 
                                         <div class="mt-1.5 text-xs text-subtle">
                                             {{ item.last_generated_at
-                                                ? t('recurring.lastGenerated', { date: fmtDate(item.last_generated_at) })
-                                                : t('recurring.never') }}
+                                                ? translate('recurring.lastGenerated', { date: fmtDate(item.last_generated_at) })
+                                                : translate('recurring.never') }}
                                         </div>
                                     </div>
 
                                     <div class="flex items-center gap-2 shrink-0">
-                                        <AppTooltip :text="t('recurring.activeTip')">
+                                        <AppTooltip :text="translate('recurring.activeTip')">
                                             <button
                                                 class="text-xs px-2 py-1 rounded-full border transition-colors"
                                                 :class="item.active
@@ -170,15 +170,15 @@ function toggleGroup(id) {
                                                     : 'border-line text-muted hover:border-indigo-500/40 hover:text-indigo-400'"
                                                 v-on:click="toggleActive(item)"
                                             >
-                                                {{ item.active ? t('recurring.active') : t('recurring.inactive') }}
+                                                {{ item.active ? translate('recurring.active') : translate('recurring.inactive') }}
                                             </button>
                                         </AppTooltip>
-                                        <AppTooltip :text="t('recurring.editTip')">
+                                        <AppTooltip :text="translate('recurring.editTip')">
                                             <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEdit(item)">
                                                 <Pencil class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
-                                        <AppTooltip :text="t('recurring.deleteTip')">
+                                        <AppTooltip :text="translate('recurring.deleteTip')">
                                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDelete(item)">
                                                 <Trash2 class="w-4 h-4" />
                                             </button>
@@ -190,14 +190,14 @@ function toggleGroup(id) {
                     </div>
                 </div>
 
-                <EmptyState v-else-if="recurring.length === 0" :message="t('recurring.none')" icon="repeat" />
+                <EmptyState v-else-if="recurring.length === 0" :message="translate('recurring.none')" icon="repeat" />
             </div>
 
             <div v-if="activeTab === 'scheduled'" class="space-y-4">
                 <div class="flex justify-end">
                     <AppButton v-on:click="openCreateScheduled">
                         <Plus class="w-4 h-4 mr-1.5" />
-                        {{ t('scheduled.new') }}
+                        {{ translate('scheduled.new') }}
                     </AppButton>
                 </div>
 
@@ -226,12 +226,12 @@ function toggleGroup(id) {
                                 {{ item.type === TransactionType.Income ? '+' : '' }}{{ fmt(item.amount) }}
                             </span>
                             <div class="flex items-center gap-1">
-                                <AppTooltip :text="t('scheduled.editTip')">
+                                <AppTooltip :text="translate('scheduled.editTip')">
                                     <button class="text-muted hover:text-sky-400 transition-colors" v-on:click="openEditScheduled(item)">
                                         <Pencil class="w-4 h-4" />
                                     </button>
                                 </AppTooltip>
-                                <AppTooltip :text="t('scheduled.deleteTip')">
+                                <AppTooltip :text="translate('scheduled.deleteTip')">
                                     <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="confirmDeleteScheduled(item)">
                                         <Trash2 class="w-4 h-4" />
                                     </button>
@@ -241,18 +241,18 @@ function toggleGroup(id) {
                     </div>
                 </div>
 
-                <EmptyState v-else :message="t('scheduled.none')" icon="calendar" />
+                <EmptyState v-else :message="translate('scheduled.none')" icon="calendar" />
             </div>
         </div>
 
         <AppModal :show="showScheduledForm" scrollable v-on:close="showScheduledForm = false">
-            <h3 class="text-base font-semibold text-primary">{{ t('scheduled.new') }}</h3>
+            <h3 class="text-base font-semibold text-primary">{{ translate('scheduled.new') }}</h3>
 
-            <FormField :label="t('scheduled.fieldDesc')">
+            <FormField :label="translate('scheduled.fieldDesc')">
                 <input v-model="scheduledForm.description" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
-            <FormField :label="t('scheduled.fieldAmount', { symbol })">
+            <FormField :label="translate('scheduled.fieldAmount', { symbol })">
                 <input
                     v-model="scheduledForm.amount"
                     type="number"
@@ -263,21 +263,21 @@ function toggleGroup(id) {
                 >
             </FormField>
 
-            <FormField :label="t('scheduled.fieldType')">
+            <FormField :label="translate('scheduled.fieldType')">
                 <TypeToggle v-model="scheduledForm.type" />
             </FormField>
 
-            <FormField :label="t('scheduled.date')">
+            <FormField :label="translate('scheduled.date')">
                 <input v-model="scheduledForm.scheduled_date" type="date" required class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
-            <FormField :label="t('scheduled.fieldWallet')">
+            <FormField :label="translate('scheduled.fieldWallet')">
                 <SelectInput v-model="scheduledForm.wallet_id">
                     <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                 </SelectInput>
             </FormField>
 
-            <FormField :label="t('scheduled.fieldCategory')">
+            <FormField :label="translate('scheduled.fieldCategory')">
                 <SelectInput v-model="scheduledForm.category_id">
                     <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </SelectInput>
@@ -285,29 +285,29 @@ function toggleGroup(id) {
 
             <template #footer>
                 <AppButton :disabled="scheduledForm.processing" v-on:click="submitScheduled">
-                    {{ editingScheduled ? t('common.update') : t('common.create') }}
+                    {{ editingScheduled ? translate('common.update') : translate('common.create') }}
                 </AppButton>
             </template>
         </AppModal>
 
         <ConfirmModal
             :show="scheduledToDelete !== null"
-            :message="t('scheduled.confirmDelete')"
+            :message="translate('scheduled.confirmDelete')"
             v-on:confirm="executeDeleteScheduled"
             v-on:cancel="scheduledToDelete = null"
         />
 
         <AppModal :show="showForm" scrollable v-on:close="showForm = false">
             <h3 class="text-base font-semibold text-primary">
-                {{ editingItem ? t('recurring.new') : t('recurring.new') }}
+                {{ editingItem ? translate('recurring.new') : translate('recurring.new') }}
             </h3>
 
-            <FormField :label="t('recurring.fieldDesc')">
+            <FormField :label="translate('recurring.fieldDesc')">
                 <input v-model="form.description" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none" required>
             </FormField>
 
             <div class="grid grid-cols-2 gap-3">
-                <FormField :label="t('recurring.fieldAmount', { symbol })">
+                <FormField :label="translate('recurring.fieldAmount', { symbol })">
                     <input
                         v-model="form.amount"
                         type="number"
@@ -317,15 +317,15 @@ function toggleGroup(id) {
                         required
                     >
                 </FormField>
-                <FormField :label="t('recurring.fieldType')">
+                <FormField :label="translate('recurring.fieldType')">
                     <SelectInput v-model="form.type">
-                        <option value="expense">{{ t('search.expense') }}</option>
-                        <option value="income">{{ t('search.income') }}</option>
+                        <option value="expense">{{ translate('search.expense') }}</option>
+                        <option value="income">{{ translate('search.income') }}</option>
                     </SelectInput>
                 </FormField>
             </div>
 
-            <FormField :label="t('recurring.fieldDay')">
+            <FormField :label="translate('recurring.fieldDay')">
                 <input
                     v-model.number="form.day_of_month"
                     type="number"
@@ -337,13 +337,13 @@ function toggleGroup(id) {
                 <p class="mt-1 text-xs text-muted">{{ ordinalDay(form.day_of_month || 1) }}</p>
             </FormField>
 
-            <FormField :label="t('recurring.fieldWallet')">
+            <FormField :label="translate('recurring.fieldWallet')">
                 <SelectInput v-model="form.wallet_id">
                     <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                 </SelectInput>
             </FormField>
 
-            <FormField :label="t('recurring.fieldCategory') + ' *'">
+            <FormField :label="translate('recurring.fieldCategory') + ' *'">
                 <SelectInput v-model="form.category_id">
                     <option value="" disabled>—</option>
                     <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
@@ -351,7 +351,7 @@ function toggleGroup(id) {
             </FormField>
 
             <div class="flex items-center gap-3">
-                <label class="text-xs text-secondary uppercase tracking-wide">{{ t('recurring.fieldActive') }}</label>
+                <label class="text-xs text-secondary uppercase tracking-wide">{{ translate('recurring.fieldActive') }}</label>
                 <button
                     type="button"
                     class="relative w-10 h-6 rounded-full transition-colors"
@@ -366,14 +366,14 @@ function toggleGroup(id) {
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
-                <AppButton variant="secondary" v-on:click="showForm = false">{{ t('common.cancel') }}</AppButton>
-                <AppButton v-on:click="submit">{{ editingItem ? t('common.update') : t('common.create') }}</AppButton>
+                <AppButton variant="secondary" v-on:click="showForm = false">{{ translate('common.cancel') }}</AppButton>
+                <AppButton v-on:click="submit">{{ editingItem ? translate('common.update') : translate('common.create') }}</AppButton>
             </div>
         </AppModal>
 
         <ConfirmModal
             :show="!!itemToDelete"
-            :message="t('recurring.confirmDelete')"
+            :message="translate('recurring.confirmDelete')"
             v-on:confirm="executeDelete"
             v-on:cancel="itemToDelete = null"
         />

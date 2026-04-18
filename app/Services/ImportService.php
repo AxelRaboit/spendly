@@ -275,7 +275,7 @@ class ImportService
             }
 
             // Skip fully empty rows
-            if (array_filter($cells, fn ($c) => $c !== '') === []) {
+            if (array_filter($cells, fn ($cell) => $cell !== '') === []) {
                 continue;
             }
 
@@ -289,13 +289,13 @@ class ImportService
 
     private function parseDate(string $raw): ?string
     {
-        $ts = strtotime($raw);
+        $timestamp = strtotime($raw);
 
-        if ($ts === false) {
+        if ($timestamp === false) {
             return null;
         }
 
-        $date = date('Y-m-d', $ts);
+        $date = date('Y-m-d', $timestamp);
 
         return $date !== '1970-01-01' ? $date : null;
     }

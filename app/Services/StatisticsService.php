@@ -40,8 +40,8 @@ class StatisticsService
             ->pluck('total', 'month');
 
         return collect(range($monthsBack, 0))
-            ->map(function (int $i) use ($raw): array {
-                $month = now()->subMonths($i)->format('Y-m');
+            ->map(function (int $monthOffset) use ($raw): array {
+                $month = now()->subMonths($monthOffset)->format('Y-m');
 
                 return ['month' => $month, 'total' => (float) ($raw[$month] ?? 0)];
             })
@@ -59,7 +59,7 @@ class StatisticsService
         $startDate = now()->subMonths($monthsBack)->startOfMonth();
 
         $months = collect(range($monthsBack, 0))
-            ->map(fn (int $i) => now()->subMonths($i)->format('Y-m'))
+            ->map(fn (int $monthOffset) => now()->subMonths($monthOffset)->format('Y-m'))
             ->all();
 
         $raw = $user->transactions()
@@ -84,7 +84,7 @@ class StatisticsService
                     'data' => array_map(fn (string $m) => (float) ($monthTotals[$m] ?? 0), $months),
                 ];
             })
-            ->sortByDesc(fn (array $c): float => (float) array_sum($c['data']))
+            ->sortByDesc(fn (array $category): float => (float) array_sum($category['data']))
             ->values()
             ->all();
 
@@ -135,8 +135,8 @@ class StatisticsService
             ->pluck('total', 'month');
 
         return collect(range($monthsBack, 0))
-            ->map(function (int $i) use ($incomeRaw, $expenseRaw): array {
-                $month = now()->subMonths($i)->format('Y-m');
+            ->map(function (int $monthOffset) use ($incomeRaw, $expenseRaw): array {
+                $month = now()->subMonths($monthOffset)->format('Y-m');
                 $income = (float) ($incomeRaw[$month] ?? 0);
                 $expenses = (float) ($expenseRaw[$month] ?? 0);
                 $rate = $income > 0 ? round(($income - $expenses) / $income * 100, 1) : null;
@@ -171,8 +171,8 @@ class StatisticsService
             ->pluck('total', 'month');
 
         return collect(range(5, 0))
-            ->map(function (int $i) use ($plannedRaw, $actualRaw): array {
-                $month = now()->subMonths($i)->format('Y-m');
+            ->map(function (int $monthOffset) use ($plannedRaw, $actualRaw): array {
+                $month = now()->subMonths($monthOffset)->format('Y-m');
                 $planned = (float) ($plannedRaw[$month] ?? 0);
                 $actual = (float) ($actualRaw[$month] ?? 0);
 
