@@ -1,5 +1,6 @@
 <script setup>
 import AppLogo from '@/components/ui/AppLogo.vue';
+import ThemeToggle from '@/components/ui/ThemeToggle.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const appVersion = usePage().props.appVersion;
@@ -7,6 +8,7 @@ const appVersion = usePage().props.appVersion;
 
 <template>
     <div class="flex min-h-screen flex-col items-center justify-center bg-bg px-4 py-12 transition-colors duration-200">
+        <ThemeToggle />
         <div>
             <Link href="/" class="flex flex-col items-center gap-2">
                 <AppLogo :size="64" />
