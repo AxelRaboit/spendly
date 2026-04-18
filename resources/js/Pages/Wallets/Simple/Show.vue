@@ -253,8 +253,8 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
                 </button>
             </div>
 
-            <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center justify-center sm:justify-start gap-1">
                     <button
                         type="button"
                         class="flex h-7 w-7 items-center justify-center rounded-lg border border-line/60 bg-surface text-muted transition-colors hover:border-indigo-500/40 hover:text-indigo-400"

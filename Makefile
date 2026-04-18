@@ -47,9 +47,6 @@ docker-down: ## Stop all Docker containers
 	fi
 
 # === Development ===
-dev: ## Start all dev servers (artisan + vite)
-	$(COMPOSER) run dev
-
 start: ## Start mailcatcher + dev servers
 	@echo "Starting mailcatcher (if available)..."
 	@if command -v docker-compose >/dev/null 2>&1 || command -v docker >/dev/null 2>&1; then \
