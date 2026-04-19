@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\SendAppInvitationRequest;
 use App\Models\User;
 use App\Services\AdminStatsService;
@@ -69,12 +70,12 @@ class DevDashboardController extends Controller
         return back();
     }
 
-    public function users(Request $request): Response
+    public function users(PaginationRequest $pagination): Response
     {
         return Inertia::render('Dev/Dashboard', [
             'tab' => 'users',
-            'users' => $this->userService->searchForAdmin(['search' => $request->query('search', '')]),
-            'search' => $request->query('search', ''),
+            'users' => $this->userService->searchForAdmin(['search' => $pagination->search()]),
+            'search' => $pagination->search(),
         ]);
     }
 
