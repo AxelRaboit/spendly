@@ -631,6 +631,21 @@ export default {
         noCategoryData: 'Aucune dépense ce mois.',
     },
 
+    password: {
+        criteria: {
+            length: '8 caractères minimum',
+            uppercase: 'Une lettre majuscule',
+            number: 'Un chiffre',
+            special: 'Un caractère spécial',
+        },
+        errors: {
+            too_short: 'Le mot de passe doit contenir au moins 8 caractères.',
+            no_uppercase: 'Le mot de passe doit contenir au moins une majuscule.',
+            no_number: 'Le mot de passe doit contenir au moins un chiffre.',
+            no_special: 'Le mot de passe doit contenir au moins un caractère spécial.',
+        },
+    },
+
     locales: {
         fr: 'Français',
         en: 'English',

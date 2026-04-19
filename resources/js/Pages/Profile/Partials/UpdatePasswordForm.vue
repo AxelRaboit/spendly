@@ -2,6 +2,7 @@
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PasswordStrength from '@/components/form/PasswordStrength.vue';
 
 const { t } = useI18n();
 
@@ -51,16 +52,19 @@ function updatePassword() {
                 autocomplete="current-password"
             />
 
-            <AppInput
-                ref="passwordInput"
-                v-model="form.password"
-                type="password"
-                :label="t('profile.password.fieldNew')"
-                :placeholder="t('profile.password.fieldPlaceholder')"
-                :error="form.errors.password"
-                required
-                autocomplete="new-password"
-            />
+            <div>
+                <AppInput
+                    ref="passwordInput"
+                    v-model="form.password"
+                    type="password"
+                    :label="t('profile.password.fieldNew')"
+                    :placeholder="t('profile.password.fieldPlaceholder')"
+                    :error="form.errors.password"
+                    required
+                    autocomplete="new-password"
+                />
+                <PasswordStrength :password="form.password" />
+            </div>
 
             <AppInput
                 v-model="form.password_confirmation"
