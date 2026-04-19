@@ -626,6 +626,21 @@ export default {
         noCategoryData: 'Keine Ausgaben diesen Monat.',
     },
 
+    password: {
+        criteria: {
+            length: 'Mindestens 8 Zeichen',
+            uppercase: 'Ein Großbuchstabe',
+            number: 'Eine Zahl',
+            special: 'Ein Sonderzeichen',
+        },
+        errors: {
+            too_short: 'Das Passwort muss mindestens 8 Zeichen lang sein.',
+            no_uppercase: 'Das Passwort muss mindestens einen Großbuchstaben enthalten.',
+            no_number: 'Das Passwort muss mindestens eine Zahl enthalten.',
+            no_special: 'Das Passwort muss mindestens ein Sonderzeichen enthalten.',
+        },
+    },
+
     locales: {
         fr: 'Français',
         en: 'English',

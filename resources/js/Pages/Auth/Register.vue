@@ -5,6 +5,7 @@ import InputLabel from '@/components/form/InputLabel.vue';
 
 import { AlertTriangle } from 'lucide-vue-next';
 import TextInput from '@/components/form/TextInput.vue';
+import PasswordStrength from '@/components/form/PasswordStrength.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -106,6 +107,7 @@ const submit = () => {
                 />
 
                 <InputError class="mt-2" :message="form.errors.password" />
+                <PasswordStrength :password="form.password" />
             </div>
 
             <div class="mt-4">

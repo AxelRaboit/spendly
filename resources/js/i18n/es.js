@@ -625,6 +625,21 @@ export default {
         noCategoryData: 'Sin gastos este mes.',
     },
 
+    password: {
+        criteria: {
+            length: 'Mínimo 8 caracteres',
+            uppercase: 'Una letra mayúscula',
+            number: 'Un número',
+            special: 'Un carácter especial',
+        },
+        errors: {
+            too_short: 'La contraseña debe tener al menos 8 caracteres.',
+            no_uppercase: 'La contraseña debe contener al menos una letra mayúscula.',
+            no_number: 'La contraseña debe contener al menos un número.',
+            no_special: 'La contraseña debe contener al menos un carácter especial.',
+        },
+    },
+
     locales: {
         fr: 'Français',
         en: 'English',

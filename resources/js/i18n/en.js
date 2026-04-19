@@ -630,6 +630,21 @@ export default {
         noCategoryData: 'No expenses this month.',
     },
 
+    password: {
+        criteria: {
+            length: 'At least 8 characters',
+            uppercase: 'One uppercase letter',
+            number: 'One number',
+            special: 'One special character',
+        },
+        errors: {
+            too_short: 'Password must be at least 8 characters.',
+            no_uppercase: 'Password must contain at least one uppercase letter.',
+            no_number: 'Password must contain at least one number.',
+            no_special: 'Password must contain at least one special character.',
+        },
+    },
+
     locales: {
         fr: 'Français',
         en: 'English',
