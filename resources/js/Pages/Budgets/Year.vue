@@ -7,7 +7,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const { t: translate } = useI18n();
+const { t } = useI18n();
 const { fmt }      = useCurrency();
 const { fmtMonth } = useFmtMonth();
 
@@ -25,15 +25,15 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
 </script>
 
 <template>
-    <Head :title="`${translate('budgets.year.title')} ${year} — ${wallet.name}`" />
+    <Head :title="`${t('budgets.year.title')} ${year} — ${wallet.name}`" />
 
     <AuthenticatedLayout>
         <template #header>
             <AppPageHeader
                 :crumbs="[
-                    { label: translate('nav.wallets'), href: '/wallets' },
+                    { label: t('nav.wallets'), href: '/wallets' },
                     { label: wallet.name, href: `/wallets/${wallet.id}/budget` },
-                    { label: translate('budgets.year.title') },
+                    { label: t('budgets.year.title') },
                 ]"
             />
         </template>
@@ -58,9 +58,9 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <StatCard :label="translate('budgets.kpi.income')" value-class="text-emerald-400">{{ fmt(totalIncome) }}</StatCard>
-                <StatCard :label="translate('budgets.sections.expenses')" value-class="text-rose-400">{{ fmt(totalExpenses) }}</StatCard>
-                <StatCard :label="translate('budgets.table.cashFlow')" :value-class="totalCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ fmt(totalCashFlow, true) }}</StatCard>
+                <StatCard :label="t('budgets.kpi.income')" value-class="text-emerald-400">{{ fmt(totalIncome) }}</StatCard>
+                <StatCard :label="t('budgets.sections.expenses')" value-class="text-rose-400">{{ fmt(totalExpenses) }}</StatCard>
+                <StatCard :label="t('budgets.table.cashFlow')" :value-class="totalCashFlow >= 0 ? 'text-emerald-400' : 'text-rose-400'">{{ fmt(totalCashFlow, true) }}</StatCard>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -78,15 +78,15 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                     <template v-if="month.has_budget">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-muted">{{ translate('budgets.kpi.income') }}</span>
+                                <span class="text-muted">{{ t('budgets.kpi.income') }}</span>
                                 <span class="font-mono text-emerald-400">{{ fmt(month.income_actual) }}</span>
                             </div>
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-muted">{{ translate('budgets.sections.expenses') }}</span>
+                                <span class="text-muted">{{ t('budgets.sections.expenses') }}</span>
                                 <span class="font-mono text-rose-400">{{ fmt(month.expenses_actual) }}</span>
                             </div>
                             <div class="border-t border-line/60 pt-2 flex items-center justify-between text-xs">
-                                <span class="text-muted">{{ translate('budgets.table.cashFlow') }}</span>
+                                <span class="text-muted">{{ t('budgets.table.cashFlow') }}</span>
                                 <span
                                     class="font-mono font-semibold"
                                     :class="month.cash_flow_actual >= 0 ? 'text-emerald-400' : 'text-rose-400'"
@@ -104,7 +104,7 @@ const totalCashFlow = computed(() => totalIncome.value - totalExpenses.value);
                         </div>
                     </template>
                     <template v-else>
-                        <p class="text-xs text-subtle">{{ translate('budgets.year.noBudget') }}</p>
+                        <p class="text-xs text-subtle">{{ t('budgets.year.noBudget') }}</p>
                     </template>
                 </Link>
             </div>

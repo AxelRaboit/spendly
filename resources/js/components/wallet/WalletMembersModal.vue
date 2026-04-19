@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { useWalletMembers, ROLE_COLORS } from '@/composables/wallet/useWalletMembers';
 import { WalletRole } from '@/enums/WalletRole';
 
-const { t: translate } = useI18n();
+const { t } = useI18n();
 
 const props = defineProps({
     show: { type: Boolean, default: false },
@@ -62,7 +62,7 @@ function requestTransfer(member) {
         confirmAction.value = null;
         if (isSuccess) emit('close');
     };
-    confirmMessage.value = translate('sharing.confirmTransfer', { name: member.user?.name });
+    confirmMessage.value = t('sharing.confirmTransfer', { name: member.user?.name });
 }
 
 function requestRemove(member) {
@@ -70,7 +70,7 @@ function requestRemove(member) {
         await removeMember(member);
         confirmAction.value = null;
     };
-    confirmMessage.value = translate('sharing.confirmRemove', { name: member.user?.name });
+    confirmMessage.value = t('sharing.confirmRemove', { name: member.user?.name });
 }
 
 function cancelConfirm() {
@@ -82,10 +82,10 @@ function cancelConfirm() {
     <AppModal :show="show" v-on:close="emit('close')">
         <div class="flex items-center gap-3 mb-6">
             <Users class="w-5 h-5 text-indigo-400" />
-            <h3 class="text-base font-semibold text-primary">{{ translate('sharing.members') }}</h3>
+            <h3 class="text-base font-semibold text-primary">{{ t('sharing.members') }}</h3>
         </div>
 
-        <div v-if="loading" class="text-center py-8 text-muted text-sm">{{ translate('common.loading') }}</div>
+        <div v-if="loading" class="text-center py-8 text-muted text-sm">{{ t('common.loading') }}</div>
 
         <div v-else class="space-y-4">
             <div class="space-y-2">
@@ -108,15 +108,15 @@ function cancelConfirm() {
                             class="bg-surface text-primary rounded px-2 py-1 border border-line text-xs focus:border-indigo-500 focus:outline-none"
                             v-on:change="updateRole(member, $event.target.value)"
                         >
-                            <option :value="WalletRole.Editor">{{ translate('sharing.editor') }}</option>
-                            <option :value="WalletRole.Viewer">{{ translate('sharing.viewer') }}</option>
+                            <option :value="WalletRole.Editor">{{ t('sharing.editor') }}</option>
+                            <option :value="WalletRole.Viewer">{{ t('sharing.viewer') }}</option>
                         </select>
-                        <AppTooltip :text="translate('sharing.transferOwnership')">
+                        <AppTooltip :text="t('sharing.transferOwnership')">
                             <button class="text-muted hover:text-amber-400 transition-colors" v-on:click="requestTransfer(member)">
                                 <ArrowRightLeft class="w-3.5 h-3.5" />
                             </button>
                         </AppTooltip>
-                        <AppTooltip :text="translate('sharing.removeMember')">
+                        <AppTooltip :text="t('sharing.removeMember')">
                             <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="requestRemove(member)">
                                 <Trash2 class="w-3.5 h-3.5" />
                             </button>
@@ -124,13 +124,13 @@ function cancelConfirm() {
                     </template>
 
                     <span v-else class="text-xs px-2 py-0.5 rounded-full" :class="ROLE_COLORS[member.role]">
-                        {{ translate(`sharing.${member.role}`) }}
+                        {{ t(`sharing.${member.role}`) }}
                     </span>
                 </div>
             </div>
 
             <div v-if="isOwner && invitations.length > 0" class="space-y-2">
-                <p class="text-xs text-secondary uppercase tracking-wide">{{ translate('sharing.pending') }}</p>
+                <p class="text-xs text-secondary uppercase tracking-wide">{{ t('sharing.pending') }}</p>
                 <div
                     v-for="inv in invitations"
                     :key="inv.id"
@@ -141,14 +141,14 @@ function cancelConfirm() {
                         <p class="text-sm text-primary truncate">{{ inv.email }}</p>
                     </div>
                     <span class="text-xs px-2 py-0.5 rounded-full" :class="ROLE_COLORS[inv.role]">
-                        {{ translate(`sharing.${inv.role}`) }}
+                        {{ t(`sharing.${inv.role}`) }}
                     </span>
-                    <AppTooltip :text="translate('sharing.resend')">
+                    <AppTooltip :text="t('sharing.resend')">
                         <button class="text-muted hover:text-indigo-400 transition-colors" v-on:click="resendInvitation(inv)">
                             <RefreshCw class="w-3.5 h-3.5" />
                         </button>
                     </AppTooltip>
-                    <AppTooltip :text="translate('sharing.revokeInvitation')">
+                    <AppTooltip :text="t('sharing.revokeInvitation')">
                         <button class="text-muted hover:text-rose-400 transition-colors" v-on:click="revokeInvitation(inv)">
                             <X class="w-3.5 h-3.5" />
                         </button>
@@ -159,14 +159,14 @@ function cancelConfirm() {
             <p v-if="memberError" class="text-rose-400 text-xs">{{ memberError }}</p>
 
             <div v-if="isOwner && isPro" class="border-t border-line pt-4">
-                <p class="text-xs text-secondary uppercase tracking-wide mb-3">{{ translate('sharing.invite') }}</p>
+                <p class="text-xs text-secondary uppercase tracking-wide mb-3">{{ t('sharing.invite') }}</p>
                 <div class="flex flex-col gap-3">
                     <div v-for="(row, index) in inviteRows" :key="index" class="flex flex-col gap-2 border border-line rounded-lg p-3 bg-surface-2">
                         <div class="flex items-center gap-2">
                             <input
                                 v-model="row.email"
                                 type="email"
-                                :placeholder="translate('sharing.emailPlaceholder')"
+                                :placeholder="t('sharing.emailPlaceholder')"
                                 class="flex-1 bg-surface text-primary rounded-lg px-3 py-2 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                                 v-on:keydown.enter="invite"
                             >
@@ -182,8 +182,8 @@ function cancelConfirm() {
                             v-model="row.role"
                             class="w-full bg-surface text-primary rounded-lg px-2 py-2 border border-line text-sm focus:border-indigo-500 focus:outline-none"
                         >
-                            <option value="editor">{{ translate('sharing.editor') }}</option>
-                            <option value="viewer">{{ translate('sharing.viewer') }}</option>
+                            <option value="editor">{{ t('sharing.editor') }}</option>
+                            <option value="viewer">{{ t('sharing.viewer') }}</option>
                         </select>
                     </div>
 
@@ -193,7 +193,7 @@ function cancelConfirm() {
                             v-on:click="addInviteRow"
                         >
                             <Plus class="w-3.5 h-3.5" />
-                            {{ translate('sharing.addAddress') }}
+                            {{ t('sharing.addAddress') }}
                         </button>
                         <AppButton :disabled="inviting || !inviteRows.some(inviteRow => inviteRow.email.trim())" v-on:click="invite">
                             <Send class="w-4 h-4" />
@@ -208,7 +208,7 @@ function cancelConfirm() {
     <ConfirmModal
         :show="confirmAction !== null"
         :message="confirmMessage"
-        :confirm-label="translate('common.confirm')"
+        :confirm-label="t('common.confirm')"
         confirm-variant="danger"
         v-on:confirm="confirmAction?.()"
         v-on:cancel="cancelConfirm"

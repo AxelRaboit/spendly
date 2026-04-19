@@ -12,7 +12,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
 import { useFmtMonth } from '@/composables/core/useFmtMonth';
 
-const { t: translate } = useI18n();
+const { t } = useI18n();
 const { baseOptions, barOptions: barThemeOptions, textColor, gridColor } = useChartTheme();
 const { fmtMonth: fmtMonthBase } = useFmtMonth();
 function fmtMonth(yyyyMm) { return fmtMonthBase(yyyyMm, { month: 'short', year: 'numeric' }); }
@@ -56,7 +56,7 @@ const donutOptions = computed(() => ({
 // ── Existing charts ─────────────────────────────────────────────────────────
 
 const planDonutData = computed(() => ({
-    labels: [translate('plan.pro.name'), translate('plan.free.name')],
+    labels: [t('plan.pro.name'), t('plan.free.name')],
     datasets: [{
         data: [props.stats?.users.pro ?? 0, props.stats?.users.free ?? 0],
         backgroundColor: ['#f59e0b', '#6b7280'],
@@ -67,7 +67,7 @@ const planDonutData = computed(() => ({
 const usersLineData = computed(() => ({
     labels: props.stats?.usersByMonth.map(monthData => fmtMonth(monthData.month)) ?? [],
     datasets: [{
-        label: translate('admin.stats.users'),
+        label: t('admin.stats.users'),
         data: props.stats?.usersByMonth.map(monthData => monthData.count) ?? [],
         borderColor: '#6366f1',
         backgroundColor: 'rgba(99,102,241,0.1)',
@@ -81,7 +81,7 @@ const usersLineData = computed(() => ({
 const transactionsBarData = computed(() => ({
     labels: props.stats?.transactionsByMonth.map(monthData => fmtMonth(monthData.month)) ?? [],
     datasets: [{
-        label: translate('admin.stats.transactions'),
+        label: t('admin.stats.transactions'),
         data: props.stats?.transactionsByMonth.map(monthData => monthData.count) ?? [],
         backgroundColor: '#6366f1',
         borderRadius: 6,
@@ -93,7 +93,7 @@ const transactionsBarData = computed(() => ({
 const cumulativeLineData = computed(() => ({
     labels: props.stats?.cumulativeGrowth.map(monthData => fmtMonth(monthData.month)) ?? [],
     datasets: [{
-        label: translate('admin.stats.users'),
+        label: t('admin.stats.users'),
         data: props.stats?.cumulativeGrowth.map(monthData => monthData.count) ?? [],
         borderColor: '#10b981',
         backgroundColor: 'rgba(16,185,129,0.1)',
@@ -117,7 +117,7 @@ const localeDonutData = computed(() => ({
 }));
 
 const activityDonutData = computed(() => ({
-    labels: [translate('admin.stats.activeUsers'), translate('admin.stats.inactiveUsers')],
+    labels: [t('admin.stats.activeUsers'), t('admin.stats.inactiveUsers')],
     datasets: [{
         data: [props.stats?.activeUsers ?? 0, props.stats?.inactiveUsers ?? 0],
         backgroundColor: ['#10b981', '#6b7280'],
@@ -216,13 +216,13 @@ const submitInvitation = () => {
 
 <template>
     <AuthenticatedLayout>
-        <Head :title="translate('admin.title')" />
+        <Head :title="t('admin.title')" />
 
         <template #header>
             <AppPageHeader
                 :crumbs="[
-                    { label: translate('admin.title'), href: route('dev.dashboard.stats') },
-                    { label: tab === 'stats' ? translate('admin.stats.title') : tab === 'users' ? translate('admin.users.title') : tab === 'parameters' ? translate('admin.parameters.title') : translate('admin.invitations.title') },
+                    { label: t('admin.title'), href: route('dev.dashboard.stats') },
+                    { label: tab === 'stats' ? t('admin.stats.title') : tab === 'users' ? t('admin.users.title') : tab === 'parameters' ? t('admin.parameters.title') : t('admin.invitations.title') },
                 ]"
             />
         </template>
@@ -237,7 +237,7 @@ const submitInvitation = () => {
                         :class="tab === 'stats' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         <Activity class="w-3.5 h-3.5" :stroke-width="2" />
-                        {{ translate('admin.stats.title') }}
+                        {{ t('admin.stats.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.users')"
@@ -246,7 +246,7 @@ const submitInvitation = () => {
                         :class="tab === 'users' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         <Users class="w-3.5 h-3.5" :stroke-width="2" />
-                        {{ translate('admin.users.title') }}
+                        {{ t('admin.users.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.invitations')"
@@ -255,7 +255,7 @@ const submitInvitation = () => {
                         :class="tab === 'invitations' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         <Mail class="w-3.5 h-3.5" :stroke-width="2" />
-                        {{ translate('admin.invitations.title') }}
+                        {{ t('admin.invitations.title') }}
                     </Link>
                     <Link
                         :href="route('dev.dashboard.parameters')"
@@ -264,7 +264,7 @@ const submitInvitation = () => {
                         :class="tab === 'parameters' ? 'border-indigo-500 text-primary' : 'border-transparent text-secondary hover:text-primary'"
                     >
                         <Shield class="w-3.5 h-3.5" :stroke-width="2" />
-                        {{ translate('admin.parameters.title') }}
+                        {{ t('admin.parameters.title') }}
                     </Link>
                 </nav>
             </div>
@@ -275,21 +275,21 @@ const submitInvitation = () => {
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ translate('admin.stats.usersTotal') }}</span>
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersTotal') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
                                 <UserRound class="w-4 h-4 text-indigo-400" :stroke-width="2" />
                             </div>
                         </div>
                         <p class="text-2xl font-bold text-indigo-400">{{ stats.users.total }}</p>
-                        <p class="text-xs text-muted mt-0.5">{{ translate('admin.stats.users') }}</p>
+                        <p class="text-xs text-muted mt-0.5">{{ t('admin.stats.users') }}</p>
                         <p class="text-xs text-secondary mt-1.5">
                             <span class="text-indigo-400 font-medium">+{{ stats.users.newThisMonth }}</span>
-                            {{ translate('admin.stats.usersNewThisMonth').toLowerCase() }}
+                            {{ t('admin.stats.usersNewThisMonth').toLowerCase() }}
                         </p>
                     </div>
                     <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ translate('admin.stats.usersPro') }}</span>
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersPro') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
                                 <BadgeCheck class="w-4 h-4 text-amber-400" :stroke-width="2" />
                             </div>
@@ -303,7 +303,7 @@ const submitInvitation = () => {
                     </div>
                     <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ translate('admin.stats.transactions') }}</span>
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.transactions') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-indigo-600/10 flex items-center justify-center">
                                 <Activity class="w-4 h-4 text-indigo-400" :stroke-width="2" />
                             </div>
@@ -312,12 +312,12 @@ const submitInvitation = () => {
                         <p class="text-xs text-muted mt-0.5">depuis le début</p>
                         <p class="text-xs text-secondary mt-1.5">
                             <span class="text-indigo-400 font-medium">{{ stats.transactions.thisMonth.toLocaleString() }}</span>
-                            {{ translate('admin.stats.transactionsThisMonth').toLowerCase() }}
+                            {{ t('admin.stats.transactionsThisMonth').toLowerCase() }}
                         </p>
                     </div>
                     <div class="bg-surface border border-line rounded-xl p-4">
                         <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ translate('admin.stats.usersNewThisMonth') }}</span>
+                            <span class="text-xs font-medium text-secondary uppercase tracking-wide">{{ t('admin.stats.usersNewThisMonth') }}</span>
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
                                 <TrendingUp class="w-4 h-4 text-emerald-400" :stroke-width="2" />
                             </div>
@@ -336,13 +336,13 @@ const submitInvitation = () => {
                 <!-- Row 1: inscriptions + transactions par mois -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-surface border border-line rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.usersPerMonth') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.usersPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="usersLineData" :options="lineOptions" />
                         </div>
                     </div>
                     <div class="bg-surface border border-line rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.transactionsPerMonth') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.transactionsPerMonth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <BarChart :data="transactionsBarData" :options="barOptions" />
                         </div>
@@ -352,13 +352,13 @@ const submitInvitation = () => {
                 <!-- Row 2: croissance cumulée + langues -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-surface border border-line rounded-xl p-5 lg:col-span-2">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.cumulativeGrowth') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.cumulativeGrowth') }}</h3>
                         <div class="h-48 sm:h-64">
                             <LineChart :data="cumulativeLineData" :options="lineOptions" />
                         </div>
                     </div>
                     <div class="bg-surface border border-line rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.localeDistribution') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.localeDistribution') }}</h3>
                         <div class="h-48 sm:h-64">
                             <DoughnutChart :data="localeDonutData" :options="donutOptions" />
                         </div>
@@ -368,14 +368,14 @@ const submitInvitation = () => {
                 <!-- Row 3: plan + activité + wallets/autres -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-surface border border-line rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.planDistribution') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.planDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="planDonutData" :options="donutOptions" />
                         </div>
                     </div>
 
                     <div class="bg-surface border border-line rounded-xl p-5">
-                        <h3 class="text-sm font-semibold text-primary mb-4">{{ translate('admin.stats.activityDistribution') }}</h3>
+                        <h3 class="text-sm font-semibold text-primary mb-4">{{ t('admin.stats.activityDistribution') }}</h3>
                         <div class="h-48 sm:h-56">
                             <DoughnutChart :data="activityDonutData" :options="donutOptions" />
                         </div>
@@ -384,17 +384,17 @@ const submitInvitation = () => {
                     <div class="bg-surface border border-line rounded-xl p-5 flex flex-col gap-4">
                         <div class="flex flex-col justify-between gap-3">
                             <div class="flex items-center justify-between">
-                                <h3 class="text-sm font-semibold text-primary">{{ translate('admin.stats.wallets') }}</h3>
+                                <h3 class="text-sm font-semibold text-primary">{{ t('admin.stats.wallets') }}</h3>
                                 <div class="p-2 rounded-lg bg-indigo-600/10">
                                     <Wallet class="w-4 h-4 text-indigo-400" />
                                 </div>
                             </div>
                             <div>
                                 <p class="text-3xl font-bold text-primary">{{ stats.wallets }}</p>
-                                <p class="text-xs text-muted mt-0.5">{{ translate('admin.stats.walletsTotal') }}</p>
+                                <p class="text-xs text-muted mt-0.5">{{ t('admin.stats.walletsTotal') }}</p>
                             </div>
                             <p class="text-xs text-secondary border-t border-line pt-3">
-                                {{ translate('admin.stats.avgPerUser') }}
+                                {{ t('admin.stats.avgPerUser') }}
                                 <span class="font-semibold text-primary ml-1">
                                     {{ stats.users.total > 0 ? (stats.wallets / stats.users.total).toFixed(1) : '—' }}
                                 </span>
@@ -403,15 +403,15 @@ const submitInvitation = () => {
 
                         <div class="border-t border-line pt-3 space-y-2.5">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-secondary">{{ translate('admin.stats.goals') }}</span>
+                                <span class="text-xs text-secondary">{{ t('admin.stats.goals') }}</span>
                                 <span class="text-sm font-bold text-primary">{{ stats.goals }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-secondary">{{ translate('admin.stats.recurring') }}</span>
+                                <span class="text-xs text-secondary">{{ t('admin.stats.recurring') }}</span>
                                 <span class="text-sm font-bold text-primary">{{ stats.recurring }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-secondary">{{ translate('admin.stats.transactionsThisMonth') }}</span>
+                                <span class="text-xs text-secondary">{{ t('admin.stats.transactionsThisMonth') }}</span>
                                 <span class="text-sm font-bold text-indigo-400">{{ stats.transactions.thisMonth.toLocaleString() }}</span>
                             </div>
                         </div>
@@ -425,7 +425,7 @@ const submitInvitation = () => {
                     <input
                         v-model="searchInput"
                         type="text"
-                        :placeholder="translate('admin.users.searchPlaceholder')"
+                        :placeholder="t('admin.users.searchPlaceholder')"
                         class="flex-1 px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         v-on:keyup.enter="performSearch"
                     >
@@ -433,7 +433,7 @@ const submitInvitation = () => {
                         class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
                         v-on:click="performSearch"
                     >
-                        {{ translate('admin.users.search') }}
+                        {{ t('admin.users.search') }}
                     </button>
                 </div>
 
@@ -449,7 +449,7 @@ const submitInvitation = () => {
                                 <p class="text-xs text-secondary truncate">{{ user.email }}</p>
                             </div>
                             <AppBadge :variant="user.plan === PlanType.Pro ? 'amber' : 'default'" class="shrink-0">
-                                {{ translate('plan.' + user.plan + '.name') }}
+                                {{ t('plan.' + user.plan + '.name') }}
                             </AppBadge>
                         </div>
                         <div class="flex items-center justify-between pt-1 border-t border-line">
@@ -478,11 +478,11 @@ const submitInvitation = () => {
                     <table class="w-full min-w-[560px]">
                         <thead class="bg-surface-2 border-b border-line">
                             <tr>
-                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary">{{ translate('admin.users.name') }}</th>
-                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden sm:table-cell">{{ translate('admin.users.email') }}</th>
-                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden md:table-cell">{{ translate('admin.users.plan') }}</th>
-                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden lg:table-cell">{{ translate('admin.users.created') }}</th>
-                                <th class="px-4 sm:px-6 py-3 text-right text-sm font-semibold text-primary">{{ translate('admin.users.actions') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.users.name') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden sm:table-cell">{{ t('admin.users.email') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden md:table-cell">{{ t('admin.users.plan') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-primary hidden lg:table-cell">{{ t('admin.users.created') }}</th>
+                                <th class="px-4 sm:px-6 py-3 text-right text-sm font-semibold text-primary">{{ t('admin.users.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-line">
@@ -496,13 +496,13 @@ const submitInvitation = () => {
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden sm:table-cell">{{ user.email }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm hidden md:table-cell">
                                     <AppBadge :variant="user.plan === PlanType.Pro ? 'amber' : 'default'">
-                                        {{ translate('plan.' + user.plan + '.name') }}
+                                        {{ t('plan.' + user.plan + '.name') }}
                                     </AppBadge>
                                 </td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden lg:table-cell">{{ new Date(user.created_at).toLocaleDateString() }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <AppTooltip :text="translate('admin.users.impersonate', { name: user.name })">
+                                        <AppTooltip :text="t('admin.users.impersonate', { name: user.name })">
                                             <button
                                                 class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors"
                                                 v-on:click="confirmImpersonate(user)"
@@ -510,7 +510,7 @@ const submitInvitation = () => {
                                                 <LogIn class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
-                                        <AppTooltip :text="user.roles.some(role => role.name === 'ROLE_DEV') ? translate('admin.users.makeUser') : translate('admin.users.makeDev')">
+                                        <AppTooltip :text="user.roles.some(role => role.name === 'ROLE_DEV') ? t('admin.users.makeUser') : t('admin.users.makeDev')">
                                             <button
                                                 class="p-1.5 rounded text-muted transition-colors"
                                                 :class="user.roles.some(role => role.name === 'ROLE_DEV')
@@ -521,7 +521,7 @@ const submitInvitation = () => {
                                                 <component :is="user.roles.some(role => role.name === 'ROLE_DEV') ? UserRound : Shield" class="w-4 h-4" />
                                             </button>
                                         </AppTooltip>
-                                        <AppTooltip :text="translate('admin.users.deleteUser', { name: user.name })">
+                                        <AppTooltip :text="t('admin.users.deleteUser', { name: user.name })">
                                             <button
                                                 class="p-1.5 rounded text-muted hover:text-red-400 transition-colors"
                                                 v-on:click="confirmDeleteUser(user)"
@@ -560,10 +560,10 @@ const submitInvitation = () => {
                             >
                             <div class="flex gap-2">
                                 <button :disabled="editSaving" class="flex-1 py-1.5 text-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg transition-colors" v-on:click="saveParameter(param)">
-                                    {{ translate('common.save') }}
+                                    {{ t('common.save') }}
                                 </button>
                                 <button class="flex-1 py-1.5 text-sm text-secondary hover:text-primary border border-line rounded-lg transition-colors" v-on:click="cancelEdit">
-                                    {{ translate('common.cancel') }}
+                                    {{ t('common.cancel') }}
                                 </button>
                             </div>
                         </template>
@@ -577,9 +577,9 @@ const submitInvitation = () => {
                     <table class="w-full">
                         <thead class="bg-surface-2 border-b border-line">
                             <tr>
-                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/3">{{ translate('admin.parameters.key') }}</th>
-                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/4">{{ translate('admin.parameters.value') }}</th>
-                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary">{{ translate('admin.parameters.description') }}</th>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/3">{{ t('admin.parameters.key') }}</th>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary w-1/4">{{ t('admin.parameters.value') }}</th>
+                                <th class="px-5 py-3 text-left text-sm font-semibold text-primary">{{ t('admin.parameters.description') }}</th>
                                 <th class="px-4 py-3 w-16" />
                             </tr>
                         </thead>
@@ -637,46 +637,46 @@ const submitInvitation = () => {
 
             <!-- Invitations tab -->
             <div v-if="tab === 'invitations'" class="max-w-lg space-y-4">
-                <p class="text-sm text-secondary">{{ translate('admin.invitations.description') }}</p>
+                <p class="text-sm text-secondary">{{ t('admin.invitations.description') }}</p>
 
                 <form class="space-y-4" v-on:submit.prevent="submitInvitation">
                     <div class="space-y-1">
-                        <label class="block text-sm font-medium text-primary">{{ translate('admin.invitations.email') }}</label>
+                        <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.email') }}</label>
                         <input
                             v-model="invitationForm.email"
                             type="email"
-                            :placeholder="translate('admin.invitations.emailPlaceholder')"
+                            :placeholder="t('admin.invitations.emailPlaceholder')"
                             class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                         <p v-if="invitationForm.errors.email" class="text-xs text-red-400">{{ invitationForm.errors.email }}</p>
                     </div>
 
                     <div class="space-y-1">
-                        <label class="block text-sm font-medium text-primary">{{ translate('admin.invitations.message') }}</label>
+                        <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.message') }}</label>
                         <textarea
                             v-model="invitationForm.message"
                             rows="5"
-                            :placeholder="translate('admin.invitations.messagePlaceholder')"
+                            :placeholder="t('admin.invitations.messagePlaceholder')"
                             class="w-full px-4 py-2 rounded-lg bg-surface-2 border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                         />
                         <p v-if="invitationForm.errors.message" class="text-xs text-red-400">{{ invitationForm.errors.message }}</p>
                     </div>
 
                     <div class="border border-line rounded-lg p-4 space-y-3 bg-surface-2/50">
-                        <p class="text-xs text-secondary">{{ translate('admin.invitations.credentialsHint') }}</p>
+                        <p class="text-xs text-secondary">{{ t('admin.invitations.credentialsHint') }}</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="space-y-1">
-                                <label class="block text-sm font-medium text-primary">{{ translate('admin.invitations.credentialEmail') }}</label>
+                                <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.credentialEmail') }}</label>
                                 <input
                                     v-model="invitationForm.credential_email"
                                     type="email"
-                                    :placeholder="translate('admin.invitations.emailPlaceholder')"
+                                    :placeholder="t('admin.invitations.emailPlaceholder')"
                                     class="w-full px-4 py-2 rounded-lg bg-surface border border-line text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 >
                                 <p v-if="invitationForm.errors.credential_email" class="text-xs text-red-400">{{ invitationForm.errors.credential_email }}</p>
                             </div>
                             <div class="space-y-1">
-                                <label class="block text-sm font-medium text-primary">{{ translate('admin.invitations.credentialPassword') }}</label>
+                                <label class="block text-sm font-medium text-primary">{{ t('admin.invitations.credentialPassword') }}</label>
                                 <input
                                     v-model="invitationForm.credential_password"
                                     type="text"
@@ -693,7 +693,7 @@ const submitInvitation = () => {
                         class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors text-sm font-medium"
                     >
                         <Mail class="w-4 h-4" />
-                        {{ invitationForm.processing ? translate('admin.invitations.sending') : translate('admin.invitations.send') }}
+                        {{ invitationForm.processing ? t('admin.invitations.sending') : t('admin.invitations.send') }}
                     </button>
                 </form>
             </div>
@@ -702,8 +702,8 @@ const submitInvitation = () => {
 
     <ConfirmModal
         :show="!!pendingImpersonateUser"
-        :message="pendingImpersonateUser ? translate('admin.users.confirmImpersonate', { name: pendingImpersonateUser.name }) : ''"
-        :confirm-label="pendingImpersonateUser ? translate('admin.users.impersonate', { name: pendingImpersonateUser.name }) : ''"
+        :message="pendingImpersonateUser ? t('admin.users.confirmImpersonate', { name: pendingImpersonateUser.name }) : ''"
+        :confirm-label="pendingImpersonateUser ? t('admin.users.impersonate', { name: pendingImpersonateUser.name }) : ''"
         confirm-variant="primary"
         v-on:confirm="doImpersonate"
         v-on:cancel="pendingImpersonateUser = null"
@@ -711,8 +711,8 @@ const submitInvitation = () => {
 
     <ConfirmModal
         :show="!!pendingUser"
-        :message="pendingUser ? translate('admin.users.confirmToggle', { name: pendingUser.name }) : ''"
-        :confirm-label="pendingUser?.roles.some(r => r.name === 'ROLE_DEV') ? translate('admin.users.makeUser') : translate('admin.users.makeDev')"
+        :message="pendingUser ? t('admin.users.confirmToggle', { name: pendingUser.name }) : ''"
+        :confirm-label="pendingUser?.roles.some(r => r.name === 'ROLE_DEV') ? t('admin.users.makeUser') : t('admin.users.makeDev')"
         confirm-variant="primary"
         v-on:confirm="doToggleRole"
         v-on:cancel="pendingUser = null"
@@ -720,7 +720,7 @@ const submitInvitation = () => {
 
     <ConfirmModal
         :show="!!pendingDeleteUser"
-        :message="pendingDeleteUser ? translate('admin.users.confirmDelete', { name: pendingDeleteUser.name }) : ''"
+        :message="pendingDeleteUser ? t('admin.users.confirmDelete', { name: pendingDeleteUser.name }) : ''"
         confirm-variant="danger"
         v-on:confirm="doDeleteUser"
         v-on:cancel="pendingDeleteUser = null"

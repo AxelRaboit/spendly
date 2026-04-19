@@ -7,7 +7,7 @@ const props = defineProps({
     meta: { type: Object, required: true },
 });
 
-const { t: translate } = useI18n({ useScope: 'global' });
+const { t } = useI18n({ useScope: 'global' });
 
 function decodeHtml(html) {
     const textareaElement = document.createElement('textarea');
@@ -23,7 +23,7 @@ const pageLinks = computed(() => props.meta.links?.slice(1, -1) ?? []);
 <template>
     <div v-if="meta.last_page > 1" class="mt-6 space-y-3 flex flex-col items-center">
         <p class="text-sm text-secondary">
-            {{ translate('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
+            {{ t('pagination.results', { from: meta.from, to: meta.to, total: meta.total }) }}
         </p>
 
         <div class="flex flex-wrap gap-1 items-center justify-center">
@@ -35,7 +35,7 @@ const pageLinks = computed(() => props.meta.links?.slice(1, -1) ?? []);
                 class="px-3 py-1 rounded text-sm transition"
                 :class="prevLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
             >
-                {{ translate('pagination.previous') }}
+                {{ t('pagination.previous') }}
             </component>
 
             <template v-for="link in pageLinks" :key="link.label">
@@ -62,7 +62,7 @@ const pageLinks = computed(() => props.meta.links?.slice(1, -1) ?? []);
                 class="px-3 py-1 rounded text-sm transition"
                 :class="nextLink?.url ? 'bg-surface-2 text-secondary hover:bg-surface-3' : 'bg-surface-2/50 text-subtle cursor-not-allowed'"
             >
-                {{ translate('pagination.next') }}
+                {{ t('pagination.next') }}
             </component>
         </div>
     </div>
