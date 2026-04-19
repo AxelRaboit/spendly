@@ -56,7 +56,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Inscription
 
-![Inscription](docs/readme/screenshots/registration.jpg)
+![Inscription](docs/readme/screenshots/registration.png)
 
 > Formulaire d'inscription : nom, e-mail, mot de passe et confirmation.
 
