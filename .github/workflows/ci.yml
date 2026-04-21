@@ -160,8 +160,11 @@ jobs:
           DB_DATABASE: spendly_test
 
       # —— Tests 🧪 —————————————————————————————————————————————————————————————
-      - name: Run unit tests
-        run: make test-unit
+      - name: Run frontend tests
+        run: make test-frontend
 
-      - name: Run feature tests
-        run: make test-feature
+      - name: Run backend unit tests
+        run: make test-backend-unit
+
+      - name: Run backend feature tests
+        run: make test-backend-feature
