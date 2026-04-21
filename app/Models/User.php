@@ -106,6 +106,11 @@ class User extends Authenticatable
         return $this->hasMany(ScheduledTransaction::class);
     }
 
+    public function budgetPresets(): HasMany
+    {
+        return $this->hasMany(BudgetPreset::class);
+    }
+
     /** Wallet list formatted for select dropdowns. */
     public function walletOptions(): Collection
     {
