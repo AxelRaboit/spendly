@@ -27,7 +27,7 @@
         "laravel-vite-plugin": "^3.0.0",
         "postcss": "^8.5.10",
         "prettier": "^3.8.3",
-        "tailwindcss": "^4.2.2",
+        "tailwindcss": "^4.2.4",
         "vite": "^8.0.9",
         "vue": "^3.4.0",
         "vue-i18n": "^11.3.2",
