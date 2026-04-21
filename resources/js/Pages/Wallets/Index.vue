@@ -1,10 +1,11 @@
 <script setup>
-import { ArrowLeftRight, GripVertical, ChevronRight, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2 } from 'lucide-vue-next';
+import { ArrowLeftRight, GripVertical, ChevronRight, Users, FlaskConical, Plus, LayoutDashboard, Pencil, Trash2, BookOpen, LayoutList } from 'lucide-vue-next';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import QuickCreateCard from '@/components/wallet/QuickCreateCard.vue';
 import TransferModal from '@/components/wallet/TransferModal.vue';
 import WalletMembersModal from '@/components/wallet/WalletMembersModal.vue';
+import Modal from '@/components/ui/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
@@ -12,6 +13,7 @@ import { useDragDrop } from '@/composables/ui/useDragDrop';
 import { useCurrency } from '@/composables/core/useCurrency';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useTour } from '@/composables/ui/useTour';
+import { useWalletForm } from '@/composables/forms/useWalletForm';
 import { useI18n } from 'vue-i18n';
 import { WalletMode } from '@/enums/WalletMode';
 import { WalletRole } from '@/enums/WalletRole';
@@ -21,7 +23,7 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const { isPro, canCreate, limit } = usePlanLimits();
+const { isPro, canCreate } = usePlanLimits();
 const { initForPage, tourActive } = useTour();
 const showProFeatures = computed(() => isPro.value || tourActive.value);
 onMounted(() => initForPage('wallets.index'));
@@ -30,7 +32,7 @@ function deleteDemoWallet() {
     router.delete(route('tour.cleanup'));
 }
 const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete(t('wallets.confirmDelete'));
-const { fmt } = useCurrency();
+const { fmt, symbol } = useCurrency();
 const showTransfer = ref(false);
 const showMembers = ref(false);
 const membersWallet = ref(null);
@@ -72,6 +74,20 @@ function quickCreate(name) {
     quickForm.name = name;
     quickForm.post('/wallets');
 }
+
+// ── Create wallet modal ───────────────────────────────────────────────────
+const showCreateWallet = ref(false);
+const { form: createForm, submit: submitCreate } = useWalletForm();
+
+const walletModes = [
+    { key: WalletMode.Budget, icon: BookOpen, title: () => t('wallets.modeBudgetTitle'), description: () => t('wallets.modeBudgetDesc') },
+    { key: WalletMode.Simple, icon: LayoutList, title: () => t('wallets.modeSimpleTitle'), description: () => t('wallets.modeSimpleDesc') },
+];
+
+function openCreateModal() {
+    createForm.reset();
+    showCreateWallet.value = true;
+}
 </script>
 
 <template>
@@ -89,13 +105,10 @@ function quickCreate(name) {
                     {{ t('transfers.new') }}
                 </AppButton>
                 <div v-if="canCreateWallet || showProFeatures" data-tour="create-wallet">
-                    <Link
-                        href="/wallets/create"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition inline-flex items-center gap-2"
-                    >
-                        <Plus class="w-4 h-4" />
+                    <AppButton v-on:click="openCreateModal">
+                        <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('wallets.createBtn') }}
-                    </Link>
+                    </AppButton>
                 </div>
             </div>
 
@@ -227,5 +240,63 @@ function quickCreate(name) {
             :is-pro="isPro"
             v-on:close="showMembers = false"
         />
+
+        <Modal :show="showCreateWallet" max-width="lg" v-on:close="showCreateWallet = false">
+            <div class="bg-surface p-6 space-y-5">
+                <h2 class="text-base font-semibold text-primary">{{ t('wallets.createTitle') }}</h2>
+
+                <form class="space-y-5" v-on:submit.prevent="submitCreate">
+                    <div class="space-y-2">
+                        <InputLabel :value="t('wallets.fieldMode')" />
+                        <div class="grid grid-cols-2 gap-3">
+                            <button
+                                v-for="mode in walletModes"
+                                :key="mode.key"
+                                type="button"
+                                class="flex flex-col items-start gap-2 rounded-xl border-2 p-4 text-left transition-all"
+                                :class="createForm.mode === mode.key
+                                    ? 'border-indigo-500 bg-indigo-500/10'
+                                    : 'border-line/60 bg-surface hover:border-indigo-500/40'"
+                                v-on:click="createForm.mode = mode.key"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <component :is="mode.icon" class="w-4 h-4" :class="createForm.mode === mode.key ? 'text-indigo-400' : 'text-muted'" />
+                                    <span class="text-sm font-semibold" :class="createForm.mode === mode.key ? 'text-indigo-400' : 'text-primary'">{{ mode.title() }}</span>
+                                </div>
+                                <p class="text-xs text-muted leading-relaxed">{{ mode.description() }}</p>
+                            </button>
+                        </div>
+                        <InputError :message="createForm.errors.mode" />
+                    </div>
+
+                    <div>
+                        <InputLabel :value="t('wallets.fieldName')" required />
+                        <TextInput v-model="createForm.name" type="text" :placeholder="t('wallets.placeholder')" required />
+                        <InputError :message="createForm.errors.name" />
+                    </div>
+
+                    <div>
+                        <InputLabel :value="t('wallets.fieldBalance', { symbol })" />
+                        <TextInput
+                            v-model="createForm.start_balance"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                        />
+                        <InputError :message="createForm.errors.start_balance" />
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <AppButton type="button" variant="secondary" v-on:click="showCreateWallet = false">
+                            {{ t('common.cancel') }}
+                        </AppButton>
+                        <AppButton type="submit" :disabled="createForm.processing">
+                            {{ t('common.create') }}
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
