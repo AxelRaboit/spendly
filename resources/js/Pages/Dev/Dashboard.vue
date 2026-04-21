@@ -782,100 +782,73 @@ const submitInvitation = () => {
             </h2>
 
             <form class="space-y-4" v-on:submit.prevent="submitUserForm">
-                <!-- Name + Email -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.name') }}</label>
-                        <input
-                            v-model="userForm.name"
-                            type="text"
-                            required
-                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            :class="{ 'border-red-500': userForm.errors.name }"
-                        >
-                        <p v-if="userForm.errors.name" class="text-xs text-red-400">{{ userForm.errors.name }}</p>
+                    <div>
+                        <InputLabel :value="t('admin.users.name')" required />
+                        <TextInput v-model="userForm.name" type="text" required />
+                        <InputError :message="userForm.errors.name" />
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.email') }}</label>
-                        <input
-                            v-model="userForm.email"
-                            type="email"
-                            required
-                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            :class="{ 'border-red-500': userForm.errors.email }"
-                        >
-                        <p v-if="userForm.errors.email" class="text-xs text-red-400">{{ userForm.errors.email }}</p>
+                    <div>
+                        <InputLabel :value="t('admin.users.email')" required />
+                        <TextInput v-model="userForm.email" type="email" required />
+                        <InputError :message="userForm.errors.email" />
                     </div>
                 </div>
 
-                <!-- Password -->
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-secondary">{{ t('admin.users.password') }}</label>
-                    <input
+                <div>
+                    <InputLabel :value="t('admin.users.password')" :required="!editingUser" />
+                    <TextInput
                         v-model="userForm.password"
                         type="password"
                         :required="!editingUser"
                         :placeholder="editingUser ? t('admin.users.passwordPlaceholder') : ''"
-                        class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        :class="{ 'border-red-500': userForm.errors.password }"
-                    >
-                    <p v-if="userForm.errors.password" class="text-xs text-red-400">{{ userForm.errors.password }}</p>
+                    />
+                    <InputError :message="userForm.errors.password" />
                 </div>
 
-                <!-- Plan + Locale + Currency -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.plan') }}</label>
+                    <div>
+                        <InputLabel :value="t('admin.users.plan')" />
                         <select
                             v-model="userForm.plan"
-                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                         >
                             <option value="free">Free</option>
                             <option value="pro">Pro</option>
                         </select>
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.locale') }}</label>
+                    <div>
+                        <InputLabel :value="t('admin.users.locale')" />
                         <select
                             v-model="userForm.locale"
-                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                         >
-                            <option value="fr">Français</option>
-                            <option value="en">English</option>
-                            <option value="de">Deutsch</option>
-                            <option value="es">Español</option>
+                            <option :value="Locale.Fr">Français</option>
+                            <option :value="Locale.En">English</option>
+                            <option :value="Locale.De">Deutsch</option>
+                            <option :value="Locale.Es">Español</option>
                         </select>
                     </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.currency') }}</label>
+                    <div>
+                        <InputLabel :value="t('admin.users.currency')" />
                         <select
                             v-model="userForm.currency"
-                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full bg-surface-2 text-primary rounded-lg px-3 py-2.5 border border-line focus:border-indigo-500 focus:outline-none"
                         >
-                            <option>EUR</option>
-                            <option>USD</option>
-                            <option>GBP</option>
-                            <option>CHF</option>
-                            <option>CAD</option>
-                            <option>JPY</option>
+                            <option v-for="c in Currency" :key="c" :value="c">{{ c }}</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Actions -->
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" class="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors" v-on:click="closeUserModal">
+                    <AppButton type="button" variant="secondary" v-on:click="closeUserModal">
                         {{ t('admin.parameters.cancel') }}
-                    </button>
-                    <button
-                        type="submit"
-                        :disabled="userForm.processing"
-                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
-                    >
+                    </AppButton>
+                    <AppButton type="submit" :disabled="userForm.processing">
                         {{ userForm.processing
                             ? (editingUser ? t('admin.users.saving') : t('admin.users.creating'))
                             : t('admin.users.save') }}
-                    </button>
+                    </AppButton>
                 </div>
             </form>
         </div>
