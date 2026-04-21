@@ -252,7 +252,7 @@ function toggleGroup(id) {
                 <input v-model="scheduledForm.description" type="text" class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
-            <FormField :label="t('scheduled.fieldAmount', { symbol })">
+            <FormField :label="t('scheduled.fieldAmount', { symbol })" required>
                 <input
                     v-model="scheduledForm.amount"
                     type="number"
@@ -263,21 +263,21 @@ function toggleGroup(id) {
                 >
             </FormField>
 
-            <FormField :label="t('scheduled.fieldType')">
+            <FormField :label="t('scheduled.fieldType')" required>
                 <TypeToggle v-model="scheduledForm.type" />
             </FormField>
 
-            <FormField :label="t('scheduled.date')">
+            <FormField :label="t('scheduled.date')" required>
                 <input v-model="scheduledForm.scheduled_date" type="date" required class="w-full bg-surface-2 text-primary border border-line rounded-lg px-3 py-2.5 focus:border-indigo-500 focus:outline-none">
             </FormField>
 
-            <FormField :label="t('scheduled.fieldWallet')">
+            <FormField :label="t('scheduled.fieldWallet')" required>
                 <SelectInput v-model="scheduledForm.wallet_id">
                     <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                 </SelectInput>
             </FormField>
 
-            <FormField :label="t('scheduled.fieldCategory')">
+            <FormField :label="t('scheduled.fieldCategory')" required>
                 <SelectInput v-model="scheduledForm.category_id">
                     <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                 </SelectInput>
@@ -307,7 +307,7 @@ function toggleGroup(id) {
             </FormField>
 
             <div class="grid grid-cols-2 gap-3">
-                <FormField :label="t('recurring.fieldAmount', { symbol })">
+                <FormField :label="t('recurring.fieldAmount', { symbol })" required>
                     <input
                         v-model="form.amount"
                         type="number"
@@ -317,7 +317,7 @@ function toggleGroup(id) {
                         required
                     >
                 </FormField>
-                <FormField :label="t('recurring.fieldType')">
+                <FormField :label="t('recurring.fieldType')" required>
                     <SelectInput v-model="form.type">
                         <option value="expense">{{ t('search.expense') }}</option>
                         <option value="income">{{ t('search.income') }}</option>
@@ -325,7 +325,7 @@ function toggleGroup(id) {
                 </FormField>
             </div>
 
-            <FormField :label="t('recurring.fieldDay')">
+            <FormField :label="t('recurring.fieldDay')" required>
                 <input
                     v-model.number="form.day_of_month"
                     type="number"
@@ -337,13 +337,13 @@ function toggleGroup(id) {
                 <p class="mt-1 text-xs text-muted">{{ ordinalDay(form.day_of_month || 1) }}</p>
             </FormField>
 
-            <FormField :label="t('recurring.fieldWallet')">
+            <FormField :label="t('recurring.fieldWallet')" required>
                 <SelectInput v-model="form.wallet_id">
                     <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                 </SelectInput>
             </FormField>
 
-            <FormField :label="t('recurring.fieldCategory') + ' *'">
+            <FormField :label="t('recurring.fieldCategory')" required>
                 <SelectInput v-model="form.category_id">
                     <option value="" disabled>—</option>
                     <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>

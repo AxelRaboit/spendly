@@ -434,14 +434,13 @@ onUnmounted(() => {
 
         <div class="space-y-3">
             <div class="flex justify-end">
-                <button
-                    class="flex w-full sm:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                <AppButton
                     data-tour="new-transaction"
                     v-on:click="openTxPanel(null, '', TransactionType.Expense, { cancelEditing, cancelAdding })"
                 >
-                    <Plus class="w-4 h-4 shrink-0" />
+                    <Plus class="w-4 h-4 mr-1.5" />
                     {{ t('budgets.newTransaction') }}
-                </button>
+                </AppButton>
             </div>
             <div class="flex items-center justify-between" data-tour="month-nav">
                 <Link

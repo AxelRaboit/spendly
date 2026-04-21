@@ -1,8 +1,11 @@
 <script setup>
-import { Wallet } from 'lucide-vue-next';
+import { Wallet, Plus } from 'lucide-vue-next';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import Modal from '@/components/ui/Modal.vue';
+import { Head, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useConfirmDelete } from '@/composables/ui/useConfirmDelete';
+import { useCategoryForm } from '@/composables/forms/useCategoryForm';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
@@ -16,6 +19,14 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
 function filterByWallet(walletId) {
     router.get('/categories', { wallet_id: walletId || undefined, search: props.filters.search || undefined }, { preserveState: true, replace: true });
+}
+
+const showCreateModal = ref(false);
+const { form: createForm, submit: submitCreate } = useCategoryForm(null, { onSuccess: () => { showCreateModal.value = false; } });
+
+function openCreateModal() {
+    createForm.reset();
+    showCreateModal.value = true;
 }
 </script>
 
@@ -38,9 +49,10 @@ function filterByWallet(walletId) {
                     <option value="">{{ t('categories.allWallets') }}</option>
                     <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
                 </SelectInput>
-                <Link href="/categories/create" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shrink-0 text-center sm:ml-auto transition">
+                <AppButton class="shrink-0 sm:ml-auto" v-on:click="openCreateModal">
+                    <Plus class="w-4 h-4 mr-1.5" />
                     {{ t('categories.createBtn') }}
-                </Link>
+                </AppButton>
             </div>
 
             <div v-if="categories.data.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -83,5 +95,37 @@ function filterByWallet(walletId) {
             v-on:confirm="onConfirm"
             v-on:cancel="onCancel"
         />
+
+        <Modal :show="showCreateModal" max-width="md" v-on:close="showCreateModal = false">
+            <div class="bg-surface p-6 space-y-5">
+                <h2 class="text-base font-semibold text-primary">{{ t('categories.createTitle') }}</h2>
+
+                <form class="space-y-4" v-on:submit.prevent="submitCreate">
+                    <div>
+                        <InputLabel :value="t('categories.fieldName')" required />
+                        <TextInput v-model="createForm.name" type="text" :placeholder="t('categories.placeholder')" autofocus />
+                        <InputError :message="createForm.errors.name" />
+                    </div>
+
+                    <div>
+                        <InputLabel :value="t('categories.fieldWallet')" required />
+                        <SelectInput v-model="createForm.wallet_id">
+                            <option value="" disabled>— {{ t('categories.pickWallet') }} —</option>
+                            <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
+                        </SelectInput>
+                        <InputError :message="createForm.errors.wallet_id" />
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <AppButton type="button" variant="secondary" v-on:click="showCreateModal = false">
+                            {{ t('common.cancel') }}
+                        </AppButton>
+                        <AppButton type="submit" :disabled="createForm.processing">
+                            {{ t('common.create') }}
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
