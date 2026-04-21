@@ -85,14 +85,17 @@ db-test: ## Create the test database and run migrations
 	@psql -c "CREATE DATABASE spendly_test;" 2>/dev/null || true
 	DB_DATABASE=spendly_test $(ARTISAN) migrate --force
 
-test: db-test ## Run all PHPUnit tests
+test-backend: db-test ## Run all PHPUnit tests (unit + feature)
 	$(ARTISAN) test
 
-test-feature: ## Run feature tests only
+test-backend-feature: ## Run backend feature tests only
 	$(ARTISAN) test tests/Feature
 
-test-unit: ## Run unit tests only
+test-backend-unit: ## Run backend unit tests only
 	$(ARTISAN) test tests/Unit
+
+test-frontend: ## Run frontend unit tests (Vitest)
+	$(PNPM) run test
 
 # === Code Quality ===
 stan: ## Run PHPStan static analysis
@@ -123,7 +126,7 @@ fix: ## Run all fixers then static analysis
 	make stan
 
 ft: ## Fix code and run all tests
-	make fix && make test
+	make fix && make test-backend && make test-frontend
 
 # === Laravel Cache ===
 cc: ## Clear all caches (dev)

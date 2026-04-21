@@ -6,7 +6,10 @@
         "build": "vite build",
         "dev": "vite",
         "lint": "eslint resources/js",
-        "lint:fix": "eslint resources/js --fix"
+        "lint:fix": "eslint resources/js --fix",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^3.0.3",
@@ -27,7 +30,10 @@
         "tailwindcss": "^4.2.2",
         "vite": "^8.0.8",
         "vue": "^3.4.0",
-        "vue-i18n": "^11.3.2"
+        "vue-i18n": "^11.3.2",
+        "vitest": "^3.2.0",
+        "@vue/test-utils": "^2.4.6",
+        "jsdom": "^26.1.0"
     },
     "dependencies": {
         "chart.js": "^4.5.1",
