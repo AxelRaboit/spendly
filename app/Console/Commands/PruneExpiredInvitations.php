@@ -9,7 +9,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('app:prune-expired-invitations')]
+#[Signature('spendly:prune-expired-invitations')]
 #[Description('Delete wallet invitations that have expired')]
 class PruneExpiredInvitations extends Command
 {

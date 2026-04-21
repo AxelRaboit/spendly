@@ -1,3 +1,5 @@
+import { Currency } from '@/enums/Currency';
+import { Locale } from '@/enums/Locale';
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
@@ -16,8 +18,8 @@ export const CURRENCIES = [
 const LOCALE_MAP = { fr: 'fr-FR', en: 'en-US', es: 'es-ES', de: 'de-DE' };
 
 export function useCurrency() {
-    const currency = computed(() => usePage().props.auth?.user?.currency ?? 'EUR');
-    const intlLocale = computed(() => LOCALE_MAP[usePage().props.locale ?? 'fr'] ?? 'fr-FR');
+    const currency = computed(() => usePage().props.auth?.user?.currency ?? Currency.EUR);
+    const intlLocale = computed(() => LOCALE_MAP[usePage().props.locale ?? Locale.Fr] ?? 'fr-FR');
 
     const symbol = computed(
         () =>

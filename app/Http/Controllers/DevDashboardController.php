@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\HttpStatus;
+use App\Http\Requests\Admin\AdminStoreUserRequest;
+use App\Http\Requests\Admin\AdminUpdateUserRequest;
 use App\Http\Requests\PaginationRequest;
 use App\Http\Requests\SendAppInvitationRequest;
 use App\Models\User;
@@ -77,6 +79,20 @@ class DevDashboardController extends Controller
             'users' => $this->userService->searchForAdmin(['search' => $pagination->search()]),
             'search' => $pagination->search(),
         ]);
+    }
+
+    public function storeUser(AdminStoreUserRequest $request): RedirectResponse
+    {
+        $this->userService->createForAdmin($request->validated());
+
+        return back();
+    }
+
+    public function updateUser(User $user, AdminUpdateUserRequest $request): RedirectResponse
+    {
+        $this->userService->updateForAdmin($user, $request->validated());
+
+        return back();
     }
 
     public function invitations(): Response

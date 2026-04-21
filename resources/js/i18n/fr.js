@@ -883,6 +883,17 @@ export default {
             impersonate: 'Impersonner {name}',
             confirmImpersonate:
                 'Vous allez vous connecter en tant que {name}. Vous pourrez revenir à votre compte à tout moment.',
+            create: 'Créer un utilisateur',
+            edit: 'Modifier {name}',
+            editUser: "Modifier l'utilisateur",
+            password: 'Mot de passe',
+            passwordPlaceholder: 'Laisser vide pour ne pas modifier',
+            verified: 'E-mail vérifié',
+            locale: 'Langue',
+            currency: 'Devise',
+            save: 'Enregistrer',
+            creating: 'Création…',
+            saving: 'Enregistrement…',
         },
         invitations: {
             title: 'Invitations',

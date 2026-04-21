@@ -11,7 +11,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('app:cleanup-stale-demo-wallets')]
+#[Signature('spendly:cleanup-stale-demo-wallets')]
 #[Description('Remove demo wallets and their related data for users who did not complete the onboarding tour')]
 class CleanupStaleDemoWallets extends Command
 {

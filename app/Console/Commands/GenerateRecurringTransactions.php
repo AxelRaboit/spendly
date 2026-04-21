@@ -12,7 +12,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('app:generate-recurring-transactions')]
+#[Signature('spendly:generate-recurring-transactions')]
 #[Description('Generate transactions for active recurring rules and scheduled transactions due today')]
 class GenerateRecurringTransactions extends Command
 {
