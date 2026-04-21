@@ -10,7 +10,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('app:expire-trials')]
+#[Signature('spendly:expire-trials')]
 #[Description('Downgrade users whose Pro trial has expired')]
 class ExpireTrials extends Command
 {
