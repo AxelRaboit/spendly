@@ -46,8 +46,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3(axios@1.15.2)(vue@3.4.38(typescript@5.9.3))
       '@tailwindcss/forms':
-        specifier: 0.4.0-alpha.2
-        version: 0.4.0-alpha.2(tailwindcss@4.2.4)
+        specifier: 0.5.11
+        version: 0.5.11(tailwindcss@4.2.4)
       '@tailwindcss/typography':
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.2.4)
@@ -673,10 +673,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tailwindcss/forms@0.4.0-alpha.2':
-    resolution: {integrity: sha512-bpo7CkwffVgMZLDMATLZgIcLZZ5PUNwR+nzrJLTbXCG90XReubO8I21HMSQt7Eq2uM9k6+FheZStWKtE4L5N4Q==}
+  '@tailwindcss/forms@0.5.11':
+    resolution: {integrity: sha512-h9wegbZDPurxG22xZSoWtdzc41/OlNEUQERNqI/0fOwa2aVlWGu7C35E/x6LDyD3lgtztFSSjKZyuVM0hxhbgA==}
     peerDependencies:
-      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1'
+      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20 || >= 4.0.0-beta.1'
 
   '@tailwindcss/node@4.2.2':
     resolution: {integrity: sha512-pXS+wJ2gZpVXqFaUEjojq7jzMpTGf8rU6ipJz5ovJV6PUGmlJ+jvIwGrzdHdQ80Sg+wmQxUFuoW1UAAwHNEdFA==}
@@ -2542,7 +2542,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.60.2':
     optional: true
 
-  '@tailwindcss/forms@0.4.0-alpha.2(tailwindcss@4.2.4)':
+  '@tailwindcss/forms@0.5.11(tailwindcss@4.2.4)':
     dependencies:
       mini-svg-data-uri: 1.4.4
       tailwindcss: 4.2.4
