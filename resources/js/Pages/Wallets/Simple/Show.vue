@@ -179,13 +179,10 @@ const { isOpen, message, confirmDelete, onConfirm, onCancel } = useConfirmDelete
 
         <div class="space-y-4">
             <div v-if="canEdit" class="flex justify-end">
-                <button
-                    class="flex w-full sm:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                    v-on:click="openCreate"
-                >
-                    <Plus class="w-4 h-4 shrink-0" />
+                <AppButton v-on:click="openCreate">
+                    <Plus class="w-4 h-4 mr-1.5" />
                     {{ t('simple.addTransaction') }}
-                </button>
+                </AppButton>
             </div>
 
             <div class="bg-surface border border-line/60 rounded-2xl p-5 space-y-4">

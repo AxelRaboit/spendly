@@ -77,7 +77,7 @@ const modes = [
                     </div>
 
                     <div>
-                        <InputLabel :value="t('wallets.fieldName')" />
+                        <InputLabel :value="t('wallets.fieldName')" required />
                         <TextInput v-model="form.name" type="text" :placeholder="t('wallets.placeholder')" />
                         <InputError :message="form.errors.name" />
                     </div>

@@ -27,13 +27,13 @@ const { form, submit } = useCategoryForm(props.category ?? undefined);
             <FormSection>
                 <form class="space-y-4" v-on:submit.prevent="submit">
                     <div>
-                        <InputLabel :value="t('categories.fieldName')" />
+                        <InputLabel :value="t('categories.fieldName')" required />
                         <TextInput v-model="form.name" type="text" :placeholder="t('categories.placeholder')" />
                         <InputError :message="form.errors.name" />
                     </div>
 
                     <div>
-                        <InputLabel :value="t('categories.fieldWallet')" />
+                        <InputLabel :value="t('categories.fieldWallet')" required />
                         <SelectInput v-model="form.wallet_id" :disabled="isEdit">
                             <option value="" disabled>— {{ t('categories.pickWallet') }} —</option>
                             <option v-for="w in wallets" :key="w.id" :value="w.id">{{ w.name }}</option>
