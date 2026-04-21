@@ -48,7 +48,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Connexion
 
-![Connexion](docs/readme/screenshots/login.jpg)
+![Connexion](docs/readme/screenshots/login.png)
 
 > Page de connexion avec accès démo intégré pour tester l'application sans créer de compte.
 
@@ -62,6 +62,14 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ---
 
+### Mot de passe oublié
+
+![Mot de passe oublié](docs/readme/screenshots/forgot-password.png)
+
+> Formulaire de réinitialisation du mot de passe : saisie de l'adresse e-mail pour recevoir un lien de réinitialisation.
+
+---
+
 ### Tableau de bord
 
 ![Tableau de bord](docs/readme/screenshots/tableau-de-bord.png)
@@ -72,7 +80,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Vue globale
 
-![Vue globale](docs/readme/screenshots/vue-globale.jpg)
+![Vue globale](docs/readme/screenshots/vue-globale.png)
 
 > Synthèse de tous vos portefeuilles avec graphiques de revenus/dépenses par mois et donut de répartition par catégorie.
 
@@ -80,7 +88,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Portefeuilles
 
-![Portefeuilles](docs/readme/screenshots/portefeuilles.jpg)
+![Portefeuilles](docs/readme/screenshots/portefeuilles.png)
 
 > Liste de vos portefeuilles avec soldes actuels et accès rapide au budget de chacun.
 
@@ -88,7 +96,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Créer un portefeuille
 
-![Créer un portefeuille](docs/readme/screenshots/portefeuille-creation.jpg)
+![Créer un portefeuille](docs/readme/screenshots/portefeuille-creation.png)
 
 > Choix du type lors de la création : **Budget** pour un suivi détaillé avec catégories et lignes budgétaires, ou **Simplifié** pour des transactions sans catégories, idéal pour l'argent de poche.
 
@@ -96,7 +104,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Portefeuille simplifié
 
-![Portefeuille simplifié](docs/readme/screenshots/portefeuille-simplifie.jpg)
+![Portefeuille simplifié](docs/readme/screenshots/portefeuille-simplifie.png)
 
 > Vue d'un portefeuille simplifié : solde actuel, total entrées/dépenses avec moyenne journalière, et liste chronologique des transactions filtrables (Tout / Entrées / Dépenses).
 
@@ -116,7 +124,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Virement entre portefeuilles
 
-![Virement](docs/readme/screenshots/virement.jpg)
+![Virement](docs/readme/screenshots/virement.png)
 
 > Modale de virement : transfert d'un montant entre deux portefeuilles en quelques clics.
 
@@ -148,7 +156,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Transactions planifiées
 
-![Transactions planifiées](docs/readme/screenshots/transactions-planifiees.jpg)
+![Transactions planifiées](docs/readme/screenshots/transactions-planifiees.png)
 
 > Suivi des transactions planifiées : dépenses annuelles, primes et échéances futures.
 
@@ -156,7 +164,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Nouvelle transaction planifiée
 
-![Nouvelle transaction planifiée](docs/readme/screenshots/nouvelle-transactions-planifiees.jpg)
+![Nouvelle transaction planifiée](docs/readme/screenshots/nouvelle-transactions-planifiees.png)
 
 > Formulaire de création d'une transaction planifiée : montant, catégorie, date d'échéance et description.
 
@@ -164,7 +172,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Transactions automatiques
 
-![Transactions automatiques](docs/readme/screenshots/transactions-auto.jpg)
+![Transactions automatiques](docs/readme/screenshots/transactions-auto.png)
 
 > Gestion des abonnements et paiements récurrents : streaming, sport, mutuelle, salaire…
 
@@ -172,7 +180,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Nouvelle transaction automatique
 
-![Nouvelle transaction automatique](docs/readme/screenshots/nouvelle-transactions-auto.jpg)
+![Nouvelle transaction automatique](docs/readme/screenshots/nouvelle-transactions-auto.png)
 
 > Formulaire de création d'une transaction automatique : montant, fréquence, catégorie et date de début.
 
@@ -180,7 +188,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Objectifs d'épargne
 
-![Objectifs d'épargne](docs/readme/screenshots/objectifs.jpg)
+![Objectifs d'épargne](docs/readme/screenshots/objectifs.png)
 
 > Suivi visuel de la progression vers chaque objectif financier (voyage, fonds d'urgence, immobilier…).
 
@@ -188,7 +196,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Nouvel objectif
 
-![Nouvel objectif](docs/readme/screenshots/nouvel-objectif.jpg)
+![Nouvel objectif](docs/readme/screenshots/nouvel-objectif.png)
 
 > Formulaire de création d'un objectif d'épargne : nom, montant cible, montant actuel et date limite.
 
@@ -204,15 +212,23 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Catégories
 
-![Catégories](docs/readme/screenshots/categories.jpg)
+![Catégories](docs/readme/screenshots/categories.png)
 
 > Gestion des catégories personnalisées avec sous-catégories et types (dépense / revenu).
 
 ---
 
+### Nouvelle catégorie
+
+![Nouvelle catégorie](docs/readme/screenshots/nouvelle-categorie.png)
+
+> Formulaire de création d'une catégorie : nom et portefeuille associé, accessible directement depuis la liste sans changer de page.
+
+---
+
 ### Auto-catégorisation
 
-![Auto-catégorisation](docs/readme/screenshots/auto-categorisation.jpg)
+![Auto-catégorisation](docs/readme/screenshots/auto-categorisation.png)
 
 > Règles apprises automatiquement à partir de vos habitudes pour catégoriser vos transactions sans effort.
 
@@ -220,7 +236,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Importer des transactions
 
-![Import](docs/readme/screenshots/import.jpg)
+![Import](docs/readme/screenshots/import.png)
 
 > Import de transactions depuis un fichier Excel en suivant le modèle téléchargeable.
 
@@ -228,7 +244,7 @@ Disponible en thème sombre et clair, entièrement responsive, Spendly centralis
 
 ### Formules & Tarifs
 
-![Plan](docs/readme/screenshots/plan.jpg)
+![Plan](docs/readme/screenshots/plan.png)
 
 > Offres Free et Pro avec comparatif des fonctionnalités et gestion de l'abonnement via Stripe.
 
