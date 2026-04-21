@@ -44,7 +44,7 @@ importers:
     devDependencies:
       '@inertiajs/vue3':
         specifier: ^3.0.3
-        version: 3.0.3(axios@1.15.1)(vue@3.4.38(typescript@5.9.3))
+        version: 3.0.3(axios@1.15.2)(vue@3.4.38(typescript@5.9.3))
       '@tailwindcss/forms':
         specifier: 0.4.0-alpha.2
         version: 0.4.0-alpha.2(tailwindcss@4.2.2)
@@ -65,7 +65,7 @@ importers:
         version: 3.15.11
       axios:
         specifier: '>=1.11.0 <=1.16.0'
-        version: 1.15.1
+        version: 1.15.2
       concurrently:
         specifier: ^9.0.1
         version: 9.2.1
@@ -930,8 +930,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.15.1:
-    resolution: {integrity: sha512-WOG+Jj8ZOvR0a3rAn+Tuf1UQJRxw5venr6DgdbJzngJE3qG7X0kL83CZGpdHMxEm+ZK3seAbvFsw4FfOfP9vxg==}
+  axios@1.15.2:
+    resolution: {integrity: sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -2324,19 +2324,19 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@inertiajs/core@3.0.3(axios@1.15.1)':
+  '@inertiajs/core@3.0.3(axios@1.15.2)':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       es-toolkit: 1.45.1
-      laravel-precognition: 2.0.0(axios@1.15.1)
+      laravel-precognition: 2.0.0(axios@1.15.2)
     optionalDependencies:
-      axios: 1.15.1
+      axios: 1.15.2
 
-  '@inertiajs/vue3@3.0.3(axios@1.15.1)(vue@3.4.38(typescript@5.9.3))':
+  '@inertiajs/vue3@3.0.3(axios@1.15.2)(vue@3.4.38(typescript@5.9.3))':
     dependencies:
-      '@inertiajs/core': 3.0.3(axios@1.15.1)
+      '@inertiajs/core': 3.0.3(axios@1.15.2)
       es-toolkit: 1.45.1
-      laravel-precognition: 2.0.0(axios@1.15.1)
+      laravel-precognition: 2.0.0(axios@1.15.2)
       vue: 3.4.38(typescript@5.9.3)
     transitivePeerDependencies:
       - axios
@@ -2800,7 +2800,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.15.1:
+  axios@1.15.2:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
@@ -3324,11 +3324,11 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  laravel-precognition@2.0.0(axios@1.15.1):
+  laravel-precognition@2.0.0(axios@1.15.2):
     dependencies:
       es-toolkit: 1.45.1
     optionalDependencies:
-      axios: 1.15.1
+      axios: 1.15.2
 
   laravel-vite-plugin@3.0.1(vite@8.0.8(@types/node@25.5.2)(esbuild@0.27.7)(jiti@2.6.1)(terser@5.46.1)):
     dependencies:
