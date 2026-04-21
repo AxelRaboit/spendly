@@ -10,7 +10,7 @@ import { BudgetSection } from '@/enums/BudgetSection';
 import { nextTick } from 'vue';
 
 export function useTourSteps() {
-    const { t: translate } = useI18n();
+    const { t } = useI18n();
 
     // ── Utility Helpers ──
     function isMobile() {
@@ -157,7 +157,7 @@ export function useTourSteps() {
             total = offset + steps.length;
         }
 
-        const ofText = translate('tour.progressOf');
+        const ofText = t('tour.progressOf');
         steps.forEach((step, index) => {
             step.popover = step.popover || {};
             step.popover.progressText = `${offset + index + 1} ${ofText} ${total}`;
@@ -178,8 +178,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="month-nav"]',
                 popover: {
-                    title: translate('tour.stepMonthNav.title'),
-                    description: translate('tour.stepMonthNav.desc'),
+                    title: t('tour.stepMonthNav.title'),
+                    description: t('tour.stepMonthNav.desc'),
                     side: 'bottom',
                     align: 'center',
                 },
@@ -188,8 +188,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="kpi-section"]',
                 popover: {
-                    title: translate('tour.stepPrevKpi.title'),
-                    description: translate('tour.stepPrevKpi.desc'),
+                    title: t('tour.stepPrevKpi.title'),
+                    description: t('tour.stepPrevKpi.desc'),
                     side: 'bottom',
                     align: 'start',
                     onPopoverRender: (_, { driver: d }) => {
@@ -204,8 +204,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="budget-notes"]',
                 popover: {
-                    title: translate('tour.stepNotes.title'),
-                    description: translate('tour.stepNotes.desc'),
+                    title: t('tour.stepNotes.title'),
+                    description: t('tour.stepNotes.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -214,8 +214,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="budget-table"]',
                 popover: {
-                    title: translate('tour.stepTable.title'),
-                    description: translate('tour.stepTable.desc'),
+                    title: t('tour.stepTable.title'),
+                    description: t('tour.stepTable.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -224,8 +224,8 @@ export function useTourSteps() {
             {
                 element: getVisibleEl('[data-tour-section="income"]'),
                 popover: {
-                    title: translate('tour.section.income.title'),
-                    description: translate('tour.section.income.desc'),
+                    title: t('tour.section.income.title'),
+                    description: t('tour.section.income.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -236,8 +236,8 @@ export function useTourSteps() {
                       {
                           element: firstRow,
                           popover: {
-                              title: translate('tour.stepRow.title'),
-                              description: translate('tour.stepRow.desc'),
+                              title: t('tour.stepRow.title'),
+                              description: t('tour.stepRow.desc'),
                               side: 'bottom',
                               align: 'start',
                           },
@@ -250,8 +250,8 @@ export function useTourSteps() {
                       {
                           element: getVisibleEl(`[data-tour-actions="${firstItemId}"]`),
                           popover: {
-                              title: translate('tour.stepRowActions.title'),
-                              description: translate('tour.stepRowActions.desc'),
+                              title: t('tour.stepRowActions.title'),
+                              description: t('tour.stepRowActions.desc'),
                               side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                               onPopoverRender: () => showActions(firstItemId),
@@ -268,8 +268,8 @@ export function useTourSteps() {
                           {
                               element: actualCell,
                               popover: {
-                                  title: translate('tour.stepActualAmount.title'),
-                                  description: translate('tour.stepActualAmount.desc'),
+                                  title: t('tour.stepActualAmount.title'),
+                                  description: t('tour.stepActualAmount.desc'),
                                   side: isMobile() ? 'bottom' : 'left',
                                   align: 'center',
                               },
@@ -285,8 +285,8 @@ export function useTourSteps() {
                     setTimeout(() => createPanelAnchor('[data-tour="detail-panel"]'), 100);
                 },
                 popover: {
-                    title: translate('tour.stepDetailPanel.title'),
-                    description: translate('tour.stepDetailPanel.desc'),
+                    title: t('tour.stepDetailPanel.title'),
+                    description: t('tour.stepDetailPanel.desc'),
                     side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
@@ -302,8 +302,8 @@ export function useTourSteps() {
             {
                 element: getVisibleEl('[data-tour-add-line="income"]'),
                 popover: {
-                    title: translate('tour.stepAddLine.title'),
-                    description: translate('tour.stepAddLine.desc'),
+                    title: t('tour.stepAddLine.title'),
+                    description: t('tour.stepAddLine.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -315,8 +315,8 @@ export function useTourSteps() {
                     if (pageHooks.openAddLine) pageHooks.openAddLine();
                 },
                 popover: {
-                    title: translate('tour.stepAddLineForm.title'),
-                    description: translate('tour.stepAddLineForm.desc'),
+                    title: t('tour.stepAddLineForm.title'),
+                    description: t('tour.stepAddLineForm.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -325,8 +325,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-label"]'),
                 popover: {
-                    title: translate('tour.addField.label.title'),
-                    description: translate('tour.addField.label.desc'),
+                    title: t('tour.addField.label.title'),
+                    description: t('tour.addField.label.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -334,8 +334,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-category"]'),
                 popover: {
-                    title: translate('tour.addField.category.title'),
-                    description: translate('tour.addField.category.desc'),
+                    title: t('tour.addField.category.title'),
+                    description: t('tour.addField.category.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -343,8 +343,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-amount"]'),
                 popover: {
-                    title: translate('tour.addField.amount.title'),
-                    description: translate('tour.addField.amount.desc'),
+                    title: t('tour.addField.amount.title'),
+                    description: t('tour.addField.amount.desc'),
                     side: 'bottom',
                     align: 'start',
                 },
@@ -352,8 +352,8 @@ export function useTourSteps() {
             {
                 element: () => getVisibleEl('[data-tour="add-field-target"]'),
                 popover: {
-                    title: translate('tour.addField.target.title'),
-                    description: translate('tour.addField.target.desc'),
+                    title: t('tour.addField.target.title'),
+                    description: t('tour.addField.target.desc'),
                     side: 'top',
                     align: 'start',
                 },
@@ -367,8 +367,8 @@ export function useTourSteps() {
                 .map((section) => ({
                     element: getVisibleEl(`[data-tour-section="${section}"]`),
                     popover: {
-                        title: translate(`tour.section.${section}.title`),
-                        description: translate(`tour.section.${section}.desc`),
+                        title: t(`tour.section.${section}.title`),
+                        description: t(`tour.section.${section}.desc`),
                         side: 'bottom',
                         align: 'start',
                     },
@@ -377,8 +377,8 @@ export function useTourSteps() {
             {
                 element: '[data-tour="new-transaction"]',
                 popover: {
-                    title: translate('tour.stepTransaction.title'),
-                    description: translate('tour.stepTransaction.desc'),
+                    title: t('tour.stepTransaction.title'),
+                    description: t('tour.stepTransaction.desc'),
                     side: 'bottom',
                     align: 'end',
                 },
@@ -392,8 +392,8 @@ export function useTourSteps() {
                     setTimeout(() => createPanelAnchor('[data-tour="tx-panel"]'), 100);
                 },
                 popover: {
-                    title: translate('tour.stepTxPanel.title'),
-                    description: translate('tour.stepTxPanel.desc'),
+                    title: t('tour.stepTxPanel.title'),
+                    description: t('tour.stepTxPanel.desc'),
                     side: panelSide,
                     align: 'center',
                     onPopoverRender: () => {
@@ -437,8 +437,8 @@ export function useTourSteps() {
                       {
                           element: carriedOverCell,
                           popover: {
-                              title: translate('tour.stepCarryOver.title'),
-                              description: translate('tour.stepCarryOver.desc'),
+                              title: t('tour.stepCarryOver.title'),
+                              description: t('tour.stepCarryOver.desc'),
                               side: isMobile() ? 'bottom' : 'left',
                               align: 'center',
                           },
