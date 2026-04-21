@@ -331,7 +331,7 @@ const topCategoryMax = computed(() => {
 
                     <template v-if="recentTransactions.length > 0">
                         <div class="sm:hidden divide-y divide-subtle">
-                            <Link v-for="transaction in recentTransactions" :key="transaction.id" :href="`/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`" class="flex items-center justify-between px-4 py-3 gap-3 hover:bg-surface-2/50 transition-colors">
+                            <Link v-for="transaction in recentTransactions" :key="transaction.id" :href="transaction.wallet?.mode === WalletMode.Simple ? `/wallets/${transaction.wallet_id}/simple` : `/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`" class="flex items-center justify-between px-4 py-3 gap-3 hover:bg-surface-2/50 transition-colors">
                                 <div class="flex flex-col gap-1 min-w-0">
                                     <span class="text-sm text-primary font-medium truncate">{{ transaction.description ?? '—' }}</span>
                                     <div class="flex items-center gap-2">
@@ -356,7 +356,7 @@ const topCategoryMax = computed(() => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-subtle">
-                                    <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition cursor-pointer" v-on:click="$inertia.visit(`/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`)">
+                                    <tr v-for="transaction in recentTransactions" :key="transaction.id" class="hover:bg-surface-2/50 transition cursor-pointer" v-on:click="$inertia.visit(transaction.wallet?.mode === WalletMode.Simple ? `/wallets/${transaction.wallet_id}/simple` : `/wallets/${transaction.wallet_id}/budget?month=${transaction.date.substring(0, 7)}&flash_category=${transaction.category_id}`)">
                                         <td class="px-6 py-4 text-sm text-secondary">{{ fmtDay(transaction.date) }}</td>
                                         <td class="px-6 py-4 text-sm text-secondary">{{ transaction.description ?? '—' }}</td>
                                         <td class="px-6 py-4">
