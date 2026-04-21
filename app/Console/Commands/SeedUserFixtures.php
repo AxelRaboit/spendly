@@ -11,7 +11,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('spendly:seed-fixtures {--email= : Email of the user to reset} {--force : Skip confirmation prompt}')]
-#[Description('Reset a user\'s data and replace it with demo fixture data')]
+#[Description("Reset a user's data and replace it with demo fixture data")]
 class SeedUserFixtures extends Command
 {
     public function handle(DemoFixtureService $fixtures): int

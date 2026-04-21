@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletMember;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class DemoFixtureService
 {
@@ -270,7 +271,7 @@ class DemoFixtureService
             ['Alimentation',        64.20, 29, 'Aldi',                             'expense', ['courses']],
             ['Transport',           26.40,  2, 'Navigo mensuel',                   'expense', ['transport']],
             ['Transport',           22.00, 10, 'Carburant',                        'expense', ['transport']],
-            ['Transport',          340.00,  8, 'Garage — courroie de distribution','expense', ['transport', 'voiture']],
+            ['Transport',          340.00,  8, 'Garage — courroie de distribution', 'expense', ['transport', 'voiture']],
             ['Transport',           79.00,  8, 'Contrôle technique',               'expense', ['transport', 'voiture']],
             ['Restaurants',         33.00,  6, 'Déjeuner pro',                     'expense', ['resto']],
             ['Restaurants',         45.00, 13, 'Brasserie — terrasse printemps',   'expense', ['resto']],
@@ -310,7 +311,7 @@ class DemoFixtureService
         // 4. Transactions (wallet_id is nullOnDelete — must delete explicitly)
         $user->transactions()->delete();
         // 5. Wallets cascade to: budgets → budget_items, wallet_members
-        $user->wallets()->each(fn (Wallet $wallet) => $wallet->delete());
+        $user->wallets()->each(fn (Model $wallet) => $wallet->delete());
         // 6. Categories (transactions already gone)
         $user->categories()->delete();
         // 7. Budget presets (user-only FK)
@@ -331,17 +332,17 @@ class DemoFixtureService
         foreach ($months as $month) {
             $this->transferService->create($user, [
                 'from_wallet_id' => $wallet->id,
-                'to_wallet_id'   => $livretA->id,
-                'amount'         => 300.00,
-                'description'    => 'Virement Livret A',
-                'date'           => Carbon::create($month->year, $month->month, 2)->toDateString(),
+                'to_wallet_id' => $livretA->id,
+                'amount' => 300.00,
+                'description' => 'Virement Livret A',
+                'date' => Carbon::create($month->year, $month->month, 2)->toDateString(),
             ]);
             $this->transferService->create($user, [
                 'from_wallet_id' => $wallet->id,
-                'to_wallet_id'   => $assuranceVie->id,
-                'amount'         => 100.00,
-                'description'    => 'Versement assurance vie',
-                'date'           => Carbon::create($month->year, $month->month, 2)->toDateString(),
+                'to_wallet_id' => $assuranceVie->id,
+                'amount' => 100.00,
+                'description' => 'Versement assurance vie',
+                'date' => Carbon::create($month->year, $month->month, 2)->toDateString(),
             ]);
         }
 
@@ -362,16 +363,16 @@ class DemoFixtureService
     private function createWallet(User $user, string $name, float $startBalance, bool $isFavorite = false): Wallet
     {
         $wallet = Wallet::create([
-            'user_id'       => $user->id,
-            'name'          => $name,
+            'user_id' => $user->id,
+            'name' => $name,
             'start_balance' => $startBalance,
-            'is_favorite'   => $isFavorite,
+            'is_favorite' => $isFavorite,
         ]);
 
         WalletMember::create([
             'wallet_id' => $wallet->id,
-            'user_id'   => $user->id,
-            'role'      => WalletRole::Owner,
+            'user_id' => $user->id,
+            'role' => WalletRole::Owner,
         ]);
 
         return $wallet;
@@ -393,9 +394,9 @@ class DemoFixtureService
         $map = [];
         foreach ($names as $name) {
             $map[$name] = Category::create([
-                'user_id'   => $user->id,
+                'user_id' => $user->id,
                 'wallet_id' => $wallet->id,
-                'name'      => $name,
+                'name' => $name,
             ]);
         }
 
@@ -406,16 +407,16 @@ class DemoFixtureService
     {
         foreach (self::BUDGET_TEMPLATE as $position => $item) {
             BudgetItem::create([
-                'budget_id'        => $budget->id,
-                'type'             => $item['type'],
-                'label'            => $item['label'],
-                'planned_amount'   => $item['planned'],
-                'category_id'      => $categories[$item['cat']]->id,
-                'position'         => $position,
+                'budget_id' => $budget->id,
+                'type' => $item['type'],
+                'label' => $item['label'],
+                'planned_amount' => $item['planned'],
+                'category_id' => $categories[$item['cat']]->id,
+                'position' => $position,
                 'repeat_next_month' => $repeatFromPrevious,
-                'target_type'      => $item['target_type'],
-                'target_amount'    => $item['target_amount'],
-                'notes'            => $item['notes'],
+                'target_type' => $item['target_type'],
+                'target_amount' => $item['target_amount'],
+                'notes' => $item['notes'],
             ]);
         }
     }
@@ -427,14 +428,14 @@ class DemoFixtureService
 
         $create = function (string $cat, float $amount, int $day, string $desc, string $type, array $tags) use ($user, $wallet, $categories, $year, $monthNumber): void {
             Transaction::create([
-                'user_id'     => $user->id,
-                'wallet_id'   => $wallet->id,
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
                 'category_id' => $categories[$cat]->id,
-                'type'        => $type,
-                'amount'      => round($amount, 2),
+                'type' => $type,
+                'amount' => round($amount, 2),
                 'description' => $desc,
-                'date'        => Carbon::create($year, $monthNumber, min($day, Carbon::create($year, $monthNumber, 1)->endOfMonth()->day))->toDateString(),
-                'tags'        => $tags ?: null,
+                'date' => Carbon::create($year, $monthNumber, min($day, Carbon::create($year, $monthNumber, 1)->endOfMonth()->day))->toDateString(),
+                'tags' => $tags ?: null,
             ]);
         };
 
@@ -486,14 +487,14 @@ class DemoFixtureService
             ['description' => 'Ancien abonnement presse', 'amount' => 12.99,   'day_of_month' => 15, 'type' => 'expense', 'active' => false, 'cat' => 'Loisirs'],
         ] as $data) {
             RecurringTransaction::create([
-                'user_id'      => $user->id,
-                'wallet_id'    => $wallet->id,
-                'category_id'  => $categories[$data['cat']]->id,
-                'description'  => $data['description'],
-                'amount'       => $data['amount'],
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $categories[$data['cat']]->id,
+                'description' => $data['description'],
+                'amount' => $data['amount'],
                 'day_of_month' => $data['day_of_month'],
-                'type'         => $data['type'],
-                'active'       => $data['active'],
+                'type' => $data['type'],
+                'active' => $data['active'],
             ]);
         }
     }
@@ -507,12 +508,12 @@ class DemoFixtureService
             ['description' => 'Assurance auto annuelle', 'amount' => 816.00,  'type' => 'expense', 'date' => now()->addMonths(5)->startOfMonth()->toDateString(),              'cat' => 'Assurance auto'],
         ] as $data) {
             ScheduledTransaction::create([
-                'user_id'        => $user->id,
-                'wallet_id'      => $wallet->id,
-                'category_id'    => $categories[$data['cat']]->id,
-                'description'    => $data['description'],
-                'amount'         => $data['amount'],
-                'type'           => $data['type'],
+                'user_id' => $user->id,
+                'wallet_id' => $wallet->id,
+                'category_id' => $categories[$data['cat']]->id,
+                'description' => $data['description'],
+                'amount' => $data['amount'],
+                'type' => $data['type'],
                 'scheduled_date' => $data['date'],
             ]);
         }
@@ -565,10 +566,10 @@ class DemoFixtureService
             ['pattern' => 'airbnb|booking|hotels|accor|ibis',                                         'cat' => 'Vacances',     'hits' => 4],
         ] as $rule) {
             CategorizationRule::create([
-                'user_id'     => $user->id,
+                'user_id' => $user->id,
                 'category_id' => $categories[$rule['cat']]->id,
-                'pattern'     => $rule['pattern'],
-                'hits'        => $rule['hits'],
+                'pattern' => $rule['pattern'],
+                'hits' => $rule['hits'],
             ]);
         }
     }

@@ -52,6 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'role:ROLE_DEV'])->group(function () {
     Route::get('/dev/dashboard', [DevDashboardController::class, 'stats'])->name('dev.dashboard.stats');
     Route::get('/dev/dashboard/users', [DevDashboardController::class, 'users'])->name('dev.dashboard.users');
+    Route::post('/dev/dashboard/users', [DevDashboardController::class, 'storeUser'])->name('dev.dashboard.users.store');
+    Route::patch('/dev/dashboard/users/{user}', [DevDashboardController::class, 'updateUser'])->name('dev.dashboard.users.update');
     Route::post('/dev/dashboard/users/{user}/toggle-role', [DevDashboardController::class, 'toggleRole'])->name('dev.dashboard.users.toggle-role');
     Route::delete('/dev/dashboard/users/{user}', [DevDashboardController::class, 'destroyUser'])->name('dev.dashboard.users.destroy');
     Route::post('/dev/dashboard/users/{user}/impersonate', [DevDashboardController::class, 'impersonate'])->name('dev.dashboard.users.impersonate');

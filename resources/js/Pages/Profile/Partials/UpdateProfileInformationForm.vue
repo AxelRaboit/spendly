@@ -1,5 +1,6 @@
 <script setup>
 import { CURRENCIES } from '@/composables/core/useCurrency';
+import { Currency } from '@/enums/Currency';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
@@ -15,7 +16,7 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name:     user.name,
     email:    user.email,
-    currency: user.currency ?? 'EUR',
+    currency: user.currency ?? Currency.EUR,
 });
 </script>
 

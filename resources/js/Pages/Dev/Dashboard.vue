@@ -4,9 +4,13 @@ import AppBadge from '@/components/ui/AppBadge.vue';
 import AppPageHeader from '@/components/ui/AppPageHeader.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppTooltip from '@/components/ui/AppTooltip.vue';
+import ConfirmModal from '@/components/ui/ConfirmModal.vue';
+import Modal from '@/components/ui/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Shield, Trash2, TrendingUp, UserRound, Users, Wallet, X } from 'lucide-vue-next';
+import { Activity, BadgeCheck, Check, LogIn, Mail, Pencil, Plus, Shield, Trash2, TrendingUp, UserRound, Users, Wallet, X } from 'lucide-vue-next';
 import { useI18n } from 'vue-i18n';
+import { Currency } from '@/enums/Currency';
+import { Locale } from '@/enums/Locale';
 import { PlanType } from '@/enums/PlanType';
 import { computed, onMounted, ref } from 'vue';
 import { useChartTheme } from '@/composables/ui/useChartTheme';
@@ -154,6 +158,58 @@ const doDeleteUser = () => {
     if (!pendingDeleteUser.value) return;
     useForm({}).delete(route('dev.dashboard.users.destroy', pendingDeleteUser.value.id));
     pendingDeleteUser.value = null;
+};
+
+// ── Create / Edit user modal ─────────────────────────────────────────────────
+
+const userModalOpen = ref(false);
+const editingUser = ref(null);
+
+const userForm = useForm({
+    name: '',
+    email: '',
+    password: '',
+    plan: PlanType.Free,
+    locale: Locale.Fr,
+    currency: Currency.EUR,
+});
+
+const openCreateModal = () => {
+    editingUser.value = null;
+    userForm.reset();
+    userForm.plan = PlanType.Free;
+    userForm.locale = Locale.Fr;
+    userForm.currency = Currency.EUR;
+    userModalOpen.value = true;
+};
+
+const openEditModal = (user) => {
+    editingUser.value = user;
+    userForm.name = user.name;
+    userForm.email = user.email;
+    userForm.password = '';
+    userForm.plan = user.plan;
+    userForm.locale = user.locale ?? Locale.Fr;
+    userForm.currency = user.currency ?? Currency.EUR;
+    userModalOpen.value = true;
+};
+
+const closeUserModal = () => {
+    userModalOpen.value = false;
+    editingUser.value = null;
+    userForm.reset();
+};
+
+const submitUserForm = () => {
+    if (editingUser.value) {
+        userForm.patch(route('dev.dashboard.users.update', editingUser.value.id), {
+            onSuccess: closeUserModal,
+        });
+    } else {
+        userForm.post(route('dev.dashboard.users.store'), {
+            onSuccess: closeUserModal,
+        });
+    }
 };
 
 // ── Parameters tab ──────────────────────────────────────────────────────────
@@ -435,6 +491,13 @@ const submitInvitation = () => {
                     >
                         {{ t('admin.users.search') }}
                     </button>
+                    <button
+                        class="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                        v-on:click="openCreateModal"
+                    >
+                        <Plus class="w-4 h-4" />
+                        {{ t('admin.users.create') }}
+                    </button>
                 </div>
 
                 <!-- Mobile cards -->
@@ -455,6 +518,9 @@ const submitInvitation = () => {
                         <div class="flex items-center justify-between pt-1 border-t border-line">
                             <p class="text-xs text-muted">{{ new Date(user.created_at).toLocaleDateString() }}</p>
                             <div class="flex items-center gap-1">
+                                <button class="p-1.5 rounded text-muted hover:text-emerald-400 transition-colors" v-on:click="openEditModal(user)">
+                                    <Pencil class="w-4 h-4" />
+                                </button>
                                 <button class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors" v-on:click="confirmImpersonate(user)">
                                     <LogIn class="w-4 h-4" />
                                 </button>
@@ -502,6 +568,14 @@ const submitInvitation = () => {
                                 <td class="px-4 sm:px-6 py-3 text-sm text-secondary hidden lg:table-cell">{{ new Date(user.created_at).toLocaleDateString() }}</td>
                                 <td class="px-4 sm:px-6 py-3 text-sm text-right">
                                     <div class="flex items-center justify-end gap-1">
+                                        <AppTooltip :text="t('admin.users.edit', { name: user.name })">
+                                            <button
+                                                class="p-1.5 rounded text-muted hover:text-emerald-400 transition-colors"
+                                                v-on:click="openEditModal(user)"
+                                            >
+                                                <Pencil class="w-4 h-4" />
+                                            </button>
+                                        </AppTooltip>
                                         <AppTooltip :text="t('admin.users.impersonate', { name: user.name })">
                                             <button
                                                 class="p-1.5 rounded text-muted hover:text-amber-400 transition-colors"
@@ -699,6 +773,113 @@ const submitInvitation = () => {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <!-- Create / Edit user modal -->
+    <Modal :show="userModalOpen" max-width="lg" v-on:close="closeUserModal">
+        <div class="bg-surface p-6 space-y-5">
+            <h2 class="text-base font-semibold text-primary">
+                {{ editingUser ? t('admin.users.editUser') : t('admin.users.create') }}
+            </h2>
+
+            <form class="space-y-4" v-on:submit.prevent="submitUserForm">
+                <!-- Name + Email -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.name') }}</label>
+                        <input
+                            v-model="userForm.name"
+                            type="text"
+                            required
+                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            :class="{ 'border-red-500': userForm.errors.name }"
+                        >
+                        <p v-if="userForm.errors.name" class="text-xs text-red-400">{{ userForm.errors.name }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.email') }}</label>
+                        <input
+                            v-model="userForm.email"
+                            type="email"
+                            required
+                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            :class="{ 'border-red-500': userForm.errors.email }"
+                        >
+                        <p v-if="userForm.errors.email" class="text-xs text-red-400">{{ userForm.errors.email }}</p>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-secondary">{{ t('admin.users.password') }}</label>
+                    <input
+                        v-model="userForm.password"
+                        type="password"
+                        :required="!editingUser"
+                        :placeholder="editingUser ? t('admin.users.passwordPlaceholder') : ''"
+                        class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        :class="{ 'border-red-500': userForm.errors.password }"
+                    >
+                    <p v-if="userForm.errors.password" class="text-xs text-red-400">{{ userForm.errors.password }}</p>
+                </div>
+
+                <!-- Plan + Locale + Currency -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.plan') }}</label>
+                        <select
+                            v-model="userForm.plan"
+                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="free">Free</option>
+                            <option value="pro">Pro</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.locale') }}</label>
+                        <select
+                            v-model="userForm.locale"
+                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option value="fr">Français</option>
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="es">Español</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-medium text-secondary">{{ t('admin.users.currency') }}</label>
+                        <select
+                            v-model="userForm.currency"
+                            class="w-full px-3 py-2 rounded-lg bg-surface-2 border border-line text-primary text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        >
+                            <option>EUR</option>
+                            <option>USD</option>
+                            <option>GBP</option>
+                            <option>CHF</option>
+                            <option>CAD</option>
+                            <option>JPY</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" class="px-4 py-2 text-sm text-secondary hover:text-primary transition-colors" v-on:click="closeUserModal">
+                        {{ t('admin.parameters.cancel') }}
+                    </button>
+                    <button
+                        type="submit"
+                        :disabled="userForm.processing"
+                        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                        {{ userForm.processing
+                            ? (editingUser ? t('admin.users.saving') : t('admin.users.creating'))
+                            : t('admin.users.save') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </Modal>
 
     <ConfirmModal
         :show="!!pendingImpersonateUser"

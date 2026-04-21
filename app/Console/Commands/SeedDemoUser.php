@@ -36,14 +36,14 @@ class SeedDemoUser extends Command
         $this->info(sprintf('Seeding demo user [%s]...', $email));
 
         $user = User::create([
-            'name'              => 'Léa Martin',
-            'email'             => $email,
+            'name' => 'Léa Martin',
+            'email' => $email,
             'email_verified_at' => now(),
-            'password'          => bcrypt($password),
-            'plan'              => PlanType::Pro,
-            'is_demo'           => true,
-            'locale'            => 'fr',
-            'currency'          => 'EUR',
+            'password' => bcrypt($password),
+            'plan' => PlanType::Pro,
+            'is_demo' => true,
+            'locale' => 'fr',
+            'currency' => 'EUR',
         ]);
         $user->assignRole('ROLE_USER');
 
