@@ -354,10 +354,16 @@ Lance en parallèle : le mailer (Mailpit via Docker), le serveur PHP, la queue, 
 ## Commandes utiles
 
 ```bash
+# Développement
+make start             # démarrer le mailer + serveurs de développement
+make stop              # arrêter le mailer
+
 # Tests
-make test              # suite complète
-make test-unit         # tests unitaires uniquement
-make test-feature      # tests de fonctionnalité uniquement
+make test-backend            # tous les tests backend (PHPUnit)
+make test-backend-unit       # tests unitaires backend uniquement
+make test-backend-feature    # tests de fonctionnalité backend uniquement
+make test-frontend           # tests frontend (Vitest)
+make ft                      # fix + tous les tests
 
 # Qualité du code
 make fix               # auto-correction (Pint, Rector, ESLint) + PHPStan
@@ -370,7 +376,12 @@ make fixtures          # migrate-fresh + seeders
 
 # Utilisateurs
 make demo-seed         # créer/réinitialiser l'utilisateur démo (EMAIL= optionnel)
+make demo-clear        # supprimer l'utilisateur démo et ses données (EMAIL= optionnel)
 make role-dev EMAIL=user@example.com   # passer un utilisateur en ROLE_DEV
+
+# Utilitaires
+make cc                # vider tous les caches
+make help              # lister toutes les commandes disponibles
 ```
 
 ---
