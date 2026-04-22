@@ -36,7 +36,7 @@ class SeedDemoUser extends Command
         $this->info(sprintf('Seeding demo user [%s]...', $email));
 
         $user = User::create([
-            'name' => 'Léa Martin',
+            'name' => 'Demo',
             'email' => $email,
             'email_verified_at' => now(),
             'password' => bcrypt($password),
