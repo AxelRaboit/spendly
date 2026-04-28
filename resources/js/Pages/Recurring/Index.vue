@@ -94,10 +94,11 @@ function toggleGroup(id) {
             </div>
 
             <div v-if="activeTab === 'recurring'" class="space-y-4">
-                <div class="flex justify-end">
-                    <div class="relative">
+                <div class="flex sm:justify-end">
+                    <div class="relative w-full sm:w-auto">
                         <AppButton
                             :disabled="!canCreateRecurring"
+                            class="w-full sm:w-auto"
                             :class="!canCreateRecurring ? 'opacity-60 cursor-not-allowed' : ''"
                             v-on:click="openCreate"
                         >
@@ -194,8 +195,8 @@ function toggleGroup(id) {
             </div>
 
             <div v-if="activeTab === 'scheduled'" class="space-y-4">
-                <div class="flex justify-end">
-                    <AppButton v-on:click="openCreateScheduled">
+                <div class="flex sm:justify-end">
+                    <AppButton class="w-full sm:w-auto" v-on:click="openCreateScheduled">
                         <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('scheduled.new') }}
                     </AppButton>

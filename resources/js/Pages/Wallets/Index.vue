@@ -99,13 +99,13 @@ function openCreateModal() {
         </template>
 
         <div class="space-y-4">
-            <div class="flex justify-end gap-2">
-                <AppButton variant="secondary" v-on:click="showTransfer = true">
+            <div class="flex flex-col sm:flex-row sm:justify-end gap-2">
+                <AppButton class="w-full sm:w-auto" variant="secondary" v-on:click="showTransfer = true">
                     <ArrowLeftRight class="w-4 h-4 mr-1.5" />
                     {{ t('transfers.new') }}
                 </AppButton>
-                <div v-if="canCreateWallet || showProFeatures" data-tour="create-wallet">
-                    <AppButton v-on:click="openCreateModal">
+                <div v-if="canCreateWallet || showProFeatures" class="w-full sm:w-auto" data-tour="create-wallet">
+                    <AppButton class="w-full sm:w-auto" v-on:click="openCreateModal">
                         <Plus class="w-4 h-4 mr-1.5" />
                         {{ t('wallets.createBtn') }}
                     </AppButton>
