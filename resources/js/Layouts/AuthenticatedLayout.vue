@@ -15,7 +15,6 @@ import {
     Wallet,
     ClipboardList,
     BadgeCheck,
-    NotebookPen,
     Repeat,
     Tag,
     Wand2,
@@ -68,8 +67,15 @@ onMounted(() => {
     onUnmounted(off);
 });
 
+watch(showMobileMenu, (open) => {
+    document.body.style.overflow = open ? 'hidden' : '';
+});
+
+onUnmounted(() => {
+    document.body.style.overflow = '';
+});
+
 // ── Plan ──────────────────────────────────────────────────────────────────
-const canExportImport = computed(() => page.props.planLimits?.canExportImport === true);
 const { isPro } = usePlanLimits();
 const { isTrialing, label: trialLabel } = useTrialCountdown();
 

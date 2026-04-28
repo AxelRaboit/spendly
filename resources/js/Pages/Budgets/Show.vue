@@ -433,9 +433,10 @@ onUnmounted(() => {
         </template>
 
         <div class="space-y-3">
-            <div class="flex justify-end">
+            <div class="flex sm:justify-end">
                 <AppButton
                     data-tour="new-transaction"
+                    class="w-full sm:w-auto"
                     v-on:click="openTxPanel(null, '', TransactionType.Expense, { cancelEditing, cancelAdding })"
                 >
                     <Plus class="w-4 h-4 mr-1.5" />

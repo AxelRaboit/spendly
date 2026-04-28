@@ -85,8 +85,8 @@ function uploadAndPreview() {
 
                 <p v-if="uploadError" class="text-rose-400 text-sm">{{ uploadError }}</p>
 
-                <div class="flex justify-end">
-                    <AppButton :disabled="!file || uploading" v-on:click="uploadAndPreview">
+                <div class="flex sm:justify-end">
+                    <AppButton class="w-full sm:w-auto" :disabled="!file || uploading" v-on:click="uploadAndPreview">
                         <svg v-if="uploading" class="w-4 h-4 mr-1.5 animate-spin" fill="none" viewBox="0 0 24 24">
                             <circle
                                 class="opacity-25"
