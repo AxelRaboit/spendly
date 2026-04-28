@@ -35,7 +35,7 @@ import { useCurrency }       from '@/composables/core/useCurrency';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { usePlanLimits } from '@/composables/ui/usePlanLimits';
 import { useTour } from '@/composables/ui/useTour';
-import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical } from 'lucide-vue-next';
+import { Plus, ChevronLeft, ChevronRight, ChevronDown, AlertTriangle, CheckCircle, Copy, Zap, Settings, FileText, Pencil, Trash2, Check, X, MoreHorizontal, Repeat, GripVertical, Eye } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { TransactionType } from '@/enums/TransactionType';
@@ -1108,10 +1108,11 @@ onUnmounted(() => {
                                                 v-if="item.category_id && item.actual_amount > 0"
                                                 :data-tour-actual="item.id"
                                                 :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)"
-                                                class="font-semibold hover:underline decoration-dotted"
+                                                class="font-semibold underline decoration-dotted decoration-muted/50 underline-offset-4 inline-flex items-center gap-1"
                                                 v-on:click="openTxDetail(item)"
                                             >
                                                 {{ fmt(item.actual_amount) }}
+                                                <Eye class="w-3 h-3 opacity-50" />
                                             </button>
                                             <span v-else :class="diffClass(item.actual_amount - item.planned_amount, SECTION_META[type].positiveIsGood, item.actual_amount)" class="font-semibold">{{ fmt(item.actual_amount) }}</span>
                                         </div>
@@ -1517,7 +1518,7 @@ onUnmounted(() => {
                                         :data-tour-actual="(item.category_id && item.actual_amount > 0) ? item.id : undefined"
                                     >
                                         <AppTooltip v-if="item.category_id && item.actual_amount > 0" :text="t('budgets.detailPanel.subtitle')">
-                                            <button class="hover:underline decoration-dotted" v-on:click.stop="openTxDetail(item)">
+                                            <button class="underline decoration-dotted decoration-muted/50 underline-offset-4 hover:decoration-current" v-on:click.stop="openTxDetail(item)">
                                                 {{ fmt(item.actual_amount) }}
                                             </button>
                                         </AppTooltip>
