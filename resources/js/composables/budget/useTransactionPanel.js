@@ -89,6 +89,7 @@ export function useTransactionPanel(walletId, budget, sections, flash, categorie
         txPrefillLabel.value = label;
         txSection.value = section;
         resetAutoCategory();
+        if (categoryId) markCategoryManual();
         txPanel.value = true;
         nextTick(() => document.getElementById('tx-amount')?.focus());
     }
