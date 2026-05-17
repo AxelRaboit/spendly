@@ -679,7 +679,7 @@ class BudgetService
 
     public function needsAdjustment(float $diff): bool
     {
-        return bccomp((string) $diff, '0', 2) !== 0;
+        return \bccomp((string) $diff, '0', 2) !== 0;
     }
 
     public function getNewBalance(array $data): float
