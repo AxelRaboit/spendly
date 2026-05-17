@@ -76,11 +76,13 @@ class OverviewService
         $income = (float) (clone $query)
             ->where('type', TransactionType::Income)
             ->whereBetween('date', [$start, $end])
+            ->whereNull('transfer_id')
             ->sum('amount');
 
         $expenses = (float) (clone $query)
             ->where('type', TransactionType::Expense)
             ->whereBetween('date', [$start, $end])
+            ->whereNull('transfer_id')
             ->sum('amount');
 
         return [
@@ -107,8 +109,8 @@ class OverviewService
 
             $base = Transaction::whereIn('wallet_id', $walletIds)->whereBetween('date', [$start, $end]);
 
-            $income = (float) (clone $base)->where('type', TransactionType::Income)->sum('amount');
-            $expenses = (float) (clone $base)->where('type', TransactionType::Expense)->sum('amount');
+            $income = (float) (clone $base)->where('type', TransactionType::Income)->whereNull('transfer_id')->sum('amount');
+            $expenses = (float) (clone $base)->where('type', TransactionType::Expense)->whereNull('transfer_id')->sum('amount');
 
             $rows[] = [
                 'month' => $date->format('Y-m'),
